@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { EmblaOptionsType } from "embla-carousel";
 import { DotButton, useDotButton } from "./CarouselDotButton";
 import {
@@ -10,45 +10,48 @@ import {
 } from "./CarouselArrowButton";
 import useEmblaCarousel from "embla-carousel-react";
 import { Card, CardContent } from "../card";
+import Image from "next/image";
 
 import "./embla.css";
-import Image from "next/image";
 
 type PropType = {
   slides: number[];
   options?: EmblaOptionsType;
 };
 
-const EmblaCarousel: React.FC<PropType> = (props) => {
-  const { slides, options } = props;
+const EmblaCarousel: React.FC<PropType> = ({ slides, options }) => {
+  const [isMounted, setIsMounted] = useState(false);
   const [emblaRef, emblaApi] = useEmblaCarousel(options);
 
-  const { selectedIndex, scrollSnaps, onDotButtonClick } =
-    useDotButton(emblaApi);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
+  const { selectedIndex, scrollSnaps, onDotButtonClick } = useDotButton(
+    isMounted ? emblaApi : undefined
+  );
   const {
     prevBtnDisabled,
     nextBtnDisabled,
     onPrevButtonClick,
     onNextButtonClick,
-  } = usePrevNextButtons(emblaApi);
+  } = usePrevNextButtons(isMounted ? emblaApi : undefined);
 
-  const imageSliude = [
-    "https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?q=80&w=3174&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    "https://images.unsplash.com/photo-1481349518771-20055b2a7b24?q=80&w=3039&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    "https://images.unsplash.com/photo-1508138221679-760a23a2285b?q=80&w=3174&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    "https://plus.unsplash.com/premium_photo-1664392434825-eb95db0931d4?q=80&w=3150&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    "https://images.unsplash.com/photo-1496449903678-68ddcb189a24?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  const imageSlides = [
+    "https://plus.unsplash.com/premium_photo-1661299284368-eb544e14fcdf?w=900&auto=format&fit=crop&q=60",
+    "https://images.unsplash.com/photo-1562232661-b9429e20f13a?w=900&auto=format&fit=crop&q=60",
+    "https://plus.unsplash.com/premium_photo-1661502828652-13e709b751c7?w=900&auto=format&fit=crop&q=60",
+    "https://plus.unsplash.com/premium_photo-1661504711778-e5823d64a41e?w=900&auto=format&fit=crop&q=60",
+    "https://plus.unsplash.com/premium_photo-1661504711778-e5823d64a41e?w=900&auto=format&fit=crop&q=60",
   ];
+
+  if (!isMounted) return null; // Hindari perbedaan antara server dan client
 
   return (
     <section className="embla">
       <div className="embla__viewport" ref={emblaRef}>
         <div className="embla__container">
           {slides.map((index) => (
-            // <div className="embla__slide" key={index}>
-            //   <div className="embla__slide__number">{index + 1}</div>
-            // </div>
             <Card
               className={`embla__slide ${
                 index === selectedIndex ? "border-[10px] border-white" : ""
@@ -57,7 +60,7 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
             >
               <CardContent className="flex items-center justify-center p-0 w-full h-full overflow-hidden">
                 <Image
-                  src={imageSliude[index]}
+                  src={imageSlides[index]}
                   alt="Carousel Image"
                   width={450}
                   height={300}
@@ -71,15 +74,14 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
 
       <div className="embla__controls">
         <PrevButton onClick={onPrevButtonClick} disabled={prevBtnDisabled} />
-
         <div className="embla__dots">
           {scrollSnaps.map((_, index) => (
             <DotButton
               key={index}
               onClick={() => onDotButtonClick(index)}
-              className={"embla__dot".concat(
+              className={`embla__dot ${
                 index === selectedIndex ? " embla__dot--selected" : ""
-              )}
+              }`}
             />
           ))}
         </div>

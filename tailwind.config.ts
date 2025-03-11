@@ -25,6 +25,7 @@ export default {
           "300": "#DABAFF",
           "400": "#A25DF9",
           "500": "#C28CFF",
+          "900": "#4C1C82",
         },
         neutral: {
           "100": "#EEEEEE",

@@ -17,9 +17,9 @@
 }
 
 .embla__slide {
-  flex: 0 0 40%;
+  flex: 0 0 50%;
   max-width: 720px;
-  height: 500px;
+  height: 400px;
   margin-left: var(--slide-gap);
   padding: 0;
   border-radius: 16px;
@@ -119,6 +119,7 @@
   background-color: #5a4212;
   border-radius: 16px;
   animation: dot_animation 0.5s forwards;
+  transform-origin: left;
 }
 
 @keyframes dot_animation {

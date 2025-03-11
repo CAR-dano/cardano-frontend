@@ -3,31 +3,48 @@ import { IoLocationSharp, IoTime, IoCall } from "react-icons/io5";
 
 export default function Footer() {
   return (
-    <footer className="w-full bg-orange-500 text-white font-rubik">
-      <div className="container mx-auto px-6 py-12 md:py-16 flex flex-col md:flex-row md:justify-between gap-10">
+    <footer className=" w-full gradient-custom text-white font-rubik">
+      <div className="relative container mx-auto px-6 py-12 md:py-16 flex flex-col md:flex-row md:justify-between gap-10">
         {/* Informasi Perusahaan */}
-        <div className="md:w-[40%]">
-          <h2 className="text-3xl md:text-4xl font-bold">
-            PT Inspeksi Mobil Jogja
-          </h2>
-          <p className="mt-4 text-base md:text-lg font-medium leading-relaxed">
-            PALAPA adalah brand jasa di bawah PT Inspeksi Mobil Jogja yang
-            bergerak dalam pengecekan kondisi mobil bekas.
-          </p>
-          <div className="mt-6 space-y-4">
-            <div className="flex items-center gap-3">
-              <IoLocationSharp size={28} />
-              <p className="text-lg">Sendowo, Sinduadi, Mlati 55284</p>
-            </div>
-            <div className="flex items-center gap-3">
-              <IoTime size={28} />
-              <p className="text-lg">09:00 - 17:00 WIB</p>
-            </div>
-            <div className="flex items-center gap-3">
-              <IoCall size={28} />
-              <p className="text-lg">0877-4026-0519</p>
+        <div className="md:w-[40%] flex flex-col gap-6">
+          <div className="flex gap-2">
+            <Image
+              src="/assets/logo/palapa.svg"
+              width={80}
+              height={80}
+              alt="logo"
+            />
+            <div className="flex flex-col text-white font-bold justify-center">
+              <p className="text-4xl">PALAPA</p>
+              <p className="-mt-1 text-base">Inspeksi Mobil Jogja</p>
             </div>
           </div>
+          <div className="mt-2 md:mt-6">
+            <h2 className="text-2xl md:text-4xl font-bold">
+              PT Inspeksi Mobil Jogja
+            </h2>
+            <p className="mt-2 md:mt-0 text-sm md:text-lg font-light md:font-medium leading-relaxed">
+              PALAPA adalah nama brand usaha jasa di bawah perusahaan PT
+              Inspeksi Mobil Jogja yang bergerak sebagai jasa pengecekan kondisi
+              mobil bekas. 
+            </p>
+
+            <div className="md:hidden block w-full md:w-[30%] space-y-6 mt-5 md:mt-0">
+              <div className="flex items-center gap-3">
+                <IoLocationSharp size={28} />
+                <p className="text-lg">Sendowo, Sinduadi, Mlati 55284</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <IoTime size={28} />
+                <p className="text-lg">09:00 - 17:00 WIB</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <IoCall size={28} />
+                <p className="text-lg">0877-4026-0519</p>
+              </div>
+            </div>
+          </div>
+
           {/* Social Media */}
           <div className="mt-8 flex flex-wrap gap-4">
             {[
@@ -68,11 +85,36 @@ export default function Footer() {
             )}
           </ul>
         </div>
+        <div className="hidden md:block w-[30%] space-y-6">
+          <div className="flex items-center gap-3">
+            <IoLocationSharp size={28} />
+            <p className="text-lg">Sendowo, Sinduadi, Mlati 55284</p>
+          </div>
+          <div className="flex items-center gap-3">
+            <IoTime size={28} />
+            <p className="text-lg">09:00 - 17:00 WIB</p>
+          </div>
+          <div className="flex items-center gap-3">
+            <IoCall size={28} />
+            <p className="text-lg">0877-4026-0519</p>
+          </div>
+        </div>
+        <div className="w-[30%] md:w-[20%] absolute bottom-5 right-5 md:right-0 flex flex-col justify-start font-rubik">
+          <p className="text-white text-sm md:text-lg mb-3 font-semibold">
+            Powered by
+          </p>
+          <Image
+            src="/assets/logo/cardano-vertical-white.svg"
+            width={300}
+            height={60}
+            alt="Logo"
+          />
+        </div>
       </div>
 
       {/* Copyright */}
-      <div className="h-[50px] bg-orange-600 text-sm md:text-base font-bold flex items-center justify-center">
-        <p>© 2025 PALAPA. All rights reserved.</p>
+      <div className="h-[50px] bg-purple-900 text-sm md:text-base  flex items-center  justify-center md:justify-start px-12 md:px-24">
+        <p>PALAPA 2025. All rights reserved.</p>
       </div>
     </footer>
   );
