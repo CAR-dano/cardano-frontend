@@ -1,48 +1,42 @@
 "use client";
-import React, {
-  ComponentPropsWithRef,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { EmblaCarouselType } from "embla-carousel";
-
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 
-type UsePrevNextButtonsType = {
-  prevBtnDisabled: boolean;
-  nextBtnDisabled: boolean;
-  onPrevButtonClick: () => void;
-  onNextButtonClick: () => void;
-};
-
-export const usePrevNextButtons = (
-  emblaApi: EmblaCarouselType | undefined
-): UsePrevNextButtonsType => {
+export const usePrevNextButtons = (emblaApi: EmblaCarouselType | undefined) => {
   const [prevBtnDisabled, setPrevBtnDisabled] = useState(true);
   const [nextBtnDisabled, setNextBtnDisabled] = useState(true);
-
-  const onPrevButtonClick = useCallback(() => {
-    if (!emblaApi) return;
-    emblaApi.scrollPrev();
-  }, [emblaApi]);
-
-  const onNextButtonClick = useCallback(() => {
-    if (!emblaApi) return;
-    emblaApi.scrollNext();
-  }, [emblaApi]);
-
-  const onSelect = useCallback((emblaApi: EmblaCarouselType) => {
-    setPrevBtnDisabled(!emblaApi.canScrollPrev());
-    setNextBtnDisabled(!emblaApi.canScrollNext());
-  }, []);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    if (!emblaApi) return;
+    setIsMounted(true);
+  }, []);
+
+  const onPrevButtonClick = useCallback(() => {
+    if (!emblaApi || !isMounted) return;
+    emblaApi.scrollPrev();
+  }, [emblaApi, isMounted]);
+
+  const onNextButtonClick = useCallback(() => {
+    if (!emblaApi || !isMounted) return;
+    emblaApi.scrollNext();
+  }, [emblaApi, isMounted]);
+
+  const onSelect = useCallback(
+    (emblaApi: EmblaCarouselType) => {
+      if (!isMounted) return;
+      setPrevBtnDisabled(!emblaApi.canScrollPrev());
+      setNextBtnDisabled(!emblaApi.canScrollNext());
+    },
+    [isMounted]
+  );
+
+  useEffect(() => {
+    if (!emblaApi || !isMounted) return;
 
     onSelect(emblaApi);
     emblaApi.on("reInit", onSelect).on("select", onSelect);
-  }, [emblaApi, onSelect]);
+  }, [emblaApi, onSelect, isMounted]);
 
   return {
     prevBtnDisabled,
@@ -52,35 +46,32 @@ export const usePrevNextButtons = (
   };
 };
 
-type PropType = ComponentPropsWithRef<"button">;
-
-export const PrevButton: React.FC<PropType> = (props) => {
-  const { children, ...restProps } = props;
-
+export const PrevButton: React.FC<React.ComponentPropsWithRef<"button">> = (
+  props
+) => {
   return (
     <button
       className="embla__button embla__button--prev"
       type="button"
-      {...restProps}
+      {...props}
     >
       <IoChevronBack className="embla__button__svg" />
-      {children}
+      {props.children}
     </button>
   );
 };
 
-export const NextButton: React.FC<PropType> = (props) => {
-  const { children, ...restProps } = props;
-
+export const NextButton: React.FC<React.ComponentPropsWithRef<"button">> = (
+  props
+) => {
   return (
     <button
       className="embla__button embla__button--next"
       type="button"
-      {...restProps}
+      {...props}
     >
       <IoChevronForward className="embla__button__svg" />
-
-      {children}
+      {props.children}
     </button>
   );
 };
