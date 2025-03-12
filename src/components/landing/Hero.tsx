@@ -7,7 +7,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 
 function Hero() {
   const { scrollYProgress } = useScroll();
-  const xPos = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+  const xPos = useTransform(scrollYProgress, [0, 1], ["0%", "700%"]);
 
   return (
     <div className="relative w-full flex flex-col items-center justify-center">
