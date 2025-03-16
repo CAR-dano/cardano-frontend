@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
-import { IoCaretDown, IoMenu, IoClose } from "react-icons/io5";
+import { IoMenu, IoClose } from "react-icons/io5";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);

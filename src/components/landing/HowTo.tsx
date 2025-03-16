@@ -3,10 +3,6 @@ import React from "react";
 import CustomButton from "../ui/CustomButton";
 
 export default function HowTo() {
-  const image = [
-    "https://images.unsplash.com/photo-1612393266591-c32944e815c8?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8YXZlbnRhZG9yfGVufDB8MHwwfHx8MA%3D%3D",
-  ];
-
   return (
     <div className="relative flex flex-col gap-6 px-10 lg:px-20 font-rubik mb-20">
       {/* Decoration */}

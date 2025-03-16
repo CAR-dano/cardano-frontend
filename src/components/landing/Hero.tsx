@@ -9,10 +9,6 @@ function Hero() {
   const { scrollYProgress } = useScroll();
   const xPos = useTransform(scrollYProgress, [0, 1], ["0%", "500%"]);
 
-  window.addEventListener("resize", () => {
-    console.log(`Tinggi viewport: ${window.innerHeight}px`);
-  });
-
   return (
     <div className="relative w-full flex flex-col items-center justify-center mx-auto">
       {/* Hero Section */}
