@@ -1,5 +1,6 @@
 import React, { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
+import { twMerge } from "tailwind-merge";
 
 interface CustomButtonProps {
   children: ReactNode;
@@ -13,9 +14,12 @@ function CustomButton({
   onClick,
 }: CustomButtonProps) {
   return (
-    <Button className={`${className} font-rubik`} onClick={onClick}>
+    <button
+      className={twMerge("font-rubik py-2 px-6", className)}
+      onClick={onClick}
+    >
       {children}
-    </Button>
+    </button>
   );
 }
 

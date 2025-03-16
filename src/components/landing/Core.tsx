@@ -10,19 +10,22 @@ function Core() {
           {
             src: "/assets/Core1.svg",
             num: "1",
-            title: "Main Point 1",
+            title: "Data Terverifikasi",
+            desc: "Semua hasil inspeksi tersimpan di blockchain dan dapat dicek kapan saja",
             extraClass: "",
           },
           {
             src: "/assets/Core2.svg",
             num: "2",
-            title: "Main Point 2",
-            extraClass: "sm:-mt-6 md:-mt-10",
+            title: "Keamanan Terjamin",
+            desc: "Tidak ada perubahan data atau manipulasi informasi setelah inspeksi",
+            extraClass: "sm:-mt-6 md:-mt-16",
           },
           {
             src: "/assets/Core3.svg",
             num: "3",
-            title: "Main Point 3",
+            title: "Transaksi Lebih Aman",
+            desc: "Hindari risiko mobil bermasalah dengan informasi transparan sebelum membeli.",
             extraClass: "",
           },
         ].map((item, index) => (
@@ -35,9 +38,9 @@ function Core() {
               <Image
                 src={item.src}
                 alt=""
-                width={120}
-                height={120}
-                className="w-[100px] md:w-[120px] object-contain"
+                width={160}
+                height={160}
+                className="w-[100px] md:w-[160px] object-contain"
               />
             </div>
 
@@ -53,8 +56,7 @@ function Core() {
                   {item.title}
                 </p>
                 <p className="text-center text-lg text-neutral-700">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam
-                  eu turpis molestie, dictum est a,
+                  {item.desc}
                 </p>
               </div>
             </div>

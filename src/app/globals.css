@@ -195,6 +195,24 @@
   );
 }
 
+.gradient-button-2 {
+  border-radius: 8px;
+  background: linear-gradient(97deg, #f4622f -4.01%, #a25df9 151.02%);
+  box-shadow: 0px 24px 24px -20px rgba(226, 71, 23, 0.3),
+    0px 14px 14px -8px rgba(72, 31, 13, 0.12);
+  border: 2px solid transparent;
+}
+
+.gradient-button-2:hover {
+  border: 2px solid var(--Orange-300, #ffb18e);
+  background: white;
+  color: #ff7d43;
+  /* Button/Orange 1 Hover */
+  box-shadow: 0px 8px 12px -4px rgba(255, 125, 67, 0.16),
+    0px 8px 15px -4px rgba(72, 31, 13, 0.28),
+    0px 10px 16px -3px rgba(226, 71, 23, 0.16);
+}
+
 .text-gradient-slogan {
   color: #f24822;
   background-image: linear-gradient(135deg, #f24822 0%, #a25df9 100%);

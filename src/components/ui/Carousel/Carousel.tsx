@@ -54,7 +54,9 @@ const EmblaCarousel: React.FC<PropType> = ({ slides, options }) => {
           {slides.map((index) => (
             <Card
               className={`embla__slide ${
-                index === selectedIndex ? "border-[10px] border-white" : ""
+                index === selectedIndex
+                  ? "border-[10px] border-white scale-105"
+                  : "border-[10px] border-transparent scale-100"
               }`}
               key={index}
             >
