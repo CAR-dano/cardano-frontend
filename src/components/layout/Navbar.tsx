@@ -7,7 +7,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="font-rubik w-full bg-white text-white px-6 md:px-14 py-4 flex justify-between items-center navbar-shadow">
+    <nav className=" font-rubik w-full bg-white text-white px-6 md:px-14 py-4 flex justify-between items-center navbar-shadow">
       {/* Logo */}
       <div className="flex gap-2">
         <Image
@@ -27,13 +27,13 @@ const Navbar = () => {
         <ul className="flex gap-8 text-shade font-rubik">
           <li className="text-base font-semibold cursor-pointer">Home</li>
           <li className="text-base font-semibold group cursor-pointer">
-            Profile <IoCaretDown className="inline-block ml-1" />
+            Profile
           </li>
           <li className="text-base font-semibold group cursor-pointer">
-            Services <IoCaretDown className="inline-block ml-1" />
+            Services
           </li>
           <li className="text-base font-semibold group cursor-pointer">
-            Pricelist <IoCaretDown className="inline-block ml-1" />
+            Pricelist
           </li>
           <li className="text-base font-semibold cursor-pointer">Booking</li>
           <li className="text-base font-bold text-orange-400 border-b-2 border-orange-500 cursor-pointer">
@@ -44,8 +44,8 @@ const Navbar = () => {
 
       {/* Contact Us Button */}
       <div className="hidden md:block">
-        <button className="bg-orange-400 text-white px-4 py-2 rounded-lg font-bold contact-shadow">
-          Contact Us
+        <button className="bg-orange-400 text-white px-5 py-2 rounded-lg font-bold contact-shadow">
+          Masuk
         </button>
       </div>
 
@@ -93,7 +93,7 @@ const Navbar = () => {
         </ul>
         <div className="mt-6 px-6">
           <button className="bg-orange-400 text-white px-4 py-2 rounded-lg font-bold w-full">
-            Contact Us
+            Sign In
           </button>
         </div>
       </div>

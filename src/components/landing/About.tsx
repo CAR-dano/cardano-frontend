@@ -25,75 +25,85 @@ function About() {
   };
 
   return (
-    <div className="flex flex-col md:flex-row gap-10 font-rubik my-20 px-4 md:px-20 lg:px-28">
-      {/* Carousel Image */}
-      <div className="relative w-full md:w-1/2 overflow-hidden rounded-[24px] md:rounded-[48px] shadow-lg">
-        <div className="relative flex w-full h-[300px] md:h-[480px] items-center justify-center">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentIndex}
-              initial={{ opacity: 0, x: 100 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -100 }}
-              transition={{ duration: 0.3 }}
-              className="absolute w-full h-full"
-            >
-              <Image
-                src={images[currentIndex]}
-                alt="slider image"
-                fill
-                className="object-cover rounded-lg"
+    <>
+      <div className="flex flex-col md:flex-row gap-10 font-rubik mt-20 mb-10 px-4 md:px-20">
+        {/* Carousel Image */}
+        <div className="relative w-full md:w-1/2 overflow-hidden rounded-[24px] md:rounded-[48px] shadow-lg">
+          <div className="relative flex w-full h-[300px] md:h-full items-center justify-center">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentIndex}
+                initial={{ opacity: 0, x: 100 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -100 }}
+                transition={{ duration: 0.3 }}
+                className="absolute w-full h-full"
+              >
+                <Image
+                  src={images[currentIndex]}
+                  alt="slider image"
+                  fill
+                  className="object-cover rounded-lg"
+                  priority
+                />
+              </motion.div>
+            </AnimatePresence>
+          </div>
+          {/* Navigasi Carousel */}
+          <button
+            onClick={prevSlide}
+            className="absolute left-2 md:left-4 top-1/2 transform -translate-y-1/2 text-neutral-500"
+          >
+            <IoChevronBack size={50} className="md:size-20" />
+          </button>
+          <button
+            onClick={nextSlide}
+            className="absolute right-2 md:right-4 top-1/2 transform -translate-y-1/2 text-neutral-500"
+          >
+            <IoChevronForward size={50} className="md:size-20" />
+          </button>
+          {/* Dots Indicator */}
+          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+            {images.map((_, index) => (
+              <span
+                key={index}
+                className={`w-3 h-3 rounded-full transition-all ${
+                  index === currentIndex ? "bg-orange-600" : "bg-gray-400"
+                }`}
               />
-            </motion.div>
-          </AnimatePresence>
+            ))}
+          </div>
         </div>
-        {/* Navigasi Carousel */}
-        <button
-          onClick={prevSlide}
-          className="absolute left-2 md:left-4 top-1/2 transform -translate-y-1/2 text-neutral-500"
-        >
-          <IoChevronBack size={50} className="md:size-20" />
-        </button>
-        <button
-          onClick={nextSlide}
-          className="absolute right-2 md:right-4 top-1/2 transform -translate-y-1/2 text-neutral-500"
-        >
-          <IoChevronForward size={50} className="md:size-20" />
-        </button>
-        {/* Dots Indicator */}
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-          {images.map((_, index) => (
-            <span
-              key={index}
-              className={`w-3 h-3 rounded-full transition-all ${
-                index === currentIndex ? "bg-orange-600" : "bg-gray-400"
-              }`}
-            />
-          ))}
-        </div>
-      </div>
 
-      {/* Right Content */}
-      <div className="w-full md:w-1/2 flex flex-col gap-3 text-left md:text-left">
-        <h1 className="font-light text-black text-4xl md:text-5xl">
-          We are independent
-        </h1>
-        <h2 className="text-orange-600 text-xl md:text-2xl font-medium">
-          Description Value 1
-        </h2>
-        <p className="text-lg text-neutral-700 text-justify">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu
-          turpis molestie, dictum est a, mattis tellus. Sed dignissim, metus nec
-          fringilla accumsan, risus sem sollicitudin lacus, ut interdum tellus
-          elit sed risus.
-        </p>
-        <div className="flex justify-center md:justify-end mt-5">
-          <CustomButton className="text-white bg-gradient-to-r from-orange-500 to-purple-500 text-xl font-bold py-4 px-6 rounded-lg">
-            Take a Ride!
-          </CustomButton>
+        {/* Right Content */}
+        <div className="w-full md:w-1/2 flex flex-col gap-3 text-left md:text-left">
+          <h1 className="font-light text-black text-4xl md:text-5xl">
+            Apa Itu Blockchain untuk Inspeksi Mobil?
+          </h1>
+          <h2 className="text-orange-600 text-xl md:text-2xl font-medium">
+            Pengenalan Blockchain
+          </h2>
+          <p className="text-lg text-neutral-700 text-justify">
+            Blockchain adalah teknologi penyimpanan data yang aman dan tidak
+            bisa diubah. Bayangkan seperti catatan permanen yang tersimpan di
+            banyak komputer sekaligus, sehingga tidak ada yang bisa memalsukan
+            atau menghapusnya. Dalam inspeksi mobil bekas, blockchain digunakan
+            untuk mencatat hasil pemeriksaan secara transparan. <br />
+            <br />
+            Saat sebuah mobil diperiksa, datanya langsung tersimpan dan tidak
+            bisa dimanipulasi. Ini memastikan setiap orang bisa melihat riwayat
+            asli mobil hanya dengan memasukkan plat nomor. Dengan ini, pembeli
+            bisa mengetahui kondisi mobil yang sebenarnya tanpa khawatir ada
+            informasi yang disembunyikan atau diubah.
+          </p>
         </div>
       </div>
-    </div>
+      <div className="flex justify-center md:justify-end mt-2 px-4 md:px-20">
+        <CustomButton className="z-10 gradient-button-2 group text-white text-xl font-bold  rounded-lg transition-all duration-500 ease-in-out hover:contact-shadow">
+          Take a Ride!
+        </CustomButton>
+      </div>
+    </>
   );
 }
 

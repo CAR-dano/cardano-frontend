@@ -56,7 +56,7 @@ export default function HowTo() {
               </h3>
               <div className="relative mt-4 border-[#B175FF] rounded-md">
                 <Image
-                  src={image[0]}
+                  src={"/assets/lambo.png"}
                   alt=""
                   width={400}
                   height={400}
@@ -88,7 +88,7 @@ export default function HowTo() {
               height={65}
               className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 object-contain"
             />
-            <CustomButton className="text-[clamp(16px,3vw,28px)] font-white rounded-full py-3 sm:py-4 md:py-6 px-3 sm:px-4 md:px-5 gradient-details">
+            <CustomButton className="text-[clamp(16px,3vw,28px)] font-white font-light rounded-full gradient-details text-white">
               Get the details
             </CustomButton>
           </div>
@@ -98,20 +98,20 @@ export default function HowTo() {
         <div className="hidden lg:block w-[5px] min-h-full gradient-powered-by rounded-full my-10"></div>
         <div className="block lg:hidden h-[5px] min-w-full gradient-powered-by rounded-full my-10"></div>
 
-        <div className="flex flex-col items-start justify-center w-full md:w-1/2 px-4 sm:px-6 md:px-10 gap-10 md:gap-14">
+        <div className="flex flex-col items-start justify-center w-full md:w-1/2 px-4 sm:px-6 md:pl-16 gap-10 md:gap-14">
           {/* Inspected */}
           <div className="flex flex-wrap items-center gap-4 sm:gap-6">
             <Image
-              src="/assets/logo/car.svg"
+              src="/assets/logo/exp.svg"
               alt="Car Icon"
               width={80}
               height={80}
-              className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 object-contain"
+              className="w-14 h-14 sm:w-16 sm:h-16 md:w-[105px] md:h-[105px] object-contain"
             />
             <div className="flex flex-col  md:items-center items-start">
               <div className="relative">
-                <h1 className="inline font-semibold text-black leading-none text-[clamp(36px,8vw,92px)]">
-                  1500
+                <h1 className="inline font-semibold text-black leading-none text-[clamp(36px,8vw,96px)]">
+                  175
                 </h1>
                 <Image
                   src="/assets/logo/plus.svg"
@@ -121,8 +121,8 @@ export default function HowTo() {
                   className="absolute top-[-8px] right-[-16px] md:top-[-10px] md:right-[-15px] w-5 h-5 md:w-7 md:h-7 object-contain"
                 />
               </div>
-              <p className="text-orange-600 font-medium text-[clamp(14px,4vw,20px)] -mt-2 sm:-mt-3">
-                Inspected Vehicles
+              <p className="text-orange-600 font-medium text-[clamp(14px,4vw,24px)] -mt-2 sm:-mt-3">
+                Titik Pengecekan
               </p>
             </div>
           </div>
@@ -130,16 +130,16 @@ export default function HowTo() {
           {/* Experience */}
           <div className="flex flex-wrap items-center gap-4 sm:gap-6">
             <Image
-              src="/assets/logo/exp.svg"
+              src="/assets/logo/car.svg"
               alt="Experience Icon"
               width={80}
               height={80}
-              className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 object-contain"
+              className="w-14 h-14 sm:w-16 sm:h-16 md:w-24 md:h-24 object-contain"
             />
             <div className="flex flex-col md:items-center items-start">
               <div className="relative">
-                <h1 className="inline font-semibold text-black leading-none text-[clamp(36px,8vw,92px)]">
-                  12
+                <h1 className="inline font-semibold text-black leading-none text-[clamp(36px,8vw,96px)]">
+                  20
                 </h1>
                 <Image
                   src="/assets/logo/plus.svg"
@@ -149,8 +149,8 @@ export default function HowTo() {
                   className="absolute top-[-8px] right-[-16px] md:top-[-10px] md:right-[-15px] w-5 h-5 md:w-7 md:h-7 object-contain"
                 />
               </div>
-              <p className="text-orange-600 font-medium text-[clamp(14px,4vw,20px)] -mt-2 sm:-mt-3">
-                Years of Experience
+              <p className="text-orange-600 font-medium text-[clamp(14px,4vw,24px)] -mt-2 sm:-mt-3">
+                Merek Mobil
               </p>
             </div>
           </div>
@@ -158,11 +158,11 @@ export default function HowTo() {
           {/* Priority */}
           <div className="flex flex-wrap items-center gap-4 sm:gap-6">
             <Image
-              src="/assets/logo/exp.svg"
+              src="/assets/logo/no1.svg"
               alt="Priority Icon"
               width={80}
               height={80}
-              className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 object-contain"
+              className="w-14 h-14 sm:w-16 sm:h-16 md:w-24 md:h-24 object-contain"
             />
             <div className="flex flex-row items-center">
               <h1 className="inline font-semibold text-black leading-none text-[clamp(64px,10vw,110px)]">

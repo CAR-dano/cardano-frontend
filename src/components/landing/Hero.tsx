@@ -7,30 +7,38 @@ import { motion, useScroll, useTransform } from "framer-motion";
 
 function Hero() {
   const { scrollYProgress } = useScroll();
-  const xPos = useTransform(scrollYProgress, [0, 1], ["0%", "700%"]);
+  const xPos = useTransform(scrollYProgress, [0, 1], ["0%", "500%"]);
+
+  window.addEventListener("resize", () => {
+    console.log(`Tinggi viewport: ${window.innerHeight}px`);
+  });
 
   return (
-    <div className="relative w-full flex flex-col items-center justify-center">
+    <div className="relative w-full flex flex-col items-center justify-center mx-auto">
       {/* Hero Section */}
-      <div className="relative w-full flex flex-col items-center justify-center h-[78vh] px-4 hero-shadow  rounded-b-[60px] lg:rounded-b-[89px] mb-[100px] overflow-hidden z-10 bg-[url('/assets/pattern/bghero.png')] bg-cover bg-center">
+      <div className="h-[90vh] relative w-full flex flex-col items-center justify-center custom-height hero-shadow rounded-b-[50px] lg:rounded-b-[80px] mb-[80px] overflow-hidden z-10 bg-[url('/assets/pattern/bghero.png')] bg-cover bg-center">
         {/* Background Pattern */}
-        <div className="absolute bottom-0 right-0 z-[-1]">
+        <div className="absolute bottom-0 right-0 z-[-1] hidden md:block">
           <Image
             src="/assets/pattern/dotinhero.svg"
-            width={450}
-            height={450}
-            alt="Background pattern for hero section"
+            width={400}
+            height={400}
+            alt="Background pattern"
             className="w-auto"
           />
         </div>
 
         <div className="flex flex-col items-center justify-center flex-grow">
-          <h1 className="text-[36px] md:text-[54px] font-rubik text-orange-600 text-center font-light">
+          <h1 className="text-[32px] md:text-[48px] font-rubik text-orange-600 text-center font-light">
             Cek Plat Nomor
           </h1>
+          <p className="text-[16px] md:text-[18px] lg:text-[20px] text-black text-center">
+            Masukkan plat nomor kendaraan untuk melihat <br /> riwayat inspeksi
+            berbasis blockchain
+          </p>
 
           {/* Input Pencarian */}
-          <div className="relative w-full max-w-xs md:max-w-md mt-6 mb-6 search-box-shadow">
+          <div className="relative w-full max-w-sm md:max-w-lg mt-6 mb-6 search-box-shadow">
             <IoSearch
               size={24}
               className="absolute left-4 top-1/2 -translate-y-1/2 text-orange-500"
@@ -44,7 +52,7 @@ function Hero() {
 
           {/* Gambar Mobil dengan Animasi */}
           <motion.div
-            className="mt-10"
+            className="mt-10 w-full flex justify-center"
             initial={{ x: "-100vw" }}
             animate={{ x: "0%" }}
             transition={{ duration: 1, ease: "easeOut" }}
@@ -52,21 +60,23 @@ function Hero() {
           >
             <Image
               src="/assets/car-illustration.svg"
-              width={720}
-              height={570}
-              alt="Illustration of a car for plate number checking"
+              width={640}
+              height={500}
+              alt="Illustration of a car"
               priority
-              className="w-auto max-w-full md:w-[720px]"
+              className="w-auto max-w-[90%] md:max-w-[640px]"
             />
           </motion.div>
 
           {/* Slogan */}
           <div className="flex items-center justify-center mt-6 gradient-powered-by font-rubik py-2 px-5 rounded-[64px]">
-            <p className="text-white text-sm md:text-xl mr-2">Powered by</p>
+            <p className="text-white text-sm md:text-lg lg:text-xl mr-2">
+              Powered by
+            </p>
             <Image
               src="/assets/logo/cardano-vertical-white.svg"
-              width={140}
-              height={28}
+              width={120}
+              height={24}
               alt="Cardano Logo"
               className="w-auto"
             />
