@@ -1,5 +1,7 @@
+"use client";
 import Image from "next/image";
 import React from "react";
+import { motion } from "framer-motion";
 
 function Core() {
   return (
@@ -29,9 +31,13 @@ function Core() {
             extraClass: "",
           },
         ].map((item, index) => (
-          <div
+          <motion.div
             key={index}
             className={`flex flex-col items-center justify-center gap-8 sm:gap-10 ${item.extraClass}`}
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.6, delay: index * 0.2 }}
           >
             {/* Gambar hanya tampil di tablet & desktop */}
             <div className="hidden sm:block mb-10">
@@ -60,11 +66,17 @@ function Core() {
                 </p>
               </div>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
 
-      <div className="px-5 mt-[100px]  flex flex-col items-center justify-center gap-10">
+      <motion.div
+        className="px-5 mt-[100px] flex flex-col items-center justify-center gap-10"
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 0.6, delay: 0.4 }}
+      >
         <div className="flex flex-col items-start justify-center gap-5">
           <h1 className="text-2xl font-light mb-5">Made possible by</h1>
           <Image
@@ -75,7 +87,7 @@ function Core() {
             className="w-[300px] md:w-[600px] object-contain"
           />
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

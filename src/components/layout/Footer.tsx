@@ -68,11 +68,17 @@ export default function Footer() {
         </div>
 
         {/* Quick Links */}
-        <div className="md:w-[20%]">
-          <h3 className="text-xl font-bold mb-3">Quick Links</h3>
-          <ul className="space-y-4">
-            {["About Us", "Services", "Pricing Plan", "FAQs", "Blockchain"].map(
-              (link) => (
+        <div className="md:w-[20%] flex justify-between gap-6 ">
+          <div>
+            <h3 className="text-xl font-bold mb-3">Quick Links</h3>
+            <ul className="space-y-4">
+              {[
+                "About Us",
+                "Services",
+                "Pricing Plan",
+                "FAQs",
+                "Blockchain",
+              ].map((link) => (
                 <li key={link}>
                   <a
                     href="#"
@@ -81,10 +87,22 @@ export default function Footer() {
                     {link}
                   </a>
                 </li>
-              )
-            )}
-          </ul>
+              ))}
+            </ul>
+          </div>
+          <div className="md:hidden block w-[50%]   flex flex-col justify-start font-rubik">
+            <p className="text-white text-sm md:text-lg mb-3 font-semibold">
+              Powered by
+            </p>
+            <Image
+              src="/assets/logo/cardano-vertical-white.svg"
+              width={300}
+              height={60}
+              alt="Logo"
+            />
+          </div>
         </div>
+
         <div className="hidden md:block w-[30%] space-y-6">
           <div className="flex items-center gap-3">
             <IoLocationSharp size={28} />
@@ -99,7 +117,7 @@ export default function Footer() {
             <p className="text-lg">0877-4026-0519</p>
           </div>
         </div>
-        <div className="w-[30%] md:w-[20%] absolute bottom-5 right-5 md:right-0 flex flex-col justify-start font-rubik">
+        <div className="hidden md:block w-[30%] md:w-[20%] absolute bottom-5 right-5 md:right-0 flex flex-col justify-start font-rubik">
           <p className="text-white text-sm md:text-lg mb-3 font-semibold">
             Powered by
           </p>
