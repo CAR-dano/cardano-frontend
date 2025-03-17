@@ -1,10 +1,12 @@
+"use client";
+
 import Image from "next/image";
 import React from "react";
-import CustomButton from "../ui/CustomButton";
+import { motion } from "framer-motion";
 
 export default function HowTo() {
   return (
-    <div className="relative flex flex-col gap-6 px-10 lg:px-20 font-rubik mb-20">
+    <div className="relative flex flex-col gap-6 px-10 lg:px-20 font-rubik mb-24">
       {/* Decoration */}
       <div className="overflow-hidden">
         <Image
@@ -26,7 +28,13 @@ export default function HowTo() {
       {/* Content */}
       <div className="w-full flex flex-col lg:flex-row items-stretch gap-10">
         {/* Left */}
-        <div className="lg:w-1/2 w-full">
+        <motion.div
+          className="lg:w-1/2 w-full"
+          initial={{ opacity: 0, x: -50 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          viewport={{ once: true }}
+        >
           <ol className="relative border-s-[10px] border-purple-100 px-5 z-10 flex-1">
             {/* Step 1 */}
             <li className="ms-4 mb-10">
@@ -58,14 +66,6 @@ export default function HowTo() {
                   height={400}
                   className="w-full aspect-[4/3] max-w-xs md:max-w-sm rounded-[20px]"
                 />
-                <div className="font-rubik w-full h-full absolute top-0 left-0 flex flex-col justify-between p-4">
-                  <p className="text-white text-xl md:text-3xl font-bold ">
-                    AB 1234 CD
-                  </p>
-                  <p className="text-white text-lg md:text-xl font-semibold ">
-                    Lamborgini <br /> Aventador LP-400
-                  </p>
-                </div>
               </div>
             </li>
             {/* Step 3 */}
@@ -76,25 +76,20 @@ export default function HowTo() {
               </h3>
             </li>
           </ol>
-          <div className="z-10 ml-10 md:ml-16 flex flex-wrap justify-start items-center gap-3 sm:gap-5 mt-4 sm:mt-5">
-            <Image
-              src="/assets/logo/pdf.svg"
-              alt="PDF Icon"
-              width={65}
-              height={65}
-              className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 object-contain"
-            />
-            <CustomButton className="text-[clamp(16px,3vw,28px)] font-white font-light rounded-full gradient-details text-white">
-              Get the details
-            </CustomButton>
-          </div>
-        </div>
+        </motion.div>
 
         {/* Divider */}
         <div className="hidden lg:block w-[5px] min-h-full gradient-powered-by rounded-full my-10"></div>
         <div className="block lg:hidden h-[5px] min-w-full gradient-powered-by rounded-full my-10"></div>
 
-        <div className="flex flex-col items-start justify-center w-full md:w-1/2 px-4 sm:px-6 md:pl-16 gap-10 md:gap-14">
+        {/* Right */}
+        <motion.div
+          className="flex flex-col items-start justify-center w-[90%] md:w-1/2 pl-8 sm:pl-12 sm:px-6 md:pl-16 gap-10 md:gap-14"
+          initial={{ opacity: 0, x: 50 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          viewport={{ once: true }}
+        >
           {/* Inspected */}
           <div className="flex flex-wrap items-center gap-4 sm:gap-6">
             <Image
@@ -102,22 +97,15 @@ export default function HowTo() {
               alt="Car Icon"
               width={80}
               height={80}
-              className="w-14 h-14 sm:w-16 sm:h-16 md:w-[105px] md:h-[105px] object-contain"
+              className="w-16 h-16 sm:w-16 sm:h-16 md:w-[105px] md:h-[105px] object-contain"
             />
-            <div className="flex flex-col  md:items-center items-start">
+            <div className="flex flex-col md:items-center items-start">
               <div className="relative">
-                <h1 className="inline font-semibold text-black leading-none text-[clamp(36px,8vw,96px)]">
+                <h1 className="inline font-semibold text-black leading-none text-[clamp(48px,8vw,96px)]">
                   175
                 </h1>
-                <Image
-                  src="/assets/logo/plus.svg"
-                  alt="Plus Icon"
-                  width={30}
-                  height={30}
-                  className="absolute top-[-8px] right-[-16px] md:top-[-10px] md:right-[-15px] w-5 h-5 md:w-7 md:h-7 object-contain"
-                />
               </div>
-              <p className="text-orange-600 font-medium text-[clamp(14px,4vw,24px)] -mt-2 sm:-mt-3">
+              <p className="text-orange-600 font-medium text-[clamp(16px,4vw,24px)] -mt-2 sm:-mt-3">
                 Titik Pengecekan
               </p>
             </div>
@@ -130,22 +118,15 @@ export default function HowTo() {
               alt="Experience Icon"
               width={80}
               height={80}
-              className="w-14 h-14 sm:w-16 sm:h-16 md:w-24 md:h-24 object-contain"
+              className="w-16 h-16 sm:w-16 sm:h-16 md:w-24 md:h-24 object-contain"
             />
             <div className="flex flex-col md:items-center items-start">
               <div className="relative">
-                <h1 className="inline font-semibold text-black leading-none text-[clamp(36px,8vw,96px)]">
+                <h1 className="inline font-semibold text-black leading-none text-[clamp(48px,8vw,96px)]">
                   20
                 </h1>
-                <Image
-                  src="/assets/logo/plus.svg"
-                  alt="Plus Icon"
-                  width={30}
-                  height={30}
-                  className="absolute top-[-8px] right-[-16px] md:top-[-10px] md:right-[-15px] w-5 h-5 md:w-7 md:h-7 object-contain"
-                />
               </div>
-              <p className="text-orange-600 font-medium text-[clamp(14px,4vw,24px)] -mt-2 sm:-mt-3">
+              <p className="text-orange-600 font-medium text-[clamp(16px,4vw,24px)] -mt-2 sm:-mt-3">
                 Merek Mobil
               </p>
             </div>
@@ -158,24 +139,24 @@ export default function HowTo() {
               alt="Priority Icon"
               width={80}
               height={80}
-              className="w-14 h-14 sm:w-16 sm:h-16 md:w-24 md:h-24 object-contain"
+              className="w-16 h-16 sm:w-16 sm:h-16 md:w-24 md:h-24 object-contain"
             />
-            <div className="flex flex-row items-center">
-              <h1 className="inline font-semibold text-black leading-none text-[clamp(64px,10vw,110px)]">
-                1
-              </h1>
-              <div className="flex flex-col items-start ml-3">
-                <p className="text-orange-600 font-bold text-[clamp(20px,6vw,32px)]">
-                  Priority
+            <div className="flex flex-col md:items-start items-start">
+              <div className="flex flex-row items-end">
+                <p className="text-[#A25DF9] font-rubik text-[24px] md:text-[40px] font-medium leading-[64px]">
+                  No.
                 </p>
-                <div className="h-[2px] w-full bg-neutral-500"></div>
-                <p className="text-purple-400 font-light text-[clamp(20px,6vw,32px)]">
-                  You
-                </p>
+
+                <h1 className="-ml-0 md:-ml-4 inline font-semibold text-black lg:leading-none text-[clamp(48px,10vw,110px)]">
+                  1
+                </h1>
               </div>
+              <p className="text-orange-600 font-medium text-[clamp(16px,4vw,24px)] -mt-5 sm:-mt-3">
+                Di DIY & Jawa Tengah
+              </p>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

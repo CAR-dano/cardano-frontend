@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { IoMenu, IoClose } from "react-icons/io5";
+import Link from "next/link";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -9,33 +10,39 @@ const Navbar = () => {
   return (
     <nav className=" font-rubik w-full bg-white text-white px-6 md:px-14 py-4 flex justify-between items-center navbar-shadow">
       {/* Logo */}
-      <div className="flex gap-2">
-        <Image
-          src="/assets/logo/palapa.svg"
-          width={52}
-          height={52}
-          alt="logo"
-        />
-        <div className="flex flex-col text-orange-700 font-bold justify-center">
-          <p className="text-2xl">PALAPA</p>
-          <p className="-mt-1 text-xs">Inspeksi Mobil Jogja</p>
+      <Link href="/">
+        <div className="flex gap-2">
+          <Image
+            src="/assets/logo/palapa.svg"
+            width={52}
+            height={52}
+            alt="logo"
+          />
+          <div className="flex flex-col text-orange-700 font-bold justify-center">
+            <p className="text-2xl">PALAPA</p>
+            <p className="-mt-1 text-xs">Inspeksi Mobil Jogja</p>
+          </div>
         </div>
-      </div>
+      </Link>
 
       {/* Menu Desktop */}
       <div className="hidden md:flex">
         <ul className="flex gap-8 text-shade font-rubik">
-          <li className="text-base font-semibold cursor-pointer">Home</li>
-          <li className="text-base font-semibold group cursor-pointer">
-            Profile
+          <li className="text-base font-semibold cursor-pointer hover:text-orange-400">
+            <a href="https://inspeksimobil.id/">Home</a>
           </li>
-          <li className="text-base font-semibold group cursor-pointer">
-            Services
+          <li className="text-base font-semibold group cursor-pointer hover:text-orange-400">
+            <a href="https://inspeksimobil.id/profile/">Profile</a>
           </li>
-          <li className="text-base font-semibold group cursor-pointer">
-            Pricelist
+          <li className="text-base font-semibold group cursor-pointer hover:text-orange-400">
+            <a href="https://inspeksimobil.id/services/">Services</a>
           </li>
-          <li className="text-base font-semibold cursor-pointer">Booking</li>
+          <li className="text-base font-semibold group cursor-pointer hover:text-orange-400">
+            <a href="https://inspeksimobil.id/price-list/">Services</a>
+          </li>
+          <li className="text-base font-semibold group cursor-pointer hover:text-orange-400">
+            <a href="https://inspeksimobil.id/booking/">Booking</a>
+          </li>
           <li className="text-base font-bold text-orange-400 border-b-2 border-orange-500 cursor-pointer">
             Cari Data
           </li>
@@ -44,9 +51,11 @@ const Navbar = () => {
 
       {/* Contact Us Button */}
       <div className="hidden md:block">
-        <button className="bg-orange-400 text-white px-5 py-2 rounded-lg font-bold contact-shadow">
-          Masuk
-        </button>
+        <a href="/auth">
+          <button className="gradient-button-2 text-white px-5 py-2 rounded-lg font-bold contact-shadow">
+            Sign In
+          </button>
+        </a>
       </div>
 
       {/* Mobile Menu Toggle */}
@@ -92,7 +101,7 @@ const Navbar = () => {
           </li>
         </ul>
         <div className="mt-6 px-6">
-          <button className="bg-orange-400 text-white px-4 py-2 rounded-lg font-bold w-full">
+          <button className="gradient-button-2 bg-orange-400 text-white px-4 py-2 rounded-lg font-bold w-full">
             Sign In
           </button>
         </div>

@@ -25,10 +25,22 @@ function About() {
   };
 
   return (
-    <>
+    <motion.div
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      viewport={{ once: true }}
+      className="mb-10"
+    >
       <div className="flex flex-col md:flex-row gap-10 font-rubik mt-20 mb-10 px-4 md:px-20">
         {/* Carousel Image */}
-        <div className="relative w-full md:w-1/2 overflow-hidden rounded-[24px] md:rounded-[48px] shadow-lg">
+        <motion.div
+          className="relative w-full md:w-1/2 overflow-hidden rounded-[24px] md:rounded-[48px] shadow-lg"
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          viewport={{ once: true }}
+        >
           <div className="relative flex w-full h-[300px] md:h-full items-center justify-center">
             <AnimatePresence mode="wait">
               <motion.div
@@ -73,10 +85,16 @@ function About() {
               />
             ))}
           </div>
-        </div>
+        </motion.div>
 
         {/* Right Content */}
-        <div className="w-full md:w-1/2 flex flex-col gap-3 text-left md:text-left">
+        <motion.div
+          className="w-full md:w-1/2 flex flex-col gap-3 text-left md:text-left"
+          initial={{ opacity: 0, x: -50 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.7, ease: "easeOut", delay: 0.3 }}
+          viewport={{ once: true }}
+        >
           <h1 className="font-light text-black text-4xl md:text-5xl">
             Apa Itu Blockchain untuk Inspeksi Mobil?
           </h1>
@@ -96,14 +114,20 @@ function About() {
             bisa mengetahui kondisi mobil yang sebenarnya tanpa khawatir ada
             informasi yang disembunyikan atau diubah.
           </p>
-        </div>
+        </motion.div>
       </div>
-      <div className="flex justify-center md:justify-end mt-2 px-4 md:px-20">
-        <CustomButton className="z-10 gradient-button-2 group text-white text-xl font-bold  rounded-lg transition-all duration-500 ease-in-out hover:contact-shadow">
+      <motion.div
+        className="flex justify-center md:justify-end mt-2 px-4 md:px-20"
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut", delay: 0.5 }}
+        viewport={{ once: true }}
+      >
+        <CustomButton className="w-full md:w-auto z-10 text-white text-xl font-bold rounded-lg px-6 py-2 gradient-button-2">
           Take a Ride!
         </CustomButton>
-      </div>
-    </>
+      </motion.div>
+    </motion.div>
   );
 }
 
