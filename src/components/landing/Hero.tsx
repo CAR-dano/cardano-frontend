@@ -14,7 +14,7 @@ function Hero() {
   const textOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
 
   return (
-    <div className="relative w-full flex flex-col items-center justify-center mx-auto">
+    <div className="relative w-full flex flex-col items-center justify-center mx-auto mb-20">
       {/* Hero Section */}
       <div className="h-[80vh] lg:h-[90vh] relative w-full flex flex-col items-center justify-center custom-height hero-shadow rounded-b-[50px] lg:rounded-b-[80px] mb-[80px] overflow-hidden z-10 bg-[url('/assets/pattern/bghero.png')] bg-cover bg-center">
         {/* Background Pattern */}
@@ -77,9 +77,9 @@ function Hero() {
 
       {/* Bottom Pattern */}
       <motion.div
-        className="h-[10vh] md:h-[2vh] w-full flex items-center justify-center absolute -bottom-[15px] md:bottom-0 z-[-1]"
+        className="h-[10vh] md:h-[3vh] w-full flex items-center justify-center absolute -bottom-[15px] md:bottom-0 z-[-1]"
         initial={{ opacity: 0 }}
-        animate={{ opacity: 0.3 }}
+        animate={{ opacity: 1 }}
         transition={{ duration: 1, delay: 0.8 }} // Efek fade-in
       >
         <Image
@@ -87,7 +87,7 @@ function Hero() {
           width={1920}
           height={400}
           alt="Decorative bottom pattern for hero section"
-          className="w-full opacity-50 md:opacity-30"
+          className="w-full opacity-50 md:opacity-50"
         />
       </motion.div>
     </div>

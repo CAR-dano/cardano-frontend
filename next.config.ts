@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
       "plus.unsplash.com",
       "images.autofun.co.id",
       "s3-alpha-sig.figma.com",
+      "i.ibb.co.com",
     ],
   },
 };
