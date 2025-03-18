@@ -1,3 +1,4 @@
+import HasilInspeksi from "@/components/landing/HasilInspeksi";
 import { Layout } from "@/components/layout";
 import React from "react";
 
@@ -8,7 +9,10 @@ export default function ResultLayout({
 }>) {
   return (
     <div className="w-full relative">
-      <Layout>{children}</Layout>
+      <Layout>
+        {children}
+        <HasilInspeksi />
+      </Layout>
     </div>
   );
 }
