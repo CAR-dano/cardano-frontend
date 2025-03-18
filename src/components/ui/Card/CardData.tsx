@@ -3,8 +3,14 @@ import Image from "next/image";
 import React, { useState } from "react";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 import { motion, AnimatePresence } from "framer-motion";
+import { VehicleData } from "@/utils/Car";
 
-function CardData({ platNomor, data }: any) {
+interface VehicleInspectionProps {
+  data: VehicleData;
+  platNomor: string | undefined;
+}
+
+function CardData({ platNomor, data }: VehicleInspectionProps) {
   const images = data.gambar;
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -69,7 +75,7 @@ function CardData({ platNomor, data }: any) {
           </button>
           {/* Dots Indicator */}
           <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-            {images.map((_: any, index: any) => (
+            {images.map((_, index) => (
               <span
                 key={index}
                 className={`w-3 h-3 rounded-full transition-all ${

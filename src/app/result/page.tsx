@@ -1,24 +1,30 @@
 "use client";
+
 import CardData from "@/components/ui/Card/CardData";
 import SearchBar from "@/components/ui/SearchBar";
 import { useSearchParams } from "next/navigation";
-import React from "react";
+import React, { Suspense } from "react";
 import dataCar from "@/utils/exampledata.json";
 import CardHasil from "@/components/ui/Card/CardHasil";
 import Image from "next/image";
 import CustomButton from "@/components/ui/CustomButton";
 import MadeByCardano from "@/components/ui/MadeByCardano";
 
-function ResultPage() {
-  const platNomor = useSearchParams().get("platNomor");
-
+function ResultPageContent() {
+  const searchParams = useSearchParams();
+  const platNomor = searchParams.get("platNomor") || "";
   const data = dataCar;
 
-  function formatPlatNomor(plat: any) {
+  function formatPlatNomor(plat: string) {
     if (!plat) return "";
-    const platNomor = plat.replace(/([A-Z]+)(\d+)([A-Z]+)/, "$1 $2 $3");
-    console.log("plat", platNomor);
-    return platNomor;
+    return plat.replace(/([A-Z]+)(\d+)([A-Z]+)/, "$1 $2 $3");
+  }
+
+  if (!platNomor) {
+    if (typeof window !== "undefined") {
+      window.location.href = "/";
+    }
+    return null;
   }
 
   return (
@@ -45,8 +51,11 @@ function ResultPage() {
         <p className="text-[clamp(32px,3vw,36px)]">Hasil Inspeksi</p>
       </div>
 
-      {/* Card Hasil Inspkesi */}
-      <CardHasil data={data.hasil} />
+      {/* Card Hasil Inspeksi */}
+      <CardHasil
+        penilaian={data.hasil.penilaian}
+        indikasi={data.hasil.indikasi}
+      />
 
       {/* Download data */}
       <div className="w-full flex justify-center lg:justify-between items-end text-neutral-900 font-light mt-5 lg:mt-10 mb-5">
@@ -73,4 +82,11 @@ function ResultPage() {
   );
 }
 
-export default ResultPage;
+// **Gunakan Suspense di sini**
+export default function ResultPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ResultPageContent />
+    </Suspense>
+  );
+}

@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import React from "react";
-import { IoSearch } from "react-icons/io5";
 import { motion, useScroll, useTransform } from "framer-motion";
 import SearchBar from "../ui/SearchBar";
 import CarComponent from "../ui/CarAnimation";
@@ -50,7 +49,7 @@ function Hero() {
             Masukkan plat nomor kendaraan untuk melihat <br /> riwayat inspeksi
             berbasis blockchain
           </p>
-          <SearchBar />
+          <SearchBar value="" />
 
           {/* Gambar Mobil dengan Animasi */}
           <CarComponent />

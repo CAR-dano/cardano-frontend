@@ -1,7 +1,9 @@
 import React from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
+import { Hasil } from "@/utils/Car";
 
-function CardHasil({ data }: any) {
+function CardHasil({ penilaian, indikasi }: Hasil) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
@@ -27,26 +29,28 @@ function CardHasil({ data }: any) {
               {
                 icon: "/assets/icon/bekastabrak.svg",
                 title: "Bekas Tabrakan",
-                description: data.indikasi.bekastabrakan,
+                description: indikasi.bekastabrakan,
               },
               {
                 icon: "/assets/icon/bekasbanjir.svg",
                 title: "Bekas Banjir",
-                description: data.indikasi.bekasbanjir,
+                description: indikasi.bekasbanjir,
               },
               {
                 icon: "/assets/icon/odometerreset.svg",
                 title: "Odometer Reset",
-                description: data.indikasi.odometerreset,
+                description: indikasi.odometerreset,
               },
             ].map((item, index) => (
               <div
                 key={index}
                 className="flex gap-5 items-center text-neutral-900"
               >
-                <img
+                <Image
                   src={item.icon}
                   alt="icon"
+                  width={80}
+                  height={80}
                   className="w-20 h-20 lg:w-24 lg:h-24"
                 />
                 <div>
@@ -84,19 +88,19 @@ function CardHasil({ data }: any) {
                 {[
                   {
                     title: "Mesin",
-                    description: data.penilaian.kondisimesin,
+                    description: penilaian.mesin,
                   },
                   {
                     title: "Eksterior",
-                    description: data.penilaian.kondisieksterior,
+                    description: penilaian.exterior,
                   },
                   {
                     title: "Interior",
-                    description: data.penilaian.kondisiinterior,
+                    description: penilaian.interior,
                   },
                   {
                     title: "Kaki-kaki",
-                    description: data.penilaian.kondisikakikaki,
+                    description: penilaian.kakiKaki,
                   },
                 ].map((item, index) => (
                   <div key={index} className="flex flex-col gap-1 items-center">
@@ -105,7 +109,7 @@ function CardHasil({ data }: any) {
                     </h1>
                     <div className="w-20 lg:w-24 aspect-square bg-[#FF7D43] rounded-2xl flex justify-center items-center">
                       <p className="text-[clamp(48px,3vw,60px)] font-bold text-white">
-                        D
+                        {penilaian.keseluruhan}
                       </p>
                     </div>
                   </div>

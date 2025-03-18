@@ -3,7 +3,11 @@ import { IoSearch } from "react-icons/io5";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRouter } from "next/navigation";
 
-function SearchBar({ value }: any) {
+interface SearchBarProps {
+  value: string;
+}
+
+function SearchBar({ value }: SearchBarProps) {
   const { scrollYProgress } = useScroll();
   const router = useRouter();
 
