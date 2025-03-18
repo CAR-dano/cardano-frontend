@@ -10,11 +10,12 @@ function LoginPage() {
 
   // Enhanced animation variants
   const pageVariants = {
-    loginInitial: { x: "100%", opacity: 0 },
-    signupInitial: { x: "-100%", opacity: 0 },
+    loginInitial: { x: "100%", opacity: 0, scale: 0.9 },
+    signupInitial: { x: "-100%", opacity: 0, scale: 0.9 },
     active: {
       x: 0,
       opacity: 1,
+      scale: 1,
       transition: {
         type: "spring",
         stiffness: 80,
@@ -27,27 +28,23 @@ function LoginPage() {
     loginExit: {
       x: "-100%",
       opacity: 0,
+      scale: 0.9,
       transition: {
         type: "spring",
         stiffness: 80,
         damping: 20,
         mass: 1,
-        when: "afterChildren",
-        staggerChildren: 0.05,
-        staggerDirection: -1,
       },
     },
     signupExit: {
       x: "100%",
       opacity: 0,
+      scale: 0.9,
       transition: {
         type: "spring",
         stiffness: 80,
         damping: 20,
         mass: 1,
-        when: "afterChildren",
-        staggerChildren: 0.05,
-        staggerDirection: -1,
       },
     },
   };
@@ -58,7 +55,7 @@ function LoginPage() {
     animate: {
       y: 0,
       opacity: 1,
-      transition: { type: "spring", stiffness: 100, damping: 10 },
+      transition: { type: "spring", stiffness: 100, damping: 10, delay: 0.2 },
     },
     exit: {
       y: 20,
@@ -69,7 +66,7 @@ function LoginPage() {
 
   // Coin animation
   const coinVariants = {
-    initial: { scale: 0.8, opacity: 0, rotate: -10 },
+    initial: { scale: 0.5, opacity: 0, rotate: -10 },
     animate: {
       scale: 1,
       opacity: 1,
@@ -78,11 +75,11 @@ function LoginPage() {
         type: "spring",
         stiffness: 100,
         damping: 10,
-        delay: 0.3,
+        delay: 0.4, // sedikit lebih lama agar terlihat smooth
       },
     },
     exit: {
-      scale: 0.8,
+      scale: 0.5,
       opacity: 0,
       rotate: 10,
       transition: {

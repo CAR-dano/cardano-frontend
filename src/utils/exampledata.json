@@ -1,0 +1,35 @@
+{
+  "data": {
+    "plat": "AB1234BC",
+    "brand": "Mitsubishi",
+    "model": "Xpander 1.5 Ultimate",
+    "tahun": "2019",
+    "odometer": "60.965 km",
+    "warna": "Abu-abu",
+    "kepemilikan": "Pribadi",
+    "transmisi": "Automatic (CVT)",
+    "pajak1tahun": "20 Agustus 2025",
+    "pajak5tahun": "20 Agustus 2029",
+    "biayapajak": "Rp 7.021.700",
+    "gambar": [
+      "https://s3-alpha-sig.figma.com/img/f052/7359/f5f7b0e93a8fd2aa0280c7ccb78c4db4?Expires=1743379200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=uN9EFN-4lKMd1Ul72EJjdUL~PE~VpoxmOUw25aXGRGLdjhvAxTvj0oqjFF4itBYjnP1nlgsmxzys80rltiFl4kEL0FwOqOLBhe9-RGdaB52W5SbdI~lIiulNJBCWZPs7OrJhhDm7I-3oJ98KpXoc2OnUpRiP5QdbFV~qtSKWpp0Xx74hEF5Zebkb4iXV6oGEdXElTCEG5q~6cl2GIT6kCWxQFpVrujEzMihYP2EpMOOcxo6KO9VC9FMqgf6ti8fetztdagX3xzdXJj1Fw84sTLgY~m1VNgwurXJAX5pA9~yU96tznciDRCcppgrDITv~LF7mEU0REa3bR9vt7scbnQ__",
+      "https://s3-alpha-sig.figma.com/img/c247/0e32/d3c921c5b9e19785e654d283e5a1f5cf?Expires=1743379200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=Hf2DHUbHilAqXkKXhWA1NnoBDkuXmi4s5VBhtmrr7-mj5HlT5Pm13xsyCkPCmU-zVoqNLeRyb7MxxLHiMYZJyQRTjJrzE0Jj9dqWrEndaouAg7e8r9HZDrLKoXUoIdKz015bGOkkjTejf8a5RIH4e8T6FTdpAt9pYyeZAGblVC6ZCLELVKLp5DItdcmUrPb4EZ4aCLONaLYB3VVL2HuJvAg04QGmAbqGHk5jIZVSqwaOG6kY9te1AwNC~5IKPMm1-yFnidOOyoUBLdW9PrkKeFcVBBMNVx5jHj8B3x3VEZYr6TilXpTeHyFdGlr5zdLzrt4shysFjYJx~0UcSNzU4g__",
+      "https://s3-alpha-sig.figma.com/img/c1ab/e7a0/c5eecef0ff75bdf57023ce762336b1b4?Expires=1743379200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=HbGdObd4gxQTTC6R2UpJi0B0YGCdrmHqLhDRxd3sWCXzBacwZM6I6RF7nvjX6m1KAd8Jq-w8ky1N8RPSsySk4u7QLurVvFAVWhPUqbSzT9xU1fQKFv9j-kdTpsVpJ7zKxijuzxy4vhEtPjNBgpyjrBVQKvobHXecLVvNq70owamBC-L3Onr15c2ApPaTGjL~FeLzp~q~rFjucqQxi0NX7jIJxPyrcwsLeLqCsDo4t~fVLy2JeyjAP8zRw0tK7onYhEp~b5yMrvnzTJ8wmxJE7adsUs-FYEre~ht9y0~EV04LKyym0MPHyFqoDcbBQKiOfWq5W4rfoNy3ItJAiDK44g__",
+      "https://s3-alpha-sig.figma.com/img/eddc/7517/e725673ce83e3a1b0a6e109e5b6aff27?Expires=1743379200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=YHlMBgoMv47EaocSpBcNgEcAQwzs4i2zW-b4zxsSWIRq9mNh15YHfMvyQRbvju50Wle5q3l5wAv3iFXzDkPzPn1mHS2lDVKvCXDzPRtbqwz1PqnDzLIpuqyAth4bZflTT4XMkU5hTZBGJnXS3ZHYG~XUrVZVkiPNKPDHsxE70~bAu2buGQFzjlfoIy8JCdoGigRgJT316HwQqMB5e~ijFOi28KNPeGNohtIjMMpYRuylCssIm9c1C5VGn~hYf8M8mn3Y7fDGT8D4FlXhVJxxQE2V8xu~0vXN0r3GrR7HxGPZwokvCB0F4LBX7z28VoUb14r~61R7Qt7bTZe6tm~r2A__"
+    ]
+  },
+  "hasil": {
+    "indikasi": {
+      "bekastabrakan": false,
+      "bekasbanjir": true,
+      "odometerreset": false
+    },
+    "penilaian": {
+      "interior": "D",
+      "exterior": "B",
+      "mesin": "C",
+      "kaki-kaki": "B",
+      "keseluruhan": "C"
+    }
+  }
+}

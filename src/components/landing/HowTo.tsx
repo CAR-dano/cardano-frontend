@@ -3,6 +3,7 @@
 import Image from "next/image";
 import React from "react";
 import { motion } from "framer-motion";
+import CustomButton from "../ui/CustomButton";
 
 export default function HowTo() {
   return (
@@ -76,6 +77,18 @@ export default function HowTo() {
               </h3>
             </li>
           </ol>
+          <div className="z-10 ml-10 md:ml-16 flex flex-wrap justify-start items-center gap-3 sm:gap-5 mt-4 sm:mt-5">
+            <Image
+              src="/assets/logo/pdf.svg"
+              alt="PDF Icon"
+              width={65}
+              height={65}
+              className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 object-contain"
+            />
+            <CustomButton className="text-[clamp(16px,3vw,28px)] font-white font-light rounded-full gradient-details text-white">
+              Get the details
+            </CustomButton>
+          </div>
         </motion.div>
 
         {/* Divider */}
