@@ -10,7 +10,7 @@ function CardHasil({ penilaian, indikasi }: Hasil) {
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
       viewport={{ once: true }}
-      className="w-full bg-white rounded-2xl card-data-shadow p-0 lg:px-5 py-0 lg:py-6"
+      className="w-full bg-white rounded-2xl card-data-shadow p-0 lg:pl-10 py-0 lg:py-6"
     >
       <div className="flex flex-col md:flex-row gap-10 font-rubik">
         {/* Carousel Image */}
@@ -84,7 +84,7 @@ function CardHasil({ penilaian, indikasi }: Hasil) {
 
           <div className="flex flex-row gap-5 text-neutral-900">
             <div className="w-1/2">
-              <div className="flex flex-wrap gap-x-5 lg:gap-x-12 gap-y-3.5 lg:gap-y-5">
+              <div className="flex flex-wrap justify-center gap-x-5 lg:gap-x-12 gap-y-3.5 lg:gap-y-5">
                 {[
                   {
                     title: "Mesin",
