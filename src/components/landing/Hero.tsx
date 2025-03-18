@@ -2,22 +2,16 @@
 
 import Image from "next/image";
 import React from "react";
-import { IoSearch } from "react-icons/io5";
 import { motion, useScroll, useTransform } from "framer-motion";
+import SearchBar from "../ui/SearchBar";
+import CarComponent from "../ui/CarAnimation";
 
 function Hero() {
   const { scrollYProgress } = useScroll();
 
-  // Animasi paralaks untuk mobil
-  const xPos = useTransform(scrollYProgress, [0, 1], ["0%", "500%"]);
-
   // Animasi scroll untuk teks utama
   const textY = useTransform(scrollYProgress, [0, 1], ["0%", "-50%"]);
   const textOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
-
-  // Animasi scroll untuk input pencarian
-  const inputY = useTransform(scrollYProgress, [0, 1], ["0%", "-80%"]);
-  const inputOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
 
   return (
     <div className="relative w-full flex flex-col items-center justify-center mx-auto">
@@ -55,54 +49,10 @@ function Hero() {
             Masukkan plat nomor kendaraan untuk melihat <br /> riwayat inspeksi
             berbasis blockchain
           </p>
-
-          {/* Input Pencarian */}
-          <motion.div
-            className="hidden lg:block relative w-full max-w-sm md:max-w-lg mt-6 mb-6 search-box-shadow"
-            style={{ y: inputY, opacity: inputOpacity }} // Efek paralaks input
-          >
-            <IoSearch
-              size={24}
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-orange-500"
-            />
-            <input
-              className="border-2 border-orange-500 rounded-xl py-3 pl-12 pr-5 w-full text-lg outline-none focus:ring-2 focus:ring-orange-300 placeholder:text-neutral-500 placeholder:font-semibold"
-              type="text"
-              placeholder="Search here..."
-            />
-          </motion.div>
-
-          <motion.div
-            className="lg:hidden block relative w-full max-w-xs mt-6 mb-6 search-box-shadow"
-            style={{ y: inputY, opacity: inputOpacity }} // Efek paralaks input (mobile)
-          >
-            <input
-              className="border-2 border-orange-500 rounded-xl py-3 pl-5 pr-5 w-full text-lg outline-none focus:ring-2 focus:ring-orange-300 placeholder:text-neutral-500 placeholder:font-semibold"
-              type="text"
-              placeholder="Search here..."
-            />
-            <div className="h-full gradient-button flex items-center justify-center aspect-square bg-orange-500 rounded-xl absolute top-0 right-0">
-              <IoSearch size={28} className="text-white" />
-            </div>
-          </motion.div>
+          <SearchBar value="" />
 
           {/* Gambar Mobil dengan Animasi */}
-          <motion.div
-            className="mt-10 w-full flex justify-center"
-            initial={{ x: "-100vw" }}
-            animate={{ x: "0%" }}
-            transition={{ duration: 1, ease: "easeOut" }}
-            style={{ x: xPos }} // Efek paralaks mobil
-          >
-            <Image
-              src="/assets/car-illustration.svg"
-              width={640}
-              height={500}
-              alt="Illustration of a car"
-              priority
-              className="w-auto max-w-[90%] md:max-w-[640px]"
-            />
-          </motion.div>
+          <CarComponent />
 
           {/* Slogan */}
           <motion.div

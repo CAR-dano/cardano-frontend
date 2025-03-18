@@ -243,3 +243,21 @@
   animation: dot_animation 0.5s forwards;
   transform-origin: left;
 }
+
+.card-data-shadow {
+  box-shadow: 0px 16px 20px -6px rgba(194, 140, 255, 0.05),
+    0px 24px 48px -10px rgba(76, 28, 130, 0.16);
+}
+
+@media (max-width: 768px) {
+  .card-data-shadow {
+    box-shadow: none;
+  }
+}
+
+.gradient-title-plat {
+  background: linear-gradient(93deg, #f4622f -43.64%, #a25df9 126.49%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
