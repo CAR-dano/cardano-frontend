@@ -105,7 +105,7 @@ const EmblaCarousel: React.FC<PropType> = ({ slides, options }) => {
                   alt="Carousel Image"
                   width={450}
                   height={300}
-                  className="w-full h-auto object-cover bg-center"
+                  className="w-full h-full object-cover bg-center"
                 />
                 <div className="font-rubik h-1/2 flex flex-col justify-end absolute bottom-0 left-0 right-0 px-6 py-4 bg-gradient-to-t from-black/50 to-transparent">
                   <h1 className="text-white text-[clamp(24px,3vw,40px)] font-medium leading-none">

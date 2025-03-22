@@ -6,7 +6,7 @@ import MadeByCardano from "../ui/MadeByCardano";
 
 function Core() {
   return (
-    <div className="w-full font-rubik px-6 sm:px-10 md:px-24 mb-20 mt-0 md:mt-[200px]">
+    <div className="w-full font-rubik px-6 sm:px-10 md:px-24 mb-0 lg:mb-20 mt-0 md:mt-[200px]">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10">
         {/* Core Items */}
         {[
