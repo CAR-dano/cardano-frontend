@@ -25,7 +25,7 @@ function HasilInspeksi() {
       whileInView={{ opacity: 1, y: 0 }} // Saat masuk viewport: opacity 1 & naik ke posisi normal
       transition={{ duration: 0.8, ease: "easeOut" }} // Durasi animasi smooth
       viewport={{ once: true }} // Animasi hanya berjalan sekali
-      className="w-full min-h-screen bg-cover bg-center flex flex-col items-center justify-center py-10 px-0"
+      className="w-full min-h-[70vh] lg:min-h-screen bg-cover bg-center flex flex-col items-center justify-center py-0 lg:py-10 px-0"
       style={{ backgroundImage: bgImage }}
     >
       <motion.h1
