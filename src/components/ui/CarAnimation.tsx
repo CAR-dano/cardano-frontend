@@ -47,7 +47,7 @@ const CarComponent = () => {
           height={500}
           alt="Illustration of a car"
           priority
-          className="w-auto max-w-[90%] md:max-w-[640px]"
+          className="w-auto mx-auto max-w-[90%] md:max-w-[640px]"
           style={{
             filter: isHovering ? `url('#blur-mask')` : `blur(${blurAmount}px)`,
             transition: "filter 0.3s ease-out",

@@ -101,9 +101,11 @@ const Navbar = () => {
           </li>
         </ul>
         <div className="mt-6 px-6">
-          <button className="gradient-button-2 bg-orange-400 text-white px-4 py-2 rounded-lg font-bold w-full">
-            Sign In
-          </button>
+          <a href="/auth">
+            <button className="gradient-button-2 bg-orange-400 text-white px-4 py-2 rounded-lg font-bold w-full">
+              Sign In
+            </button>
+          </a>
         </div>
       </div>
     </nav>
