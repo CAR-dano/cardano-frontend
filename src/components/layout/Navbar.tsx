@@ -2,28 +2,31 @@
 import { useState } from "react";
 import Image from "next/image";
 import { IoMenu, IoClose } from "react-icons/io5";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
+
+  const handleToHome = () => {
+    router.push("/");
+  };
 
   return (
     <nav className=" font-rubik w-full bg-white text-white px-6 md:px-14 py-4 flex justify-between items-center navbar-shadow">
       {/* Logo */}
-      <Link href="/">
-        <div className="flex gap-2">
-          <Image
-            src="/assets/logo/palapa.svg"
-            width={52}
-            height={52}
-            alt="logo"
-          />
-          <div className="flex flex-col text-orange-700 font-bold justify-center">
-            <p className="text-2xl">PALAPA</p>
-            <p className="-mt-1 text-xs">Inspeksi Mobil Jogja</p>
-          </div>
+      <div onClick={handleToHome} className="flex gap-2">
+        <Image
+          src="/assets/logo/palapa.svg"
+          width={52}
+          height={52}
+          alt="logo"
+        />
+        <div className="flex flex-col text-orange-700 font-bold justify-center">
+          <p className="text-2xl">PALAPA</p>
+          <p className="-mt-1 text-xs">Inspeksi Mobil Jogja</p>
         </div>
-      </Link>
+      </div>
 
       {/* Menu Desktop */}
       <div className="hidden md:flex">
