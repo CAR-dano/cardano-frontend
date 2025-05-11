@@ -7,9 +7,6 @@ import Halaman3 from "@/components/Preview/Halaman3";
 import Halaman4 from "@/components/Preview/Halaman4";
 import Halaman5 from "@/components/Preview/Halaman5";
 import Halaman6 from "@/components/Preview/Halaman6";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/lib/store";
-import { getDataForPreview } from "@/lib/features/inspection/inspectionSlice";
 
 interface EditReviewComponentsProps {
   onClick: (data: any) => void; // Fungsi yang dipanggil saat klik
@@ -20,8 +17,6 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
   onClick,
   data,
 }) => {
-  const [enableEdit, setEnableEdit] = useState(true);
-
   const [dataHalaman1, setDataHalaman1] = useState<any>(null);
   const [dataHalaman2, setDataHalaman2] = useState<any>(null);
   const [dataHalaman3, setDataHalaman3] = useState<any>(null);

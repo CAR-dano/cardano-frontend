@@ -2,12 +2,7 @@
 import Loading from "@/components/Loading";
 import { getDataForReviewer } from "@/lib/features/inspection/inspectionSlice";
 
-import {
-  AppDispatch,
-  RootState,
-  useAppDispatch,
-  useAppSelector,
-} from "@/lib/store";
+import { AppDispatch, RootState, useAppDispatch } from "@/lib/store";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -15,9 +10,6 @@ import { IoIosSearch } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 
 const Header = () => {
-  const dispatch = useAppDispatch();
-  const router = useRouter();
-
   return (
     <div className="flex justify-between items-center mb-5">
       <h1 className="text-xl font-semibold">Dashboard</h1>
@@ -26,7 +18,6 @@ const Header = () => {
 };
 
 const SearchBar = ({ setQuery, setFilter }: any) => {
-  const dispatch = useAppDispatch();
   const [keyword, setKeyword] = useState("");
 
   const handleKeyword = (e: any) => {
@@ -75,23 +66,23 @@ const Article: React.FC = () => {
 
   if (isLoading) return <p>Loading...</p>;
 
-  const countDataByStatus = (data: any) => {
-    const statusCounts: { [key: string]: number } = {};
+  // const countDataByStatus = (data: any) => {
+  //   const statusCounts: { [key: string]: number } = {};
 
-    data.forEach((item: any) => {
-      const status = item.status;
-      if (statusCounts[status]) {
-        statusCounts[status]++;
-      } else {
-        statusCounts[status] = 1;
-      }
-    });
+  //   data.forEach((item: any) => {
+  //     const status = item.status;
+  //     if (statusCounts[status]) {
+  //       statusCounts[status]++;
+  //     } else {
+  //       statusCounts[status] = 1;
+  //     }
+  //   });
 
-    return Object.entries(statusCounts).map(([status, count]) => ({
-      status,
-      count,
-    }));
-  };
+  //   return Object.entries(statusCounts).map(([status, count]) => ({
+  //     status,
+  //     count,
+  //   }));
+  // };
 
   const checkLink = (status: string): string => {
     switch (status) {

@@ -1,26 +1,15 @@
 "use client";
-import { ButtonDropdown } from "@/components/Button/ButtonDropDown";
-import PrimaryButton from "@/components/Button/PrimaryButton";
 import Loading from "@/components/Loading";
 import TableInspectionReviewer from "@/components/Table/TableInspectionReviewer";
 import { toast } from "@/components/ui/use-toast";
 import { getDataForReviewer } from "@/lib/features/inspection/inspectionSlice";
 
-import {
-  AppDispatch,
-  RootState,
-  useAppDispatch,
-  useAppSelector,
-} from "@/lib/store";
-import { useRouter } from "next/navigation";
+import { AppDispatch, RootState } from "@/lib/store";
 import { useEffect, useState } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 
 const Header = () => {
-  const dispatch = useAppDispatch();
-  const router = useRouter();
-
   return (
     <div className="flex justify-between items-center mb-5">
       <h1 className="text-xl font-semibold">Draft Reviewer</h1>
@@ -29,7 +18,6 @@ const Header = () => {
 };
 
 const SearchBar = ({ setQuery, setFilter }: any) => {
-  const dispatch = useAppDispatch();
   const [keyword, setKeyword] = useState("");
 
   const handleKeyword = (e: any) => {
