@@ -9,9 +9,8 @@ import {
   approveInspectionData,
   getDataForPreview,
   setEditedData,
-  updateData,
 } from "@/lib/features/inspection/inspectionSlice";
-import { AppDispatch, useAppDispatch, useAppSelector } from "@/lib/store";
+import { AppDispatch, useAppSelector } from "@/lib/store";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -36,7 +35,6 @@ const Header = ({ handleApprove }: any) => {
 const Edit = () => {
   const dispatch = useDispatch<AppDispatch>();
   const isLoading = useAppSelector((state: any) => state.inspection.isLoading);
-  const error = useAppSelector((state: any) => state.inspection.error);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [dialogData, setDialogData] = useState<any>({
@@ -45,7 +43,6 @@ const Edit = () => {
     value: "",
     type: "normal-input",
   });
-  const [isDialogResultOpen, setIsDialogResultOpen] = useState(false);
   const [dialogResultData, setDialogResultData] = useState<{
     isOpen: boolean;
     isSuccess: boolean;
