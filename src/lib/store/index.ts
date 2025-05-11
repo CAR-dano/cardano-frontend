@@ -1,36 +1,45 @@
-// import { combineReducers, configureStore } from "@reduxjs/toolkit";
-// import { useDispatch, TypedUseSelectorHook, useSelector } from "react-redux";
-// // import { authReducer } from "./features/auth/authSlice";
-// import { persistReducer } from "redux-persist";
-// import storage from "redux-persist/lib/storage";
-// // import { categoriesReducer } from "../features/category/categorySlice";
-// // import { articleReducer } from "../features/article/articleSlice";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { useDispatch, TypedUseSelectorHook, useSelector } from "react-redux";
+import { persistReducer, persistStore } from "redux-persist";
+import storage from "redux-persist/lib/storage";
+import { inspectionReducer } from "../features/inspection/inspectionSlice";
 
-// const authPersistConfig = {
-//   key: "auth",
-//   storage: storage,
-//   whitelist: ["isAuthenticated", "user", "token"],
-// };
+// Config persist untuk inspection slice
+const inspectionPersistConfig = {
+  key: "inspection",
+  storage: storage,
+  whitelist: ["token", "id", "edited"], // hanya data ini yang akan disimpan di localStorage
+};
 
-// const appReducer = combineReducers({
-//   // auth: persistReducer(authPersistConfig, authReducer),
-// });
+// Gabungkan reducer (bisa ditambah auth, dll)
+const appReducer = combineReducers({
+  inspection: persistReducer(inspectionPersistConfig, inspectionReducer),
+  // auth: persistReducer(authPersistConfig, authReducer), // jika ada auth
+});
 
-// // const rootReducer = (state: any, action: any) => {
-// //   if (action.type === "auth/logout") {
-// //     return appReducer(undefined, action);
-// //   }
-// //   return appReducer(state, action);
-// // };
+// Root reducer untuk handling global action seperti logout
+const rootReducer = (state: any, action: any) => {
+  // if (action.type === "auth/logout") {
+  //   return appReducer(undefined, action); // reset semua state
+  // }
+  return appReducer(state, action);
+};
 
-// export const store = configureStore({
-//   reducer: rootReducer,
-//   middleware: (getDefaultMiddleware) =>
-//     getDefaultMiddleware({ serializableCheck: false }),
-// });
+// Buat store
+export const store = configureStore({
+  reducer: rootReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false, // perlu karena redux-persist menggunakan non-serializable data
+    }),
+});
 
-// export type RootState = ReturnType<typeof store.getState>;
-// export type AppDispatch = typeof store.dispatch;
+// Buat persistor
+export const persistor = persistStore(store);
 
-// export const useAppDispatch = () => useDispatch<AppDispatch>();
-// export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+// Types untuk useSelector dan useDispatch
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
+
+export const useAppDispatch: () => AppDispatch = useDispatch;
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;

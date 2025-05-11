@@ -12,7 +12,6 @@ import MadeByCardano from "@/components/ui/MadeByCardano";
 
 function ResultPageContent() {
   const searchParams = useSearchParams();
-  const platNomor = searchParams.get("platNomor") || "";
   const data = dataCar;
 
   function formatPlatNomor(plat: string) {
@@ -20,11 +19,20 @@ function ResultPageContent() {
     return plat.replace(/([A-Z]+)(\d+)([A-Z]+)/, "$1 $2 $3");
   }
 
-  if (!platNomor) {
-    if (typeof window !== "undefined") {
+  const [platNomor, setPlatNomor] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const platNomorParam = params.get("platNomor");
+    if (!platNomorParam) {
       window.location.href = "/";
+    } else {
+      setPlatNomor(platNomorParam);
     }
-    return null;
+  }, []);
+
+  if (!platNomor) {
+    return null; // loading
   }
 
   return (
