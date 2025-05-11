@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./style.css";
 import Halaman1 from "@/components/Preview/Halaman1";
 import Halaman2 from "@/components/Preview/Halaman2";
@@ -10,36 +10,31 @@ import Halaman6 from "@/components/Preview/Halaman6";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/lib/store";
 import { getDataForPreview } from "@/lib/features/inspection/inspectionSlice";
-import { Button } from "@/components/ui/button";
-import { IoArrowBack } from "react-icons/io5";
-import { IoMdDownload } from "react-icons/io";
 
-function DataPage() {
-  const dispatch = useDispatch<AppDispatch>();
+interface EditReviewComponentsProps {
+  onClick: (data: any) => void; // Fungsi yang dipanggil saat klik
+  data: any; // Data yang akan diproses
+}
 
-  const [dataHalaman1, setDataHalaman1] = React.useState<any>(null);
-  const [dataHalaman2, setDataHalaman2] = React.useState<any>(null);
-  const [dataHalaman3, setDataHalaman3] = React.useState<any>(null);
-  const [dataHalaman4, setDataHalaman4] = React.useState<any>(null);
-  const [dataHalaman5, setDataHalaman5] = React.useState<any>(null);
-  const [dataHalaman6, setDataHalaman6] = React.useState<any>(null);
+const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
+  onClick,
+  data,
+}) => {
+  const [enableEdit, setEnableEdit] = useState(true);
 
-  const getData = async (id: string) => {
-    const response = await dispatch(getDataForPreview(id)).unwrap();
-    if (response) {
-      console.log("response", response);
-      preProcessData(response);
-    } else {
-      console.error("Failed to fetch data");
-    }
-  };
+  const [dataHalaman1, setDataHalaman1] = useState<any>(null);
+  const [dataHalaman2, setDataHalaman2] = useState<any>(null);
+  const [dataHalaman3, setDataHalaman3] = useState<any>(null);
+  const [dataHalaman4, setDataHalaman4] = useState<any>(null);
+  const [dataHalaman5, setDataHalaman5] = useState<any>(null);
+  const [dataHalaman6, setDataHalaman6] = useState<any>(null);
 
   useEffect(() => {
-    const id = window.location.pathname.split("/").pop();
-    if (id) {
-      getData(id);
+    if (data) {
+      console.log("data", data);
+      preProcessData(data);
     }
-  }, []);
+  }, [data]);
 
   const preProcessData = (data: any) => {
     setDataHalaman1({
@@ -84,57 +79,39 @@ function DataPage() {
     {
       id: 1,
       title: "Halaman 1",
-      component: <Halaman1 data={dataHalaman1} editable={false} />,
+      component: (
+        <Halaman1 data={dataHalaman1} editable={true} onClick={onClick} />
+      ),
     },
     {
       id: 2,
       title: "Halaman 2",
-      component: <Halaman2 data={dataHalaman2} editable={false} />,
+      component: <Halaman2 data={dataHalaman2} editable={true} />,
     },
     {
       id: 3,
       title: "Halaman 3",
-      component: <Halaman3 data={dataHalaman3} editable={false} />,
+      component: <Halaman3 data={dataHalaman3} editable={true} />,
     },
     {
       id: 4,
       title: "Halaman 4",
-      component: <Halaman4 data={dataHalaman4} editable={false} />,
+      component: <Halaman4 data={dataHalaman4} editable={true} />,
     },
     {
       id: 5,
       title: "Halaman 5",
-      component: <Halaman5 data={dataHalaman5} editable={false} />,
+      component: <Halaman5 data={dataHalaman5} editable={true} />,
     },
     {
       id: 6,
       title: "Halaman 6",
-      component: <Halaman6 data={dataHalaman6} editable={false} />,
+      component: <Halaman6 data={dataHalaman6} editable={true} />,
     },
   ];
 
   return (
     <>
-      <div className="absolute top-5 left-5 no-print">
-        <Button
-          onClick={() => {
-            window.history.back();
-          }}
-          className="bg-blue-500 text-white hover:bg-blue-700"
-        >
-          <IoArrowBack /> Back
-        </Button>
-      </div>
-      <div className="absolute top-5 right-5 no-print">
-        <Button
-          onClick={() => {
-            window.print();
-          }}
-          className="bg-orange-600 text-white hover:bg-orange-700"
-        >
-          <IoMdDownload /> Download Preview
-        </Button>
-      </div>
       <div className="sheet-outer A4">
         {page.map((item, index) => (
           <div key={index} className="sheet padding-5mm">
@@ -144,6 +121,6 @@ function DataPage() {
       </div>
     </>
   );
-}
+};
 
-export default DataPage;
+export default EditReviewComponents;

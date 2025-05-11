@@ -2,6 +2,7 @@
 import Image from "next/image";
 import React, { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 function LoginPage() {
   const [showSignup, setShowSignup] = useState(false);
@@ -88,6 +89,15 @@ function LoginPage() {
         damping: 10,
       },
     },
+  };
+
+  const router = useRouter();
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Handle login logic here
+    // For example, you can call an API to authenticate the user
+    // and then redirect them to the dashboard or home page
+    router.push("/dashboard/review"); // Redirect to the dashboard page after login
   };
 
   return (
@@ -190,7 +200,10 @@ function LoginPage() {
                         className="px-4 py-3 rounded-lg border border-[#A25DF9] bg-white shadow-[0px_16px_20px_-6px_rgba(194,140,255,0.05),0px_24px_48px_-10px_rgba(76,28,130,0.16)] focus:outline-none focus:ring-2 focus:ring-[#A25DF9] focus:border-transparent transition-all duration-300"
                       />
                     </motion.div>
-                    <button className="gradient-button-2 w-full py-3 rounded-lg text-white font-rubik text-[18px] font-medium ">
+                    <button
+                      onClick={handleLogin}
+                      className="gradient-button-2 w-full py-3 rounded-lg text-white font-rubik text-[18px] font-medium "
+                    >
                       Log in
                     </button>
                   </motion.form>

@@ -11,7 +11,7 @@ import {
 import Link from "next/link";
 import SecondaryButton from "../Button/SecondaryButton";
 
-const TableData = ({ data }: any) => {
+const TableData = ({ data, isDatabase = false }: any) => {
   const [fetchStatus, setFetchStatus] = useState(false);
 
   useEffect(() => {
@@ -30,45 +30,59 @@ const TableData = ({ data }: any) => {
     return formatted;
   };
 
+  const formatStatus = (status: string) => {
+    const newStatus = status.replace(/_/g, " ").toLowerCase();
+    return newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
+  };
+
   return (
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Merk Mobil</TableHead>
-          <TableHead>Lokasi</TableHead>
-          <TableHead>Tanggal Inspeksi</TableHead>
-          <TableHead>Nama Inspector</TableHead>
+          <TableHead>Nama Customer</TableHead>
+          <TableHead>ID Laporan</TableHead>
+          <TableHead>Inspektor</TableHead>
+          <TableHead>Tanggal</TableHead>
+          {!isDatabase && <TableHead>Status</TableHead>}
+          <TableHead>Dokumen</TableHead>
           <TableHead>Action</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {data.map((item: any) => (
           // <TableRow>
-          <TableRow key={item._id}>
-            <TableCell className="w-1/4">
-              {item.vehicleData.merekKendaraan} {item.vehicleData.tipeKendaraan}
+          <TableRow key={item.id}>
+            <TableCell className="font-light">
+              {item.identityDetails.namaCustomer}
             </TableCell>
-            <TableCell>{item.identityDetails.cabangInspeksi}</TableCell>
-            <TableCell>{formatDate(item.inspectionDate)}</TableCell>
-            <TableCell>{item.identityDetails.namaInspektor}</TableCell>
+            <TableCell className="font-light">{item.id}</TableCell>
+            <TableCell className="font-light">
+              {item.identityDetails.namaInspektor}
+            </TableCell>
+            <TableCell className="font-light">
+              {formatDate(item.inspectionDate)}
+            </TableCell>
+            {!isDatabase && (
+              <TableCell className="font-light">
+                {formatStatus(item.status)}
+              </TableCell>
+            )}
+            <TableCell>
+              <Link
+                href={`/preview/${item.id}`}
+                className="text-blue-500 underline text-[16px] font-light"
+                target="_blank"
+              >
+                {!isDatabase ? "Preview" : "Download"}
+              </Link>
+            </TableCell>
             <TableCell>
               <div className="flex gap-2">
-                <SecondaryButton className="text-xs border-[1px] bg-blue">
-                  <Link href="/dashboard/data/1">Detail</Link>
-                </SecondaryButton>
-                <SecondaryButton className="text-xs border-[1px] bg-blue">
-                  <Link target="_blank" href={`/preview/${item.id}`}>
-                    Preview
-                  </Link>
-                </SecondaryButton>
-                <SecondaryButton className="text-xs border-[1px] bg-blue">
-                  <Link
-                    target="_blank"
-                    href="https://cardano-pdf.vercel.app/data/1"
-                  >
-                    Upload
-                  </Link>
-                </SecondaryButton>
+                <Link href={`/dashboard/data/${item.id}`}>
+                  <SecondaryButton className="text-[16px] text-white bg-[#30B6ED] rounded-[12px] hover:bg-white hover:text-[#30B6ED] hover:border-[#30B6ED] border-[1px] border-[#30B6ED]">
+                    {isDatabase ? "Lihat" : "Review"}
+                  </SecondaryButton>
+                </Link>
               </div>
             </TableCell>
           </TableRow>
@@ -78,9 +92,13 @@ const TableData = ({ data }: any) => {
   );
 };
 
-const TableInfo: React.FC = () => {
+interface TableInfoProps {
+  data: any;
+}
+
+const TableInfo: React.FC<TableInfoProps> = ({ data }) => {
   const MAX = 10;
-  const dataCount = 0;
+  const dataCount = data.length;
   const pageCount = Math.ceil(dataCount / MAX);
   const [page, setPage] = useState(1);
 
@@ -112,15 +130,15 @@ const TableInfo: React.FC = () => {
   );
 };
 
-const TableInspectionReviewer = ({ data }: any) => {
+const TableInspectionReviewer = ({ data, isDatabase }: any) => {
   return (
-    <div className="w-3/4 flex flex-col">
+    <div className="flex flex-col">
       <div className="overflow-x-auto">
         <div className="w-full inline-block align-middle">
           <div className="overflow-hidden border rounded-lg">
-            <TableData data={data} />
+            <TableData data={data} isDatabase={isDatabase} />
           </div>
-          <TableInfo />
+          <TableInfo data={data} />
         </div>
       </div>
     </div>

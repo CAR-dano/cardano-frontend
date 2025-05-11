@@ -11,9 +11,9 @@ function Halaman4({ data }: any) {
   return (
     <div className="px-[30px] ">
       <Header />
-      <div className="w-full border-2 border-black mt-5">
+      <div className="w-full border-2 border-black mt-12 mb-6">
         <div className="w-full flex">
-          <div className="w-full bg-[#F4622F]">
+          <div className="w-full bg-[#E95F37]">
             <p className="text-left text-white py-3 px-3 font-semibold border-b-2  border-black">
               Hasil Inspeksi
             </p>
@@ -38,7 +38,7 @@ function Halaman4({ data }: any) {
           </div>
 
           <p className="text-[12px] px-2 mt-1 font-semibold">*Catatan:</p>
-          <p className="text-[12px] px-1 py-4 mt-1 font-semibold">
+          <p className="text-[12px] px-3 min-h-[50px] mt-1 font-semibold">
             {data.hasilInspeksiMesin.catatan}
           </p>
         </div>
@@ -69,7 +69,7 @@ function Halaman4({ data }: any) {
           </div>
 
           <p className="text-[12px] px-2  mt-1 font-semibold">*Catatan:</p>
-          <p className="text-[12px] px-1 py-3 mt-1 font-semibold">
+          <p className="text-[12px] px-3 min-h-[50px] mt-1 font-semibold">
             {data.hasilInspeksiInterior.catatan}
           </p>
         </div>
@@ -158,10 +158,4 @@ const eksteriorKendaraan = [
   { namaPart: "Spion Kanan", beban: 2, part: "spionKanan" },
   { namaPart: "Lisplang Kanan", beban: 1, part: "lisplangKanan" },
   { namaPart: "Side Skirt Kanan", beban: 1, part: "sideSkirtKanan" },
-  { namaPart: "Daun Wiper", beban: 1, part: "daunWiper" },
-  { namaPart: "Pintu Depan Kanan", beban: 2, part: "pintuDepan" },
-  { namaPart: "Pintu Depan Kiri", beban: 2, part: "pintuDepanKiri" },
-  { namaPart: "Pintu Belakang", beban: 2, part: "pintuBelakang" },
-  { namaPart: "Kaca Jendela Kanan", beban: 1, part: "kacaJendelaKanan" },
-  { namaPart: "Kaca Jendela Kiri", beban: 1, part: "kacaJendelaKiri" },
 ];

@@ -11,9 +11,9 @@ function Halaman5({ data }: any) {
   return (
     <div className="px-[30px] ">
       <Header />
-      <div className="w-full border-2 border-black mt-4">
+      <div className="w-full border-2 border-black mt-12 mb-8">
         <div className="w-full flex">
-          <div className="w-full bg-[#F4622F]">
+          <div className="w-full bg-[#E95F37]">
             <p className="text-left text-white py-3 px-3 font-semibold border-b-2  border-black">
               Hasil Inspeksi
             </p>
@@ -38,7 +38,7 @@ function Halaman5({ data }: any) {
           </div>
 
           <p className="text-[12px] px-2 mt-1 font-semibold">*Catatan:</p>
-          <p className="text-[12px] px-1 py-3 mt-1 font-semibold">
+          <p className="text-[12px] px-3 min-h-[45px] mt-1 font-semibold">
             {data.hasilInspeksiEksterior.catatan}
           </p>
         </div>
@@ -67,12 +67,12 @@ function Halaman5({ data }: any) {
           </div>
 
           <p className="text-[12px] px-2  mt-1 font-semibold">*Catatan:</p>
-          <p className="text-[12px] px-1 py-3 mt-1 font-semibold">
+          <p className="text-[12px] px-3 min-h-[45px] mt-1 font-semibold">
             {data.banDanKakiKaki.catatan}
           </p>
         </div>
 
-        <div className="w-full  py-2 mb-2 border-b-2 border-black">
+        <div className="w-full  py-2 mb-2 ">
           <div className="flex gap-1 text-[14px] px-2 mb-2 font-semibold">
             <p className="border-[1px] border-black rounded-full aspect-square w-5 h-5 flex items-center justify-center font-bold">
               5
@@ -96,37 +96,8 @@ function Halaman5({ data }: any) {
           </div>
 
           <p className="text-[12px] px-2  mt-1 font-semibold">*Catatan:</p>
-          <p className="text-[12px] px-1 py-2 mt-1 font-semibold">
+          <p className="text-[12px] px-3 min-h-[45px] mt-1 font-semibold">
             {data.testDrive.catatan}
-          </p>
-        </div>
-
-        <div className="w-full  py-2 mb-2">
-          <div className="flex gap-1 text-[14px] px-2 mb-2 font-semibold">
-            <p className="border-[1px] border-black rounded-full aspect-square w-5 h-5 flex items-center justify-center font-bold">
-              5
-            </p>
-            <p className="">Tools Test</p>
-          </div>
-          <div className="pl-2 w-full flex flex-wrap gap-x-3 gap-y-2 items-center justify-start">
-            {toolsTest.map((item, index) => (
-              <PenilaianHasil
-                key={index}
-                warna="#FFFFFF"
-                namaPart={item.namaPart}
-                beban={item.beban.toString()}
-                nilai={
-                  data.toolsTest[item.part] != undefined
-                    ? data.toolsTest[item.part].toString()
-                    : "0"
-                }
-              />
-            ))}
-          </div>
-
-          <p className="text-[12px] px-2  mt-1 font-semibold">*Catatan:</p>
-          <p className="text-[12px] px-1 py-2 mt-1 font-semibold">
-            {data.toolsTest.catatan}
           </p>
         </div>
       </div>
@@ -139,6 +110,12 @@ function Halaman5({ data }: any) {
 export default Halaman5;
 
 const eksteriorKendaraan = [
+  { namaPart: "Daun Wiper", beban: 1, part: "daunWiper" },
+  { namaPart: "Pintu Depan Kanan", beban: 2, part: "pintuDepan" },
+  { namaPart: "Pintu Depan Kiri", beban: 2, part: "pintuDepanKiri" },
+  { namaPart: "Pintu Belakang", beban: 2, part: "pintuBelakang" },
+  { namaPart: "Kaca Jendela Kanan", beban: 1, part: "kacaJendelaKanan" },
+  { namaPart: "Kaca Jendela Kiri", beban: 1, part: "kacaJendelaKiri" },
   { namaPart: "Fender kiri", beban: 1, part: "fenderKiri" },
   { namaPart: "Pintu Belakang Kiri", beban: 1, part: "pintuBelakangKiri" },
   { namaPart: "Lisplang Kiri", beban: 1, part: "lisplangKiri" },
@@ -175,19 +152,4 @@ const testDrive = [
   { namaPart: "Performa Suspensi", beban: 3, part: "performaSuspensi" },
   { namaPart: "RPM", beban: 3, part: "rpm" },
   { namaPart: "Perpindahan Transmisi", beban: 3, part: "perpindahanTransmisi" },
-];
-
-const toolsTest = [
-  { namaPart: "Tebal Cat Body Depan", beban: 2, part: "tebalCatBodyDepan" },
-  { namaPart: "Tebal Cat Body Kanan", beban: 2, part: "tebalCatBodyKanan" },
-  { namaPart: "Tebal Cat Body Atap", beban: 2, part: "tebalCatBodyAtap" },
-  { namaPart: "Tebal Cat Body Kiri", beban: 2, part: "tebalCatBodyKiri" },
-  {
-    namaPart: "Tebal Cat Body Belakang",
-    beban: 2,
-    part: "tebalCatBodyBelakang",
-  },
-  { namaPart: "Test ACCU ( ON & OFF )", beban: 3, part: "testAccu" },
-  { namaPart: "Temperatur AC Mobil", beban: 2, part: "temperaturACMobil" },
-  { namaPart: "OBD Scanner", beban: 3, part: "obdScanner" },
 ];

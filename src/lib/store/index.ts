@@ -8,7 +8,7 @@ import { inspectionReducer } from "../features/inspection/inspectionSlice";
 const inspectionPersistConfig = {
   key: "inspection",
   storage: storage,
-  whitelist: ["token", "id"], // hanya data ini yang akan disimpan di localStorage
+  whitelist: ["token", "id", "edited"], // hanya data ini yang akan disimpan di localStorage
 };
 
 // Gabungkan reducer (bisa ditambah auth, dll)

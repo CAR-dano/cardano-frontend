@@ -20,7 +20,7 @@ function Halaman2({ data }: any) {
     <div className="px-[30px] ">
       <Header />
 
-      <div className="w-full border-2 border-black mt-12">
+      <div className="w-full border-2 border-black mt-12 mb-8">
         <div className="w-full flex">
           <div className="w-full bg-[#F4622F]">
             <p className="text-left text-white py-2 px-3 font-semibold border-b-2  border-black">
@@ -113,7 +113,7 @@ function Halaman2({ data }: any) {
             </div>
           </div>
           <div className="w-[35%] min-h-[200px] border-black border-r-2">
-            <p className="text-left text-[13px] text-black py-2 px-3 font-medium">
+            <div className="text-left text-[13px] text-black py-2 px-3 font-medium">
               <ul className="list-none">
                 {data.inspectionSummary.estimasiPerbaikan.map((item: any) => (
                   <li key={item.harga} className="">
@@ -121,7 +121,7 @@ function Halaman2({ data }: any) {
                   </li>
                 ))}
               </ul>
-            </p>
+            </div>
           </div>
           <div className="w-[20%] h-50 flex justify-center items-center">
             <p className="text-center text-[10px] text-black px-3 font-light -mt-10">

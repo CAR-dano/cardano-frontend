@@ -13,7 +13,7 @@ function Halaman3({ data }: any) {
     <div className="px-[30px] ">
       <Header />
 
-      <div className="w-full border-2 border-black mt-8">
+      <div className="w-full border-2 border-black mt-8 mb-5">
         <div className="w-full flex">
           <div className="w-full bg-[#1e1240]">
             <p className="text-left text-white py-2 px-3 font-semibold border-b-2  border-black">
@@ -147,7 +147,7 @@ function Halaman3({ data }: any) {
         </div>
 
         <div className="w-full flex">
-          <div className="w-full bg-[#F4622F]">
+          <div className="w-full bg-[#E95F37]">
             <p className="text-left text-white py-3 px-3 font-semibold border-b-2  border-black">
               Hasil Inspeksi
             </p>
@@ -161,7 +161,7 @@ function Halaman3({ data }: any) {
             </p>
             <p className="">Mesin Kendaraan</p>
           </div>
-          <div className="pl-2 w-full flex flex-wrap gap-x-3 gap-y-2 items-center justify-start">
+          <div className="pl-2 w-full flex flex-wrap gap-x-3 gap-y-2.5 items-center justify-start">
             {mesinKendaraan.map((item, index) => (
               <PenilaianHasil
                 key={index}

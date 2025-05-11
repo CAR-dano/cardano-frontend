@@ -1,5 +1,9 @@
 "use client";
+import { ButtonDropdown } from "@/components/Button/ButtonDropDown";
+import PrimaryButton from "@/components/Button/PrimaryButton";
 import Loading from "@/components/Loading";
+import TableInspectionReviewer from "@/components/Table/TableInspectionReviewer";
+import { toast } from "@/components/ui/use-toast";
 import { getDataForReviewer } from "@/lib/features/inspection/inspectionSlice";
 
 import {
@@ -8,7 +12,6 @@ import {
   useAppDispatch,
   useAppSelector,
 } from "@/lib/store";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { IoIosSearch } from "react-icons/io";
@@ -20,7 +23,7 @@ const Header = () => {
 
   return (
     <div className="flex justify-between items-center mb-5">
-      <h1 className="text-xl font-semibold">Dashboard</h1>
+      <h1 className="text-xl font-semibold">Draft Reviewer</h1>
     </div>
   );
 };
@@ -75,35 +78,13 @@ const Article: React.FC = () => {
 
   if (isLoading) return <p>Loading...</p>;
 
-  const countDataByStatus = (data: any) => {
-    const statusCounts: { [key: string]: number } = {};
-
-    data.forEach((item: any) => {
-      const status = item.status;
-      if (statusCounts[status]) {
-        statusCounts[status]++;
-      } else {
-        statusCounts[status] = 1;
-      }
+  const filterData = (data: any) => {
+    const status = "NEED_REVIEW";
+    const filteredData = data.filter((item: any) => {
+      return item.status === status;
     });
 
-    return Object.entries(statusCounts).map(([status, count]) => ({
-      status,
-      count,
-    }));
-  };
-
-  const checkLink = (status: string): string => {
-    switch (status) {
-      case "NEED_REVIEW":
-        return "/dashboard/review";
-      case "APPROVED":
-        return "/dashboard/database";
-      case "REJECTED":
-        return "/dashboard/rejected";
-      default:
-        return "/dashboard"; // Fallback URL
-    }
+    return filteredData;
   };
 
   return (
@@ -112,23 +93,7 @@ const Article: React.FC = () => {
       {isLoading ? (
         <Loading />
       ) : data ? (
-        <>
-          <div className="flex flex-wrap gap-3 justify-center">
-            {Object.entries(
-              data.reduce((acc: Record<string, number>, item: any) => {
-                acc[item.status] = (acc[item.status] || 0) + 1;
-                return acc;
-              }, {})
-            ).map(([status, count]) => (
-              <Link href={checkLink(status)} key={status}>
-                <div className="bg-blue-500 text-white w-48 aspect-square border-[1px] rounded-lg flex flex-col items-center justify-center hover:scale-105 transition-transform">
-                  <h1 className="text-5xl mb-2 font-rubik">{count}</h1>
-                  <h1 className="text-xl font-rubik">{status}</h1>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </>
+        <TableInspectionReviewer data={filterData(data)} isDatabase={false} />
       ) : (
         <p>No data</p>
       )}

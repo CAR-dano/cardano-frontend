@@ -2,7 +2,17 @@ import React from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 
-function Halaman1({ data }: any) {
+interface Halaman1Props {
+  data: any;
+  editable: boolean;
+  onClick?: (data: any) => void; // Prop onClick yang diteruskan
+}
+
+const Halaman1: React.FC<Halaman1Props> = ({
+  data,
+  editable,
+  onClick = () => {},
+}) => {
   if (data == undefined || data == null) {
     return <div>Loading...</div>; // atau bisa return null
   }
@@ -63,43 +73,48 @@ function Halaman1({ data }: any) {
   const kelengkapan = [
     {
       label: "Buku Service",
-      value: data.equipmentChecklist.bukuService ? "OK" : "",
+      partName: "bukuService",
+      value: data.equipmentChecklist.bukuService,
     },
     {
       label: "Kunci Serep",
-      value: data.equipmentChecklist.kunciSerep ? "OK" : "",
+      partName: "kunciSerep",
+      value: data.equipmentChecklist.kunciSerep,
     },
     {
       label: "Buku Manual",
-      value: data.equipmentChecklist.bukuManual ? "OK" : "",
+      partName: "bukuManual",
+      value: data.equipmentChecklist.bukuManual,
     },
     {
-      label: "Ban",
-      value: data.equipmentChecklist.ban ? "OK" : "",
-    },
-    {
-      label: "Serep",
-      value: data.equipmentChecklist.serep ? "OK" : "",
+      label: "Ban Serep",
+      partName: "banSerep",
+      value: data.equipmentChecklist.banSerep,
     },
     {
       label: "BPKB",
-      value: data.equipmentChecklist.bpkb ? "OK" : "",
+      partName: "bpkb",
+      value: data.equipmentChecklist.bpkb,
     },
     {
       label: "Dongkrak",
-      value: data.equipmentChecklist.dongkrak ? "OK" : "",
+      partName: "dongkrak",
+      value: data.equipmentChecklist.dongkrak,
     },
     {
       label: "Toolkit",
-      value: data.equipmentChecklist.toolkit ? "OK" : "",
+      partName: "toolkit",
+      value: data.equipmentChecklist.toolkit,
     },
     {
       label: "No Rangka",
-      value: data.equipmentChecklist.noRangka ? "OK" : "",
+      partName: "noRangka",
+      value: data.equipmentChecklist.noRangka,
     },
     {
       label: "No Mesin",
-      value: data.equipmentChecklist.noMesin ? "OK" : "",
+      partName: "noMesin",
+      value: data.equipmentChecklist.noMesin,
     },
   ];
 
@@ -171,26 +186,95 @@ function Halaman1({ data }: any) {
       <Header />
 
       <div className="flex justify-between items-end">
-        <p className="ml-[50px] text-[14px] font-semibold  leading-none">
+        <p
+          onClick={() =>
+            editable &&
+            onClick({
+              label: "Tanggal",
+              inputFor: "inspectionDate",
+              value: data.inspectionDate,
+              section: "root",
+              type: "date-input",
+              onClose: () => {},
+            })
+          }
+          className={`ml-[50px] text-[14px] font-semibold leading-none ${
+            editable
+              ? "cursor-pointer hover:underline"
+              : "cursor-default text-black"
+          }`}
+        >
           Tanggal : {formatDate(data.inspectionDate)}
         </p>
+
         <div className="flex flex-col items-end ">
           <h1 className="text-[16px] font-semibold text-[#F4622F] leading-none">
             VEHICLE INSPECTION
           </h1>
-          <p className="text-[16px] font-semibold uppercase">
+          <p
+            onClick={() =>
+              editable &&
+              onClick({
+                label: "Lokasi Inspeksi",
+                inputFor: "cabangInspeksi",
+                value: data.identityDetails.cabangInspeksi,
+                section: "identityDetails",
+                type: "dropdown-lokasi",
+                onClose: () => {},
+              })
+            }
+            className={`ml-[50px] text-[14px] leading-none text-[16px] font-semibold uppercase ${
+              editable
+                ? "cursor-pointer hover:underline"
+                : "cursor-default text-gray-500"
+            }`}
+          >
             {data.identityDetails.cabangInspeksi}
           </p>
         </div>
       </div>
 
       <div className="w-full bg-[#F4622F] mt-[10px] px-[50px] py-1 text-white rounded-lg font-medium text-[16px]">
-        <p>Nama Customer : {data.identityDetails.namaCustomer}</p>
-        <p>Nama Inspektor : {data.identityDetails.namaInspektor}</p>
+        <p
+          onClick={() =>
+            editable &&
+            onClick({
+              label: "Nama Customer",
+              inputFor: "namaCustomer",
+              value: data.identityDetails.namaCustomer,
+              section: "identityDetails",
+              type: "normal-input",
+              onClose: () => {},
+            })
+          }
+          className={`${
+            editable ? "cursor-pointer hover:underline" : "cursor-default"
+          }`}
+        >
+          Nama Customer : {data.identityDetails.namaCustomer}
+        </p>
+        <p
+          onClick={() =>
+            editable &&
+            onClick({
+              label: "Nama Inspektor",
+              inputFor: "namaInspektor",
+              value: data.identityDetails.namaInspektor,
+              section: "identityDetails",
+              type: "dropdown-inspektor",
+              onClose: () => {},
+            })
+          }
+          className={`${
+            editable ? "cursor-pointer hover:underline" : "cursor-default"
+          }`}
+        >
+          Nama Inspektor : {data.identityDetails.namaInspektor}
+        </p>
         <p></p>
       </div>
 
-      <div className="w-full border-2 border-black mt-2">
+      <div className="w-full border-2 border-black mt-2 mb-8">
         <div className="w-full flex">
           <div className="w-1/2 bg-[#F4622F]">
             <p className="text-center text-white py-2 font-semibold border-r-2  border-black">
@@ -215,10 +299,25 @@ function Halaman1({ data }: any) {
               ))}
             </div>
             <div>
-              {Array.from({ length: 10 }, (_, index) => (
-                <div key={index} className="">
-                  <p className="text-[14px]  text-black font-semibold">
-                    : {dataKendaraan[index]?.value}
+              {dataKendaraan.map((item, index) => (
+                <div key={index}>
+                  <p
+                    onClick={() =>
+                      editable &&
+                      onClick({
+                        label: item.label,
+                        inputFor: item.label.toLowerCase().replace(/\s/g, ""),
+                        value: item.value,
+                        type: "normal-input",
+                        section: "vehicleData",
+                        onClose: () => {},
+                      })
+                    }
+                    className={`text-[14px] text-black font-semibold ${
+                      editable ? "cursor-pointer hover:underline" : ""
+                    }`}
+                  >
+                    : {item.value}
                   </p>
                 </div>
               ))}
@@ -235,10 +334,25 @@ function Halaman1({ data }: any) {
               ))}
             </div>
             <div>
-              {Array.from({ length: kelengkapan.length }, (_, index) => (
-                <div key={index} className="">
-                  <p className="text-[14px]  text-black font-semibold">
-                    : {kelengkapan[index]?.value}
+              {kelengkapan.map((item, index) => (
+                <div key={index}>
+                  <p
+                    onClick={() =>
+                      editable &&
+                      onClick({
+                        label: item.label,
+                        inputFor: item.partName,
+                        value: item.value,
+                        section: "equipmentChecklist",
+                        type: "select-2-input-kelengkapan",
+                        onClose: () => {},
+                      })
+                    }
+                    className={`text-[14px] text-black font-semibold ${
+                      editable ? "cursor-pointer hover:underline" : ""
+                    }`}
+                  >
+                    : {item.value ? "Ada" : "Tidak Ada"}
                   </p>
                 </div>
               ))}
@@ -280,7 +394,22 @@ function Halaman1({ data }: any) {
                 <div key={index} className="flex flex-col items-center">
                   <p className="text-[12px] mb-1">{item}</p>
                   <div className="w-12 h-12 bg-[#B2BEB5] rounded-full  flex items-center justify-center">
-                    <p className="text-[32px] font-bold text-center text-black leading-none">
+                    <p
+                      onClick={() =>
+                        editable &&
+                        onClick({
+                          label: `${item}`,
+                          inputFor: `${item.toLowerCase()}Score`,
+                          value: summaryScore[index]?.value,
+                          section: "inspectionSummary",
+                          type: "penilaian-summary",
+                          onClose: () => {},
+                        })
+                      }
+                      className={`text-[32px] font-bold text-center text-black leading-none ${
+                        editable ? "cursor-pointer hover:underline" : ""
+                      }`}
+                    >
                       {getGradeLabel(summaryScore[index]?.value)}
                     </p>
                   </div>
@@ -291,7 +420,22 @@ function Halaman1({ data }: any) {
             <div className="flex flex-col items-center mt-2">
               <p className="text-[12px] mb-2">Penilaian Keseluruhan</p>
               <div className="w-24 h-24 bg-[#B2BEB5] rounded-full flex items-center justify-center">
-                <p className="-mt-2 text-[72px] font-bold text-center text-black leading-none">
+                <p
+                  onClick={() =>
+                    editable &&
+                    onClick({
+                      label: `Penilaian Keseluruhan`,
+                      inputFor: `overallRating`,
+                      value: data?.overallRating,
+                      section: "root",
+                      type: "penilaian-summary",
+                      onClose: () => {},
+                    })
+                  }
+                  className={`-mt-2 text-[64px] font-bold text-center text-black leading-none ${
+                    editable ? "cursor-pointer hover:underline" : ""
+                  }`}
+                >
                   {getGradeLabel(data?.overallRating)}
                 </p>
               </div>
@@ -311,6 +455,17 @@ function Halaman1({ data }: any) {
               {data.inspectionSummary.indikasiTabrakan ? (
                 <div className="flex gap-5">
                   <img
+                    onClick={() =>
+                      editable &&
+                      onClick({
+                        label: `Indikasi Bekas Tabrakan`,
+                        inputFor: `indikasiTabrakan`,
+                        value: data.inspectionSummary.indikasiTabrakan,
+                        section: "inspectionSummary",
+                        type: "select-2-input-indikasi",
+                        onClose: () => {},
+                      })
+                    }
                     src="/assets/icon/bekastabrak.svg"
                     alt="ok"
                     className="w-16 h-16"
@@ -320,6 +475,17 @@ function Halaman1({ data }: any) {
               ) : (
                 <div className="flex gap-5 items-center">
                   <img
+                    onClick={() =>
+                      editable &&
+                      onClick({
+                        label: `Indikasi Bekas Tabrakan`,
+                        inputFor: `indikasiTabrakan`,
+                        value: data.inspectionSummary.indikasiTabrakan,
+                        section: "inspectionSummary",
+                        type: "select-2-input-indikasi",
+                        onClose: () => {},
+                      })
+                    }
                     src="/assets/icon/tidakindikasi.svg"
                     alt="ok"
                     className="w-16 h-16"
@@ -328,10 +494,21 @@ function Halaman1({ data }: any) {
                 </div>
               )}
 
-              {data.inspectionSummary.indikasiTabrakan ? (
+              {data.inspectionSummary.indikasiBanjir ? (
                 <div className="flex gap-5">
                   <img
-                    src="/assets/icon/bekastabrak.svg"
+                    onClick={() =>
+                      editable &&
+                      onClick({
+                        label: `Indikasi Bekas Banjir`,
+                        inputFor: `indikasiBanjir`,
+                        value: data.inspectionSummary.indikasiBanjir,
+                        section: "inspectionSummary",
+                        type: "select-2-input-indikasi",
+                        onClose: () => {},
+                      })
+                    }
+                    src="/assets/icon/bekasbanjir.svg"
                     alt="ok"
                     className="w-16 h-16"
                   />
@@ -340,6 +517,17 @@ function Halaman1({ data }: any) {
               ) : (
                 <div className="flex gap-5 items-center">
                   <img
+                    onClick={() =>
+                      editable &&
+                      onClick({
+                        label: `Indikasi Bekas Banjir`,
+                        inputFor: `indikasiBanjir`,
+                        value: data.inspectionSummary.indikasiBanjir,
+                        section: "inspectionSummary",
+                        type: "select-2-input-indikasi",
+                        onClose: () => {},
+                      })
+                    }
                     src="/assets/icon/tidakindikasi.svg"
                     alt="ok"
                     className="w-16 h-16"
@@ -347,10 +535,21 @@ function Halaman1({ data }: any) {
                   <p className="">TIDAK BEKAS BANJIR</p>
                 </div>
               )}
-              {data.inspectionSummary.indikasiTabrakan ? (
+              {data.inspectionSummary.indikasiOdometerReset ? (
                 <div className="flex gap-5">
                   <img
-                    src="/assets/icon/bekastabrak.svg"
+                    onClick={() =>
+                      editable &&
+                      onClick({
+                        label: `Indikasi Odometer Reset`,
+                        inputFor: `indikasiOdometerReset`,
+                        value: data.inspectionSummary.indikasiOdometerReset,
+                        section: "inspectionSummary",
+                        type: "select-2-input-indikasi",
+                        onClose: () => {},
+                      })
+                    }
+                    src="/assets/icon/odometerreset.svg"
                     alt="ok"
                     className="w-16 h-16"
                   />
@@ -359,6 +558,17 @@ function Halaman1({ data }: any) {
               ) : (
                 <div className="flex gap-5 items-center">
                   <img
+                    onClick={() =>
+                      editable &&
+                      onClick({
+                        label: `Indikasi Odometer Reset`,
+                        inputFor: `indikasiOdometerReset`,
+                        value: data.inspectionSummary.indikasiOdometerReset,
+                        section: "inspectionSummary",
+                        type: "select-2-input-indikasi",
+                        onClose: () => {},
+                      })
+                    }
                     src="/assets/icon/tidakindikasi.svg"
                     alt="ok"
                     className="w-16 h-16"
@@ -374,6 +584,6 @@ function Halaman1({ data }: any) {
       <Footer />
     </div>
   );
-}
+};
 
 export default Halaman1;
