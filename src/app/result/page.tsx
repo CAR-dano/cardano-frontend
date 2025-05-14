@@ -11,7 +11,6 @@ import CustomButton from "@/components/ui/CustomButton";
 import MadeByCardano from "@/components/ui/MadeByCardano";
 
 function ResultPageContent() {
-  const searchParams = useSearchParams();
   const data = dataCar;
 
   function formatPlatNomor(plat: string) {

@@ -17,6 +17,7 @@ import { useDispatch } from "react-redux";
 import { setEditedData } from "@/lib/features/inspection/inspectionSlice";
 import { useState } from "react";
 import FormPenilaianSummmary from "./FormPenilaianSummary";
+import FormArray from "./FormArray";
 
 interface DialogFormProps {
   label: string;
@@ -46,11 +47,14 @@ export function DialogForm({
   isOpen,
   section,
 }: DialogFormProps) {
-  const dispatch = useDispatch<AppDispatch>();
   const [newValue, setNewValue] = useState(value);
 
   const handleChange = (value: any) => {
     if (typeof value === "boolean") {
+      setNewValue(value);
+    }
+    // if array
+    else if (Array.isArray(value)) {
       setNewValue(value);
     } else {
       setNewValue(value.toString());
@@ -130,6 +134,16 @@ export function DialogForm({
             inputFor={inputFor}
             value={value}
             onChange={handleChange}
+          />
+        );
+      case "penilaian-array":
+        return (
+          <FormArray
+            label={label}
+            inputFor={inputFor}
+            value={value}
+            onChange={handleChange}
+            section={section}
           />
         );
       default:

@@ -43,14 +43,14 @@ const EmblaCarousel: React.FC<PropType> = ({ slides, options }) => {
     {
       plat: "AB 1234 CD",
       image:
-        "https://s3-alpha-sig.figma.com/img/8eab/d576/54c7c654f41553198f5578ab5789116e?Expires=1743379200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=q6ayIdZHrwC5-AqQgqc-CDiqYS2H5vZll3-fDomNBp1hcJR6XJ0csnoB8NJVyF3zIhyH9yKC9KAyVvY0f898tf-RIk5HfLcq4Cic8g1c4ztg0JFcpNcTD8HA-LHgZIPtukZeIMwA0CskpR-sjzcQdvVKsUCR3ZQCq5AsTT34EPj~sAMb42zuYsPgitVGIq2cP-ZhsgYdMfe-5OVsUDKrR4ikZzZAZmErjKIIClFFmZwFM9H6VHzK4E-7n0UhDpcug5W3Nj3Mf0aLkMCjHI044BK4GmaQ3ITUGgVorrxs6vmJvg3KtWOQJ1PsMFGELq0x6ywRpph4kxla2vUAGetZOQ__",
+        "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       brand: "Mitsubishi",
       model: "Expander 1.5 Ultimate",
     },
     {
       plat: "AB 1345 CF",
       image:
-        "https://s3-alpha-sig.figma.com/img/9a8d/be06/db9d9d1d58fd737e76faf7d4103d17c5?Expires=1743379200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=pxWorSGoIEwxtNMJ5hMJ5a3g76A~DNAQfUkbfCxhU5aZ2etOS6Ac4uL6KpZJkcRW-Cxyi0-zkf2qW9vWL5EsGBF-PA1y78xXXAQpgGm8JpmG-Voaer7c5QSk4sqodUBt~xFPeqx7YVaAfb1scBE1OmGCeYOvbUgg849cZmC01440Ac1Yk9fgc7F7yjavNnfzP4igcSJPVpyhixShhLk3oSH9GDy7v8AjCJ-oDrejXyVCHKciVekuyUGTSiUM4zBsRe39ze1w5sCoGAJ~PXcEKlZxBI2D5TTpFXdVNdeBbOgQCZf~pj-nQAS62wZEgvikyF5tXRM-0rNj8~-3WmZ1Cw__",
+        "https://images.unsplash.com/photo-1459603677915-a62079ffd002?q=80&w=2134&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       brand: "BMW",
       model: "7 Series",
     },
@@ -58,14 +58,14 @@ const EmblaCarousel: React.FC<PropType> = ({ slides, options }) => {
     {
       plat: "AB 1234 ABC",
       image:
-        "https://s3-alpha-sig.figma.com/img/7808/8c27/ae6fbc8e69411409a265c81edbbfa16f?Expires=1743379200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=npzyTYlvImBxwONmJByERez1sO7WQqpvVVMwdoN9eBlzNlny3aAmcTxxvTHwup2sfs5kYX6OVycGr9XtTLwBcjcZ~Vm7LdoYFT3R2Xqip~9B4mhJLqI3Df5LJb54s1m9OzC8bgzccF8hjuHD2EOAJJza~ZDhn1IlBLlN52XUJ1LcnMxtbXsjXvb-HUVymhgsnutDOg9RJgXRKf6tXmkAIt2pGAz1qUoCH65thciSa~u7WbzgPrK1uBBz3ITSmG8Qfld0dgFcgdhqssDqoQ76~XDykH2w9pvWe1clKuzKrRuXns-FlO5Nxg~0vPkF2igdvSY6LX-T61VdVXxyf16eXQ__",
+        "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       brand: "Audy",
       model: "A5",
     },
     {
       plat: "AB 1234 XYZ",
       image:
-        "https://s3-alpha-sig.figma.com/img/b484/376d/4862bafbe464af5328be82cc6417b1ab?Expires=1743379200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=maJq8bPdpjnsvu0GejEq7sBRq~JJOWQgkaGmJ52oQnF4akIzCJP3pGwHWLU9dpmNMDsvIWx1rwOVtkbXvncLWs6JKk0zVKJ9F85jRnzf80kvjWTDezJJY2zp8ZArgYvzKS39LAgmjw~RAjWo2vEI-85FeVNExl86GwKlC8NGWluGwFRw8jq~sd38cnMzxrYrx2O6ku2~K9414iirej8qg2Fmu9hI-p3WIT8d0GMajqJjdFutY4drGJLgOHjNWqgzzpa9MMyX9McuiAAluLp6b5OTwK~M9Ez2n9gL~p2xspshxDxloQl558pLUrMrBg4fCQq0MJPFLuGmCMdpUBo8gg__",
+        "https://images.unsplash.com/photo-1502877338535-766e1452684a?q=80&w=2072&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       brand: "Tesla",
       model: "Model X",
     },

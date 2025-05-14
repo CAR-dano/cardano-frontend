@@ -10,6 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "../ui/label";
+import axios from "axios";
 
 interface FormDropdownInputProps {
   label: string;
@@ -19,16 +20,6 @@ interface FormDropdownInputProps {
   section?: string;
   onChange?: (value: string) => void;
 }
-
-const optionLokasi = [
-  { value: "Semarang", label: "Semarang" },
-  { value: "Yogyakarta", label: "Yogyakarta" },
-];
-
-const optionInspektor = [
-  { value: "Inspektor 1", label: "Inspektor 1" },
-  { value: "Inspektor 2", label: "Inspektor 2" },
-];
 
 function FormDropdownInput({
   label,
@@ -40,18 +31,42 @@ function FormDropdownInput({
 }: FormDropdownInputProps) {
   const [options, setOptions] = React.useState<any[]>([]);
   const [option, setOption] = React.useState<any>("");
-  const checkType = () => {
-    if (type === "inspektor") {
-      setOptions(optionInspektor);
-      setOption("Inspektor");
-    } else if (type === "lokasi") {
-      setOptions(optionLokasi);
-      setOption("Lokasi");
+
+  const getData = async (type: string) => {
+    const API_URL = process.env.NEXT_PUBLIC_API_URL;
+    let URL = "";
+    if (type == "inspektor") {
+      URL = `${API_URL}/public/users/inspectors`;
+    } else if (type == "lokasi") {
+      URL = `${API_URL}/inspection-branches`;
+    }
+
+    try {
+      const response = await axios.get(URL);
+      const data = response.data;
+      if (type == "inspektor") {
+        const formattedData = data.map((item: any) => ({
+          value: item.name,
+          label: item.name,
+        }));
+        setOptions(formattedData);
+        setOption("inspektor");
+      } else if (type == "lokasi") {
+        const formattedData = data.map((item: any) => ({
+          value: item.city,
+          label: item.city,
+        }));
+        setOptions(formattedData);
+        setOption("lokasi");
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      return [];
     }
   };
 
   React.useEffect(() => {
-    checkType();
+    getData(type || "");
   }, [type]);
 
   const handleChange = (newValue: string) => {

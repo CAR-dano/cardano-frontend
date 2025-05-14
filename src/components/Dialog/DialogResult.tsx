@@ -49,19 +49,23 @@ function DialogResult({
               {message}
             </DialogDescription>
             <div className="flex justify-end gap-2 mt-5">
-              <Button
-                variant="outline"
-                onClick={action1}
-                className="bg-white text-black border border-gray-300 hover:bg-gray-100 hover:text-gray-900"
-              >
-                {buttonLabel1}
-              </Button>
-              <Button
-                onClick={action2}
-                className="bg-blue-500 text-white hover:bg-blue-600"
-              >
-                {buttonLabel2}
-              </Button>
+              {buttonLabel1 && (
+                <Button
+                  variant="outline"
+                  onClick={action1}
+                  className="bg-white text-black border border-gray-300 hover:bg-gray-100 hover:text-gray-900"
+                >
+                  {buttonLabel1}
+                </Button>
+              )}
+              {buttonLabel2 && (
+                <Button
+                  onClick={action2}
+                  className="bg-blue-500 text-white hover:bg-blue-600"
+                >
+                  {buttonLabel2}
+                </Button>
+              )}
             </div>
           </DialogFooter>
         </DialogContent>

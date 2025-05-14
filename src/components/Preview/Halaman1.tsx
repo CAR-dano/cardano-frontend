@@ -371,7 +371,20 @@ const Halaman1: React.FC<Halaman1Props> = ({
         <div className="w-full flex border-t-2 border-black">
           <div className="w-1/2 bg-[#B2BEB5] border-r-2 border-black h-48"></div>
           <div className="w-1/2 ">
-            <div className="text-[12px] text-left text-black py-2 px-2 font-bold">
+            <div
+              onClick={() =>
+                editable &&
+                onClick({
+                  label: `Inspection Summary`,
+                  inputFor: `inspectionSummary`,
+                  value: data.inspectionSummary.deskripsiKeseluruhan,
+                  section: "inspectionSummary",
+                  type: "penilaian-array",
+                  onClose: () => {},
+                })
+              }
+              className="text-[12px] text-left text-black py-2 px-2 font-bold"
+            >
               Deskripsi:
               <br />
               <ol className="ml-2 list-disc list-inside text-[12px] font-semibold">
@@ -453,7 +466,7 @@ const Halaman1: React.FC<Halaman1Props> = ({
             </div>
             <div className="flex flex-col justify-start text-[24px] font-bold text-left my-2 gap-3 mx-5 ">
               {data.inspectionSummary.indikasiTabrakan ? (
-                <div className="flex gap-5">
+                <div className="flex gap-5  items-center">
                   <img
                     onClick={() =>
                       editable &&
@@ -495,7 +508,7 @@ const Halaman1: React.FC<Halaman1Props> = ({
               )}
 
               {data.inspectionSummary.indikasiBanjir ? (
-                <div className="flex gap-5">
+                <div className="flex gap-5  items-center">
                   <img
                     onClick={() =>
                       editable &&
@@ -536,7 +549,7 @@ const Halaman1: React.FC<Halaman1Props> = ({
                 </div>
               )}
               {data.inspectionSummary.indikasiOdometerReset ? (
-                <div className="flex gap-5">
+                <div className="flex gap-5  items-center">
                   <img
                     onClick={() =>
                       editable &&

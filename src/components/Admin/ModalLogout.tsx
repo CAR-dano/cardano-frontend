@@ -1,6 +1,5 @@
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -10,14 +9,9 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 // import { logout } from "@/lib/features/auth/authSlice";
-import { useAppDispatch } from "@/lib/store";
 import { Toaster } from "../ui/toaster";
-import { toast } from "../ui/use-toast";
-import { useRouter } from "next/navigation";
 
 const ModalLogout: React.FC = () => {
-  const dispatch = useAppDispatch();
-  const router = useRouter();
   // const handleLogout = () => {
   //   dispatch(logout())
   //     .unwrap()

@@ -13,6 +13,7 @@ import { getDataForPreview } from "@/lib/features/inspection/inspectionSlice";
 import { Button } from "@/components/ui/button";
 import { IoArrowBack } from "react-icons/io5";
 import { IoMdDownload } from "react-icons/io";
+import Halaman7 from "@/components/Preview/Halaman7";
 
 function DataPage() {
   const dispatch = useDispatch<AppDispatch>();
@@ -23,6 +24,9 @@ function DataPage() {
   const [dataHalaman4, setDataHalaman4] = React.useState<any>(null);
   const [dataHalaman5, setDataHalaman5] = React.useState<any>(null);
   const [dataHalaman6, setDataHalaman6] = React.useState<any>(null);
+  const [dataHalaman7, setDataHalaman7] = React.useState<any>(null);
+  const [dataHalaman8, setDataHalaman8] = React.useState<any>(null);
+  const [dataHalaman9, setDataHalaman9] = React.useState<any>(null);
 
   const getData = async (id: string) => {
     const response = await dispatch(getDataForPreview(id)).unwrap();
@@ -78,6 +82,14 @@ function DataPage() {
 
       photo: data?.photoPaths,
     });
+    setDataHalaman7({
+      hasilPengecekanKetebalanCat:
+        data?.bodyPaintThickness?.hasilPengecekanKetebalanCat,
+      hasilPengecekanKedalamanCat:
+        data?.bodyPaintThickness?.hasilPengecekanKedalamanCat,
+      hasilPengecekanKedalamanBodi:
+        data?.bodyPaintThickness?.hasilPengecekanKedalamanBodi,
+    });
   };
 
   const page = [
@@ -110,6 +122,11 @@ function DataPage() {
       id: 6,
       title: "Halaman 6",
       component: <Halaman6 data={dataHalaman6} editable={false} />,
+    },
+    {
+      id: 7,
+      title: "Halaman 7",
+      component: <Halaman7 data={dataHalaman7} editable={false} />,
     },
   ];
 

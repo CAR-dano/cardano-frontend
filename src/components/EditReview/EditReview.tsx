@@ -26,7 +26,6 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
 
   useEffect(() => {
     if (data) {
-      console.log("data", data);
       preProcessData(data);
     }
   }, [data]);
@@ -81,7 +80,9 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
     {
       id: 2,
       title: "Halaman 2",
-      component: <Halaman2 data={dataHalaman2} editable={true} />,
+      component: (
+        <Halaman2 data={dataHalaman2} editable={true} onClick={onClick} />
+      ),
     },
     {
       id: 3,

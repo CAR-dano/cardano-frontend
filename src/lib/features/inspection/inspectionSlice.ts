@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import inspectionService from "./inspectionService";
-import { InspectionResult } from "@/utils/InspectionResult";
 
 export const getDataForReviewer = createAsyncThunk(
   "inspection/getDataForReviewer",
@@ -47,6 +46,45 @@ export const approveInspectionData = createAsyncThunk(
     try {
       const payload = await inspectionService.approveInspectionData(id);
       console.log("payload", payload);
+      return payload;
+    } catch (error: any) {
+      const message = error?.response?.data?.message;
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const getDataEdited = createAsyncThunk(
+  "inspection/getDataEdited",
+  async (id: string, thunkAPI) => {
+    try {
+      const payload = await inspectionService.getDataEdited(id);
+      return payload;
+    } catch (error: any) {
+      const message = error?.response?.data?.message;
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const saveDataEdited = createAsyncThunk(
+  "inspection/saveDataEdited",
+  async ({ id, data }: { id: string; data: any }, thunkAPI) => {
+    try {
+      const payload = await inspectionService.saveChanges(id, data);
+      return payload;
+    } catch (error: any) {
+      const message = error?.response?.data?.message || error.message;
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const mintingToBlockchain = createAsyncThunk(
+  "inspection/mintingToBlockchain",
+  async (id: string, thunkAPI) => {
+    try {
+      const payload = await inspectionService.mintingToBlockchain(id);
       return payload;
     } catch (error: any) {
       const message = error?.response?.data?.message;
@@ -171,6 +209,40 @@ export const inspectionSlice = createSlice({
         state.error = null;
       })
       .addCase(approveInspectionData.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(getDataEdited.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getDataEdited.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.edited = action.payload;
+        state.error = null;
+      })
+      .addCase(getDataEdited.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(saveDataEdited.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(saveDataEdited.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(saveDataEdited.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(mintingToBlockchain.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(mintingToBlockchain.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(mintingToBlockchain.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
       });

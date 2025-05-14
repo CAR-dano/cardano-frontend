@@ -1,9 +1,6 @@
 "use client";
 import Header from "@/components/Admin/Header";
 import Sidebar from "@/components/Admin/Sidebar";
-import { useAppSelector } from "@/lib/store";
-import { notFound, useRouter } from "next/navigation";
-import { useEffect } from "react";
 
 export default function CreatorLayout({
   children,

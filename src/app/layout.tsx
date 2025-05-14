@@ -26,8 +26,8 @@ export default function RootLayout({
 }>) {
   return (
     <ReduxProvider>
-      <html lang="en">
-        <body className={`${rubik.variable} ${pacifico.variable} `}>
+      <html lang="en" className="hydrated">
+        <body className={`${rubik.variable} ${pacifico.variable} antialiased`}>
           {children}
         </body>
       </html>
