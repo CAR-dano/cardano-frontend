@@ -1,6 +1,5 @@
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -9,16 +8,13 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { useAppDispatch } from "@/lib/store";
 import SecondaryButton from "../Button/SecondaryButton";
-import { toast } from "../ui/use-toast";
 
 interface ModalDeleteProps {
   data: any;
 }
 
 const ModalDelete: React.FC<ModalDeleteProps> = ({ data }) => {
-  const dispatch = useAppDispatch();
   // const handleDelete = () => {
   //   dispatch(deleteUmkm(data._id))
   //     .unwrap()

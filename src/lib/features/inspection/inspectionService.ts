@@ -25,10 +25,35 @@ const approveInspectionData = async (id: string) => {
   return response.data;
 };
 
+const getDataEdited = async (id: string) => {
+  const response = await axios.get(
+    `${LOCAL_API_URL}/inspections/${id}/changelog`,
+    {}
+  );
+  return response.data;
+};
+
+const saveChanges = async (id: any, data: any) => {
+  console.log("id", id);
+  const response = await axios.put(`${LOCAL_API_URL}/inspections/${id}`, data);
+  return response.data;
+};
+
+const mintingToBlockchain = async (id: string) => {
+  const response = await axios.put(
+    `${LOCAL_API_URL}/inspections/${id}/archive`,
+    {}
+  );
+  return response.data;
+};
+
 const inspectionService = {
   getDataForReview,
   getDataForPreview,
   getDataForReviewById,
   approveInspectionData,
+  getDataEdited,
+  saveChanges,
+  mintingToBlockchain,
 };
 export default inspectionService;

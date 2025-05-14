@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -8,9 +8,6 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { usePathname } from "next/navigation";
-import { useAppSelector } from "@/lib/store";
-import Link from "next/link";
-import ModalLogout from "./ModalLogout";
 
 const Header = () => {
   return (

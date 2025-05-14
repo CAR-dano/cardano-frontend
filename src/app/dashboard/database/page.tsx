@@ -55,13 +55,9 @@ const Database: React.FC = () => {
   const [hasMounted, setHasMounted] = useState(false);
   const { isLoading } = useSelector((state: RootState) => state.inspection);
 
-  const filterData = (data: any) => {
-    const status = "APPROVED";
-    const filteredData = data.filter((item: any) => {
-      return item.status === status;
-    });
-
-    return filteredData;
+  const filterData = (data: any[]) => {
+    const allowedStatuses = ["APPROVED", "ARCHIVING", "ARCHIVED"];
+    return data.filter((item) => allowedStatuses.includes(item.status));
   };
 
   useEffect(() => {
@@ -69,6 +65,7 @@ const Database: React.FC = () => {
     dispatch(getDataForReviewer())
       .unwrap()
       .then((response) => {
+        console.log("Response:", response);
         if (response) {
           const filteredData = filterData(response);
           setData(filteredData);

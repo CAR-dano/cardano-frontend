@@ -1,15 +1,28 @@
 "use client";
 import Image from "next/image";
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
+import { UserLogin, UserSignUp } from "@/utils/Auth";
+import { useDispatch } from "react-redux";
+import { AppDispatch, useAppSelector } from "@/lib/store";
+import { login, signup } from "@/lib/features/auth/authSlice";
+import LoadingScreen from "@/components/LoadingFullScreen";
 
 function LoginPage() {
   const [showSignup, setShowSignup] = useState(false);
-
   const toggleSignup = useCallback(() => setShowSignup((prev) => !prev), []);
+  const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
+  const isLoading = useAppSelector((state) => state.auth.isLoading);
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
 
-  // Enhanced animation variants
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push("/dashboard");
+    }
+  }, [isAuthenticated]);
+
   const pageVariants = {
     loginInitial: { x: "100%", opacity: 0, scale: 0.9 },
     signupInitial: { x: "-100%", opacity: 0, scale: 0.9 },
@@ -91,17 +104,39 @@ function LoginPage() {
     },
   };
 
-  const router = useRouter();
+  const [formLogin, setFormLogin] = useState<UserLogin>({
+    loginIdentifier: "",
+    password: "",
+  });
+
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle login logic here
-    // For example, you can call an API to authenticate the user
-    // and then redirect them to the dashboard or home page
-    router.push("/dashboard/review"); // Redirect to the dashboard page after login
+    try {
+      dispatch(login(formLogin));
+    } catch (err) {
+      console.error("Login error:", err);
+    }
+  };
+
+  const [formRegister, setFormRegister] = useState<UserSignUp>({
+    username: "",
+    email: "",
+    password: "",
+  });
+
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      dispatch(signup(formRegister));
+    } catch (err) {
+      console.error("Signup error:", err);
+    }
   };
 
   return (
     <div className="w-full h-screen overflow-hidden bg-[url('/assets/pattern/bg.png')] bg-cover">
+      {isLoading && <LoadingScreen />}
+
       <AnimatePresence initial={false} mode="wait">
         {!showSignup ? (
           <motion.div
@@ -176,11 +211,18 @@ function LoginPage() {
                         htmlFor="email"
                         className="text-black font-rubik text-[16px] font-medium"
                       >
-                        Email
+                        Email or Username
                       </label>
                       <input
                         type="text"
-                        placeholder="Enter your email address"
+                        placeholder="Enter your email address or username"
+                        value={formLogin.loginIdentifier}
+                        onChange={(e) =>
+                          setFormLogin({
+                            ...formLogin,
+                            loginIdentifier: e.target.value,
+                          })
+                        }
                         className="px-4 py-3 rounded-lg border border-[#A25DF9] bg-white shadow-[0px_16px_20px_-6px_rgba(194,140,255,0.05),0px_24px_48px_-10px_rgba(76,28,130,0.16)] focus:outline-none focus:ring-2 focus:ring-[#A25DF9] focus:border-transparent transition-all duration-300"
                       />
                     </motion.div>
@@ -197,6 +239,13 @@ function LoginPage() {
                       <input
                         type="password"
                         placeholder="Enter your password"
+                        value={formLogin.password}
+                        onChange={(e) =>
+                          setFormLogin({
+                            ...formLogin,
+                            password: e.target.value,
+                          })
+                        }
                         className="px-4 py-3 rounded-lg border border-[#A25DF9] bg-white shadow-[0px_16px_20px_-6px_rgba(194,140,255,0.05),0px_24px_48px_-10px_rgba(76,28,130,0.16)] focus:outline-none focus:ring-2 focus:ring-[#A25DF9] focus:border-transparent transition-all duration-300"
                       />
                     </motion.div>
@@ -288,6 +337,13 @@ function LoginPage() {
                       <input
                         type="text"
                         placeholder="Enter your username"
+                        value={formRegister.username}
+                        onChange={(e) =>
+                          setFormRegister({
+                            ...formRegister,
+                            username: e.target.value,
+                          })
+                        }
                         className="px-4 py-3 rounded-lg border border-[#A25DF9] bg-white shadow-[0px_16px_20px_-6px_rgba(194,140,255,0.05),0px_24px_48px_-10px_rgba(76,28,130,0.16)] focus:outline-none focus:ring-2 focus:ring-[#A25DF9] focus:border-transparent transition-all duration-300"
                       />
                     </motion.div>
@@ -304,6 +360,13 @@ function LoginPage() {
                       <input
                         type="email"
                         placeholder="Enter your email address"
+                        value={formRegister.email}
+                        onChange={(e) =>
+                          setFormRegister({
+                            ...formRegister,
+                            email: e.target.value,
+                          })
+                        }
                         className="px-4 py-3 rounded-lg border border-[#A25DF9] bg-white shadow-[0px_16px_20px_-6px_rgba(194,140,255,0.05),0px_24px_48px_-10px_rgba(76,28,130,0.16)] focus:outline-none focus:ring-2 focus:ring-[#A25DF9] focus:border-transparent transition-all duration-300"
                       />
                     </motion.div>
@@ -320,10 +383,20 @@ function LoginPage() {
                       <input
                         type="password"
                         placeholder="Enter your password"
+                        value={formRegister.password}
+                        onChange={(e) =>
+                          setFormRegister({
+                            ...formRegister,
+                            password: e.target.value,
+                          })
+                        }
                         className="px-4 py-3 rounded-lg border border-[#A25DF9] bg-white shadow-[0px_16px_20px_-6px_rgba(194,140,255,0.05),0px_24px_48px_-10px_rgba(76,28,130,0.16)] focus:outline-none focus:ring-2 focus:ring-[#A25DF9] focus:border-transparent transition-all duration-300"
                       />
                     </motion.div>
-                    <button className="gradient-button-2 w-full py-3 rounded-lg text-white font-rubik text-[18px] font-medium ">
+                    <button
+                      onClick={handleSignup}
+                      className="gradient-button-2 w-full py-3 rounded-lg text-white font-rubik text-[18px] font-medium "
+                    >
                       Sign Up
                     </button>
                   </motion.form>

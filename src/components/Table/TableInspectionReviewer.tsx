@@ -10,9 +10,16 @@ import {
 } from "@/components/ui/table";
 import Link from "next/link";
 import SecondaryButton from "../Button/SecondaryButton";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/lib/store";
+import { mintingToBlockchain } from "@/lib/features/inspection/inspectionSlice";
+import DialogResult from "../Dialog/DialogResult";
+import { useRouter } from "next/navigation";
 
-const TableData = ({ data, isDatabase = false }: any) => {
+const TableData = ({ data, isDatabase = false, setDialogData }: any) => {
   const [fetchStatus, setFetchStatus] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
 
   useEffect(() => {
     if (!fetchStatus) {
@@ -35,17 +42,47 @@ const TableData = ({ data, isDatabase = false }: any) => {
     return newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
   };
 
+  const mintingToBlockchainHandler = (id: string) => {
+    dispatch(mintingToBlockchain(id))
+      .then((response) => {
+        console.log("Minting response:", response);
+        setDialogData({
+          isOpen: true,
+          isSuccess: true,
+          title: "Data minted successfully",
+          message:
+            "Data sudah disetujui dan diminting ke blockchain. Silahkan cek di dashboard.",
+          buttonLabel2: "Lihat Data",
+          action2: () => router.push("/dashboard/database"),
+        });
+      })
+      .catch((err) => {
+        console.error("Minting error:", err);
+        setDialogData({
+          isOpen: true,
+          isSuccess: false,
+          title: "Minting failed",
+          message: "Minting data ke blockchain gagal. Silahkan coba lagi.",
+          buttonLabel1: "Batal",
+          buttonLabel2: "Coba Lagi",
+          action1: () => router.push("/dashboard/database"),
+          action2: () => {
+            mintingToBlockchainHandler(id);
+          },
+        });
+      });
+  };
+
   return (
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Nama Customer</TableHead>
-          <TableHead>ID Laporan</TableHead>
-          <TableHead>Inspektor</TableHead>
-          <TableHead>Tanggal</TableHead>
-          {!isDatabase && <TableHead>Status</TableHead>}
-          <TableHead>Dokumen</TableHead>
-          <TableHead>Action</TableHead>
+          <TableHead className="text-center">Nama Customer</TableHead>
+          <TableHead className="text-center">Inspektor</TableHead>
+          <TableHead className="text-center">Tanggal</TableHead>
+          <TableHead className="text-center">Status</TableHead>
+          <TableHead className="text-center">Dokumen</TableHead>
+          <TableHead className="text-center">Action</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -55,18 +92,15 @@ const TableData = ({ data, isDatabase = false }: any) => {
             <TableCell className="font-light">
               {item.identityDetails.namaCustomer}
             </TableCell>
-            <TableCell className="font-light">{item.id}</TableCell>
             <TableCell className="font-light">
               {item.identityDetails.namaInspektor}
             </TableCell>
             <TableCell className="font-light">
               {formatDate(item.inspectionDate)}
             </TableCell>
-            {!isDatabase && (
-              <TableCell className="font-light">
-                {formatStatus(item.status)}
-              </TableCell>
-            )}
+            <TableCell className="font-light">
+              {formatStatus(item.status)}
+            </TableCell>
             <TableCell>
               <Link
                 href={`/preview/${item.id}`}
@@ -78,11 +112,19 @@ const TableData = ({ data, isDatabase = false }: any) => {
             </TableCell>
             <TableCell>
               <div className="flex gap-2">
-                <Link href={`/dashboard/data/${item.id}`}>
+                <Link href={`/dashboard/review/${item.id}`}>
                   <SecondaryButton className="text-[16px] text-white bg-[#30B6ED] rounded-[12px] hover:bg-white hover:text-[#30B6ED] hover:border-[#30B6ED] border-[1px] border-[#30B6ED]">
                     {isDatabase ? "Lihat" : "Review"}
                   </SecondaryButton>
                 </Link>
+                {item.status == "APPROVED" && (
+                  <SecondaryButton
+                    onClick={() => mintingToBlockchainHandler(item.id)}
+                    className="text-[16px] text-white bg-blue-500 rounded-[12px] hover:bg-white hover:text-[#30B6ED] hover:border-[#30B6ED] border-[1px] border-[#30B6ED]"
+                  >
+                    Mint to Blockchain
+                  </SecondaryButton>
+                )}
               </div>
             </TableCell>
           </TableRow>
@@ -131,16 +173,45 @@ const TableInfo: React.FC<TableInfoProps> = ({ data }) => {
 };
 
 const TableInspectionReviewer = ({ data, isDatabase }: any) => {
+  const [dialogResultData, setDialogResultData] = useState<{
+    isOpen: boolean;
+    isSuccess: boolean;
+    title: string;
+    message: string;
+    buttonLabel1?: string;
+    buttonLabel2: string;
+    action1?: () => void;
+    action2: () => void;
+  } | null>(null);
+
   return (
     <div className="flex flex-col">
       <div className="overflow-x-auto">
         <div className="w-full inline-block align-middle">
           <div className="overflow-hidden border rounded-lg">
-            <TableData data={data} isDatabase={isDatabase} />
+            <TableData
+              data={data}
+              isDatabase={isDatabase}
+              setDialogData={setDialogResultData}
+            />
           </div>
           <TableInfo data={data} />
         </div>
       </div>
+
+      {dialogResultData && (
+        <DialogResult
+          isOpen={dialogResultData.isOpen}
+          isSuccess={dialogResultData.isSuccess}
+          title={dialogResultData.title}
+          message={dialogResultData.message}
+          buttonLabel1={dialogResultData.buttonLabel1}
+          buttonLabel2={dialogResultData.buttonLabel2}
+          action1={dialogResultData.action1}
+          action2={dialogResultData.action2}
+          onClose={() => setDialogResultData(null)}
+        />
+      )}
     </div>
   );
 };
