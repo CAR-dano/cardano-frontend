@@ -89,19 +89,19 @@ const TableData = ({ data, isDatabase = false, setDialogData }: any) => {
         {data.map((item: any) => (
           // <TableRow>
           <TableRow key={item.id}>
-            <TableCell className="font-light">
+            <TableCell className="font-light text-center">
               {item.identityDetails.namaCustomer}
             </TableCell>
-            <TableCell className="font-light">
+            <TableCell className="font-light text-center">
               {item.identityDetails.namaInspektor}
             </TableCell>
-            <TableCell className="font-light">
+            <TableCell className="font-light text-center">
               {formatDate(item.inspectionDate)}
             </TableCell>
-            <TableCell className="font-light">
+            <TableCell className="font-light text-center">
               {formatStatus(item.status)}
             </TableCell>
-            <TableCell>
+            <TableCell className="font-light text-center">
               <Link
                 href={`/preview/${item.id}`}
                 className="text-blue-500 underline text-[16px] font-light"
@@ -110,9 +110,13 @@ const TableData = ({ data, isDatabase = false, setDialogData }: any) => {
                 {!isDatabase ? "Preview" : "Download"}
               </Link>
             </TableCell>
-            <TableCell>
+            <TableCell className="font-light flex justify-center items-center">
               <div className="flex gap-2">
-                <Link href={`/dashboard/review/${item.id}`}>
+                <Link
+                  href={`/dashboard/${isDatabase ? "data" : "review"}/${
+                    item.id
+                  }`}
+                >
                   <SecondaryButton className="text-[16px] text-white bg-[#30B6ED] rounded-[12px] hover:bg-white hover:text-[#30B6ED] hover:border-[#30B6ED] border-[1px] border-[#30B6ED]">
                     {isDatabase ? "Lihat" : "Review"}
                   </SecondaryButton>

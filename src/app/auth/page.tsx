@@ -8,20 +8,24 @@ import { useDispatch } from "react-redux";
 import { AppDispatch, useAppSelector } from "@/lib/store";
 import { login, signup } from "@/lib/features/auth/authSlice";
 import LoadingScreen from "@/components/LoadingFullScreen";
+import { FiEye, FiEyeOff } from "react-icons/fi";
+import { toast } from "@/hooks/use-toast";
 
 function LoginPage() {
   const [showSignup, setShowSignup] = useState(false);
+
+  const [showPassword, setShowPassword] = useState(false);
   const toggleSignup = useCallback(() => setShowSignup((prev) => !prev), []);
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const isLoading = useAppSelector((state) => state.auth.isLoading);
-  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+  const user = useAppSelector((state) => state.auth.user);
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (user) {
       router.push("/dashboard");
     }
-  }, [isAuthenticated]);
+  }, [user]);
 
   const pageVariants = {
     loginInitial: { x: "100%", opacity: 0, scale: 0.9 },
@@ -109,12 +113,21 @@ function LoginPage() {
     password: "",
   });
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      dispatch(login(formLogin));
-    } catch (err) {
-      console.error("Login error:", err);
+      await dispatch(login(formLogin)).unwrap();
+      toast({
+        title: "Success",
+        description: "Login successful!",
+        variant: "default",
+      });
+    } catch (err: any) {
+      toast({
+        title: "Error",
+        description: err,
+        variant: "destructive",
+      });
     }
   };
 
@@ -128,8 +141,18 @@ function LoginPage() {
     e.preventDefault();
     try {
       dispatch(signup(formRegister));
-    } catch (err) {
-      console.error("Signup error:", err);
+      toast({
+        title: "Success",
+        description: "Registration successful! Please log in.",
+        variant: "default",
+      });
+      setShowSignup(false);
+    } catch (err: any) {
+      toast({
+        title: "Error",
+        description: err,
+        variant: "destructive",
+      });
     }
   };
 
@@ -236,18 +259,31 @@ function LoginPage() {
                       >
                         Password
                       </label>
-                      <input
-                        type="password"
-                        placeholder="Enter your password"
-                        value={formLogin.password}
-                        onChange={(e) =>
-                          setFormLogin({
-                            ...formLogin,
-                            password: e.target.value,
-                          })
-                        }
-                        className="px-4 py-3 rounded-lg border border-[#A25DF9] bg-white shadow-[0px_16px_20px_-6px_rgba(194,140,255,0.05),0px_24px_48px_-10px_rgba(76,28,130,0.16)] focus:outline-none focus:ring-2 focus:ring-[#A25DF9] focus:border-transparent transition-all duration-300"
-                      />
+                      <div className="relative">
+                        <input
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Enter your password"
+                          value={formLogin.password}
+                          onChange={(e) =>
+                            setFormLogin({
+                              ...formLogin,
+                              password: e.target.value,
+                            })
+                          }
+                          className="w-full px-4 py-3 pr-12 rounded-lg border border-[#A25DF9] bg-white shadow-[0px_16px_20px_-6px_rgba(194,140,255,0.05),0px_24px_48px_-10px_rgba(76,28,130,0.16)] focus:outline-none focus:ring-2 focus:ring-[#A25DF9] focus:border-transparent transition-all duration-300"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-[#A25DF9]"
+                        >
+                          {showPassword ? (
+                            <FiEyeOff size={20} />
+                          ) : (
+                            <FiEye size={20} />
+                          )}
+                        </button>
+                      </div>
                     </motion.div>
                     <button
                       onClick={handleLogin}

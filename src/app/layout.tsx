@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Rubik, Pacifico } from "next/font/google";
 import "./globals.css";
 import ReduxProvider from "@/lib/store/redux-provider";
+import { Toaster } from "@/components/ui/toaster";
 
 const rubik = Rubik({
   variable: "--font-rubik",
@@ -26,9 +27,10 @@ export default function RootLayout({
 }>) {
   return (
     <ReduxProvider>
-      <html lang="en" className="hydrated">
+      <html lang="en" className="hydrated" suppressHydrationWarning>
         <body className={`${rubik.variable} ${pacifico.variable} antialiased`}>
           {children}
+          <Toaster />
         </body>
       </html>
     </ReduxProvider>

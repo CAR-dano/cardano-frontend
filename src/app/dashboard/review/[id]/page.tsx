@@ -6,6 +6,7 @@ import EditedData from "@/components/EditReview/EditedData";
 import EditReviewComponents from "@/components/EditReview/EditReview";
 import { DialogForm } from "@/components/Form/DialogForm";
 import Loading from "@/components/Loading";
+import { toast } from "@/components/ui/use-toast";
 import {
   approveInspectionData,
   getDataForPreview,
@@ -75,6 +76,11 @@ const Edit = () => {
     const response = await dispatch(getDataForPreview(id)).unwrap();
     if (response) {
       setData(response);
+      toast({
+        title: "Data fetched successfully",
+        description: "Data has been fetched successfully.",
+        variant: "default",
+      });
     } else {
       console.error("Failed to fetch data");
     }
@@ -226,7 +232,7 @@ const Edit = () => {
             buttonLabel1: "Kembali",
             buttonLabel2: "Lihat Data",
             action1: () => router.push("/dashboard/review"),
-            action2: () => router.push("/dashboard/review" + `/${id}`),
+            action2: () => window.location.reload(),
           });
         })
         .catch((err) => {

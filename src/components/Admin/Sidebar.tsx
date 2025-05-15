@@ -5,7 +5,10 @@ import { LuLayoutDashboard } from "react-icons/lu";
 import { LuClipboardList } from "react-icons/lu";
 import { FiLogOut } from "react-icons/fi";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/lib/store";
+import { logout } from "@/lib/features/auth/authSlice";
 
 interface MenuItemProps {
   title: string;
@@ -59,6 +62,14 @@ const menu = [
 const Sidebar: React.FC = () => {
   const [drop, setDrop] = useState(false);
 
+  const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
+
+  const logOut = () => {
+    dispatch(logout());
+    router.push("/");
+  };
+
   return (
     <div className="flex flex-col sticky top-0  w-full lg:w-72 lg:h-screen p-3 bg-[#FFFFFF] border-r-2 border-gray-200 shadow-sm">
       <div className="space-y-3">
@@ -78,11 +89,23 @@ const Sidebar: React.FC = () => {
         </div>
         <div className={`flex-1 md:block ${drop ? "block" : "hidden"}`}>
           <ul className="p-0 lg:pb-4 space-y-1 md:space-y-1 text-base">
-            {menu.map((item, index) => (
-              <MenuItem key={index} title={item.title} link={item.link}>
-                {item.children}
-              </MenuItem>
-            ))}
+            {menu.map((item, index) =>
+              item.title === "Keluar" ? (
+                <li key={index} className="rounded-md text-white p-0 md:p-1">
+                  <button
+                    onClick={logOut}
+                    className="flex items-center w-full text-left transition-all p-2 space-x-3 text-orange-400"
+                  >
+                    {item.children}
+                    <span className="text-black font-rubik">Keluar</span>
+                  </button>
+                </li>
+              ) : (
+                <MenuItem key={index} title={item.title} link={item.link}>
+                  {item.children}
+                </MenuItem>
+              )
+            )}
           </ul>
         </div>
       </div>
