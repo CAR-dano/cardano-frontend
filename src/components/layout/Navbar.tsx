@@ -3,13 +3,26 @@ import { useState } from "react";
 import Image from "next/image";
 import { IoMenu, IoClose } from "react-icons/io5";
 import { useRouter } from "next/navigation";
+import { AppDispatch, useAppSelector } from "@/lib/store";
+import { useDispatch } from "react-redux";
+import { logout } from "@/lib/features/auth/authSlice";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
+  const user = useAppSelector((state) => state.auth.user);
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleToHome = () => {
     router.push("/");
+  };
+
+  const handleLogout = () => {
+    dispatch(logout())
+      .unwrap()
+      .then(() => {
+        window.location.reload();
+      });
   };
 
   return (
@@ -52,13 +65,27 @@ const Navbar = () => {
         </ul>
       </div>
 
-      {/* Contact Us Button */}
+      {/* Contact Us Button / User Info */}
       <div className="hidden md:block">
-        <a href="/auth">
-          <button className="gradient-button-2 text-white px-5 py-2 rounded-lg font-bold contact-shadow">
-            Sign In
-          </button>
-        </a>
+        {user ? (
+          <div key="user-logged-in" className="flex items-center gap-3">
+            <span className="text-orange-700 font-bold">
+              {user.username || user.email}
+            </span>
+            <button
+              onClick={handleLogout}
+              className="bg-orange-100 text-orange-700 px-4 py-2 rounded-lg font-bold border border-orange-300 hover:bg-orange-200 transition"
+            >
+              Logout
+            </button>
+          </div>
+        ) : (
+          <a key="user-not-logged-in" href="/auth">
+            <button className="gradient-button-2 text-white px-5 py-2 rounded-lg font-bold contact-shadow">
+              Sign In
+            </button>
+          </a>
+        )}
       </div>
 
       {/* Mobile Menu Toggle */}
@@ -104,11 +131,28 @@ const Navbar = () => {
           </li>
         </ul>
         <div className="mt-6 px-6">
-          <a href="/auth">
-            <button className="gradient-button-2 bg-orange-400 text-white px-4 py-2 rounded-lg font-bold w-full">
-              Sign In
-            </button>
-          </a>
+          {user ? (
+            <div key="sidebar-user-logged-in" className="flex flex-col gap-2">
+              <span className="text-orange-700 font-bold">
+                {user.username || user.email}
+              </span>
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                  handleLogout();
+                }}
+                className="bg-orange-100 text-orange-700 px-4 py-2 rounded-lg font-bold border border-orange-300 hover:bg-orange-200 transition"
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <a key="sidebar-user-not-logged-in" href="/auth">
+              <button className="gradient-button-2 bg-orange-400 text-white px-4 py-2 rounded-lg font-bold w-full">
+                Sign In
+              </button>
+            </a>
+          )}
         </div>
       </div>
     </nav>

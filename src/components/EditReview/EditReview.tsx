@@ -7,6 +7,8 @@ import Halaman3 from "@/components/Preview/Halaman3";
 import Halaman4 from "@/components/Preview/Halaman4";
 import Halaman5 from "@/components/Preview/Halaman5";
 import Halaman6 from "@/components/Preview/Halaman6";
+import Halaman8 from "../Preview/Halaman8";
+import Halaman7 from "../Preview/Halaman7";
 
 interface EditReviewComponentsProps {
   onClick: (data: any) => void; // Fungsi yang dipanggil saat klik
@@ -23,6 +25,8 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
   const [dataHalaman4, setDataHalaman4] = useState<any>(null);
   const [dataHalaman5, setDataHalaman5] = useState<any>(null);
   const [dataHalaman6, setDataHalaman6] = useState<any>(null);
+  const [dataHalaman7, setDataHalaman7] = useState<any>(null);
+  const [dataHalaman8, setDataHalaman8] = useState<any>(null);
 
   useEffect(() => {
     if (data) {
@@ -64,8 +68,13 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
 
     setDataHalaman6({
       toolsTest: data?.detailedAssessment?.toolsTest,
-
       photo: data?.photoPaths,
+    });
+    setDataHalaman7({
+      bodyPaintThickness: data?.bodyPaintThickness,
+    });
+    setDataHalaman8({
+      bodyPaintThickness: data?.bodyPaintThickness,
     });
   };
 
@@ -87,28 +96,50 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
     {
       id: 3,
       title: "Halaman 3",
-      component: <Halaman3 data={dataHalaman3} editable={true} />,
+      component: (
+        <Halaman3 data={dataHalaman3} editable={true} onClick={onClick} />
+      ),
     },
     {
       id: 4,
       title: "Halaman 4",
-      component: <Halaman4 data={dataHalaman4} editable={true} />,
+      component: (
+        <Halaman4 data={dataHalaman4} editable={true} onClick={onClick} />
+      ),
     },
     {
       id: 5,
       title: "Halaman 5",
-      component: <Halaman5 data={dataHalaman5} editable={true} />,
+      component: (
+        <Halaman5 data={dataHalaman5} editable={true} onClick={onClick} />
+      ),
     },
     {
       id: 6,
       title: "Halaman 6",
-      component: <Halaman6 data={dataHalaman6} editable={true} />,
+      component: (
+        <Halaman6 data={dataHalaman6} editable={true} onClick={onClick} />
+      ),
+    },
+    {
+      id: 7,
+      title: "Halaman 7",
+      component: (
+        <Halaman7 data={dataHalaman7} editable={true} onClick={onClick} />
+      ),
+    },
+    {
+      id: 8,
+      title: "Halaman 8",
+      component: (
+        <Halaman8 data={dataHalaman7} editable={true} onClick={onClick} />
+      ),
     },
   ];
 
   return (
     <>
-      <div className="sheet-outer A4">
+      <div className="sheet-outer A4 font-poppins">
         {page.map((item, index) => (
           <div key={index} className="sheet padding-5mm">
             {item.component}

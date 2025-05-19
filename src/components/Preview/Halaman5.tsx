@@ -3,13 +3,29 @@ import Header from "./Header";
 import Footer from "./Footer";
 import PenilaianHasil from "./PenilaianHasil";
 
-function Halaman5({ data }: any) {
+interface Halaman5Props {
+  data: any;
+  editable: boolean;
+  onClick?: (data: any) => void;
+}
+
+const Halaman5: React.FC<Halaman5Props> = ({
+  data,
+  editable,
+  onClick = () => {},
+}) => {
   if (data == undefined || data == null) {
     return <div>Loading...</div>; // atau bisa return null
   }
 
+  const handleClick = (data: any) => {
+    if (onClick) {
+      onClick(data);
+    }
+  };
+
   return (
-    <div className="px-[30px] ">
+    <div className="px-[30px] font-poppins">
       <Header />
       <div className="w-full border-2 border-black mt-12 mb-8">
         <div className="w-full flex">
@@ -24,6 +40,8 @@ function Halaman5({ data }: any) {
           <div className="pl-2 w-full flex flex-wrap gap-x-3 gap-y-2 items-center justify-start">
             {eksteriorKendaraan.map((item, index) => (
               <PenilaianHasil
+                edit={editable}
+                onClick={handleClick}
                 key={index}
                 warna="#FFFFFF"
                 namaPart={item.namaPart}
@@ -53,6 +71,8 @@ function Halaman5({ data }: any) {
           <div className="pl-2 w-full flex flex-wrap gap-x-3 gap-y-2 items-center justify-start">
             {banDanKakiKaki.map((item, index) => (
               <PenilaianHasil
+                edit={editable}
+                onClick={handleClick}
                 key={index}
                 warna="#FFFFFF"
                 namaPart={item.namaPart}
@@ -82,6 +102,8 @@ function Halaman5({ data }: any) {
           <div className="pl-2 w-full flex flex-wrap gap-x-3 gap-y-2 items-center justify-start">
             {testDrive.map((item, index) => (
               <PenilaianHasil
+                edit={editable}
+                onClick={handleClick}
                 key={index}
                 warna="#FFFFFF"
                 namaPart={item.namaPart}
@@ -105,7 +127,7 @@ function Halaman5({ data }: any) {
       <Footer />
     </div>
   );
-}
+};
 
 export default Halaman5;
 

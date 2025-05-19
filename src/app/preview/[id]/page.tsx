@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { IoArrowBack } from "react-icons/io5";
 import { IoMdDownload } from "react-icons/io";
 import Halaman7 from "@/components/Preview/Halaman7";
+import Halaman8 from "@/components/Preview/Halaman8";
 
 function DataPage() {
   const dispatch = useDispatch<AppDispatch>();
@@ -83,12 +84,10 @@ function DataPage() {
       photo: data?.photoPaths,
     });
     setDataHalaman7({
-      hasilPengecekanKetebalanCat:
-        data?.bodyPaintThickness?.hasilPengecekanKetebalanCat,
-      hasilPengecekanKedalamanCat:
-        data?.bodyPaintThickness?.hasilPengecekanKedalamanCat,
-      hasilPengecekanKedalamanBodi:
-        data?.bodyPaintThickness?.hasilPengecekanKedalamanBodi,
+      ketebalanCat: data?.bodyPaintThickness,
+    });
+    setDataHalaman8({
+      ketebalanCat: data?.bodyPaintThickness,
     });
   };
 
@@ -127,6 +126,11 @@ function DataPage() {
       id: 7,
       title: "Halaman 7",
       component: <Halaman7 data={dataHalaman7} editable={false} />,
+    },
+    {
+      id: 8,
+      title: "Halaman 8",
+      component: <Halaman8 data={dataHalaman7} editable={false} />,
     },
   ];
 

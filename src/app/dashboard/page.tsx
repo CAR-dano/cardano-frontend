@@ -4,9 +4,7 @@ import { getDataForReviewer } from "@/lib/features/inspection/inspectionSlice";
 
 import { AppDispatch, RootState, useAppDispatch } from "@/lib/store";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { IoIosSearch } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 
 const Header = () => {

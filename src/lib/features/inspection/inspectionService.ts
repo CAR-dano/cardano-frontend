@@ -26,15 +26,20 @@ const approveInspectionData = async (id: string) => {
 };
 
 const getDataEdited = async (id: string) => {
+  const token = localStorage.getItem("accessToken");
   const response = await axios.get(
     `${LOCAL_API_URL}/inspections/${id}/changelog`,
-    {}
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
   );
   return response.data;
 };
 
 const saveChanges = async (id: any, data: any) => {
-  console.log("id", id);
   const response = await axios.put(`${LOCAL_API_URL}/inspections/${id}`, data);
   return response.data;
 };

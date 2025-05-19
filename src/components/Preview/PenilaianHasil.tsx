@@ -5,6 +5,8 @@ type PenilaianHasilProps = {
   nilai: string;
   namaPart: string;
   beban: string;
+  edit?: boolean;
+  onClick?: (data: any) => void;
 };
 
 const PenilaianHasil: React.FC<PenilaianHasilProps> = ({
@@ -12,6 +14,8 @@ const PenilaianHasil: React.FC<PenilaianHasilProps> = ({
   nilai,
   namaPart,
   beban,
+  edit = false,
+  onClick = () => {},
 }) => {
   const dataColor = [
     { val: 0, color: "#040102", textColor: "#ffffff" },
@@ -33,7 +37,27 @@ const PenilaianHasil: React.FC<PenilaianHasilProps> = ({
   };
 
   return (
-    <div className="flex mx-1">
+    <div
+      className={`
+    transition-all font-poppins
+        flex mx-1 ${
+          edit
+            ? "hover:outline hover:outline-2 hover:outline-[#F4622F] cursor-pointer "
+            : ""
+        }
+    `}
+      onClick={() =>
+        edit &&
+        onClick({
+          label: `Inspection Summary`,
+          fieldName: `detailedAssessment`,
+          oldValue: nilai,
+          subFieldName: namaPart.toLowerCase(),
+          type: "penilaian-summary",
+          onClose: () => {},
+        })
+      }
+    >
       <div className="flex flex-col items-center">
         <div
           className="w-7 h-7 border-[1.5px] border-black"

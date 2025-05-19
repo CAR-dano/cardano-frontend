@@ -65,9 +65,8 @@ const Database: React.FC = () => {
     dispatch(getDataForReviewer())
       .unwrap()
       .then((response) => {
-        console.log("Response:", response);
         if (response) {
-          const filteredData = filterData(response);
+          const filteredData = filterData(response.data);
           setData(filteredData);
         }
       })

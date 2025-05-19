@@ -3,13 +3,29 @@ import Header from "./Header";
 import Footer from "./Footer";
 import PenilaianHasil from "./PenilaianHasil";
 
-function Halaman4({ data }: any) {
+interface Halaman4Props {
+  data: any;
+  editable: boolean;
+  onClick?: (data: any) => void;
+}
+
+const Halaman4: React.FC<Halaman4Props> = ({
+  data,
+  editable,
+  onClick = () => {},
+}) => {
   if (data == undefined || data == null) {
     return <div>Loading...</div>; // atau bisa return null
   }
 
+  const handleClick = (data: any) => {
+    if (onClick) {
+      onClick(data);
+    }
+  };
+
   return (
-    <div className="px-[30px] ">
+    <div className="px-[30px] font-poppins">
       <Header />
       <div className="w-full border-2 border-black mt-12 mb-6">
         <div className="w-full flex">
@@ -24,6 +40,8 @@ function Halaman4({ data }: any) {
           <div className="pl-2 w-full flex flex-wrap gap-x-3 gap-y-2 items-center justify-start">
             {mesinKendaraan.map((item, index) => (
               <PenilaianHasil
+                edit={editable}
+                onClick={handleClick}
                 key={index}
                 warna="#FFFFFF"
                 namaPart={item.namaPart}
@@ -55,6 +73,8 @@ function Halaman4({ data }: any) {
           <div className="pl-2 w-full flex flex-wrap gap-x-3 gap-y-2 items-center justify-start">
             {interiorKendaraan.map((item, index) => (
               <PenilaianHasil
+                edit={editable}
+                onClick={handleClick}
                 key={index}
                 warna="#FFFFFF"
                 namaPart={item.namaPart}
@@ -84,6 +104,8 @@ function Halaman4({ data }: any) {
           <div className="pl-2 w-full flex flex-wrap gap-x-3 gap-y-2 items-center justify-start">
             {eksteriorKendaraan.map((item, index) => (
               <PenilaianHasil
+                edit={editable}
+                onClick={handleClick}
                 key={index}
                 warna="#FFFFFF"
                 namaPart={item.namaPart}
@@ -102,7 +124,7 @@ function Halaman4({ data }: any) {
       <Footer />
     </div>
   );
-}
+};
 
 export default Halaman4;
 

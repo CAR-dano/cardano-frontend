@@ -6,7 +6,7 @@ import { CiMail } from "react-icons/ci";
 
 function Footer() {
   return (
-    <div className="w-full bg-[#E95F37]  px-5 py-3 rounded-xl text-white flex items-center justify-between">
+    <div className="w-full bg-[#E95F37] font-poppins  px-5 py-3 rounded-xl text-white flex items-center justify-between">
       <div className="flex justify-center items-center gap-1">
         <FaInstagram size={24} />
         <FaTiktok size={20} />

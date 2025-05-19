@@ -49,9 +49,10 @@ const Edit = () => {
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [dialogData, setDialogData] = useState<any>({
+    fieldName: "",
+    subFieldName: "",
     label: "",
-    inputFor: "",
-    value: "",
+    oldValue: "",
     type: "normal-input",
   });
   const [dialogResultData, setDialogResultData] = useState<{
@@ -68,9 +69,15 @@ const Edit = () => {
   const [data, setData] = useState<any>(null);
 
   const handleEditReviewClick = (data: any) => {
+    console.log("handleEditReviewClick", data);
     setDialogData(data);
     setIsDialogOpen(true);
   };
+
+  const id = window.location.pathname.split("/").pop();
+  const editedItems = useAppSelector((state) => state.inspection.edited).filter(
+    (item) => item.inspectionId === id
+  );
 
   const getData = async (id: string) => {
     const response = await dispatch(getDataForPreview(id)).unwrap();
@@ -86,6 +93,26 @@ const Edit = () => {
     }
   };
 
+  const updateData = (data: any) => {
+    data.map((item: any) => {
+      const { fieldName, subFieldName, newValue } = item;
+      if (subFieldName) {
+        setData((prevData: any) => ({
+          ...prevData,
+          [fieldName]: {
+            ...prevData[fieldName],
+            [subFieldName]: newValue,
+          },
+        }));
+      } else {
+        setData((prevData: any) => ({
+          ...prevData,
+          [fieldName]: newValue,
+        }));
+      }
+    });
+  };
+
   useEffect(() => {
     const id = window.location.pathname.split("/").pop();
     if (id) {
@@ -97,37 +124,65 @@ const Edit = () => {
 
   const updateDataHandler = async (
     newValue: any,
-    part: string,
-    section: string
+    subFieldName: string,
+    fieldName: string
   ) => {
-    if (part === "root") {
-      setData((prevData: any) => {
-        return { ...prevData, [part]: newValue };
-      });
-    } else {
-      setData((prevData: any) => {
+    const checkIfIsStringifyFromArray = (value: any) => {
+      if (typeof value === "string") {
+        try {
+          const parsedValue = JSON.parse(value);
+          return true;
+        } catch (error) {
+          return false;
+        }
+      }
+      return false;
+    };
+    const isStringifyFromArray = checkIfIsStringifyFromArray(newValue);
+    if (isStringifyFromArray) {
+      newValue = JSON.parse(newValue);
+    }
+    console.log("newValue", newValue);
+    setData((prevData: any) => {
+      if (subFieldName) {
         return {
           ...prevData,
-          [section]: {
-            ...prevData[section],
-            [part]: newValue,
+          [fieldName]: {
+            ...prevData[fieldName],
+            [subFieldName]: newValue,
           },
         };
-      });
-    }
-  };
-
-  const cancelEdit = (oldValue: any, part: string, section: string) => {
-    setData((prevData: any) => {
-      if (part === "root") {
-        return { ...prevData, [part]: oldValue };
       } else {
         return {
           ...prevData,
-          [section]: {
-            ...prevData[section],
-            [part]: oldValue,
+          [fieldName]: newValue,
+        };
+      }
+    });
+  };
+
+  useEffect(() => {
+    console.log("data", data);
+  }, [data]);
+
+  const cancelEdit = (
+    oldValue: any,
+    subFieldName: string,
+    fieldName: string
+  ) => {
+    setData((prevData: any) => {
+      if (subFieldName) {
+        return {
+          ...prevData,
+          [fieldName]: {
+            ...prevData[fieldName],
+            [subFieldName]: oldValue,
           },
+        };
+      } else {
+        return {
+          ...prevData,
+          [fieldName]: oldValue,
         };
       }
     });
@@ -198,27 +253,21 @@ const Edit = () => {
     });
   };
 
-  const id = window.location.pathname.split("/").pop();
-  const editedItems =
-    useAppSelector((state) => state.inspection.edited).find(
-      (item) => item.id === id
-    )?.data ?? [];
-
   const handleSaveChanges = () => {
     if (!editedItems || editedItems.length === 0) return;
 
     const result: Record<string, any> = {};
 
-    editedItems.forEach(({ part, section, after }) => {
-      if (section === "root") {
-        result[part] = after;
-      } else {
-        if (!result[section]) {
-          result[section] = {};
-        }
-        result[section][part] = after;
-      }
+    editedItems.forEach(({ subFieldName, fieldName, newValue }) => {
+      const data = subFieldName
+        ? {
+            [subFieldName]: newValue,
+          }
+        : newValue;
+      result[fieldName] = data;
     });
+
+    console.log("result", result);
 
     if (id) {
       dispatch(saveDataEdited({ id, data: result }))
@@ -261,7 +310,11 @@ const Edit = () => {
             handleSaveChanges={handleSaveChanges}
           />
           <div className="flex my-5">
-            <EditedData cancelEdit={cancelEdit} />
+            <EditedData
+              cancelEdit={cancelEdit}
+              id={id}
+              updateData={updateData}
+            />
           </div>
           <div className="flex flex-col lg:flex-row gap-4 justify-center">
             <EditReviewComponents data={data} onClick={handleEditReviewClick} />
@@ -272,23 +325,24 @@ const Edit = () => {
             <DialogForm
               isOpen={isDialogOpen}
               label={dialogData.label}
-              inputFor={dialogData.inputFor}
-              value={dialogData.value}
+              fieldName={dialogData.fieldName}
+              subFieldName={dialogData.subFieldName}
+              oldValue={dialogData.oldValue}
               type={dialogData.type}
               onClose={() => setIsDialogOpen(false)}
               onSave={(newValue) => {
                 updateDataHandler(
                   newValue,
-                  dialogData.inputFor,
-                  dialogData.section
+                  dialogData.subFieldName,
+                  dialogData.fieldName
                 );
                 dispatch(
                   setEditedData({
-                    id: data.id,
-                    part: dialogData.inputFor,
-                    section: dialogData.section,
-                    before: dialogData.value,
-                    after: newValue,
+                    inspectionId: data.id,
+                    subFieldName: dialogData.subFieldName,
+                    fieldName: dialogData.fieldName,
+                    oldValue: dialogData.oldValue,
+                    newValue: newValue,
                   })
                 );
               }}

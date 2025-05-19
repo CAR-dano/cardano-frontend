@@ -11,7 +11,7 @@ import {
 import Link from "next/link";
 import SecondaryButton from "../Button/SecondaryButton";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/lib/store";
+import { AppDispatch, useAppSelector } from "@/lib/store";
 import { mintingToBlockchain } from "@/lib/features/inspection/inspectionSlice";
 import DialogResult from "../Dialog/DialogResult";
 import { useRouter } from "next/navigation";
@@ -43,6 +43,7 @@ const TableData = ({ data, isDatabase = false, setDialogData }: any) => {
   };
 
   const mintingToBlockchainHandler = (id: string) => {
+    console.log("Minting to blockchain with ID:", id);
     dispatch(mintingToBlockchain(id))
       .then((response) => {
         console.log("Minting response:", response);
@@ -73,12 +74,15 @@ const TableData = ({ data, isDatabase = false, setDialogData }: any) => {
       });
   };
 
+  const PDF_URL = process.env.NEXT_PUBLIC_PDF_URL;
+
   return (
     <Table>
       <TableHeader>
         <TableRow>
           <TableHead className="text-center">Nama Customer</TableHead>
           <TableHead className="text-center">Inspektor</TableHead>
+          <TableHead className="text-center">Plat Nomor</TableHead>
           <TableHead className="text-center">Tanggal</TableHead>
           <TableHead className="text-center">Status</TableHead>
           <TableHead className="text-center">Dokumen</TableHead>
@@ -96,19 +100,33 @@ const TableData = ({ data, isDatabase = false, setDialogData }: any) => {
               {item.identityDetails.namaInspektor}
             </TableCell>
             <TableCell className="font-light text-center">
+              {item.vehiclePlateNumber}
+            </TableCell>
+            <TableCell className="font-light text-center">
               {formatDate(item.inspectionDate)}
             </TableCell>
             <TableCell className="font-light text-center">
               {formatStatus(item.status)}
             </TableCell>
             <TableCell className="font-light text-center">
-              <Link
-                href={`/preview/${item.id}`}
-                className="text-blue-500 underline text-[16px] font-light"
-                target="_blank"
-              >
-                {!isDatabase ? "Preview" : "Download"}
-              </Link>
+              {item.status == "NEED_REVIEW" && (
+                <Link
+                  href={`/preview/${item.id}`}
+                  className="text-blue-500 underline text-[16px] font-light"
+                  target="_blank"
+                >
+                  {"Preview"}
+                </Link>
+              )}
+              {item.status != "NEED_REVIEW" && (
+                <a
+                  href={PDF_URL + item.urlPdf}
+                  download
+                  className="text-blue-500 underline text-[16px] font-light pointer-events-auto"
+                >
+                  Download
+                </a>
+              )}
             </TableCell>
             <TableCell className="font-light flex justify-center items-center">
               <div className="flex gap-2">
@@ -143,10 +161,11 @@ interface TableInfoProps {
 }
 
 const TableInfo: React.FC<TableInfoProps> = ({ data }) => {
+  const meta = useAppSelector((state) => state.inspection.meta);
+  const [page, setPage] = useState(1);
   const MAX = 10;
   const dataCount = data.length;
-  const pageCount = Math.ceil(dataCount / MAX);
-  const [page, setPage] = useState(1);
+  const totalPage = Math.ceil(dataCount / MAX);
 
   return (
     <div className="flex justify-between items-center mt-2 text-xs">
