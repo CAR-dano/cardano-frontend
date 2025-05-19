@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
       "31.220.81.182",
     ],
   },
+  output: "standalone",
 };
 
 export default nextConfig;

@@ -84,10 +84,10 @@ function DataPage() {
       photo: data?.photoPaths,
     });
     setDataHalaman7({
-      ketebalanCat: data?.bodyPaintThickness,
+      bodyPaintThickness: data?.bodyPaintThickness,
     });
     setDataHalaman8({
-      ketebalanCat: data?.bodyPaintThickness,
+      bodyPaintThickness: data?.bodyPaintThickness,
     });
   };
 
@@ -130,7 +130,7 @@ function DataPage() {
     {
       id: 8,
       title: "Halaman 8",
-      component: <Halaman8 data={dataHalaman7} editable={false} />,
+      component: <Halaman8 data={dataHalaman8} editable={false} />,
     },
   ];
 
