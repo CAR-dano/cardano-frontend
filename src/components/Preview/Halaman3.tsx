@@ -4,13 +4,29 @@ import Footer from "./Footer";
 import PenilaianContoh from "./PenilaianContoh";
 import PenilaianHasil from "./PenilaianHasil";
 
-function Halaman3({ data }: any) {
+interface Halaman3Props {
+  data: any;
+  editable: boolean;
+  onClick?: (data: any) => void;
+}
+
+const Halaman3: React.FC<Halaman3Props> = ({
+  data,
+  editable,
+  onClick = () => {},
+}) => {
   if (data == undefined || data == null) {
     return <div>Loading...</div>; // atau bisa return null
   }
 
+  const handleClick = (data: any) => {
+    if (onClick) {
+      onClick(data);
+    }
+  };
+
   return (
-    <div className="px-[30px] ">
+    <div className="px-[30px] font-poppins">
       <Header />
 
       <div className="w-full border-2 border-black mt-8 mb-5">
@@ -95,18 +111,24 @@ function Halaman3({ data }: any) {
         <div className="w-full border-b-2 border-black py-2">
           <div className="w-full flex flex-wrap gap-2 items-center mx-auto">
             <PenilaianHasil
+              edit={editable}
+              onClick={handleClick}
               warna="#FFFFFF"
               namaPart="Airbag"
               beban="3"
               nilai={data.fitur.airbag.toString()}
             />
             <PenilaianHasil
+              edit={editable}
+              onClick={handleClick}
               warna="#FFFFFF"
               namaPart="Sistem AC"
               beban="3"
               nilai={data.fitur.sistemAC.toString()}
             />
             <PenilaianHasil
+              edit={editable}
+              onClick={handleClick}
               warna="#FFFFFF"
               namaPart="Electric Mirror"
               beban="1"
@@ -115,24 +137,32 @@ function Halaman3({ data }: any) {
               }
             />
             <PenilaianHasil
+              edit={editable}
+              onClick={handleClick}
               warna="#FFFFFF"
               namaPart="Sistem Audio"
               beban="1"
               nilai={data.fitur.sistemAudio ? data.fitur.sistemAudio : "0"}
             />
             <PenilaianHasil
+              edit={editable}
+              onClick={handleClick}
               warna="#FFFFFF"
               namaPart="Central Lock"
               beban="1"
               nilai={data.fitur.centralLock ? data.fitur.centralLock : "0"}
             />
             <PenilaianHasil
+              edit={editable}
+              onClick={handleClick}
               warna="#FFFFFF"
               namaPart="Rem ABS"
               beban="3"
               nilai={data.fitur.remABS ? data.fitur.remABS : "0"}
             />
             <PenilaianHasil
+              edit={editable}
+              onClick={handleClick}
               warna="#FFFFFF"
               namaPart="Power Window"
               beban="1"
@@ -164,6 +194,8 @@ function Halaman3({ data }: any) {
           <div className="pl-2 w-full flex flex-wrap gap-x-3 gap-y-2.5 items-center justify-start">
             {mesinKendaraan.map((item, index) => (
               <PenilaianHasil
+                edit={editable}
+                onClick={handleClick}
                 key={index}
                 warna="#FFFFFF"
                 namaPart={item.namaPart}
@@ -182,7 +214,7 @@ function Halaman3({ data }: any) {
       <Footer />
     </div>
   );
-}
+};
 
 export default Halaman3;
 

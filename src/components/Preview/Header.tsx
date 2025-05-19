@@ -3,7 +3,7 @@ import React from "react";
 
 function Header() {
   return (
-    <div className="flex justify-start items-center gap-2 px-5">
+    <div className="flex justify-start items-center gap-2 px-5 font-poppins mt-2">
       <Image
         src="/assets/logo/palapa.svg"
         alt="Logo"

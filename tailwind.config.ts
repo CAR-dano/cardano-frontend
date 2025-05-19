@@ -77,6 +77,7 @@ export default {
       fontFamily: {
         rubik: ["var(--font-rubik)", "sans-serif"],
         pacifico: ["var(--font-pacifico)", "cursive"],
+        poppins: ["var(--font-poppins)", "sans-serif"],
       },
       borderRadius: {
         lg: "var(--radius)",

@@ -14,7 +14,7 @@ const PenilaianContoh: React.FC<PenilaianContohProps> = ({
   beban,
 }) => {
   return (
-    <div className="flex mx-2">
+    <div className="flex mx-2 font-poppins">
       <div className="flex flex-col items-center">
         <p className="text-[10px]">Warna</p>
         <div

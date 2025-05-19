@@ -10,16 +10,22 @@ import { login, signup } from "@/lib/features/auth/authSlice";
 import LoadingScreen from "@/components/LoadingFullScreen";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { toast } from "@/hooks/use-toast";
+import { set } from "date-fns";
 
 function LoginPage() {
   const [showSignup, setShowSignup] = useState(false);
 
   const [showPassword, setShowPassword] = useState(false);
+  const [showRegisterPassword, setShowRegisterPassword] = useState(false);
   const toggleSignup = useCallback(() => setShowSignup((prev) => !prev), []);
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const isLoading = useAppSelector((state) => state.auth.isLoading);
   const user = useAppSelector((state) => state.auth.user);
+  const [registerErrors, setRegisterErrors] = useState<{
+    [key: string]: string;
+  }>({});
+  const [loginErrors, setLoginErrors] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
     if (user) {
@@ -113,8 +119,18 @@ function LoginPage() {
     password: "",
   });
 
+  const validateLogin = () => {
+    const errors: { [key: string]: string } = {};
+    if (!formLogin.loginIdentifier.trim())
+      errors.loginIdentifier = "Email or Username is required";
+    if (!formLogin.password) errors.password = "Password is required";
+    setLoginErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validateLogin()) return;
     try {
       await dispatch(login(formLogin)).unwrap();
       toast({
@@ -137,23 +153,44 @@ function LoginPage() {
     password: "",
   });
 
+  const validateRegister = () => {
+    const errors: { [key: string]: string } = {};
+    if (!formRegister.username.trim()) errors.username = "Username is required";
+    if (!formRegister.email.trim()) errors.email = "Email is required";
+    else if (!/\S+@\S+\.\S+/.test(formRegister.email))
+      errors.email = "Email is invalid";
+    if (!formRegister.password) errors.password = "Password is required";
+    else if (formRegister.password.length < 8)
+      errors.password = "Password must be at least 8 characters";
+    setRegisterErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      dispatch(signup(formRegister));
-      toast({
-        title: "Success",
-        description: "Registration successful! Please log in.",
-        variant: "default",
+    if (!validateRegister()) return;
+    dispatch(signup(formRegister))
+      .unwrap()
+      .then(() => {
+        toast({
+          title: "Success",
+          description: "Registration successful! Please log in.",
+          variant: "default",
+        });
+        setShowSignup(false);
+        setFormRegister({
+          username: "",
+          email: "",
+          password: "",
+        });
+      })
+      .catch((err: any) => {
+        toast({
+          title: "Error",
+          description: err,
+          variant: "destructive",
+        });
       });
-      setShowSignup(false);
-    } catch (err: any) {
-      toast({
-        title: "Error",
-        description: err,
-        variant: "destructive",
-      });
-    }
   };
 
   return (
@@ -225,6 +262,7 @@ function LoginPage() {
                   <motion.form
                     className="flex flex-col space-y-6 w-full mb-8"
                     variants={childVariants}
+                    onSubmit={handleLogin}
                   >
                     <motion.div
                       className="flex flex-col space-y-2 w-full"
@@ -248,6 +286,11 @@ function LoginPage() {
                         }
                         className="px-4 py-3 rounded-lg border border-[#A25DF9] bg-white shadow-[0px_16px_20px_-6px_rgba(194,140,255,0.05),0px_24px_48px_-10px_rgba(76,28,130,0.16)] focus:outline-none focus:ring-2 focus:ring-[#A25DF9] focus:border-transparent transition-all duration-300"
                       />
+                      {loginErrors.loginIdentifier && (
+                        <span className="text-red-500 text-sm">
+                          {loginErrors.loginIdentifier}
+                        </span>
+                      )}
                     </motion.div>
                     <motion.div
                       className="flex flex-col space-y-2 w-full"
@@ -284,9 +327,14 @@ function LoginPage() {
                           )}
                         </button>
                       </div>
+                      {loginErrors.password && (
+                        <span className="text-red-500 text-sm">
+                          {loginErrors.password}
+                        </span>
+                      )}
                     </motion.div>
                     <button
-                      onClick={handleLogin}
+                      type="submit"
                       className="gradient-button-2 w-full py-3 rounded-lg text-white font-rubik text-[18px] font-medium "
                     >
                       Log in
@@ -359,6 +407,7 @@ function LoginPage() {
                   <motion.form
                     className="flex flex-col space-y-6 w-full mb-8"
                     variants={childVariants}
+                    onSubmit={handleSignup}
                   >
                     <motion.div
                       className="flex flex-col space-y-2 w-full"
@@ -382,6 +431,11 @@ function LoginPage() {
                         }
                         className="px-4 py-3 rounded-lg border border-[#A25DF9] bg-white shadow-[0px_16px_20px_-6px_rgba(194,140,255,0.05),0px_24px_48px_-10px_rgba(76,28,130,0.16)] focus:outline-none focus:ring-2 focus:ring-[#A25DF9] focus:border-transparent transition-all duration-300"
                       />
+                      {registerErrors.username && (
+                        <span className="text-red-500 text-sm">
+                          {registerErrors.username}
+                        </span>
+                      )}
                     </motion.div>
                     <motion.div
                       className="flex flex-col space-y-2 w-full"
@@ -405,6 +459,11 @@ function LoginPage() {
                         }
                         className="px-4 py-3 rounded-lg border border-[#A25DF9] bg-white shadow-[0px_16px_20px_-6px_rgba(194,140,255,0.05),0px_24px_48px_-10px_rgba(76,28,130,0.16)] focus:outline-none focus:ring-2 focus:ring-[#A25DF9] focus:border-transparent transition-all duration-300"
                       />
+                      {registerErrors.email && (
+                        <span className="text-red-500 text-sm">
+                          {registerErrors.email}
+                        </span>
+                      )}
                     </motion.div>
                     <motion.div
                       className="flex flex-col space-y-2 w-full"
@@ -414,23 +473,43 @@ function LoginPage() {
                         htmlFor="password"
                         className="text-black font-rubik text-[16px] font-medium"
                       >
-                        Password*
+                        Password
                       </label>
-                      <input
-                        type="password"
-                        placeholder="Enter your password"
-                        value={formRegister.password}
-                        onChange={(e) =>
-                          setFormRegister({
-                            ...formRegister,
-                            password: e.target.value,
-                          })
-                        }
-                        className="px-4 py-3 rounded-lg border border-[#A25DF9] bg-white shadow-[0px_16px_20px_-6px_rgba(194,140,255,0.05),0px_24px_48px_-10px_rgba(76,28,130,0.16)] focus:outline-none focus:ring-2 focus:ring-[#A25DF9] focus:border-transparent transition-all duration-300"
-                      />
+                      <div className="relative">
+                        <input
+                          type={showRegisterPassword ? "text" : "password"}
+                          placeholder="Enter your password"
+                          value={formRegister.password}
+                          onChange={(e) =>
+                            setFormRegister({
+                              ...formRegister,
+                              password: e.target.value,
+                            })
+                          }
+                          className="w-full px-4 py-3 pr-12 rounded-lg border border-[#A25DF9] bg-white shadow-[0px_16px_20px_-6px_rgba(194,140,255,0.05),0px_24px_48px_-10px_rgba(76,28,130,0.16)] focus:outline-none focus:ring-2 focus:ring-[#A25DF9] focus:border-transparent transition-all duration-300"
+                        />
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setShowRegisterPassword(!showRegisterPassword)
+                          }
+                          className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-[#A25DF9]"
+                        >
+                          {showRegisterPassword ? (
+                            <FiEyeOff size={20} />
+                          ) : (
+                            <FiEye size={20} />
+                          )}
+                        </button>
+                      </div>
+                      {registerErrors.password && (
+                        <span className="text-red-500 text-sm">
+                          {registerErrors.password}
+                        </span>
+                      )}
                     </motion.div>
                     <button
-                      onClick={handleSignup}
+                      type="submit"
                       className="gradient-button-2 w-full py-3 rounded-lg text-white font-rubik text-[18px] font-medium "
                     >
                       Sign Up

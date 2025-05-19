@@ -3,7 +3,17 @@ import Footer from "./Footer";
 import Header from "./Header";
 import PenilaianContoh from "./PenilaianContoh";
 
-function Halaman2({ data }: any) {
+interface Halaman2Props {
+  data: any;
+  editable: boolean;
+  onClick?: (data: any) => void; // Prop onClick yang diteruskan
+}
+
+const Halaman2: React.FC<Halaman2Props> = ({
+  data,
+  editable,
+  onClick = () => {},
+}) => {
   if (data == undefined || data == null) {
     return <div>Loading...</div>; // atau bisa return null
   }
@@ -17,7 +27,7 @@ function Halaman2({ data }: any) {
   };
 
   return (
-    <div className="px-[30px] ">
+    <div className="px-[30px] font-poppins">
       <Header />
 
       <div className="w-full border-2 border-black mt-12 mb-8">
@@ -53,23 +63,99 @@ function Halaman2({ data }: any) {
         </div>
 
         <div className="w-full flex border-b-2 border-black">
-          <div className="w-1/4 min-h-[180px] border-black border-r-2  ">
-            <p className="text-left text-[13px] text-black py-2 px-3 font-medium ">
+          <div
+            className={`w-1/4 min-h-[180px] border-black border-r-2 ${
+              editable
+                ? "cursor-pointer hover:bg-[#F4622F] hover:text-white"
+                : ""
+            }`}
+          >
+            <p
+              onClick={() =>
+                editable &&
+                onClick({
+                  label: `Inspection Summary`,
+                  fieldName: `inspectionSummary`,
+                  oldValue: data.inspectionSummary.mesinNotes,
+                  subFieldName: "mesinNotes",
+                  type: "penilaian-array",
+                  onClose: () => {},
+                })
+              }
+              className="text-left text-[13px] text-black py-2 px-3 font-medium "
+            >
               - {data.inspectionSummary.mesinNotes}
             </p>
           </div>
-          <div className="w-1/4 min-h-[180px] border-black border-r-2">
-            <p className="text-left text-[13px] text-black py-2 px-3 font-medium">
+          <div
+            className={`w-1/4 min-h-[180px] border-black border-r-2 ${
+              editable
+                ? "cursor-pointer hover:bg-[#F4622F] hover:text-white"
+                : ""
+            }`}
+          >
+            <p
+              onClick={() =>
+                editable &&
+                onClick({
+                  label: `Inspection Summary`,
+                  fieldName: `inspectionSummary`,
+                  oldValue: data.inspectionSummary.kakiKakiNotes,
+                  subFieldName: "kakiKakiNotes",
+                  type: "penilaian-array",
+                  onClose: () => {},
+                })
+              }
+              className="text-left text-[13px] text-black py-2 px-3 font-medium"
+            >
               - {data.inspectionSummary.kakiKakiNotes}
             </p>
           </div>
-          <div className="w-1/4 min-h-[180px] border-black border-r-2">
-            <p className="text-left text-[13px] text-black py-2 px-3 font-medium">
+          <div
+            className={`w-1/4 min-h-[180px] border-black border-r-2 ${
+              editable
+                ? "cursor-pointer hover:bg-[#F4622F] hover:text-white"
+                : ""
+            }`}
+          >
+            <p
+              onClick={() =>
+                editable &&
+                onClick({
+                  label: `Inspection Summary`,
+                  fieldName: `inspectionSummary`,
+                  oldValue: data.inspectionSummary.interiorNotes,
+                  subFieldName: "interiorNotes",
+                  type: "penilaian-array",
+                  onClose: () => {},
+                })
+              }
+              className="text-left text-[13px] text-black py-2 px-3 font-medium"
+            >
               - {data.inspectionSummary.interiorNotes}
             </p>
           </div>
-          <div className="w-1/4 min-h-[180px] ">
-            <p className="text-left text-[13px] text-black py-2 px-3 font-medium">
+          <div
+            className={`w-1/4 min-h-[180px] ${
+              editable
+                ? "cursor-pointer hover:bg-[#F4622F] hover:text-white"
+                : ""
+            }`}
+          >
+            <p
+              onClick={() =>
+                editable &&
+                onClick({
+                  label: `Inspection Summary`,
+                  fieldName: `inspectionSummary`,
+                  oldValue: data.inspectionSummary.exteriorNotes,
+                  subFieldName: "exteriorNotes",
+                  type: "penilaian-array",
+                  onClose: () => {},
+                })
+              }
+              className="text-left text-[13px] text-black py-2 px-3 font-medium"
+            >
               - {data.inspectionSummary.exteriorNotes}
             </p>
           </div>
@@ -100,9 +186,31 @@ function Halaman2({ data }: any) {
           </div>
         </div>
 
-        <div className="w-full flex border-b-2 border-black">
-          <div className="w-[45%] min-h-[200px] border-black border-r-2  ">
-            <div className="text-left text-[13px] text-black py-2 px-3 font-medium ">
+        <div
+          className={`w-full flex border-b-2 border-black
+          ${editable ? "cursor-pointer group" : ""}`}
+          onClick={() =>
+            editable &&
+            onClick({
+              label: `Estimasi Perbaikan`,
+              fieldName: `inspectionSummary`,
+              oldValue: data.inspectionSummary.estimasiPerbaikan,
+              subFieldName: "estimasiPerbaikan",
+              type: "estimasi-perbaikan",
+              onClose: () => {},
+            })
+          }
+        >
+          <div
+            className={`w-[45%] min-h-[200px] border-black border-r-2 
+            ${editable ? "group-hover:bg-[#F4622F]" : ""}
+            `}
+          >
+            <div
+              className={`text-left text-[13px] py-2 px-3 font-medium list-none ${
+                editable ? "group-hover:text-white" : ""
+              }`}
+            >
               <ul className="list-none">
                 {data.inspectionSummary.estimasiPerbaikan.map((item: any) => (
                   <li key={item.namaPart} className="">
@@ -112,8 +220,16 @@ function Halaman2({ data }: any) {
               </ul>
             </div>
           </div>
-          <div className="w-[35%] min-h-[200px] border-black border-r-2">
-            <div className="text-left text-[13px] text-black py-2 px-3 font-medium">
+          <div
+            className={`w-[35%] min-h-[200px] border-black border-r-2 ${
+              editable ? "group-hover:bg-[#F4622F]" : ""
+            }`}
+          >
+            <div
+              className={`text-left text-[13px] py-2 px-3 font-medium list-none ${
+                editable ? "group-hover:text-white" : ""
+              }`}
+            >
               <ul className="list-none">
                 {data.inspectionSummary.estimasiPerbaikan.map((item: any) => (
                   <li key={item.harga} className="">
@@ -236,61 +352,105 @@ function Halaman2({ data }: any) {
               Data Ban
             </p>
           </div>
-          <div className="w-1/5 border-r-2  border-black">
-            <p className="text-[12px] text-center text-black py-1 px-3 font-semibold border-b-2 border-black">
+          <div
+            className={`w-1/5 border-r-2  border-black
+          ${editable ? "cursor-pointer hover:bg-[#F4622F] group " : ""}
+            `}
+          >
+            <p className="text-[12px] text-center text-black group-hover:text-white py-1 px-3 font-semibold border-b-2 border-black">
               Posisi Ban
             </p>
-            <p className="text-center text-[12px] h-10 text-left text-black  font-semibold ">
-              Depan <br /> Belakang
+            <p
+              onClick={() =>
+                editable &&
+                onClick({
+                  label: `Estimasi Perbaikan`,
+                  fieldName: `inspectionSummary`,
+                  oldValue: data.inspectionSummary.posisiBan,
+                  subFieldName: "posisiBan",
+                  type: "normal-input",
+                  onClose: () => {},
+                })
+              }
+              className="text-center text-[12px] h-10 text-left text-black group-hover:text-white  font-semibold flex items-center justify-center"
+            >
+              {data.inspectionSummary.posisiBan}
             </p>
           </div>
-          <div className="w-1/5 border-r-2  border-black">
-            <p className="text-[12px] text-center text-black py-1 px-3 font-semibold border-b-2 border-black">
+          <div
+            className={`w-1/5 border-r-2  border-black
+          ${editable ? "cursor-pointer hover:bg-[#F4622F] group " : ""}
+            `}
+          >
+            <p className="text-[12px] text-center text-black group-hover:text-white py-1 px-3 font-semibold border-b-2 border-black">
               Merk
             </p>
-            <p className="text-center text-[12px] h-10 text-left text-black  font-semibold flex items-center justify-center">
-              {data.inspectionSummary.merekBanDepan ==
-              data.inspectionSummary.merekBanBelakang ? (
-                data.inspectionSummary.merekBanDepan
-              ) : (
-                <>
-                  {data.inspectionSummary.merekBanDepan} <br />{" "}
-                  {data.inspectionSummary.merekBanBelakang}
-                </>
-              )}
+            <p
+              onClick={() =>
+                editable &&
+                onClick({
+                  label: `Estimasi Perbaikan`,
+                  fieldName: `inspectionSummary`,
+                  oldValue: data.inspectionSummary.merkban,
+                  subFieldName: "merkban",
+                  type: "normal-input",
+                  onClose: () => {},
+                })
+              }
+              className="text-center text-[12px] h-10 text-left text-black  group-hover:text-white font-semibold flex items-center justify-center"
+            >
+              {data.inspectionSummary.merkban}
             </p>
           </div>
-          <div className="w-1/5 border-r-2  border-black">
-            <p className="text-[12px] text-center text-black py-1 px-3 font-semibold border-b-2 border-black">
+          <div
+            className={`w-1/5 border-r-2  border-black
+          ${editable ? "cursor-pointer hover:bg-[#F4622F] group " : ""}
+            `}
+          >
+            <p className="text-[12px] text-center text-black group-hover:text-white py-1 px-3 font-semibold border-b-2 border-black">
               Tipe velg
             </p>
-            <p className="text-center text-[12px] h-10 text-left text-black  font-semibold flex items-center justify-center">
-              {data.inspectionSummary.tipeVelgDepan ==
-              data.inspectionSummary.tipeVelgBelakang ? (
-                data.inspectionSummary.tipeVelgDepan
-              ) : (
-                <>
-                  {data.inspectionSummary.tipeVelgDepan} <br />{" "}
-                  {data.inspectionSummary.tipeVelgBelakang}
-                </>
-              )}
+            <p
+              onClick={() =>
+                editable &&
+                onClick({
+                  label: `Estimasi Perbaikan`,
+                  fieldName: `inspectionSummary`,
+                  oldValue: data.inspectionSummary.tipeVelg,
+                  subFieldName: "tipeVelg",
+                  type: "normal-input",
+                  onClose: () => {},
+                })
+              }
+              className="text-center text-[12px] h-10 text-left text-black group-hover:text-white font-semibold flex items-center justify-center"
+            >
+              {data.inspectionSummary.tipeVelg}
             </p>
           </div>
 
-          <div className="w-1/5">
-            <p className="text-[12px] text-center text-black py-1 px-3 font-semibold border-b-2 border-black">
+          <div
+            className={`w-1/5
+          ${editable ? "cursor-pointer hover:bg-[#F4622F] group " : ""}
+            `}
+          >
+            <p className="text-[12px] text-center text-black group-hover:text-white py-1 px-3 font-semibold border-b-2 border-black">
               Ketebalan
             </p>
-            <p className="text-center text-[12px] h-10 text-left text-black  font-semibold flex items-center justify-center">
-              {data.inspectionSummary.ketebalanBanDepan ==
-              data.inspectionSummary.ketebalanBanBelakang ? (
-                data.inspectionSummary.ketebalanBanDepan
-              ) : (
-                <>
-                  {data.inspectionSummary.ketebalanBanDepan} <br />{" "}
-                  {data.inspectionSummary.ketebalanBanBelakang}
-                </>
-              )}
+            <p
+              onClick={() =>
+                editable &&
+                onClick({
+                  label: `Estimasi Perbaikan`,
+                  fieldName: `inspectionSummary`,
+                  oldValue: data.inspectionSummary.ketebalanBan,
+                  subFieldName: "ketebalanBan",
+                  type: "normal-input",
+                  onClose: () => {},
+                })
+              }
+              className="text-center text-[12px] h-10 text-left text-black group-hover:text-white font-semibold flex items-center justify-center"
+            >
+              {data.inspectionSummary.ketebalanBan}
             </p>
           </div>
         </div>
@@ -299,6 +459,6 @@ function Halaman2({ data }: any) {
       <Footer />
     </div>
   );
-}
+};
 
 export default Halaman2;

@@ -93,28 +93,33 @@ export const mintingToBlockchain = createAsyncThunk(
   }
 );
 
+export interface EditedItem {
+  inspectionId: string;
+  fieldName: string;
+  subFieldName?: string;
+  oldValue: string;
+  newValue: string;
+  changesAt?: string;
+}
+
 export interface InspectionState {
   review: any | null;
   isLoading: boolean;
+  isLoadingEdited: boolean;
   error: string | null;
   data: any[];
-  edited: {
-    id: string;
-    data: {
-      part: string;
-      section: string;
-      before: string;
-      after: string;
-    }[];
-  }[];
+  edited: EditedItem[];
+  meta: any;
 }
 
 const initialState: InspectionState = {
   data: [],
   isLoading: false,
+  isLoadingEdited: false,
   error: null,
   review: null,
   edited: [],
+  meta: null,
 };
 
 export const inspectionSlice = createSlice({
@@ -128,39 +133,38 @@ export const inspectionSlice = createSlice({
       console.log("action", action.payload);
     },
     setEditedData: (state, action) => {
-      const { part, section, before, after, id } = action.payload;
-      const existingEdit = state.edited.find((edit) => edit.id === id);
+      const {
+        inspectionId,
+        fieldName,
+        subFieldName,
+        oldValue,
+        newValue,
+        changesAt,
+      } = action.payload;
+      const existingEdit = state.edited.find(
+        (edit) =>
+          edit.fieldName === fieldName && edit.subFieldName === subFieldName
+      );
+
       if (existingEdit) {
-        const existingPart = existingEdit.data.find(
-          (edit) => edit.part === part
-        );
-        if (existingPart) {
-          existingPart.before = before;
-          existingPart.after = after;
-        } else {
-          existingEdit.data.push({ part, section, before, after });
-        }
+        existingEdit.newValue = newValue;
       } else {
         state.edited.push({
-          id,
-          data: [{ part, section, before, after }],
+          inspectionId,
+          fieldName,
+          subFieldName,
+          oldValue,
+          newValue,
+          changesAt,
         });
       }
     },
+
     deleteEditedData: (state, action) => {
-      const { part, id } = action.payload;
-      const existingEdit = state.edited.find((edit) => edit.id === id);
-      if (existingEdit) {
-        const existingPartIndex = existingEdit.data.findIndex(
-          (edit) => edit.part === part
-        );
-        if (existingPartIndex !== -1) {
-          existingEdit.data.splice(existingPartIndex, 1);
-        }
-        if (existingEdit.data.length === 0) {
-          state.edited = state.edited.filter((edit) => edit.id !== id);
-        }
-      }
+      const { inspectionId } = action.payload;
+      state.edited = state.edited.filter(
+        (edit) => edit.inspectionId !== inspectionId
+      );
     },
   },
   extraReducers: (builder) => {
@@ -170,7 +174,8 @@ export const inspectionSlice = createSlice({
       })
       .addCase(getDataForReviewer.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.data = action.payload;
+        state.data = action.payload.data;
+        state.meta = action.payload.meta;
         state.error = null;
       })
       .addCase(getDataForReviewer.rejected, (state, action) => {
@@ -213,12 +218,12 @@ export const inspectionSlice = createSlice({
         state.error = action.payload as string;
       })
       .addCase(getDataEdited.pending, (state) => {
-        state.isLoading = true;
+        state.isLoadingEdited = true;
       })
       .addCase(getDataEdited.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.edited = action.payload;
+        state.isLoadingEdited = false;
         state.error = null;
+        state.edited = action.payload;
       })
       .addCase(getDataEdited.rejected, (state, action) => {
         state.isLoading = false;

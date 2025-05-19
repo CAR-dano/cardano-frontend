@@ -28,6 +28,16 @@ const Halaman1: React.FC<Halaman1Props> = ({
     return formatted;
   };
 
+  const formatCurrency = (value: number) => {
+    if (value === undefined || value === null) {
+      return "0";
+    }
+    return value.toLocaleString("id-ID", {
+      style: "currency",
+      currency: "IDR",
+    });
+  };
+
   const dataKendaraan = [
     {
       label: "Merk Kendaraan",
@@ -59,15 +69,15 @@ const Halaman1: React.FC<Halaman1Props> = ({
     },
     {
       label: "Pajak 1 Tahun s.d.",
-      value: data.vehicleData.pajak1Tahun,
+      value: formatDate(data.vehicleData.pajak1Tahun),
     },
     {
       label: "Pajak 5 Tahun s.d.",
-      value: data.vehicleData.pajak5Tahun,
+      value: formatDate(data.vehicleData.pajak5Tahun),
     },
     {
       label: "Biaya Pajak",
-      value: data.vehicleData.biayaPajak,
+      value: formatCurrency(data.vehicleData.biayaPajak),
     },
   ];
 
@@ -183,7 +193,7 @@ const Halaman1: React.FC<Halaman1Props> = ({
   }
 
   return (
-    <div className="px-[30px] ">
+    <div className="px-[30px] font-poppins">
       <Header />
 
       <div className="flex justify-between items-end">
@@ -192,9 +202,9 @@ const Halaman1: React.FC<Halaman1Props> = ({
             editable &&
             onClick({
               label: "Tanggal",
-              inputFor: "inspectionDate",
-              value: data.inspectionDate,
-              section: "root",
+              fieldName: "inspectionDate",
+              oldValue: data.inspectionDate,
+              subFieldName: "",
               type: "date-input",
               onClose: () => {},
             })
@@ -217,9 +227,9 @@ const Halaman1: React.FC<Halaman1Props> = ({
               editable &&
               onClick({
                 label: "Lokasi Inspeksi",
-                inputFor: "cabangInspeksi",
-                value: data.identityDetails.cabangInspeksi,
-                section: "identityDetails",
+                fieldName: "identityDetails",
+                oldValue: data.identityDetails.cabangInspeksi,
+                subFieldName: "cabangInspeksi",
                 type: "dropdown-lokasi",
                 onClose: () => {},
               })
@@ -241,9 +251,9 @@ const Halaman1: React.FC<Halaman1Props> = ({
             editable &&
             onClick({
               label: "Nama Customer",
-              inputFor: "namaCustomer",
-              value: data.identityDetails.namaCustomer,
-              section: "identityDetails",
+              fieldName: "identityDetails",
+              oldValue: data.identityDetails.namaCustomer,
+              subFieldName: "namaCustomer",
               type: "normal-input",
               onClose: () => {},
             })
@@ -259,9 +269,9 @@ const Halaman1: React.FC<Halaman1Props> = ({
             editable &&
             onClick({
               label: "Nama Inspektor",
-              inputFor: "namaInspektor",
-              value: data.identityDetails.namaInspektor,
-              section: "identityDetails",
+              fieldName: "identityDetails",
+              oldValue: data.identityDetails.namaInspektor,
+              subFieldName: "namaInspektor",
               type: "dropdown-inspektor",
               onClose: () => {},
             })
@@ -307,10 +317,12 @@ const Halaman1: React.FC<Halaman1Props> = ({
                       editable &&
                       onClick({
                         label: item.label,
-                        inputFor: item.label.toLowerCase().replace(/\s/g, ""),
-                        value: item.value,
+                        fieldName: "vehicleData",
+                        oldValue: item.value,
                         type: "normal-input",
-                        section: "vehicleData",
+                        subFieldName: item.label
+                          .toLowerCase()
+                          .replace(/\s/g, ""),
                         onClose: () => {},
                       })
                     }
@@ -342,9 +354,9 @@ const Halaman1: React.FC<Halaman1Props> = ({
                       editable &&
                       onClick({
                         label: item.label,
-                        inputFor: item.partName,
-                        value: item.value,
-                        section: "equipmentChecklist",
+                        fieldName: "equipmentChecklist",
+                        oldValue: item.value,
+                        subFieldName: item.partName,
                         type: "select-2-input-kelengkapan",
                         onClose: () => {},
                       })
@@ -371,20 +383,26 @@ const Halaman1: React.FC<Halaman1Props> = ({
 
         <div className="w-full flex border-t-2 border-black">
           <div className="w-1/2 bg-[#B2BEB5] border-r-2 border-black h-48"></div>
-          <div className="w-1/2 ">
+          <div
+            className={`w-1/2 ${
+              editable ? "cursor-pointer group hover:bg-[#F4622F] " : ""
+            }`}
+          >
             <div
               onClick={() =>
                 editable &&
                 onClick({
                   label: `Inspection Summary`,
-                  inputFor: `inspectionSummary`,
-                  value: data.inspectionSummary.deskripsiKeseluruhan,
-                  section: "inspectionSummary",
+                  fieldName: `inspectionSummary`,
+                  oldValue: data.inspectionSummary.deskripsiKeseluruhan,
+                  subFieldName: "deskripsiKeseluruhan",
                   type: "penilaian-array",
                   onClose: () => {},
                 })
               }
-              className="text-[12px] text-left text-black py-2 px-2 font-bold"
+              className={`text-[12px] text-left 
+                ${editable ? "group-hover:text-white" : ""}
+                text-black py-2 px-2 font-bold `}
             >
               Deskripsi:
               <br />
@@ -407,21 +425,26 @@ const Halaman1: React.FC<Halaman1Props> = ({
               {check.map((item, index) => (
                 <div key={index} className="flex flex-col items-center">
                   <p className="text-[12px] mb-1">{item}</p>
-                  <div className="w-12 h-12 bg-[#B2BEB5] rounded-full  flex items-center justify-center">
+                  <div
+                    className={`w-12 h-12 bg-[#B2BEB5] rounded-full  flex items-center justify-center
+                    ${editable ? "group hover:bg-[#F4622F]" : ""}`}
+                  >
                     <p
                       onClick={() =>
                         editable &&
                         onClick({
                           label: `${item}`,
-                          inputFor: `${item.toLowerCase()}Score`,
-                          value: summaryScore[index]?.value,
-                          section: "inspectionSummary",
+                          subFieldName: `${item.toLowerCase()}Score`,
+                          oldValue: summaryScore[index]?.value,
+                          fieldName: "inspectionSummary",
                           type: "penilaian-summary",
                           onClose: () => {},
                         })
                       }
                       className={`text-[32px] font-bold text-center text-black leading-none ${
-                        editable ? "cursor-pointer hover:underline" : ""
+                        editable
+                          ? "cursor-pointer hover:underline group-hover:text-white"
+                          : ""
                       }`}
                     >
                       {getGradeLabel(summaryScore[index]?.value)}
@@ -433,21 +456,25 @@ const Halaman1: React.FC<Halaman1Props> = ({
 
             <div className="flex flex-col items-center mt-2">
               <p className="text-[12px] mb-2">Penilaian Keseluruhan</p>
-              <div className="w-24 h-24 bg-[#B2BEB5] rounded-full flex items-center justify-center">
+              <div
+                className={`w-24 h-24 bg-[#B2BEB5] rounded-full flex items-center justify-center
+                ${editable ? "group hover:bg-[#F4622F]" : ""}
+                `}
+              >
                 <p
                   onClick={() =>
                     editable &&
                     onClick({
                       label: `Penilaian Keseluruhan`,
-                      inputFor: `overallRating`,
-                      value: data?.overallRating,
-                      section: "root",
+                      fieldName: `overallRating`,
+                      oldValue: data?.overallRating,
+                      subFieldName: "",
                       type: "penilaian-summary",
                       onClose: () => {},
                     })
                   }
                   className={`-mt-2 text-[64px] font-bold text-center text-black leading-none ${
-                    editable ? "cursor-pointer hover:underline" : ""
+                    editable ? "cursor-pointer group-hover:text-white" : ""
                   }`}
                 >
                   {getGradeLabel(data?.overallRating)}
@@ -467,42 +494,62 @@ const Halaman1: React.FC<Halaman1Props> = ({
             </div>
             <div className="flex flex-col justify-start text-[24px] font-bold text-left my-2 gap-3 mx-5 ">
               {data.inspectionSummary.indikasiTabrakan ? (
-                <div className="flex gap-5  items-center">
+                <div
+                  className={`flex gap-5 items-center ${
+                    editable ? "group" : ""
+                  }`}
+                >
                   <img
                     onClick={() =>
                       editable &&
                       onClick({
                         label: `Indikasi Bekas Tabrakan`,
-                        inputFor: `indikasiTabrakan`,
-                        value: data.inspectionSummary.indikasiTabrakan,
-                        section: "inspectionSummary",
+                        subFieldName: `indikasiTabrakan`,
+                        oldValue: data.inspectionSummary.indikasiTabrakan,
+                        fieldName: "inspectionSummary",
                         type: "select-2-input-indikasi",
                         onClose: () => {},
                       })
                     }
                     src="/assets/icon/bekastabrak.svg"
                     alt="ok"
-                    className="w-16 h-16"
+                    className={`w-16 h-16
+                      ${
+                        editable
+                          ? "transition group-hover:cursor-pointer hover:-translate-y-1"
+                          : ""
+                      }
+                      `}
                   />
                   <p className="">BEKAS TABRAKAN</p>
                 </div>
               ) : (
-                <div className="flex gap-5 items-center">
+                <div
+                  className={`flex gap-5 items-center ${
+                    editable ? "group" : ""
+                  }`}
+                >
                   <img
                     onClick={() =>
                       editable &&
                       onClick({
                         label: `Indikasi Bekas Tabrakan`,
-                        inputFor: `indikasiTabrakan`,
-                        value: data.inspectionSummary.indikasiTabrakan,
-                        section: "inspectionSummary",
+                        fieldName: `inspectionSummary`,
+                        oldValue: data.inspectionSummary.indikasiTabrakan,
+                        subFieldName: "indikasiTabrakan",
                         type: "select-2-input-indikasi",
                         onClose: () => {},
                       })
                     }
                     src="/assets/icon/tidakindikasi.svg"
                     alt="ok"
-                    className="w-16 h-16"
+                    className={`w-16 h-16
+                      ${
+                        editable
+                          ? "transition group-hover:cursor-pointer hover:-translate-y-1"
+                          : ""
+                      }
+                      `}
                   />
                   <p className="">TIDAK INDIKASI BEKAS TABRAKAN</p>
                 </div>
@@ -515,16 +562,22 @@ const Halaman1: React.FC<Halaman1Props> = ({
                       editable &&
                       onClick({
                         label: `Indikasi Bekas Banjir`,
-                        inputFor: `indikasiBanjir`,
-                        value: data.inspectionSummary.indikasiBanjir,
-                        section: "inspectionSummary",
+                        subFieldName: `indikasiBanjir`,
+                        oldValue: data.inspectionSummary.indikasiBanjir,
+                        fieldName: "inspectionSummary",
                         type: "select-2-input-indikasi",
                         onClose: () => {},
                       })
                     }
                     src="/assets/icon/bekasbanjir.svg"
                     alt="ok"
-                    className="w-16 h-16"
+                    className={`w-16 h-16
+                      ${
+                        editable
+                          ? "transition group-hover:cursor-pointer hover:-translate-y-1"
+                          : ""
+                      }
+                      `}
                   />
                   <p className="">BEKAS BANJIR</p>
                 </div>
@@ -535,16 +588,22 @@ const Halaman1: React.FC<Halaman1Props> = ({
                       editable &&
                       onClick({
                         label: `Indikasi Bekas Banjir`,
-                        inputFor: `indikasiBanjir`,
-                        value: data.inspectionSummary.indikasiBanjir,
-                        section: "inspectionSummary",
+                        subFieldName: `indikasiBanjir`,
+                        oldValue: data.inspectionSummary.indikasiBanjir,
+                        fieldName: "inspectionSummary",
                         type: "select-2-input-indikasi",
                         onClose: () => {},
                       })
                     }
                     src="/assets/icon/tidakindikasi.svg"
                     alt="ok"
-                    className="w-16 h-16"
+                    className={`w-16 h-16
+                      ${
+                        editable
+                          ? "transition group-hover:cursor-pointer hover:-translate-y-1"
+                          : ""
+                      }
+                      `}
                   />
                   <p className="">TIDAK BEKAS BANJIR</p>
                 </div>
@@ -556,16 +615,22 @@ const Halaman1: React.FC<Halaman1Props> = ({
                       editable &&
                       onClick({
                         label: `Indikasi Odometer Reset`,
-                        inputFor: `indikasiOdometerReset`,
-                        value: data.inspectionSummary.indikasiOdometerReset,
-                        section: "inspectionSummary",
+                        fieldName: `indikasiOdometerReset`,
+                        oldValue: data.inspectionSummary.indikasiOdometerReset,
+                        subFieldName: "inspectionSummary",
                         type: "select-2-input-indikasi",
                         onClose: () => {},
                       })
                     }
                     src="/assets/icon/odometerreset.svg"
                     alt="ok"
-                    className="w-16 h-16"
+                    className={`w-16 h-16
+                      ${
+                        editable
+                          ? "transition group-hover:cursor-pointer hover:-translate-y-1"
+                          : ""
+                      }
+                      `}
                   />
                   <p className="">INDIKASI ODOMETER RESET</p>
                 </div>
@@ -576,16 +641,22 @@ const Halaman1: React.FC<Halaman1Props> = ({
                       editable &&
                       onClick({
                         label: `Indikasi Odometer Reset`,
-                        inputFor: `indikasiOdometerReset`,
+                        subFieldName: `indikasiOdometerReset`,
                         value: data.inspectionSummary.indikasiOdometerReset,
-                        section: "inspectionSummary",
+                        fieldName: "inspectionSummary",
                         type: "select-2-input-indikasi",
                         onClose: () => {},
                       })
                     }
                     src="/assets/icon/tidakindikasi.svg"
                     alt="ok"
-                    className="w-16 h-16"
+                    className={`w-16 h-16
+                      ${
+                        editable
+                          ? "transition group-hover:cursor-pointer hover:-translate-y-1"
+                          : ""
+                      }
+                      `}
                   />
                   <p className="">TIDAK INDIKASI ODOMETER RESET</p>
                 </div>

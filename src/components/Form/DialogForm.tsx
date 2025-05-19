@@ -19,36 +19,30 @@ import { setEditedData } from "@/lib/features/inspection/inspectionSlice";
 import { useState } from "react";
 import FormPenilaianSummmary from "./FormPenilaianSummary";
 import FormArray from "./FormArray";
+import FormEstimasiPerbaikan from "./FormEstimasiPerbaikan";
 
 interface DialogFormProps {
   label: string;
-  inputFor: string;
-  value?: any;
+  subFieldName: string;
+  oldValue?: any;
   type?: string;
-  section?: string;
+  fieldName?: string;
   onClose: () => void;
   onSave: (newValue: any) => void;
   isOpen: boolean; // New prop to control dialog visibility
 }
 
-interface EditProps {
-  part: string;
-  section: string;
-  before: string;
-  after: string;
-}
-
 export function DialogForm({
   label,
-  inputFor,
-  value,
+  subFieldName,
+  oldValue,
   type,
   onClose,
   onSave,
   isOpen,
-  section,
+  fieldName,
 }: DialogFormProps) {
-  const [newValue, setNewValue] = useState(value);
+  const [newValue, setNewValue] = useState(oldValue);
 
   const handleChange = (value: any) => {
     if (typeof value === "boolean") {
@@ -68,9 +62,9 @@ export function DialogForm({
         return (
           <FormNormalInput
             label={label}
-            inputFor={inputFor}
-            value={value}
-            section={section}
+            inputFor={subFieldName}
+            value={oldValue}
+            section={fieldName} // tetap gunakan section
             onChange={handleChange}
           />
         );
@@ -78,9 +72,9 @@ export function DialogForm({
         return (
           <FormDateInput
             label={label}
-            inputFor={inputFor}
-            value={value ? new Date(value) : undefined}
-            section={section}
+            inputFor={subFieldName}
+            value={oldValue ? new Date(oldValue) : undefined}
+            section={fieldName} // tetap gunakan section
             onChange={handleChange}
           />
         );
@@ -88,9 +82,9 @@ export function DialogForm({
         return (
           <FormSelect2Option
             label={label}
-            inputFor={inputFor}
-            value={value}
-            section={section}
+            inputFor={subFieldName}
+            value={oldValue}
+            section={fieldName} // tetap gunakan section
             type="kelengkapan"
             onChange={handleChange}
           />
@@ -100,9 +94,9 @@ export function DialogForm({
         return (
           <FormSelect2Option
             label={label}
-            inputFor={inputFor}
-            value={value}
-            section={section}
+            inputFor={subFieldName}
+            value={oldValue}
+            section={fieldName} // tetap gunakan section
             type="indikasi"
             onChange={handleChange}
           />
@@ -111,9 +105,9 @@ export function DialogForm({
         return (
           <FormDropdownInput
             label={label}
-            section={section}
-            inputFor={inputFor}
-            value={value}
+            section={fieldName} // tetap gunakan section
+            inputFor={subFieldName}
+            value={oldValue}
             onChange={handleChange}
             type="inspektor"
           />
@@ -122,18 +116,19 @@ export function DialogForm({
         return (
           <FormDropdownInput
             label={label}
-            inputFor={inputFor}
-            value={value}
+            inputFor={subFieldName}
+            value={oldValue}
             onChange={handleChange}
             type="lokasi"
+            section={fieldName} // tetap gunakan section
           />
         );
       case "penilaian-summary":
         return (
           <FormPenilaianSummmary
             label={label}
-            inputFor={inputFor}
-            value={value}
+            inputFor={subFieldName}
+            value={oldValue}
             onChange={handleChange}
           />
         );
@@ -141,10 +136,18 @@ export function DialogForm({
         return (
           <FormArray
             label={label}
-            inputFor={inputFor}
-            value={value}
+            inputFor={subFieldName}
+            value={oldValue}
             onChange={handleChange}
-            section={section}
+            section={fieldName} // tetap gunakan section
+          />
+        );
+      case "estimasi-perbaikan":
+        return (
+          <FormEstimasiPerbaikan
+            label={label}
+            value={oldValue}
+            onChange={handleChange}
           />
         );
       default:

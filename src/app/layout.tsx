@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Rubik, Pacifico } from "next/font/google";
+import { Rubik, Pacifico, Poppins } from "next/font/google";
 import "./globals.css";
 import ReduxProvider from "@/lib/store/redux-provider";
 import { Toaster } from "@/components/ui/toaster";
@@ -11,6 +11,12 @@ const rubik = Rubik({
 
 const pacifico = Pacifico({
   variable: "--font-pacifico",
+  subsets: ["latin"],
+  weight: "400",
+});
+
+const poppins = Poppins({
+  variable: "--font-poppins",
   subsets: ["latin"],
   weight: "400",
 });
@@ -28,7 +34,9 @@ export default function RootLayout({
   return (
     <ReduxProvider>
       <html lang="en" className="hydrated" suppressHydrationWarning>
-        <body className={`${rubik.variable} ${pacifico.variable} antialiased`}>
+        <body
+          className={`${rubik.variable} ${pacifico.variable} ${poppins.variable} antialiased`}
+        >
           {children}
           <Toaster />
         </body>

@@ -42,10 +42,11 @@ function FormSelect2Option({
   ]);
 
   useEffect(() => {
+    console.log("isLengkap", isLengkap);
     if (type === "indikasi") {
       setOptions([
-        { value: true, label: "Tidak Ada" },
-        { value: false, label: "Indikasi" },
+        { value: true, label: "Indikasi" },
+        { value: false, label: "Tidak Ada" },
       ]);
     } else if (type === "kelengkapan") {
       setOptions([
