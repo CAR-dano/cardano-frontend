@@ -127,6 +127,13 @@ const TableData = ({ data, isDatabase = false, setDialogData }: any) => {
                   Download
                 </a>
               )}
+              <Link
+                href={`/preview/${item.id}`}
+                className="text-blue-500 underline text-[16px] font-light"
+                target="_blank"
+              >
+                {!isDatabase ? "Preview" : "Download"}
+              </Link>
             </TableCell>
             <TableCell className="font-light flex justify-center items-center">
               <div className="flex gap-2">
