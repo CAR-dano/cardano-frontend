@@ -1,0 +1,586 @@
+"use client";
+import Image from "next/image";
+import React, { useState, useCallback, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
+import { UserLogin, UserSignUp } from "@/utils/Auth";
+import { useDispatch } from "react-redux";
+import { AppDispatch, useAppSelector } from "@/lib/store";
+import { login, signup } from "@/lib/features/auth/authSlice";
+import LoadingScreen from "@/components/LoadingFullScreen";
+import { FiEye, FiEyeOff } from "react-icons/fi";
+import { toast } from "@/hooks/use-toast";
+import { set } from "date-fns";
+
+function AdminLoginPage() { // Renamed function for clarity
+  const [showSignup, setShowSignup] = useState(false);
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showRegisterPassword, setShowRegisterPassword] = useState(false);
+  const toggleSignup = useCallback(() => setShowSignup((prev) => !prev), []);
+  const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
+  const isLoading = useAppSelector((state) => state.auth.isLoading);
+  const user = useAppSelector((state) => state.auth.user);
+  const [registerErrors, setRegisterErrors] = useState<{
+    [key: string]: string;
+  }>({});
+  const [loginErrors, setLoginErrors] = useState<{ [key: string]: string }>({});
+
+  useEffect(() => {
+    // Potentially adjust this logic for admin-specific redirection
+    if (user && user.role === "ADMIN") {
+      router.push("/dashboard");
+    } else if (user && user.role !== "ADMIN") {
+      // If a non-admin user tries to log in via admin page, redirect them or show an error
+      toast({
+        title: "Access Denied",
+        description: "You do not have admin privileges.",
+        variant: "destructive",
+      });
+      // Optionally, log them out or redirect to a general login
+      // dispatch(logout()); 
+      router.push("/auth"); 
+    }
+  }, [user, router, dispatch]);
+
+  const pageVariants = {
+    loginInitial: { x: "100%", opacity: 0, scale: 0.9 },
+    signupInitial: { x: "-100%", opacity: 0, scale: 0.9 },
+    active: {
+      x: 0,
+      opacity: 1,
+      scale: 1,
+      transition: {
+        type: "spring",
+        stiffness: 80,
+        damping: 20,
+        mass: 1,
+        when: "beforeChildren",
+        staggerChildren: 0.1,
+      },
+    },
+    loginExit: {
+      x: "-100%",
+      opacity: 0,
+      scale: 0.9,
+      transition: {
+        type: "spring",
+        stiffness: 80,
+        damping: 20,
+        mass: 1,
+      },
+    },
+    signupExit: {
+      x: "100%",
+      opacity: 0,
+      scale: 0.9,
+      transition: {
+        type: "spring",
+        stiffness: 80,
+        damping: 20,
+        mass: 1,
+      },
+    },
+  };
+
+  // Animation for child elements
+  const childVariants = {
+    initial: { y: 20, opacity: 0 },
+    animate: {
+      y: 0,
+      opacity: 1,
+      transition: { type: "spring", stiffness: 100, damping: 10, delay: 0.2 },
+    },
+    exit: {
+      y: 20,
+      opacity: 0,
+      transition: { type: "spring", stiffness: 100, damping: 10 },
+    },
+  };
+
+  // Coin animation
+  const coinVariants = {
+    initial: { scale: 0.5, opacity: 0, rotate: -10 },
+    animate: {
+      scale: 1,
+      opacity: 1,
+      rotate: 0,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 10,
+        delay: 0.4, // sedikit lebih lama agar terlihat smooth
+      },
+    },
+    exit: {
+      scale: 0.5,
+      opacity: 0,
+      rotate: 10,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 10,
+      },
+    },
+  };
+
+  const [formLogin, setFormLogin] = useState<UserLogin>({
+    loginIdentifier: "",
+    password: "",
+  });
+
+  const validateLogin = () => {
+    const errors: { [key: string]: string } = {};
+    if (!formLogin.loginIdentifier.trim())
+      errors.loginIdentifier = "Email or Username is required";
+    if (!formLogin.password) errors.password = "Password is required";
+    setLoginErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateLogin()) return;
+    try {
+      // You might want a specific admin login action or ensure the existing one handles roles
+      await dispatch(login(formLogin)).unwrap(); 
+      // The useEffect above will handle redirection based on role
+    } catch (err: any) {
+      toast({
+        title: "Error",
+        description: err.message || "Login failed. Please check your credentials.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const [formRegister, setFormRegister] = useState<UserSignUp>({
+    username: "",
+    email: "",
+    password: "",
+  });
+
+  const validateRegister = () => {
+    const errors: { [key: string]: string } = {};
+    if (!formRegister.username.trim()) errors.username = "Username is required";
+    if (!formRegister.email.trim()) errors.email = "Email is required";
+    else if (!/\S+@\S+\.\S+/.test(formRegister.email))
+      errors.email = "Email is invalid";
+    if (!formRegister.password) errors.password = "Password is required";
+    else if (formRegister.password.length < 8)
+      errors.password = "Password must be at least 8 characters";
+    setRegisterErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateRegister()) return;
+    // Consider if admin signup should be different or disabled on this page
+    dispatch(signup(formRegister)) 
+      .unwrap()
+      .then(() => {
+        toast({
+          title: "Success",
+          description: "Registration successful! Please log in.",
+          variant: "default",
+        });
+        setShowSignup(false);
+        setFormRegister({
+          username: "",
+          email: "",
+          password: "",
+        });
+      })
+      .catch((err: any) => {
+        toast({
+          title: "Error",
+          description: err.message || "Signup failed. Please try again.",
+          variant: "destructive",
+        });
+      });
+  };
+
+  return (
+    <div className="w-full h-screen overflow-hidden bg-[url('/assets/pattern/bg.png')] bg-cover">
+      {isLoading && <LoadingScreen />}
+
+      <AnimatePresence initial={false} mode="wait">
+        {!showSignup ? (
+          <motion.div
+            key="login-container"
+            className="w-full h-screen flex justify-center items-center"
+            initial="loginInitial"
+            animate="active"
+            exit="loginExit"
+            variants={pageVariants}
+          >
+            <div className="w-full flex h-screen justify-center items-center">
+              {/* Left side - Cardano info with orange/gold coin */}
+              <div className="hidden relative w-[45%] h-full bg-[url('/assets/pattern/loginbg.png')] bg-cover lg:flex flex-col justify-center items-center">
+                <motion.div
+                  variants={coinVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  className="absolute top-0 -right-32 transform translate-x-1/2 "
+                >
+                  <Image
+                    src="/assets/cardano-gold.svg"
+                    width={400}
+                    height={400}
+                    alt="logo"
+                  />
+                </motion.div>
+                <motion.div
+                  className="mt-36 space-y-3 w-[80%] p-11 rounded-[55px] bg-white/5 shadow-[2px_4px_23.2px_0px_rgba(0,0,0,0.25)] backdrop-blur-[10px]"
+                  variants={childVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                >
+                  <h1 className="text-white font-rubik text-[40px] font-medium mb-4">
+                    Admin Portal: Blockchain Insights
+                  </h1>
+                  <p className="text-white text-justify font-rubik text-[16px] font-normal leading-[27px]">
+                    Access administrative functions and manage car inspection data recorded on the Cardano blockchain. Ensure data integrity and oversee system operations.
+                  </p>
+                  <p className="w-full text-right text-white font-rubik text-[16px] font-normal leading-[27px] mt-4">
+                    Cardano Admin Panel
+                  </p>
+                </motion.div>
+              </div>
+
+              {/* Right side - Login form */}
+              <div className="w-full lg:w-[55%] h-full flex flex-col justify-center items-center bg-white">
+                <div className="w-[85%] lg:w-[60%] flex flex-col items-start justify-center">
+                  <motion.h1
+                    className="bg-gradient-to-r from-[#FF7D43] to-[#A25DF9] bg-clip-text text-transparent 
+    font-rubik text-[60px] font-bold leading-[70px] mb-4 pb-2"
+                    variants={childVariants}
+                  >
+                    Admin Login
+                  </motion.h1>
+
+                  <motion.form
+                    className="flex flex-col space-y-6 w-full mb-8"
+                    variants={childVariants}
+                    onSubmit={handleLogin}
+                  >
+                    <motion.div
+                      className="flex flex-col space-y-2 w-full"
+                      variants={childVariants}
+                    >
+                      <label
+                        htmlFor="email"
+                        className="text-black font-rubik text-[16px] font-medium"
+                      >
+                        Email or Username
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Enter your admin email or username"
+                        value={formLogin.loginIdentifier}
+                        onChange={(e) =>
+                          setFormLogin({
+                            ...formLogin,
+                            loginIdentifier: e.target.value,
+                          })
+                        }
+                        className="px-4 py-3 rounded-lg border border-[#A25DF9] bg-white shadow-[0px_16px_20px_-6px_rgba(194,140,255,0.05),0px_24px_48px_-10px_rgba(76,28,130,0.16)] focus:outline-none focus:ring-2 focus:ring-[#A25DF9] focus:border-transparent transition-all duration-300"
+                      />
+                      {loginErrors.loginIdentifier && (
+                        <span className="text-red-500 text-sm">
+                          {loginErrors.loginIdentifier}
+                        </span>
+                      )}
+                    </motion.div>
+                    <motion.div
+                      className="flex flex-col space-y-2 w-full"
+                      variants={childVariants}
+                    >
+                      <label
+                        htmlFor="password"
+                        className="text-black font-rubik text-[16px] font-medium"
+                      >
+                        Password
+                      </label>
+                      <div className="relative">
+                        <input
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Enter your admin password"
+                          value={formLogin.password}
+                          onChange={(e) =>
+                            setFormLogin({
+                              ...formLogin,
+                              password: e.target.value,
+                            })
+                          }
+                          className="w-full px-4 py-3 pr-12 rounded-lg border border-[#A25DF9] bg-white shadow-[0px_16px_20px_-6px_rgba(194,140,255,0.05),0px_24px_48px_-10px_rgba(76,28,130,0.16)] focus:outline-none focus:ring-2 focus:ring-[#A25DF9] focus:border-transparent transition-all duration-300"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-[#A25DF9]"
+                        >
+                          {showPassword ? (
+                            <FiEyeOff size={20} />
+                          ) : (
+                            <FiEye size={20} />
+                          )}
+                        </button>
+                      </div>
+                      {loginErrors.password && (
+                        <span className="text-red-500 text-sm">
+                          {loginErrors.password}
+                        </span>
+                      )}
+                    </motion.div>
+                    <button
+                      type="submit"
+                      className="gradient-button-2 w-full py-3 rounded-lg text-white font-rubik text-[18px] font-medium "
+                    >
+                      Log in as Admin
+                    </button>
+                  </motion.form>
+
+                  {/* Admin page might not need a signup link, or it should point to a specific admin creation process */}
+                  {/* <motion.p
+                    className="text-black font-rubik text-[16px] font-normal"
+                    variants={childVariants}
+                  >
+                    Need to register a new admin?{" "}
+                    <a
+                      className="text-[#FF6B6B] font-bold cursor-pointer hover:underline"
+                      onClick={toggleSignup} // This would show the regular signup form
+                    >
+                      Sign up
+                    </a>
+                  </motion.p> */}
+
+                  {/* OR and Google Login might be irrelevant for admin login */}
+                  {/* 
+                  <motion.div
+                    className="flex items-center justify-center w-full mt-8 gap-10"
+                    variants={childVariants}
+                  >
+                    <div className="w-full h-[1px] bg-[#A25DF9] bg-opacity-50"></div>
+                    <p className="text-black font-rubik text-[16px] font-bold leading-none">
+                      OR
+                    </p>
+                    <div className="w-full h-[1px] bg-[#A25DF9] bg-opacity-50"></div>
+                  </motion.div>
+
+                  <motion.button
+                    className="mt-6 py-3 flex items-center justify-center w-full py-2.5 rounded-lg border border-gray-300 text-black font-rubik text-[16px] font-medium bg-white hover:bg-gray-50 transition-colors duration-300 transform hover:scale-[1.02] active:scale-[0.98]"
+                    variants={childVariants}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <Image
+                      src="/assets/google.svg"
+                      width={24}
+                      height={24}
+                      alt="google"
+                      className="mr-2"
+                    />
+                    <span>Login with Google</span>
+                  </motion.button> 
+                  */}
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        ) : (
+          // Signup form - consider if this is needed for admins or how it should behave
+          <motion.div
+            key="signup-container"
+            className="w-full h-screen flex justify-center items-center"
+            initial="signupInitial"
+            animate="active"
+            exit="signupExit"
+            variants={pageVariants}
+          >
+            <div className="w-full flex h-screen justify-center items-center">
+              {/* Left side - Signup form */}
+              <div className="w-full lg:w-[55%] h-full flex flex-col justify-center items-center bg-white">
+                <div className="w-[85%] lg:w-[60%] flex flex-col items-start justify-center">
+                  <motion.h1
+                    className="bg-gradient-to-r from-[#FF7D43] to-[#A25DF9] bg-clip-text text-transparent  font-rubik text-[60px] font-bold mb-4 leading-none"
+                    variants={childVariants}
+                  >
+                    Create Admin Account
+                  </motion.h1>
+
+                  <motion.form
+                    className="flex flex-col space-y-6 w-full mb-8"
+                    variants={childVariants}
+                    onSubmit={handleSignup} // Ensure this signup is for admins
+                  >
+                    <motion.div
+                      className="flex flex-col space-y-2 w-full"
+                      variants={childVariants}
+                    >
+                      <label
+                        htmlFor="username"
+                        className="text-black font-rubik text-[16px] font-medium"
+                      >
+                        Username*
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Enter admin username"
+                        value={formRegister.username}
+                        onChange={(e) =>
+                          setFormRegister({
+                            ...formRegister,
+                            username: e.target.value,
+                          })
+                        }
+                        className="px-4 py-3 rounded-lg border border-[#A25DF9] bg-white shadow-[0px_16px_20px_-6px_rgba(194,140,255,0.05),0px_24px_48px_-10px_rgba(76,28,130,0.16)] focus:outline-none focus:ring-2 focus:ring-[#A25DF9] focus:border-transparent transition-all duration-300"
+                      />
+                      {registerErrors.username && (
+                        <span className="text-red-500 text-sm">
+                          {registerErrors.username}
+                        </span>
+                      )}
+                    </motion.div>
+                    <motion.div
+                      className="flex flex-col space-y-2 w-full"
+                      variants={childVariants}
+                    >
+                      <label
+                        htmlFor="email"
+                        className="text-black font-rubik text-[16px] font-medium"
+                      >
+                        Email*
+                      </label>
+                      <input
+                        type="email"
+                        placeholder="Enter admin email address"
+                        value={formRegister.email}
+                        onChange={(e) =>
+                          setFormRegister({
+                            ...formRegister,
+                            email: e.target.value,
+                          })
+                        }
+                        className="px-4 py-3 rounded-lg border border-[#A25DF9] bg-white shadow-[0px_16px_20px_-6px_rgba(194,140,255,0.05),0px_24px_48px_-10px_rgba(76,28,130,0.16)] focus:outline-none focus:ring-2 focus:ring-[#A25DF9] focus:border-transparent transition-all duration-300"
+                      />
+                      {registerErrors.email && (
+                        <span className="text-red-500 text-sm">
+                          {registerErrors.email}
+                        </span>
+                      )}
+                    </motion.div>
+                    <motion.div
+                      className="flex flex-col space-y-2 w-full"
+                      variants={childVariants}
+                    >
+                      <label
+                        htmlFor="password"
+                        className="text-black font-rubik text-[16px] font-medium"
+                      >
+                        Password
+                      </label>
+                      <div className="relative">
+                        <input
+                          type={showRegisterPassword ? "text" : "password"}
+                          placeholder="Enter admin password"
+                          value={formRegister.password}
+                          onChange={(e) =>
+                            setFormRegister({
+                              ...formRegister,
+                              password: e.target.value,
+                            })
+                          }
+                          className="w-full px-4 py-3 pr-12 rounded-lg border border-[#A25DF9] bg-white shadow-[0px_16px_20px_-6px_rgba(194,140,255,0.05),0px_24px_48px_-10px_rgba(76,28,130,0.16)] focus:outline-none focus:ring-2 focus:ring-[#A25DF9] focus:border-transparent transition-all duration-300"
+                        />
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setShowRegisterPassword(!showRegisterPassword)
+                          }
+                          className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-[#A25DF9]"
+                        >
+                          {showRegisterPassword ? (
+                            <FiEyeOff size={20} />
+                          ) : (
+                            <FiEye size={20} />
+                          )}
+                        </button>
+                      </div>
+                      {registerErrors.password && (
+                        <span className="text-red-500 text-sm">
+                          {registerErrors.password}
+                        </span>
+                      )}
+                    </motion.div>
+                    {/* You might want to add a role field or ensure the backend assigns ADMIN role */}
+                    <button
+                      type="submit"
+                      className="gradient-button-2 w-full py-3 rounded-lg text-white font-rubik text-[18px] font-medium "
+                    >
+                      Sign Up as Admin
+                    </button>
+                  </motion.form>
+
+                  <motion.p
+                    className="text-black font-rubik text-[16px] font-normal"
+                    variants={childVariants}
+                  >
+                    Already have an admin account?{" "}
+                    <a
+                      className="text-[#FF6B6B] font-bold cursor-pointer hover:underline"
+                      onClick={toggleSignup}
+                    >
+                      Log in
+                    </a>
+                  </motion.p>
+                </div>
+              </div>
+
+              {/* Right side - Cardano info with blue coin */}
+              <div className="hidden l relative w-[45%] h-full bg-[url('/assets/pattern/loginbg.png')] bg-cover  lg:flex flex-col justify-center items-center ">
+                <motion.div
+                  variants={coinVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  className="absolute top-0 -left-32"
+                >
+                  <Image
+                    src="/assets/cardano-blue.svg"
+                    width={400}
+                    height={400}
+                    alt="logo"
+                  />
+                </motion.div>
+                <motion.div
+                  className="mt-36 space-y-3 w-[80%] p-11 rounded-[55px] bg-white/5 shadow-[2px_4px_23.2px_0px_rgba(0,0,0,0.25)] backdrop-blur-[10px]"
+                  variants={childVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                >
+                  <h1 className="text-white font-rubik text-[40px] font-medium mb-4">
+                    Secure Admin Registration
+                  </h1>
+                  <p className="text-white text-justify font-rubik text-[16px] font-normal leading-[27px]">
+                    Register new administrative accounts with appropriate privileges. Ensure all admin activities are logged and auditable through the blockchain.
+                  </p>
+                  <p className="w-full text-right text-white font-rubik text-[16px] font-normal leading-[27px] mt-4">
+                    Cardano Admin Panel
+                  </p>
+                </motion.div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+export default AdminLoginPage; // Renamed function for clarity

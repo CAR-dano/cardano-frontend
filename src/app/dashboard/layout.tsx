@@ -24,7 +24,7 @@ export default function CreatorLayout({
         variant: "destructive",
       });
       setTimeout(() => {
-        window.location.href = "/auth";
+        window.location.href = "/dashboard/auth";
       }, 2000);
     } else if (user.role !== "ADMIN") {
       toast({
