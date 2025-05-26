@@ -3,9 +3,12 @@ import inspectionService from "./inspectionService";
 
 export const getDataForReviewer = createAsyncThunk(
   "inspection/getDataForReviewer",
-  async (_, thunkAPI) => {
+  async (
+    params: { page?: number; pageSize?: number; status?: string } = {},
+    thunkAPI
+  ) => {
     try {
-      const payload = await inspectionService.getDataForReview();
+      const payload = await inspectionService.getDataForReview(params);
       return payload;
     } catch (error: any) {
       const message = error?.response?.data?.message;
@@ -93,10 +96,25 @@ export const mintingToBlockchain = createAsyncThunk(
   }
 );
 
+export const searchByVehiclePlat = createAsyncThunk(
+  "inspection/searchByPlat",
+  async (platNumber: string, thunkAPI) => {
+    try {
+      const payload = await inspectionService.searchByVehiclePlat(platNumber);
+      console.log(payload);
+      return payload;
+    } catch (error: any) {
+      const message = error?.response?.data?.message;
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export interface EditedItem {
   inspectionId: string;
   fieldName: string;
   subFieldName?: string;
+  subsubFieldName?: string;
   oldValue: string;
   newValue: string;
   changesAt?: string;
@@ -137,14 +155,28 @@ export const inspectionSlice = createSlice({
         inspectionId,
         fieldName,
         subFieldName,
+        subsubFieldName,
         oldValue,
         newValue,
         changesAt,
       } = action.payload;
-      const existingEdit = state.edited.find(
-        (edit) =>
-          edit.fieldName === fieldName && edit.subFieldName === subFieldName
-      );
+      const normalizedFieldName = fieldName?.toLowerCase().trim();
+      const normalizedSubFieldName = subFieldName?.toLowerCase().trim() || "";
+      const normalizedSubsubFieldName =
+        subsubFieldName?.toLowerCase().trim() || "";
+
+      const existingEdit = state.edited.find((edit) => {
+        const editNormalizedFieldName = edit.fieldName?.toLowerCase().trim();
+        const editNormalizedSubFieldName =
+          edit.subFieldName?.toLowerCase().trim() || "";
+        const editNormalizedSubsubFieldName =
+          edit.subsubFieldName?.toLowerCase().trim() || "";
+        return (
+          editNormalizedFieldName === normalizedFieldName &&
+          editNormalizedSubFieldName === normalizedSubFieldName &&
+          editNormalizedSubsubFieldName === normalizedSubsubFieldName
+        );
+      });
 
       if (existingEdit) {
         existingEdit.newValue = newValue;
@@ -161,9 +193,16 @@ export const inspectionSlice = createSlice({
     },
 
     deleteEditedData: (state, action) => {
-      const { inspectionId } = action.payload;
+      const { inspectionId, fieldName, subFieldName, subsubFieldName } =
+        action.payload;
       state.edited = state.edited.filter(
-        (edit) => edit.inspectionId !== inspectionId
+        (edit) =>
+          !(
+            edit.inspectionId === inspectionId &&
+            edit.fieldName === fieldName &&
+            edit.subFieldName === subFieldName &&
+            edit.subsubFieldName === subsubFieldName
+          )
       );
     },
   },
@@ -249,6 +288,21 @@ export const inspectionSlice = createSlice({
       })
       .addCase(mintingToBlockchain.rejected, (state, action) => {
         state.isLoading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(searchByVehiclePlat.pending, (state) => {
+        state.isLoading = true;
+        state.review = null; // Clear previous search results
+        state.error = null;
+      })
+      .addCase(searchByVehiclePlat.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.review = action.payload; // Assuming payload is the inspection data
+        state.error = null;
+      })
+      .addCase(searchByVehiclePlat.rejected, (state, action) => {
+        state.isLoading = false;
+        state.review = null;
         state.error = action.payload as string;
       });
   },

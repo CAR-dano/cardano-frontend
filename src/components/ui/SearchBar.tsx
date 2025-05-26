@@ -27,8 +27,6 @@ function SearchBar({ value }: SearchBarProps) {
       desktopInputRef.current?.value.trim() ||
       mobileInputRef.current?.value.trim();
 
-    console.log(searchValue); // Debugging untuk memastikan value terambil
-
     if (searchValue) {
       router.push(`/result?platNomor=${encodeURIComponent(searchValue)}`);
     }

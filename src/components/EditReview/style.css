@@ -1,6 +1,73 @@
 body {
   margin: 0;
 }
+
+/* Force light mode for EditReview components */
+.light-mode-only {
+  background-color: white !important;
+  color: black !important;
+}
+
+.light-mode-only * {
+  background-color: inherit !important;
+  color: inherit !important;
+}
+
+.light-mode-only .bg-white {
+  background-color: white !important;
+}
+
+.light-mode-only .bg-gray-50 {
+  background-color: #f9fafb !important;
+}
+
+.light-mode-only .bg-blue-50 {
+  background-color: #eff6ff !important;
+}
+
+.light-mode-only .bg-green-50 {
+  background-color: #f0fdf4 !important;
+}
+
+.light-mode-only .text-gray-900 {
+  color: #111827 !important;
+}
+
+.light-mode-only .text-gray-700 {
+  color: #374151 !important;
+}
+
+.light-mode-only .text-gray-600 {
+  color: #4b5563 !important;
+}
+
+.light-mode-only .text-gray-500 {
+  color: #6b7280 !important;
+}
+
+.light-mode-only .text-blue-600 {
+  color: #2563eb !important;
+}
+
+.light-mode-only .text-blue-800 {
+  color: #1e40af !important;
+}
+
+.light-mode-only .text-green-700 {
+  color: #15803d !important;
+}
+
+.light-mode-only .border-gray-200 {
+  border-color: #e5e7eb !important;
+}
+
+.light-mode-only .border-blue-200 {
+  border-color: #dbeafe !important;
+}
+
+.light-mode-only .border-green-300 {
+  border-color: #86efac !important;
+}
 .sheet-outer {
   margin: 0;
 }

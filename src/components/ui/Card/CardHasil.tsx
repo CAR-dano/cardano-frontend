@@ -3,7 +3,27 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { Hasil } from "@/utils/Car";
 
-function CardHasil({ penilaian, indikasi }: Hasil) {
+function CardHasil({ inspectionSummary, overallRating, urlPdf }: any) {
+  function getGradeLabel(score: number): string {
+    const gradingScale: { [key: number]: string } = {
+      0: "E",
+      1: "D-",
+      2: "D",
+      3: "C-",
+      4: "C",
+      5: "B-",
+      6: "B",
+      7: "B+",
+      8: "A-",
+      9: "A",
+      10: "A",
+    };
+
+    return gradingScale[score] ?? "Skor tidak valid";
+  }
+
+  const PDF_URL = process.env.NEXT_PUBLIC_PDF_URL;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
@@ -29,17 +49,17 @@ function CardHasil({ penilaian, indikasi }: Hasil) {
               {
                 icon: "/assets/icon/bekastabrak.svg",
                 title: "Bekas Tabrakan",
-                description: indikasi.bekastabrakan,
+                description: inspectionSummary.indikasiTabrakan,
               },
               {
                 icon: "/assets/icon/bekasbanjir.svg",
                 title: "Bekas Banjir",
-                description: indikasi.bekasbanjir,
+                description: inspectionSummary.indikasiBanjir,
               },
               {
                 icon: "/assets/icon/odometerreset.svg",
                 title: "Odometer Reset",
-                description: indikasi.odometerreset,
+                description: inspectionSummary.indikasiOdometerReset,
               },
             ].map((item, index) => (
               <div
@@ -51,10 +71,13 @@ function CardHasil({ penilaian, indikasi }: Hasil) {
                   alt="icon"
                   width={80}
                   height={80}
-                  className="w-20 h-20 lg:w-24 lg:h-24"
+                  className={`w-20 h-20 lg:w-24 lg:h-24  rounded-[20px] ${
+                    item.description ? "bg-pink-400" : "bg-blue-500"
+                  } ${item.title != "Odometer Reset" ? "p-3" : " p-2"}
+            `}
                 />
                 <div>
-                  <h1 className="text-[clamp(24px,3vw,32px)] font-light">
+                  <h1 className="text-[clamp(24px,3vw,32px)] font-light ">
                     {item.title}
                   </h1>
                   <p
@@ -84,23 +107,25 @@ function CardHasil({ penilaian, indikasi }: Hasil) {
 
           <div className="flex flex-row gap-5 text-neutral-900">
             <div className="w-1/2">
-              <div className="flex flex-wrap justify-center gap-x-5 lg:gap-x-12 gap-y-3.5 lg:gap-y-5">
+              <div className="grid grid-cols-2 gap-x-5 lg:gap-x-8 gap-y-3.5 lg:gap-y-5">
                 {[
                   {
                     title: "Mesin",
-                    description: penilaian.mesin,
+                    description: getGradeLabel(inspectionSummary.mesinScore),
                   },
                   {
                     title: "Eksterior",
-                    description: penilaian.exterior,
+                    description: getGradeLabel(
+                      inspectionSummary.eksteriorScore
+                    ),
                   },
                   {
                     title: "Interior",
-                    description: penilaian.interior,
+                    description: getGradeLabel(inspectionSummary.interiorScore),
                   },
                   {
                     title: "Kaki-kaki",
-                    description: penilaian.kakiKaki,
+                    description: getGradeLabel(inspectionSummary.kakiKakiScore),
                   },
                 ].map((item, index) => (
                   <div key={index} className="flex flex-col gap-1 items-center">
@@ -109,7 +134,7 @@ function CardHasil({ penilaian, indikasi }: Hasil) {
                     </h1>
                     <div className="w-20 lg:w-24 aspect-square bg-[#FF7D43] rounded-2xl flex justify-center items-center">
                       <p className="text-[clamp(48px,3vw,60px)] font-bold text-white">
-                        {penilaian.keseluruhan}
+                        {item.description}
                       </p>
                     </div>
                   </div>
@@ -121,14 +146,21 @@ function CardHasil({ penilaian, indikasi }: Hasil) {
                 Penilaian Keseluruhan
               </p>
               <div className="w-44 lg:w-48 aspect-square bg-[#A25DF9] rounded-2xl flex justify-center items-center">
-                <p className="text-9xl font-bold text-white">D</p>
+                <p className="text-9xl font-bold text-white">
+                  {getGradeLabel(overallRating)}
+                </p>
               </div>
             </div>
           </div>
 
           <p className="text-neutral-700 text-[clamp(16px,3vw,24px)] font-light">
             *Kriteria Penilaian dapat dicek pada <br /> dokumen lengkap{" "}
-            <span className="cursor-pointer font-bold underline">berikut</span>
+            <a
+              href={`${PDF_URL}${urlPdf}`}
+              className="cursor-pointer font-bold underline"
+            >
+              berikut
+            </a>
           </p>
         </motion.div>
       </div>

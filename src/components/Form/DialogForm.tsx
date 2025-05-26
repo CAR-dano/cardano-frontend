@@ -20,6 +20,7 @@ import { useState } from "react";
 import FormPenilaianSummmary from "./FormPenilaianSummary";
 import FormArray from "./FormArray";
 import FormEstimasiPerbaikan from "./FormEstimasiPerbaikan";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface DialogFormProps {
   label: string;
@@ -43,6 +44,7 @@ export function DialogForm({
   fieldName,
 }: DialogFormProps) {
   const [newValue, setNewValue] = useState(oldValue);
+  const { isDarkModeEnabled } = useTheme();
 
   const handleChange = (value: any) => {
     if (typeof value === "boolean") {
@@ -73,7 +75,7 @@ export function DialogForm({
           <FormDateInput
             label={label}
             inputFor={subFieldName}
-            value={oldValue ? new Date(oldValue) : undefined}
+            value={oldValue} // Pass oldValue directly, as FormDateInput now expects a string
             section={fieldName} // tetap gunakan section
             onChange={handleChange}
           />
@@ -164,24 +166,27 @@ export function DialogForm({
     <Dialog open={isOpen} onOpenChange={onClose}>
       {" "}
       {/* Dialog will be controlled by `isOpen` */}
-      <DialogContent aria-modal="false" className="w-screen ">
-        <DialogHeader>
-          <DialogTitle className="text-2xl font-semibold text-center">
+      <DialogContent
+        aria-modal="false"
+        className="w-screen dark:bg-gray-800 dark:border-gray-700"
+      >
+        <DialogHeader className="dark:border-gray-700">
+          <DialogTitle className="text-2xl font-semibold text-center dark:text-gray-100">
             Edit {label}
           </DialogTitle>
         </DialogHeader>
 
         {handleTypeInput()}
 
-        <DialogFooter className="flex sm:flex-col md:flex-col lg:flex-col justify-center mt-1">
-          <DialogDescription className="text-center text-sm font-normal text-left">
+        <DialogFooter className="flex sm:flex-col md:flex-col lg:flex-col justify-center mt-1 dark:border-gray-700">
+          <DialogDescription className="text-center text-sm font-normal text-left dark:text-gray-400">
             Pastikan data yang diinput sudah benar dan sesuai dengan data yang
             ada di lapangan.
           </DialogDescription>
           <div className="flex justify-end gap-2 mt-5">
             <Button
               variant="outline"
-              className="bg-white text-black border border-gray-300 hover:bg-gray-100 hover:text-gray-900"
+              className="bg-white text-black border border-gray-300 hover:bg-gray-100 hover:text-gray-900 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-gray-100"
               onClick={onClose} // Fungsi untuk menutup dialog
             >
               Cancel

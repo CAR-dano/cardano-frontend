@@ -6,6 +6,18 @@ import { useRouter } from "next/navigation";
 import { AppDispatch, useAppSelector } from "@/lib/store";
 import { useDispatch } from "react-redux";
 import { logout } from "@/lib/features/auth/authSlice";
+import Link from "next/link";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../ui/alert-dialog";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,12 +29,9 @@ const Navbar = () => {
     router.push("/");
   };
 
-  const handleLogout = () => {
-    dispatch(logout())
-      .unwrap()
-      .then(() => {
-        window.location.reload();
-      });
+  const handleLogout = async () => {
+    await dispatch(logout()).unwrap();
+    router.push("/auth");
   };
 
   return (
@@ -69,15 +78,41 @@ const Navbar = () => {
       <div className="hidden md:block">
         {user ? (
           <div key="user-logged-in" className="flex items-center gap-3">
-            <span className="text-orange-700 font-bold">
-              {user.username || user.email}
-            </span>
-            <button
-              onClick={handleLogout}
-              className="bg-orange-100 text-orange-700 px-4 py-2 rounded-lg font-bold border border-orange-300 hover:bg-orange-200 transition"
-            >
-              Logout
-            </button>
+            <Link href={`/dashboard`}>
+              <span className="text-orange-700 font-bold">
+                {user.username || user.email}
+              </span>
+            </Link>
+
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <button className="bg-orange-100 text-orange-700 px-4 py-2 rounded-lg font-bold border border-orange-300 hover:bg-orange-200 transition">
+                  Logout
+                </button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>
+                    Are you sure you want to logout?
+                  </AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action will log you out of your account. You will need
+                    to sign in again to access your account.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => {
+                      handleLogout();
+                    }}
+                    className="bg-red-500 text-white hover:bg-red-600 transition"
+                  >
+                    Log out
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         ) : (
           <a key="user-not-logged-in" href="/auth">

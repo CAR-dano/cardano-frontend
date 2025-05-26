@@ -7,31 +7,109 @@ import { FiLogOut } from "react-icons/fi";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/lib/store";
+import { AppDispatch, useAppSelector } from "@/lib/store";
 import { logout } from "@/lib/features/auth/authSlice";
+import { AiFillDatabase } from "react-icons/ai";
+import { FaUserGroup } from "react-icons/fa6";
+import { FaUserTie } from "react-icons/fa";
+import { FaCodeBranch } from "react-icons/fa";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../ui/alert-dialog";
 
 interface MenuItemProps {
   title: string;
   link?: string;
   children: React.ReactNode;
+  isActive?: boolean;
 }
 
-const MenuItem: React.FC<MenuItemProps> = ({ title, link = "#", children }) => {
-  const pathname = usePathname();
-  const isActive = pathname === link;
-  const colorClass = isActive ? "text-blue-500" : "text-black";
-  const iconColorClass = isActive ? "text-blue-500" : "text-orange-400";
-
+const MenuItem: React.FC<MenuItemProps> = ({
+  title,
+  link = "#",
+  children,
+  isActive = false,
+}) => {
   return (
-    <li className="rounded-md text-white p-0 md:p-1">
+    <li className="mb-1">
       <Link href={link}>
-        <p
-          className={`flex items-center transition-all p-2 space-x-3 ${iconColorClass}`}
+        <div
+          className={`flex items-center px-4 py-3 rounded-xl transition-all duration-200 ease-in-out group ${
+            isActive
+              ? "bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg transform scale-105"
+              : "text-gray-600 dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-600 dark:hover:text-orange-400 hover:transform hover:scale-105"
+          }`}
         >
-          {children}
-          <span className={`${colorClass} font-rubik`}>{title}</span>
-        </p>
+          <div
+            className={`mr-3 ${
+              isActive
+                ? "text-white"
+                : "text-orange-500 dark:text-orange-400 group-hover:text-orange-600 dark:group-hover:text-orange-300"
+            }`}
+          >
+            {children}
+          </div>
+          <span className="font-medium text-sm">{title}</span>
+          {isActive && (
+            <div className="ml-auto">
+              <div className="w-2 h-2 bg-white rounded-full"></div>
+            </div>
+          )}
+        </div>
       </Link>
+    </li>
+  );
+};
+
+const LogoutMenuItem = ({
+  children,
+  onLogout,
+}: {
+  children: React.ReactNode;
+  onLogout: () => void;
+}) => {
+  return (
+    <li className="mb-1 list-none">
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <button className="flex items-center w-full px-4 py-3 rounded-xl transition-all duration-200 ease-in-out group text-gray-600 dark:text-gray-300 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 hover:transform hover:scale-105">
+            <div className="mr-3 text-red-500 dark:text-red-400 group-hover:text-red-600 dark:group-hover:text-red-300">
+              {children}
+            </div>
+            <span className="font-medium text-sm">Keluar</span>
+          </button>
+        </AlertDialogTrigger>
+        <AlertDialogContent className="bg-white dark:bg-gray-800 rounded-2xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-gray-900 dark:text-gray-100">
+              Konfirmasi Logout
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-gray-600 dark:text-gray-400">
+              Apakah Anda yakin ingin keluar dari akun? Anda perlu masuk kembali
+              untuk mengakses dashboard.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 border-0">
+              Batal
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={onLogout}
+              className="bg-red-500 dark:bg-red-600 text-white hover:bg-red-600 dark:hover:bg-red-700 border-0"
+            >
+              Ya, Keluar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </li>
   );
 };
@@ -40,73 +118,140 @@ const menu = [
   {
     title: "Dashboard",
     link: "/dashboard",
-    children: <LuLayoutDashboard size={25} style={{ marginRight: "10px" }} />,
+    children: <LuLayoutDashboard size={20} />,
+    access: ["ADMIN", "REVIEWER"],
   },
   {
     title: "Draft Reviewer",
     link: "/dashboard/review",
-    children: <LuClipboardList size={25} style={{ marginRight: "10px" }} />,
+    children: <LuClipboardList size={20} />,
+    access: ["ADMIN", "REVIEWER"],
   },
   {
-    title: "Data",
+    title: "Data Tersimpan",
     link: "/dashboard/database",
-    children: <LuClipboardList size={25} style={{ marginRight: "10px" }} />,
+    children: <AiFillDatabase size={20} />,
+    access: ["ADMIN", "REVIEWER"],
   },
   {
-    title: "Keluar",
-    link: "/",
-    children: <FiLogOut size={25} style={{ marginRight: "10px" }} />,
+    title: "User Management",
+    link: "/dashboard/usermanagement",
+    children: <FaUserGroup size={20} />,
+    access: ["ADMIN"],
+  },
+  {
+    title: "Inspector",
+    link: "/dashboard/inspector",
+    children: <FaUserTie size={20} />,
+    access: ["ADMIN"],
+  },
+  {
+    title: "Branch",
+    link: "/dashboard/branch",
+    children: <FaCodeBranch size={20} />,
+    access: ["ADMIN"],
   },
 ];
 
 const Sidebar: React.FC = () => {
   const [drop, setDrop] = useState(false);
-
+  const pathname = usePathname();
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
+  const user = useAppSelector((state) => state.auth.user);
 
-  const logOut = () => {
-    dispatch(logout());
-    router.push("/");
+  const logOut = async () => {
+    await dispatch(logout()).unwrap();
+    router.push("/auth");
   };
 
   return (
-    <div className="flex flex-col sticky top-0  w-full lg:w-72 lg:h-screen p-3 bg-[#FFFFFF] border-r-2 border-gray-200 shadow-sm">
-      <div className="space-y-3">
-        <div className="flex items-center lg:px-0 px-2 py-5 justify-center">
-          <div className="flex gap-2">
-            <Image
-              src="/assets/logo/palapa.svg"
-              width={52}
-              height={52}
-              alt="logo"
-            />
-            <div className="flex flex-col text-orange-700 font-bold justify-center">
-              <p className="text-2xl">PALAPA</p>
-              <p className="-mt-1 text-xs">Inspeksi Mobil Jogja</p>
+    <div className="flex flex-col w-full lg:w-64 lg:h-screen bg-gradient-to-b from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border-r border-gray-200 dark:border-gray-700 shadow-xl overflow-hidden">
+      <div className="flex flex-col h-full">
+        {/* Header/Logo Section */}
+        <div className="p-6 border-b border-gray-100 dark:border-gray-700">
+          <div className="flex items-center space-x-3">
+            <div className="relative">
+              <div className="absolute inset-0 bg-orange-500 rounded-lg opacity-20 blur-sm"></div>
+              <div className="relative bg-white dark:bg-gray-700 p-2 rounded-lg shadow-sm">
+                <Image
+                  src="/assets/logo/palapa.svg"
+                  width={32}
+                  height={32}
+                  alt="logo"
+                  className="w-8 h-8"
+                />
+              </div>
+            </div>
+            <div>
+              <h1 className="text-xl font-bold text-gray-900 dark:text-white">
+                PALAPA
+              </h1>
+              <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+                Inspeksi Mobil Jogja
+              </p>
             </div>
           </div>
         </div>
-        <div className={`flex-1 md:block ${drop ? "block" : "hidden"}`}>
-          <ul className="p-0 lg:pb-4 space-y-1 md:space-y-1 text-base">
-            {menu.map((item, index) =>
-              item.title === "Keluar" ? (
-                <li key={index} className="rounded-md text-white p-0 md:p-1">
-                  <button
-                    onClick={logOut}
-                    className="flex items-center w-full text-left transition-all p-2 space-x-3 text-orange-400"
-                  >
-                    {item.children}
-                    <span className="text-black font-rubik">Keluar</span>
-                  </button>
-                </li>
-              ) : (
-                <MenuItem key={index} title={item.title} link={item.link}>
-                  {item.children}
-                </MenuItem>
-              )
-            )}
-          </ul>
+
+        {/* User Info Section */}
+        {user && (
+          <div className="px-6 py-4 bg-orange-50 dark:bg-orange-900/20 border-b border-orange-100 dark:border-orange-900/30">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-gradient-to-r from-orange-400 to-orange-600 rounded-full flex items-center justify-center">
+                <span className="text-white font-semibold text-sm">
+                  {user.name?.charAt(0).toUpperCase() || "U"}
+                </span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                  {user.name || "User"}
+                </p>
+                <p className="text-xs text-orange-600 dark:text-orange-400 font-medium">
+                  {user.role || "USER"}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Navigation Section */}
+        <div className="flex-1 px-4 py-6">
+          <nav>
+            <ul className="space-y-2">
+              {menu.map((item, index) => {
+                // Check if user has access to this menu item
+                if (!item.access || (user && item.access.includes(user.role))) {
+                  const isActive = pathname === item.link;
+                  return (
+                    <MenuItem
+                      key={index}
+                      title={item.title}
+                      link={item.link}
+                      isActive={isActive}
+                    >
+                      {item.children}
+                    </MenuItem>
+                  );
+                }
+                return null;
+              })}
+            </ul>
+          </nav>
+        </div>
+
+        {/* Logout Section */}
+        <div className="px-4 py-4 border-t border-gray-100 dark:border-gray-700">
+          <LogoutMenuItem onLogout={logOut}>
+            <FiLogOut size={20} />
+          </LogoutMenuItem>
+        </div>
+
+        {/* Footer */}
+        <div className="px-6 py-3 bg-gray-50 dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700">
+          <p className="text-xs text-gray-400 dark:text-gray-500 text-center">
+            © 2025 PALAPA System
+          </p>
         </div>
       </div>
     </div>

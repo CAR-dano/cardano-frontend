@@ -1,8 +1,12 @@
-import type { Metadata } from "next";
-import { Rubik, Pacifico, Poppins } from "next/font/google";
 import "./globals.css";
-import ReduxProvider from "@/lib/store/redux-provider";
+import { Inter, Pacifico, Poppins, Rubik } from "next/font/google";
+import { Providers } from "./providers";
 import { Toaster } from "@/components/ui/toaster";
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+});
 
 const rubik = Rubik({
   variable: "--font-rubik",
@@ -21,26 +25,26 @@ const poppins = Poppins({
   weight: "400",
 });
 
-export const metadata: Metadata = {
-  title: "CAR-dano",
-  description: "A website can store car inspection data on Cardano blockchain",
+export const metadata = {
+  title: "Car-Dano Frontend",
+  description: "Blockchain-based car inspection platform",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <ReduxProvider>
-      <html lang="en" className="hydrated" suppressHydrationWarning>
-        <body
-          className={`${rubik.variable} ${pacifico.variable} ${poppins.variable} antialiased`}
-        >
+    <html lang="en">
+      <body
+        className={`${inter.variable} ${rubik.variable} ${pacifico.variable} ${poppins.variable}`}
+      >
+        <Providers>
           {children}
           <Toaster />
-        </body>
-      </html>
-    </ReduxProvider>
+        </Providers>
+      </body>
+    </html>
   );
 }

@@ -254,7 +254,7 @@ const Halaman2: React.FC<Halaman2Props> = ({
           </div>
         </div>
 
-        <div className="w-full flex border-b-2 border-black py-8 items-center justify-between px-2">
+        <div className="text-black w-full flex border-b-2 border-black py-8 items-center justify-between px-2">
           <PenilaianContoh warna="#FFFFFF" nilai="" namaPart="" beban="" />
 
           <div className="mx-2 text-[14px] font-bold">
@@ -364,7 +364,7 @@ const Halaman2: React.FC<Halaman2Props> = ({
               onClick={() =>
                 editable &&
                 onClick({
-                  label: `Estimasi Perbaikan`,
+                  label: `Posisi Ban`,
                   fieldName: `inspectionSummary`,
                   oldValue: data.inspectionSummary.posisiBan,
                   subFieldName: "posisiBan",
@@ -389,7 +389,7 @@ const Halaman2: React.FC<Halaman2Props> = ({
               onClick={() =>
                 editable &&
                 onClick({
-                  label: `Estimasi Perbaikan`,
+                  label: `Merk Ban`,
                   fieldName: `inspectionSummary`,
                   oldValue: data.inspectionSummary.merkban,
                   subFieldName: "merkban",
@@ -414,7 +414,7 @@ const Halaman2: React.FC<Halaman2Props> = ({
               onClick={() =>
                 editable &&
                 onClick({
-                  label: `Estimasi Perbaikan`,
+                  label: `Tipe Velg`,
                   fieldName: `inspectionSummary`,
                   oldValue: data.inspectionSummary.tipeVelg,
                   subFieldName: "tipeVelg",
@@ -440,7 +440,7 @@ const Halaman2: React.FC<Halaman2Props> = ({
               onClick={() =>
                 editable &&
                 onClick({
-                  label: `Estimasi Perbaikan`,
+                  label: `Ketebalan Ban`,
                   fieldName: `inspectionSummary`,
                   oldValue: data.inspectionSummary.ketebalanBan,
                   subFieldName: "ketebalanBan",

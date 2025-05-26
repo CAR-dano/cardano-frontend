@@ -196,7 +196,7 @@ const Halaman1: React.FC<Halaman1Props> = ({
     <div className="px-[30px] font-poppins">
       <Header />
 
-      <div className="flex justify-between items-end">
+      <div className="text-black flex justify-between items-end">
         <p
           onClick={() =>
             editable &&
@@ -234,10 +234,8 @@ const Halaman1: React.FC<Halaman1Props> = ({
                 onClose: () => {},
               })
             }
-            className={`ml-[50px] text-[14px] leading-none text-[16px] font-semibold uppercase ${
-              editable
-                ? "cursor-pointer hover:underline"
-                : "cursor-default text-gray-500"
+            className={`ml-[50px] text-black text-[14px] leading-none text-[16px] font-semibold uppercase ${
+              editable ? "cursor-pointer hover:underline" : "cursor-default "
             }`}
           >
             {data.identityDetails.cabangInspeksi}
@@ -419,8 +417,8 @@ const Halaman1: React.FC<Halaman1Props> = ({
           </div>
         </div>
 
-        <div className="w-full flex border-t-2 border-black">
-          <div className="w-1/2  border-r-2 border-black">
+        <div className="text-black w-full flex border-t-2 border-black">
+          <div className="pt-2 w-1/2  border-r-2 border-black">
             <div className="flex justify-center items-center gap-4">
               {check.map((item, index) => (
                 <div key={index} className="flex flex-col items-center">

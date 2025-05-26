@@ -9,7 +9,6 @@ import CarComponent from "../ui/CarAnimation";
 function Hero() {
   const { scrollYProgress } = useScroll();
 
-  // Animasi scroll untuk teks utama
   const textY = useTransform(scrollYProgress, [0, 1], ["0%", "-50%"]);
   const textOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
 

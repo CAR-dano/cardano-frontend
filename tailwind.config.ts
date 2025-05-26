@@ -35,6 +35,13 @@ export default {
         yellow: {
           "900": "#5A4212",
         },
+        pink: {
+          "400": "#F469A8",
+          "600": "#F24091",
+        },
+        blue: {
+          "500": "#30B6ED",
+        },
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
@@ -78,6 +85,7 @@ export default {
         rubik: ["var(--font-rubik)", "sans-serif"],
         pacifico: ["var(--font-pacifico)", "cursive"],
         poppins: ["var(--font-poppins)", "sans-serif"],
+        inter: ["var(--font-inter)", "sans-serif"],
       },
       borderRadius: {
         lg: "var(--radius)",

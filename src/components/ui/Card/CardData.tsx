@@ -6,12 +6,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { VehicleData } from "@/utils/Car";
 
 interface VehicleInspectionProps {
-  data: VehicleData;
+  data: any;
   platNomor: string | undefined;
 }
 
 function CardData({ platNomor, data }: VehicleInspectionProps) {
-  const images = data.gambar;
+  const images = data.photos;
+  console.log(images);
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -22,6 +23,16 @@ function CardData({ platNomor, data }: VehicleInspectionProps) {
   const nextSlide = () => {
     setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
+
+  function formatDate(dateString: string | undefined) {
+    if (!dateString) return "N/A";
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  }
 
   return (
     <motion.div
@@ -51,7 +62,7 @@ function CardData({ platNomor, data }: VehicleInspectionProps) {
                 className="absolute w-full h-full"
               >
                 <Image
-                  src={images[currentIndex]}
+                  src={`http://69.62.80.7/uploads/inspection-photos/${images[currentIndex].path}`}
                   alt="slider image"
                   fill
                   className="object-cover"
@@ -75,7 +86,7 @@ function CardData({ platNomor, data }: VehicleInspectionProps) {
           </button>
           {/* Dots Indicator */}
           <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-            {images.map((_, index) => (
+            {images.map((_: any, index: any) => (
               <span
                 key={index}
                 className={`w-3 h-3 rounded-full transition-all ${
@@ -100,8 +111,8 @@ function CardData({ platNomor, data }: VehicleInspectionProps) {
             {platNomor}
           </h1>
           <h2 className="text-[clamp(32px,3vw,36px)]  font-medium">
-            {data.brand} <br className="lg:hidden block" />
-            <span className="font-light">{data.model}</span>
+            {data.vehicleData.merekKendaraan} <br className="lg:hidden block" />
+            <span className="font-light">{data.vehicleData.tipeKendaraan}</span>
           </h2>
 
           <div className="flex justify-between items-center">
@@ -110,22 +121,22 @@ function CardData({ platNomor, data }: VehicleInspectionProps) {
                 {
                   icon: "/assets/icon/tahun.svg",
                   title: "Tahun",
-                  value: data.tahun,
+                  value: data.vehicleData.tahun,
                 },
                 {
                   icon: "/assets/icon/odometer.svg",
                   title: "Odometer",
-                  value: data.odometer,
+                  value: `${data.vehicleData.odometer} km`,
                 },
                 {
                   icon: "/assets/icon/warna.svg",
                   title: "Warna",
-                  value: data.warna,
+                  value: data.vehicleData.warnaKendaraan,
                 },
                 {
                   icon: "/assets/icon/kepemilikan.svg",
                   title: "Kepemilikan",
-                  value: data.kepemilikan,
+                  value: data.vehicleData.kepemilikan,
                 },
               ].map((item, index) => (
                 <div key={index} className="flex gap-3 items-center">
@@ -153,22 +164,22 @@ function CardData({ platNomor, data }: VehicleInspectionProps) {
                 {
                   icon: "/assets/icon/transmisi.svg",
                   title: "Transmisi",
-                  value: data.transmisi,
+                  value: data.vehicleData.transmisi,
                 },
                 {
                   icon: "/assets/icon/pajak.svg",
                   title: "Pajak 1 Tahun",
-                  value: data.pajak1tahun,
+                  value: formatDate(data.vehicleData.pajak1Tahun),
                 },
                 {
                   icon: "/assets/icon/pajak.svg",
                   title: "Pajak 5 Tahun",
-                  value: data.pajak5tahun,
+                  value: formatDate(data.vehicleData.pajak5Tahun),
                 },
                 {
                   icon: "/assets/icon/biaya.svg",
                   title: "Biaya Pajak",
-                  value: data.biayapajak,
+                  value: data.vehicleData.biayaPajak,
                 },
               ].map((item, index) => (
                 <div key={index} className="flex gap-3 items-center">

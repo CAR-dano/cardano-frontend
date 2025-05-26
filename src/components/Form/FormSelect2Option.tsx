@@ -4,6 +4,7 @@ import { Button } from "../ui/button";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/lib/store";
 import { setEditedData } from "@/lib/features/inspection/inspectionSlice";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface FormSelect2OptionProps {
   label: string;
@@ -22,6 +23,7 @@ function FormSelect2Option({
   onChange,
   type,
 }: FormSelect2OptionProps) {
+  const { isDarkModeEnabled } = useTheme();
   const active = "bg-blue-500 text-white";
   const inactive = "bg-white text-blue-500";
 
@@ -58,14 +60,23 @@ function FormSelect2Option({
 
   return (
     <div>
-      <Label htmlFor={inputFor}>Kelengkapan {label}</Label>
+      <Label htmlFor={inputFor} className="dark:text-gray-200">
+        Kelengkapan {label}
+      </Label>
 
-      <div className="flex mt-2 border-2 border-blue-500 rounded-[8px] overflow-hidden">
+      <div className="flex mt-2 border-2 border-blue-500 dark:border-blue-800 rounded-[8px] overflow-hidden">
         <Button
           onClick={() => handleClick(true)}
           className={`w-1/2 h-[48px] rounded-none ${
             isLengkap ? active : inactive
           } hover:bg-blue-500 hover:text-white
+          ${
+            isDarkModeEnabled
+              ? isLengkap
+                ? "dark:bg-blue-600 dark:text-white"
+                : "dark:bg-gray-700 dark:text-blue-300 dark:hover:bg-gray-600"
+              : ""
+          }
           `}
         >
           {options[0].label}
@@ -75,6 +86,13 @@ function FormSelect2Option({
           className={`w-1/2 h-[48px] rounded-none  ${
             !isLengkap ? active : inactive
           } hover:bg-blue-500 hover:text-white
+          ${
+            isDarkModeEnabled
+              ? !isLengkap
+                ? "dark:bg-blue-600 dark:text-white"
+                : "dark:bg-gray-700 dark:text-blue-300 dark:hover:bg-gray-600"
+              : ""
+          }
           `}
         >
           {options[1].label}

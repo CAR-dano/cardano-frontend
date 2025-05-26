@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
       "s3-alpha-sig.figma.com",
       "i.ibb.co.com",
       "31.220.81.182",
+      "69.62.80.7",
     ],
   },
   output: "standalone",

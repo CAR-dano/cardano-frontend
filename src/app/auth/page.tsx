@@ -29,7 +29,11 @@ function LoginPage() {
 
   useEffect(() => {
     if (user) {
-      router.push("/dashboard");
+      if (user.role === "ADMIN" || user.role === "REVIEWER") {
+        router.push("/dashboard");
+      } else {
+        router.push("/");
+      }
     }
   }, [user]);
 
@@ -135,13 +139,15 @@ function LoginPage() {
       await dispatch(login(formLogin)).unwrap();
       toast({
         title: "Success",
-        description: "Login successful!",
+        description: "Login successful! Redirecting...",
         variant: "default",
       });
+      
+      // The redirect will happen automatically via useEffect when user state changes
     } catch (err: any) {
       toast({
-        title: "Error",
-        description: err,
+        title: "Authentication Failed",
+        description: typeof err === 'string' ? err : "Invalid credentials. Please try again.",
         variant: "destructive",
       });
     }
@@ -169,33 +175,39 @@ function LoginPage() {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateRegister()) return;
-    dispatch(signup(formRegister))
-      .unwrap()
-      .then(() => {
-        toast({
-          title: "Success",
-          description: "Registration successful! Please log in.",
-          variant: "default",
-        });
-        setShowSignup(false);
-        setFormRegister({
-          username: "",
-          email: "",
-          password: "",
-        });
-      })
-      .catch((err: any) => {
-        toast({
-          title: "Error",
-          description: err,
-          variant: "destructive",
-        });
+    
+    try {
+      await dispatch(signup(formRegister)).unwrap();
+      
+      toast({
+        title: "Registration Successful",
+        description: "Your account has been created! Please log in.",
+        variant: "default",
       });
+      
+      // Reset form and switch to login view
+      setFormRegister({
+        username: "",
+        email: "",
+        password: "",
+      });
+      setShowSignup(false);
+    } catch (err: any) {
+      const errorMessage = typeof err === 'string' 
+        ? err 
+        : "Registration failed. Please try again with different credentials.";
+        
+      toast({
+        title: "Registration Failed",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    }
   };
 
   return (
     <div className="w-full h-screen overflow-hidden bg-[url('/assets/pattern/bg.png')] bg-cover">
-      {isLoading && <LoadingScreen />}
+      {isLoading && <LoadingScreen message="Authenticating..." />}
 
       <AnimatePresence initial={false} mode="wait">
         {!showSignup ? (

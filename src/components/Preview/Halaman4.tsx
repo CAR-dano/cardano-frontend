@@ -46,6 +46,7 @@ const Halaman4: React.FC<Halaman4Props> = ({
                 warna="#FFFFFF"
                 namaPart={item.namaPart}
                 beban={item.beban.toString()}
+                subFieldName="hasilInspeksiMesin"
                 nilai={
                   data.hasilInspeksiMesin[item.part] != undefined
                     ? data.hasilInspeksiMesin[item.part].toString()
@@ -79,6 +80,7 @@ const Halaman4: React.FC<Halaman4Props> = ({
                 warna="#FFFFFF"
                 namaPart={item.namaPart}
                 beban={item.beban.toString()}
+                subFieldName="hasilInspeksiInterior"
                 nilai={
                   data.hasilInspeksiInterior[item.part] != undefined
                     ? data.hasilInspeksiInterior[item.part].toString()
@@ -110,6 +112,7 @@ const Halaman4: React.FC<Halaman4Props> = ({
                 warna="#FFFFFF"
                 namaPart={item.namaPart}
                 beban={item.beban.toString()}
+                subFieldName="hasilInspeksiEksterior"
                 nilai={
                   data.hasilInspeksiEksterior[item.part] != undefined
                     ? data.hasilInspeksiEksterior[item.part].toString()

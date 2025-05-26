@@ -10,24 +10,16 @@ export interface VehicleData {
   pajak1tahun: string;
   pajak5tahun: string;
   biayapajak: string;
-  gambar: string[];
+  photos: string[];
 }
 
-interface Indikasi {
-  bekastabrakan: boolean;
-  bekasbanjir: boolean;
-  odometerreset: boolean;
-}
-
-interface Penilaian {
+export interface Hasil {
   interior: string;
   exterior: string;
   mesin: string;
   kakiKaki: string;
   keseluruhan: string;
-}
-
-export interface Hasil {
-  indikasi: Indikasi;
-  penilaian: Penilaian;
+  bekastabrakan: boolean;
+  bekasbanjir: boolean;
+  odometerreset: boolean;
 }

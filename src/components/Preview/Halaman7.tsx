@@ -17,8 +17,6 @@ const Halaman7: React.FC<Halaman7Props> = ({
     return <div>Loading...</div>; // atau bisa return null
   }
 
-  console.log("Halaman7", data.bodyPaintThickness);
-
   return (
     <div className="px-[30px] font-poppins">
       <Header />

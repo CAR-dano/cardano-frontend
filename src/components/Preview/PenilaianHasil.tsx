@@ -6,6 +6,7 @@ type PenilaianHasilProps = {
   namaPart: string;
   beban: string;
   edit?: boolean;
+  subFieldName?: string;
   onClick?: (data: any) => void;
 };
 
@@ -15,6 +16,7 @@ const PenilaianHasil: React.FC<PenilaianHasilProps> = ({
   namaPart,
   beban,
   edit = false,
+  subFieldName,
   onClick = () => {},
 }) => {
   const dataColor = [
@@ -52,7 +54,8 @@ const PenilaianHasil: React.FC<PenilaianHasilProps> = ({
           label: `Inspection Summary`,
           fieldName: `detailedAssessment`,
           oldValue: nilai,
-          subFieldName: namaPart.toLowerCase(),
+          subFieldName: subFieldName,
+          subsubFieldName: namaPart.toLowerCase(),
           type: "penilaian-summary",
           onClose: () => {},
         })
@@ -65,17 +68,17 @@ const PenilaianHasil: React.FC<PenilaianHasilProps> = ({
         ></div>
       </div>
       <div className="flex flex-col items-center">
-        <div className="font-bold w-7 h-7 border-y-[1.5px] border-black flex items-center justify-center">
+        <div className="text-black font-bold w-7 h-7 border-y-[1.5px] border-black flex items-center justify-center">
           {nilai}
         </div>
       </div>
       <div className="flex flex-col items-center">
-        <div className="font-bold w-[125px] h-7 border-l-[1.5px] border-y-[1.5px] border-black flex items-center justify-start text-[10px] font-bold px-1.5">
+        <div className="text-black font-bold w-[125px] h-7 border-l-[1.5px] border-y-[1.5px] border-black flex items-center justify-start text-[10px] font-bold px-1.5">
           {namaPart}
         </div>
       </div>
       <div className="flex flex-col items-center">
-        <div className="font-bold w-7 h-7 border-[1.5px] border-black flex items-center justify-center">
+        <div className="text-black font-bold w-7 h-7 border-[1.5px] border-black flex items-center justify-center">
           {beban}
         </div>
       </div>

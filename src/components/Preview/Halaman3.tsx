@@ -26,7 +26,7 @@ const Halaman3: React.FC<Halaman3Props> = ({
   };
 
   return (
-    <div className="px-[30px] font-poppins">
+    <div className="text-black px-[30px] font-poppins">
       <Header />
 
       <div className="w-full border-2 border-black mt-8 mb-5">
@@ -78,7 +78,7 @@ const Halaman3: React.FC<Halaman3Props> = ({
                 </p>
               </div>
             </div>
-            <div className="w-full flex">
+            <div className="text-black w-full flex">
               <PenilaianContoh
                 warna="#15924e"
                 nilai="9"
@@ -116,6 +116,7 @@ const Halaman3: React.FC<Halaman3Props> = ({
               warna="#FFFFFF"
               namaPart="Airbag"
               beban="3"
+              subFieldName="fitur"
               nilai={data.fitur.airbag.toString()}
             />
             <PenilaianHasil
@@ -123,6 +124,7 @@ const Halaman3: React.FC<Halaman3Props> = ({
               onClick={handleClick}
               warna="#FFFFFF"
               namaPart="Sistem AC"
+              subFieldName="fitur"
               beban="3"
               nilai={data.fitur.sistemAC.toString()}
             />
@@ -131,6 +133,7 @@ const Halaman3: React.FC<Halaman3Props> = ({
               onClick={handleClick}
               warna="#FFFFFF"
               namaPart="Electric Mirror"
+              subFieldName="fitur"
               beban="1"
               nilai={
                 data.fitur.electricMirror ? data.fitur.electricMirror : "0"
@@ -141,6 +144,7 @@ const Halaman3: React.FC<Halaman3Props> = ({
               onClick={handleClick}
               warna="#FFFFFF"
               namaPart="Sistem Audio"
+              subFieldName="fitur"
               beban="1"
               nilai={data.fitur.sistemAudio ? data.fitur.sistemAudio : "0"}
             />
@@ -149,6 +153,7 @@ const Halaman3: React.FC<Halaman3Props> = ({
               onClick={handleClick}
               warna="#FFFFFF"
               namaPart="Central Lock"
+              subFieldName="fitur"
               beban="1"
               nilai={data.fitur.centralLock ? data.fitur.centralLock : "0"}
             />
@@ -157,6 +162,7 @@ const Halaman3: React.FC<Halaman3Props> = ({
               onClick={handleClick}
               warna="#FFFFFF"
               namaPart="Rem ABS"
+              subFieldName="fitur"
               beban="3"
               nilai={data.fitur.remABS ? data.fitur.remABS : "0"}
             />
@@ -165,6 +171,7 @@ const Halaman3: React.FC<Halaman3Props> = ({
               onClick={handleClick}
               warna="#FFFFFF"
               namaPart="Power Window"
+              subFieldName="fitur"
               beban="1"
               nilai={data.fitur.powerWindow ? data.fitur.powerWindow : "0"}
             />
@@ -200,6 +207,7 @@ const Halaman3: React.FC<Halaman3Props> = ({
                 warna="#FFFFFF"
                 namaPart={item.namaPart}
                 beban={item.beban.toString()}
+                subFieldName="hasilInspeksiMesin"
                 nilai={
                   data.hasilInspeksiMesin[item.part] != undefined
                     ? data.hasilInspeksiMesin[item.part].toString()

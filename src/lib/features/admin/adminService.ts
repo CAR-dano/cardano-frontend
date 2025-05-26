@@ -1,0 +1,54 @@
+import axios from "axios";
+const LOCAL_API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+const getAllUsers = async (token: string) => {
+  const response = await axios.get(`${LOCAL_API_URL}/admin/users`, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
+const updateRole = async (id: string, role: string, token: string) => {
+  const response = await axios.put(
+    `${LOCAL_API_URL}/admin/users/${id}/role`,
+    { role },
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data;
+};
+
+const getAllInspectors = async (token: string) => {
+  const response = await axios.get(`${LOCAL_API_URL}/admin/users/inspectors`, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
+const getAllBranches = async (token: string) => {
+  const response = await axios.get(`${LOCAL_API_URL}/inspection-branches`, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
+const adminService = {
+  getAllUsers,
+  updateRole,
+  getAllInspectors,
+  getAllBranches,
+};
+export default adminService;

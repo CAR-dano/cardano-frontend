@@ -15,46 +15,317 @@ import {
   setEditedData,
 } from "@/lib/features/inspection/inspectionSlice";
 import { AppDispatch, useAppSelector } from "@/lib/store";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import { useTheme } from "@/contexts/ThemeContext";
 
-const Header = ({ handleApprove, handleSaveChanges }: any) => {
+const Header = ({ hasChanges, data, processing }: any) => {
+  const { isDarkModeEnabled } = useTheme();
   return (
-    <div className="flex justify-between items-center mb-5">
-      <h1 className="text-sm lg:text-xl font-semibold">Review</h1>
-      <div className="flex gap-2">
-        <SecondaryButton
-          onClick={handleSaveChanges}
-          className="text-xs bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md"
-        >
-          {" "}
-          Save Changes
-        </SecondaryButton>
-        <PrimaryButton
-          onClick={handleApprove}
-          className="text-xs bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md"
-        >
-          {" "}
-          Approve Inspection Data
-        </PrimaryButton>
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 lg:p-6 mb-6 w-full max-w-full overflow-hidden">
+      <div className="flex items-center space-x-4">
+        <div className="flex items-center justify-center w-12 h-12 bg-orange-100 dark:bg-orange-900 rounded-lg">
+          <svg
+            className="w-6 h-6 text-orange-600 dark:text-orange-300"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+        </div>
+        <div className="flex-1">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+            Review Inspeksi
+          </h1>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+            {data?.vehiclePlateNumber || "Memuat data..."} -{" "}
+            {data?.identityDetails?.namaCustomer || ""}
+          </p>
+          {processing && (
+            <div className="flex items-center mt-2">
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-orange-500 mr-2"></div>
+              <span className="text-sm text-orange-600 dark:text-orange-300">
+                Memproses...
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Status Indicators */}
+      {hasChanges > 0 && (
+        <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 rounded-lg">
+          <div className="flex items-center">
+            <svg
+              className="w-4 h-4 text-blue-500 dark:text-blue-300 mr-2"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <span className="text-sm text-blue-800 dark:text-blue-300">
+              Ada {hasChanges} perubahan yang belum disimpan. Akses kontrol di
+              bagian bawah halaman.
+            </span>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+const BottomActionBar = ({
+  handleApprove,
+  handleSaveChanges,
+  hasChanges,
+  data,
+  processing,
+  onOpenDrawer,
+}: any) => {
+  const { isDarkModeEnabled } = useTheme();
+  return (
+    <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-lg dark:shadow-xl z-40">
+      <div className="max-w-7xl mx-auto px-4 py-3">
+        <div className="flex items-center justify-between">
+          {/* Status Info */}
+          <div className="flex items-center space-x-3">
+            <button
+              onClick={onOpenDrawer}
+              className={`flex items-center space-x-2 transition-colors ${
+                hasChanges > 0
+                  ? "text-blue-600 hover:text-blue-700"
+                  : "text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              }`}
+            >
+              <div
+                className={`flex items-center justify-center w-8 h-8 rounded-full ${
+                  hasChanges > 0
+                    ? "bg-blue-100"
+                    : "bg-gray-100 dark:bg-gray-700"
+                }`}
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                  />
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                  {hasChanges > 0 ? "Lihat Perubahan" : "Tidak Ada Perubahan"}
+                </p>
+                {hasChanges > 0 && (
+                  <p className="text-xs text-blue-600">
+                    {hasChanges} perubahan belum disimpan
+                  </p>
+                )}
+              </div>
+              <svg
+                className="w-4 h-4 text-gray-400 dark:text-gray-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 15l7-7 7 7"
+                />
+              </svg>
+            </button>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex items-center space-x-2">
+            {/* Delete Button */}
+
+            {/* Save Changes Button */}
+            <button
+              onClick={handleSaveChanges}
+              disabled={!hasChanges || processing}
+              className={`inline-flex items-center px-3 py-2 border shadow-sm text-xs font-medium rounded-md transition-colors duration-200 ${
+                hasChanges && !processing
+                  ? "border-blue-300 dark:border-blue-600 text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900 hover:bg-blue-100 dark:hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  : "border-gray-300 dark:border-gray-600 text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-gray-700 cursor-not-allowed"
+              }`}
+            >
+              <svg
+                className="w-3 h-3 mr-1"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3-3m0 0l-3 3m3-3v12"
+                />
+              </svg>
+              {hasChanges ? `Simpan (${hasChanges})` : "Simpan"}
+            </button>
+
+            {/* Approve Button */}
+            <button
+              onClick={handleApprove}
+              disabled={processing}
+              className="inline-flex items-center px-3 py-2 border border-green-300 dark:border-green-600 shadow-sm text-xs font-medium rounded-md text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900 hover:bg-green-100 dark:hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <svg
+                className="w-3 h-3 mr-1"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              {processing ? "Memproses..." : "Setujui"}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
+  );
+};
+
+const ChangesDrawer = ({
+  isOpen,
+  onClose,
+  data,
+  id,
+  cancelEdit,
+  updateData,
+  hasChanges,
+}: any) => {
+  const { isDarkModeEnabled } = useTheme();
+  return (
+    <>
+      {/* Backdrop */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300"
+          onClick={onClose}
+        />
+      )}
+
+      {/* Drawer */}
+      <div
+        className={`fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 rounded-t-xl shadow-2xl dark:shadow-2xl z-50 transform transition-transform duration-300 ease-in-out ${
+          isOpen ? "translate-y-0" : "translate-y-full"
+        }`}
+      >
+        {/* Drawer Header */}
+        <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+          <div className="flex items-center space-x-3">
+            <div className="flex items-center justify-center w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-lg">
+              <svg
+                className="w-5 h-5 text-blue-600 dark:text-blue-300"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                />
+              </svg>
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                Perubahan Data
+              </h2>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                {hasChanges > 0
+                  ? `${hasChanges} perubahan belum disimpan`
+                  : "Tidak ada perubahan"}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-2 text-gray-400 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+          >
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+
+        {/* Drawer Content */}
+        <div className="max-h-[70vh] overflow-y-auto p-4">
+          {data && (
+            <EditedData
+              cancelEdit={cancelEdit}
+              id={id}
+              updateData={updateData}
+            />
+          )}
+        </div>
+
+        {/* Drag Handle */}
+        <div className="absolute top-2 left-1/2 transform -translate-x-1/2">
+          <div className="w-8 h-1 bg-gray-300 dark:bg-gray-600 rounded-full"></div>
+        </div>
+      </div>
+    </>
   );
 };
 
 const Edit = () => {
   const dispatch = useDispatch<AppDispatch>();
   const isLoading = useAppSelector((state: any) => state.inspection.isLoading);
+  const router = useRouter();
+  const params = useParams();
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [dialogData, setDialogData] = useState<any>({
     fieldName: "",
     subFieldName: "",
+    subsubFieldName: "",
     label: "",
     oldValue: "",
     type: "normal-input",
   });
+
   const [dialogResultData, setDialogResultData] = useState<{
     isOpen: boolean;
     isSuccess: boolean;
@@ -66,104 +337,179 @@ const Edit = () => {
     action2: () => void;
   } | null>(null);
 
+  const [showMintConfirmationDialog, setShowMintConfirmationDialog] =
+    useState(false);
+
   const [data, setData] = useState<any>(null);
+  const [processing, setProcessing] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const handleEditReviewClick = (data: any) => {
-    console.log("handleEditReviewClick", data);
-    setDialogData(data);
-    setIsDialogOpen(true);
-  };
+  // Get the id from URL params
+  const id = typeof params?.id === "string" ? params.id : "";
 
-  const id = window.location.pathname.split("/").pop();
+  // Get edited items from Redux store
   const editedItems = useAppSelector((state) => state.inspection.edited).filter(
     (item) => item.inspectionId === id
   );
 
+  const handleEditReviewClick = (data: any) => {
+    setDialogData(data);
+    setIsDialogOpen(true);
+  };
+
   const getData = async (id: string) => {
-    const response = await dispatch(getDataForPreview(id)).unwrap();
-    if (response) {
-      setData(response);
+    try {
+      const response = await dispatch(getDataForPreview(id)).unwrap();
+      if (response) {
+        setData(response);
+        toast({
+          title: "Data loaded successfully",
+          description: "Inspection data is ready for review.",
+          variant: "default",
+        });
+      }
+    } catch (error) {
       toast({
-        title: "Data fetched successfully",
-        description: "Data has been fetched successfully.",
-        variant: "default",
+        title: "Error loading data",
+        description: "An error occurred while fetching the inspection data.",
+        variant: "destructive",
       });
-    } else {
-      console.error("Failed to fetch data");
+      setDialogResultData({
+        isOpen: true,
+        isSuccess: false,
+        title: "Data Not Found",
+        message:
+          "Could not fetch the inspection data. It may not exist or an error occurred.",
+        buttonLabel2: "Back to Review List",
+        action2: () => router.push("/dashboard/review"),
+      });
     }
   };
 
   const updateData = (data: any) => {
+    console.log("updateData called with data:", data);
     data.map((item: any) => {
-      const { fieldName, subFieldName, newValue } = item;
-      if (subFieldName) {
-        setData((prevData: any) => ({
-          ...prevData,
-          [fieldName]: {
-            ...prevData[fieldName],
-            [subFieldName]: newValue,
-          },
-        }));
+      const {
+        inspectionId,
+        fieldName,
+        subFieldName,
+        subsubfieldname,
+        newValue,
+        oldValue,
+      } = item;
+      if (subsubfieldname) {
+        setData((prevData: any) => {
+          if (!prevData) return prevData;
+
+          return {
+            ...prevData,
+            [fieldName]: {
+              ...(prevData[fieldName] || {}),
+              [subFieldName]: {
+                ...(prevData[fieldName]?.[subFieldName] || {}),
+                [subsubfieldname]: newValue,
+              },
+            },
+          };
+        });
+      } else if (subFieldName) {
+        setData((prevData: any) => {
+          if (!prevData) return prevData;
+
+          return {
+            ...prevData,
+            [fieldName]: {
+              ...(prevData[fieldName] || {}),
+              [subFieldName]: newValue,
+            },
+          };
+        });
       } else {
-        setData((prevData: any) => ({
-          ...prevData,
-          [fieldName]: newValue,
-        }));
+        setData((prevData: any) => {
+          if (!prevData) return prevData;
+
+          return {
+            ...prevData,
+            [fieldName]: newValue,
+          };
+        });
       }
     });
   };
 
   useEffect(() => {
-    const id = window.location.pathname.split("/").pop();
     if (id) {
       getData(id);
     } else {
       router.push("/dashboard/review");
     }
-  }, []);
+  }, [id, router]);
 
   const updateDataHandler = async (
     newValue: any,
-    subFieldName: string,
+    subFieldName: any,
+    subsubFieldName: any,
     fieldName: string
   ) => {
-    const checkIfIsStringifyFromArray = (value: any) => {
-      if (typeof value === "string") {
+    try {
+      if (typeof newValue === "string") {
         try {
-          const parsedValue = JSON.parse(value);
-          return true;
+          const parsedValue = JSON.parse(newValue);
+          if (Array.isArray(parsedValue)) {
+            newValue = parsedValue;
+          }
         } catch (error) {
-          return false;
+          // Not JSON or not an array, keep as string
         }
       }
-      return false;
-    };
-    const isStringifyFromArray = checkIfIsStringifyFromArray(newValue);
-    if (isStringifyFromArray) {
-      newValue = JSON.parse(newValue);
-    }
-    console.log("newValue", newValue);
-    setData((prevData: any) => {
-      if (subFieldName) {
-        return {
-          ...prevData,
-          [fieldName]: {
-            ...prevData[fieldName],
-            [subFieldName]: newValue,
-          },
-        };
-      } else {
-        return {
-          ...prevData,
-          [fieldName]: newValue,
-        };
-      }
-    });
-  };
 
-  useEffect(() => {
-    console.log("data", data);
-  }, [data]);
+      setData((prevData: any) => {
+        if (!prevData) return prevData;
+
+        if (subsubFieldName) {
+          return {
+            ...prevData,
+            [fieldName]: {
+              ...(prevData[fieldName] || {}),
+              [subFieldName]: {
+                ...(prevData[fieldName]?.[subFieldName] || {}),
+                [subsubFieldName]: newValue,
+              },
+            },
+          };
+        } else if (subFieldName) {
+          return {
+            ...prevData,
+            [fieldName]: {
+              ...(prevData[fieldName] || {}),
+              [subFieldName]: newValue,
+            },
+          };
+        } else {
+          return {
+            ...prevData,
+            [fieldName]: newValue,
+          };
+        }
+      });
+
+      // Show toast notification for confirmation
+      toast({
+        title: "Field updated",
+        description: `${fieldName}${
+          subFieldName ? ` - ${subFieldName}` : ""
+        } has been updated.`,
+        variant: "default",
+      });
+    } catch (error) {
+      console.error("Error updating data:", error);
+      toast({
+        title: "Update failed",
+        description: "Could not update the field value.",
+        variant: "destructive",
+      });
+    }
+  };
 
   const cancelEdit = (
     oldValue: any,
@@ -188,29 +534,32 @@ const Edit = () => {
     });
   };
 
-  const router = useRouter();
-
   const mintingToBlockchainHandler = (id: string) => {
+    setProcessing(true);
+
     dispatch(mintingToBlockchain(id))
       .then((response) => {
+        setProcessing(false);
         setDialogResultData({
           isOpen: true,
           isSuccess: true,
-          title: "Data minted successfully",
+          title: "Successfully Minted to Blockchain",
           message:
-            "Data sudah disetujui dan diminting ke blockchain. Silahkan cek di dashboard.",
-          buttonLabel2: "Lihat Data",
+            "The inspection data has been successfully approved and minted to the blockchain. You can view it in the database.",
+          buttonLabel2: "View in Database",
           action2: () => router.push("/dashboard/database"),
         });
       })
       .catch((err) => {
+        setProcessing(false);
         setDialogResultData({
           isOpen: true,
           isSuccess: false,
-          title: "Minting failed",
-          message: "Minting data ke blockchain gagal. Silahkan coba lagi.",
-          buttonLabel1: "Batal",
-          buttonLabel2: "Coba Lagi",
+          title: "Minting Failed",
+          message:
+            "Failed to mint data to the blockchain. Would you like to try again?",
+          buttonLabel1: "Cancel",
+          buttonLabel2: "Try Again",
           action1: () => router.push("/dashboard/database"),
           action2: () => {
             mintingToBlockchainHandler(id);
@@ -220,80 +569,118 @@ const Edit = () => {
   };
 
   const approveInspection = () => {
-    const id = window.location.pathname.split("/").pop();
     if (!id) return;
 
-    dispatch(approveInspectionData(id)).then((response) => {
-      if (response.meta.requestStatus === "fulfilled") {
-        setDialogResultData({
-          isOpen: true,
-          isSuccess: true,
-          title: "Data approved successfully",
-          message:
-            "Data sudah disetujui, dan tinggal persetujuan untuk minting pada blockchain. Apakah anda ingin melanjutkan?",
-          buttonLabel1: "Nanti Saja",
-          buttonLabel2: "Proses ke Blockchain",
-          action1: () => router.push("/dashboard/database"),
-          action2: () => {
-            mintingToBlockchainHandler(id);
-          },
-        });
-      } else {
-        setDialogResultData({
-          isOpen: true,
-          isSuccess: false,
-          title: "Data approve failed",
-          message: "Data mungkin sudah disetujui sebelumnya. Coba cek lagi.",
-          buttonLabel1: "Kembali",
-          buttonLabel2: "Coba Lagi",
-          action1: () => router.push("/dashboard/database"),
-          action2: () => router.push("/dashboard/review"),
-        });
-      }
-    });
-  };
-
-  const handleSaveChanges = () => {
-    if (!editedItems || editedItems.length === 0) return;
-
-    const result: Record<string, any> = {};
-
-    editedItems.forEach(({ subFieldName, fieldName, newValue }) => {
-      const data = subFieldName
-        ? {
-            [subFieldName]: newValue,
-          }
-        : newValue;
-      result[fieldName] = data;
-    });
-
-    console.log("result", result);
-
-    if (id) {
-      dispatch(saveDataEdited({ id, data: result }))
-        .unwrap()
-        .then((data) => {
+    setProcessing(true);
+    dispatch(approveInspectionData(id))
+      .then((response) => {
+        setProcessing(false);
+        if (response.meta.requestStatus === "fulfilled") {
           setDialogResultData({
             isOpen: true,
             isSuccess: true,
-            title: "Data saved successfully",
-            message: "Data has been saved successfully.",
-            buttonLabel1: "Kembali",
-            buttonLabel2: "Lihat Data",
+            title: "Inspection Approved",
+            message:
+              "The inspection data has been approved. Would you like to proceed with minting to the blockchain?",
+            buttonLabel1: "Later",
+            buttonLabel2: "Mint to Blockchain",
+            action1: () => router.push("/dashboard/database"),
+            action2: () => {
+              setDialogResultData(null); // Close the current dialog
+              setShowMintConfirmationDialog(true); // Open the confirmation dialog
+            },
+          });
+        } else {
+          setDialogResultData({
+            isOpen: true,
+            isSuccess: false,
+            title: "Approval Failed",
+            message:
+              "This data may have been previously approved or there's an issue with the approval process.",
+            buttonLabel1: "Back to Database",
+            buttonLabel2: "Try Again",
+            action1: () => router.push("/dashboard/database"),
+            action2: () => router.push("/dashboard/review"),
+          });
+        }
+      })
+      .catch(() => {
+        setProcessing(false);
+        setDialogResultData({
+          isOpen: true,
+          isSuccess: false,
+          title: "Approval Failed",
+          message: "An error occurred while approving the inspection data.",
+          buttonLabel1: "Back to Database",
+          buttonLabel2: "Try Again",
+          action1: () => router.push("/dashboard/database"),
+          action2: () => approveInspection(),
+        });
+      });
+  };
+
+  const handleSaveChanges = () => {
+    if (!editedItems || editedItems.length === 0) {
+      toast({
+        title: "No changes to save",
+        description: "You haven't made any changes to the inspection data.",
+        variant: "default",
+      });
+      return;
+    }
+
+    const result: Record<string, any> = {};
+
+    editedItems.forEach(
+      ({ fieldName, subFieldName, subsubFieldName, newValue }) => {
+        if (!result[fieldName]) {
+          result[fieldName] = {};
+        }
+
+        if (subFieldName) {
+          if (!result[fieldName][subFieldName]) {
+            result[fieldName][subFieldName] = {};
+          }
+          if (subsubFieldName) {
+            result[fieldName][subFieldName][subsubFieldName] = newValue;
+          } else {
+            result[fieldName][subFieldName] = newValue;
+          }
+        } else {
+          result[fieldName] = newValue;
+        }
+      }
+    );
+
+    if (id) {
+      setProcessing(true);
+      dispatch(saveDataEdited({ id, data: result }))
+        .unwrap()
+        .then(() => {
+          setProcessing(false);
+          setDialogResultData({
+            isOpen: true,
+            isSuccess: true,
+            title: "Changes Saved Successfully",
+            message: "Your changes to the inspection data have been saved.",
+            buttonLabel1: "Back to Review List",
+            buttonLabel2: "View Updated Data",
             action1: () => router.push("/dashboard/review"),
             action2: () => window.location.reload(),
           });
         })
         .catch((err) => {
+          setProcessing(false);
           setDialogResultData({
             isOpen: true,
             isSuccess: false,
-            title: "Failed to save data",
-            message: "Failed to save data. Please try again.",
-            buttonLabel1: "Kembali",
-            buttonLabel2: "Coba Lagi",
-            action1: () => router.push("/dashboard/database"),
-            action2: () => router.push("/dashboard/review" + `/${id}`),
+            title: "Failed to Save Changes",
+            message:
+              "An error occurred while saving your changes. Please try again.",
+            buttonLabel1: "Back to Draft Review",
+            buttonLabel2: "Try Again",
+            action1: () => router.push("/dashboard/review"),
+            action2: () => handleSaveChanges(),
           });
         });
     }
@@ -301,24 +688,39 @@ const Edit = () => {
 
   return (
     <>
-      {isLoading ? (
+      {isLoading || processing ? (
         <Loading />
       ) : (
         <>
           <Header
-            handleApprove={approveInspection}
-            handleSaveChanges={handleSaveChanges}
+            hasChanges={editedItems.length}
+            data={data}
+            processing={processing}
           />
-          <div className="flex my-5">
-            <EditedData
-              cancelEdit={cancelEdit}
-              id={id}
-              updateData={updateData}
-            />
-          </div>
-          <div className="flex flex-col lg:flex-row gap-4 justify-center">
+          <div className="w-full mb-20">
             <EditReviewComponents data={data} onClick={handleEditReviewClick} />
           </div>
+
+          {/* Bottom Action Bar */}
+          <BottomActionBar
+            handleApprove={approveInspection}
+            handleSaveChanges={handleSaveChanges}
+            hasChanges={editedItems.length}
+            data={data}
+            processing={processing}
+            onOpenDrawer={() => setIsDrawerOpen(true)}
+          />
+
+          {/* Changes Drawer */}
+          <ChangesDrawer
+            isOpen={isDrawerOpen}
+            onClose={() => setIsDrawerOpen(false)}
+            data={data}
+            id={id}
+            cancelEdit={cancelEdit}
+            updateData={updateData}
+            hasChanges={editedItems.length}
+          />
 
           {/* Dialog Form */}
           {isDialogOpen && (
@@ -334,6 +736,7 @@ const Edit = () => {
                 updateDataHandler(
                   newValue,
                   dialogData.subFieldName,
+                  dialogData.subsubFieldName,
                   dialogData.fieldName
                 );
                 dispatch(
@@ -345,10 +748,12 @@ const Edit = () => {
                     newValue: newValue,
                   })
                 );
+                setIsDialogOpen(false);
               }}
             />
           )}
 
+          {/* Result Dialog */}
           {dialogResultData && (
             <DialogResult
               isOpen={dialogResultData.isOpen}
@@ -360,6 +765,24 @@ const Edit = () => {
               action1={dialogResultData.action1}
               action2={dialogResultData.action2}
               onClose={() => setDialogResultData(null)}
+            />
+          )}
+
+          {/* Minting Confirmation Dialog */}
+          {showMintConfirmationDialog && (
+            <DialogResult
+              isOpen={showMintConfirmationDialog}
+              isSuccess={false} // This is a confirmation, not a success/failure
+              title="Konfirmasi Minting ke Blockchain"
+              message="Apakah Anda yakin ingin mencetak data inspeksi ini ke blockchain? Tindakan ini tidak dapat diurungkan."
+              buttonLabel1="Batal"
+              buttonLabel2="Ya, Cetak Sekarang"
+              action1={() => setShowMintConfirmationDialog(false)} // Close dialog on cancel
+              action2={() => {
+                setShowMintConfirmationDialog(false); // Close dialog
+                mintingToBlockchainHandler(id); // Proceed with minting
+              }}
+              onClose={() => setShowMintConfirmationDialog(false)}
             />
           )}
         </>

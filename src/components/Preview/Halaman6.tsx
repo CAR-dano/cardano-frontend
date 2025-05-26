@@ -51,6 +51,7 @@ const Halaman6: React.FC<Halaman6Props> = ({
                 key={index}
                 warna="#FFFFFF"
                 namaPart={item.namaPart}
+                subFieldName="toolsTest"
                 beban={item.beban.toString()}
                 nilai={
                   data.toolsTest[item.part] != undefined
