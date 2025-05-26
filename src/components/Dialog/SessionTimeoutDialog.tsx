@@ -23,7 +23,7 @@ interface SessionTimeoutDialogProps {
 const formatTime = (seconds: number): string => {
   const mins = Math.floor(seconds / 60);
   const secs = seconds % 60;
-  return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+  return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
 };
 
 export default function SessionTimeoutDialog({
@@ -31,7 +31,7 @@ export default function SessionTimeoutDialog({
   onStayLoggedIn,
   onLogout,
   timeRemaining = 60,
-  countdownStart = 60
+  countdownStart = 60,
 }: SessionTimeoutDialogProps) {
   const [countdown, setCountdown] = useState(timeRemaining);
   const [progress, setProgress] = useState(100);
@@ -52,7 +52,7 @@ export default function SessionTimeoutDialog({
         }
         return prev - 1;
       });
-      
+
       // Calculate progress percentage
       setProgress((countdown / countdownStart) * 100);
     }, 1000);
@@ -67,11 +67,13 @@ export default function SessionTimeoutDialog({
           <div className="bg-amber-100 rounded-full p-3">
             <Clock className="h-8 w-8 text-amber-600" />
           </div>
-          <DialogTitle className="text-xl font-semibold text-center">Session Timeout Warning</DialogTitle>
+          <DialogTitle className="text-xl font-semibold text-center">
+            Session Timeout Warning
+          </DialogTitle>
         </DialogHeader>
 
         <div className="relative w-full h-2 bg-gray-200 rounded-full my-4">
-          <div 
+          <div
             className="absolute top-0 left-0 h-full bg-amber-500 rounded-full transition-all duration-1000 ease-linear"
             style={{ width: `${Math.max(progress, 0)}%` }}
           ></div>
@@ -85,7 +87,7 @@ export default function SessionTimeoutDialog({
             {formatTime(countdown)}
           </p>
           <p className="text-sm text-gray-600 mt-2">
-            Click "Stay Logged In" to continue your session.
+            Click &quot;Stay Logged In&quot; to continue your session.
           </p>
         </DialogDescription>
 

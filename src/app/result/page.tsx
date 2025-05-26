@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { searchByVehiclePlat } from "@/lib/features/inspection/inspectionSlice";
 import { AppDispatch, RootState } from "@/lib/store";
 import LoadingFullScreen from "@/components/LoadingFullScreen";
+import Link from "next/link";
 
 function ResultPageContent() {
   const dispatch = useDispatch<AppDispatch>();
@@ -137,7 +138,14 @@ function ResultPageContent() {
                 {/* Car outline */}
                 <path d="M50 120 L50 100 Q50 90 60 90 L90 90 L100 70 Q105 60 115 60 L140 60 Q150 60 155 70 L165 90 L195 90 Q205 90 205 100 L205 120 L220 120 Q230 120 230 130 L230 140 Q230 150 220 150 L200 150 Q190 150 190 140 L190 135 L65 135 L65 140 Q65 150 55 150 L35 150 Q25 150 25 140 L25 130 Q25 120 35 120 Z" />
                 {/* Windows */}
-                <rect x="105" y="70" width="45" height="15" rx="2" className="fill-blue-100" />
+                <rect
+                  x="105"
+                  y="70"
+                  width="45"
+                  height="15"
+                  rx="2"
+                  className="fill-blue-100"
+                />
                 {/* Wheels */}
                 <circle cx="80" cy="135" r="12" className="fill-gray-400" />
                 <circle cx="175" cy="135" r="12" className="fill-gray-400" />
@@ -147,12 +155,22 @@ function ResultPageContent() {
                 <circle cx="210" cy="105" r="4" className="fill-yellow-200" />
                 <circle cx="45" cy="105" r="4" className="fill-red-200" />
               </svg>
-              
+
               {/* Question mark overlay */}
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center">
-                  <svg className="w-8 h-8 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  <svg
+                    className="w-8 h-8 text-orange-500"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
                   </svg>
                 </div>
               </div>
@@ -176,8 +194,18 @@ function ResultPageContent() {
           {/* Suggestions */}
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
             <h4 className="text-lg font-semibold text-blue-900 mb-3 flex items-center">
-              <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <svg
+                className="w-5 h-5 mr-2"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
               </svg>
               Saran Pencarian
             </h4>
@@ -203,7 +231,9 @@ function ResultPageContent() {
               onClick={() => {
                 // Reset search and focus input
                 setPlatNomorInput("");
-                const desktopInput = document.querySelector('input[name="search"]') as HTMLInputElement;
+                const desktopInput = document.querySelector(
+                  'input[name="search"]'
+                ) as HTMLInputElement;
                 if (desktopInput) {
                   desktopInput.value = "";
                   desktopInput.focus();
@@ -211,26 +241,47 @@ function ResultPageContent() {
               }}
               className="inline-flex items-center px-6 py-3 border border-orange-300 rounded-lg text-orange-700 bg-orange-50 hover:bg-orange-100 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-colors duration-200 font-medium"
             >
-              <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              <svg
+                className="w-4 h-4 mr-2"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
               </svg>
               Coba Lagi
             </button>
-            
+
             <CustomButton className="text-base font-medium rounded-lg gradient-details text-white px-6 py-3">
-              <a href="/" className="flex items-center">
-                <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+              <Link href="/" className="flex items-center">
+                <svg
+                  className="w-4 h-4 mr-2"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                  />
                 </svg>
                 Kembali ke Beranda
-              </a>
+              </Link>
             </CustomButton>
           </div>
 
           {/* Additional Help */}
           <div className="mt-8 p-4 bg-gray-50 rounded-lg">
             <p className="text-sm text-gray-600">
-              Perlu bantuan? Hubungi tim customer service kami untuk informasi lebih lanjut tentang inspeksi kendaraan.
+              Perlu bantuan? Hubungi tim customer service kami untuk informasi
+              lebih lanjut tentang inspeksi kendaraan.
             </p>
           </div>
         </div>
