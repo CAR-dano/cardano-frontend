@@ -8,8 +8,7 @@ on:
 jobs:
   build-and-deploy:
     runs-on: self-hosted
-    env:
-      NODE_ENV: production
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4 # Kode akan di-checkout ke ${{ github.workspace }}
@@ -34,6 +33,8 @@ jobs:
           npm run build
 
       - name: Deploy to PM2
+        env:
+          NODE_ENV: production
         # Perintah PM2 harus menargetkan aplikasi yang sudah di-build
         # di ${{ github.workspace }}/.next (untuk Next.js)
         # atau Anda perlu memindahkan/menyalin hasil build ke lokasi PM2 Anda
