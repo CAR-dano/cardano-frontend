@@ -1,6 +1,6 @@
 // app/download/page.tsx
 import Image from "next/image";
-import PrimaryButton from "@/components/Button/PrimaryButton";
+import PrimaryButton from "../../components/Button/PrimaryButton";
 
 export default function DownloadPage() {
   return (

@@ -1,7 +1,7 @@
 import "./globals.css";
 import { Inter, Pacifico, Poppins, Rubik } from "next/font/google";
 import { Providers } from "./providers";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "../components/ui/toaster";
 
 const inter = Inter({
   variable: "--font-inter",

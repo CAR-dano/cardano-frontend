@@ -3,7 +3,6 @@ import Image from "next/image";
 import React, { useState } from "react";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 import { motion, AnimatePresence } from "framer-motion";
-import { VehicleData } from "@/utils/Car";
 
 interface VehicleInspectionProps {
   data: any;

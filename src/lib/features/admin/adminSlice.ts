@@ -1,4 +1,4 @@
-import { User } from "@/utils/Auth";
+import { User } from "../../../utils/Auth";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import adminService from "./adminService";

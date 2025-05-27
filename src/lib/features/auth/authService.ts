@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { UserLogin, UserSignUp } from "@/utils/Auth";
+import { UserLogin, UserSignUp } from "../../../utils/Auth";
 
 const LOCAL_API_URL = process.env.NEXT_PUBLIC_API_URL;
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
-import { useTheme } from "@/contexts/ThemeContext";
+import { useTheme } from "../../contexts/ThemeContext";
 
 interface FormPenilaianSummaryProps {
   label: string;

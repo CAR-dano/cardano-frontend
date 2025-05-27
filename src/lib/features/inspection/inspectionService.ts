@@ -1,4 +1,3 @@
-// import { Hasil } from "@/utils/Car";
 import axios from "axios";
 
 const LOCAL_API_URL = process.env.NEXT_PUBLIC_API_URL;

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Label } from "../ui/label";
-import { Role } from "@/utils/Admin";
+import { Role } from "../../utils/Admin";
 import {
   Select,
   SelectContent,
@@ -9,8 +9,8 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { useTheme } from "@/contexts/ThemeContext";
+} from "../../components/ui/select";
+import { useTheme } from "../../contexts/ThemeContext";
 
 interface FormDropdownInputProps {
   label: string;

@@ -6,7 +6,7 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@/components/ui/dialog";
+} from "../../components/ui/dialog";
 
 import { Button } from "../../components/ui/button";
 import FormNormalInput from "./FormNormalInput";
@@ -17,7 +17,7 @@ import { useState } from "react";
 import FormPenilaianSummmary from "./FormPenilaianSummary";
 import FormArray from "./FormArray";
 import FormEstimasiPerbaikan from "./FormEstimasiPerbaikan";
-import { useTheme } from "@/contexts/ThemeContext";
+import { useTheme } from "../../contexts/ThemeContext";
 
 interface DialogFormProps {
   label: string;

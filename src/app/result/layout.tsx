@@ -1,5 +1,5 @@
-import HasilInspeksi from "@/components/landing/HasilInspeksi";
-import { Layout } from "@/components/layout";
+import HasilInspeksi from "../../components/landing/HasilInspeksi";
+import { Layout } from "../../components/layout";
 import React from "react";
 
 export default function ResultLayout({

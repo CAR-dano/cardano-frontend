@@ -7,9 +7,9 @@ import {
   DialogTitle,
   DialogFooter,
   DialogDescription,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Role } from "@/utils/Admin";
+} from "../../components/ui/dialog";
+import { Button } from "../../components/ui/button";
+import { Role } from "../../utils/Admin";
 import {
   Select,
   SelectContent,
@@ -18,8 +18,8 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { useTheme } from "@/contexts/ThemeContext";
+} from "../../components/ui/select";
+import { useTheme } from "../../contexts/ThemeContext";
 
 interface DialogEditRoleProps {
   isOpen: boolean;

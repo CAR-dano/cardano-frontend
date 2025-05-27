@@ -1,27 +1,29 @@
 "use client";
 
 import React from "react";
-import useAuth from "@/hooks/useAuth";
-import SessionTimeoutDialog from "@/components/Dialog/SessionTimeoutDialog";
+import useAuth from "../hooks/useAuth";
+import SessionTimeoutDialog from "../components/Dialog/SessionTimeoutDialog";
 
 interface SessionTimeoutWrapperProps {
   children: React.ReactNode;
 }
 
-export default function SessionTimeoutWrapper({ children }: SessionTimeoutWrapperProps) {
+export default function SessionTimeoutWrapper({
+  children,
+}: SessionTimeoutWrapperProps) {
   // Get auth-related functionality
-  const { 
-    isAuthenticated, 
-    isTimeoutWarningOpen, 
-    setIsTimeoutWarningOpen, 
-    resetSession, 
-    logout 
+  const {
+    isAuthenticated,
+    isTimeoutWarningOpen,
+    setIsTimeoutWarningOpen,
+    resetSession,
+    logout,
   } = useAuth();
 
   return (
     <>
       {children}
-      
+
       {/* Session timeout warning dialog */}
       {isAuthenticated && (
         <SessionTimeoutDialog

@@ -1,15 +1,15 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import "./style.css";
-import Halaman1 from "@/components/Preview/Halaman1";
-import Halaman2 from "@/components/Preview/Halaman2";
-import Halaman3 from "@/components/Preview/Halaman3";
-import Halaman4 from "@/components/Preview/Halaman4";
-import Halaman5 from "@/components/Preview/Halaman5";
-import Halaman6 from "@/components/Preview/Halaman6";
+import Halaman1 from "../../components/Preview/Halaman1";
+import Halaman2 from "../../components/Preview/Halaman2";
+import Halaman3 from "../../components/Preview/Halaman3";
+import Halaman4 from "../../components/Preview/Halaman4";
+import Halaman5 from "../../components/Preview/Halaman5";
+import Halaman6 from "../../components/Preview/Halaman6";
 import Halaman8 from "../Preview/Halaman8";
 import Halaman7 from "../Preview/Halaman7";
-import { useTheme } from "@/contexts/ThemeContext";
+import { useTheme } from "../../contexts/ThemeContext";
 
 interface EditReviewComponentsProps {
   onClick: (data: any) => void; // Fungsi yang dipanggil saat klik

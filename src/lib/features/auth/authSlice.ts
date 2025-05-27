@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import authService from "./authService";
-import { User, UserLogin, UserSignUp } from "@/utils/Auth";
+import { User, UserLogin, UserSignUp } from "../../../utils/Auth";
 
 export interface IAuthState {
   isAuthenticated: boolean;
@@ -126,7 +126,7 @@ export const authSlice = createSlice({
         state.isLoading = false;
         state.error = action.error.message || "Logout failed";
       })
-      
+
       .addCase(login.pending, (state) => {
         state.isAuthenticated = false;
         state.isLoading = true;
@@ -148,7 +148,7 @@ export const authSlice = createSlice({
         state.accessToken = "";
         state.error = action.error.message || "Login failed";
       })
-      
+
       .addCase(signup.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -161,7 +161,7 @@ export const authSlice = createSlice({
         state.isLoading = false;
         state.error = action.error.message || "Signup failed";
       })
-      
+
       .addCase(checkToken.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -181,7 +181,7 @@ export const authSlice = createSlice({
         state.error = action.error.message || "Token validation failed";
         state.isAuthInitialized = true;
       })
-      
+
       .addCase(refreshToken.pending, (state) => {
         state.isLoading = true;
         state.error = null;

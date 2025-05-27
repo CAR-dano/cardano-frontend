@@ -1,7 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { Hasil } from "@/utils/Car";
 
 function CardHasil({ inspectionSummary, overallRating, urlPdf }: any) {
   function getGradeLabel(score: number): string {

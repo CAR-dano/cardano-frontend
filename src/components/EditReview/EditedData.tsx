@@ -2,7 +2,7 @@
 import {
   deleteEditedData,
   getDataEdited,
-} from "@/lib/features/inspection/inspectionSlice";
+} from "../../lib/features/inspection/inspectionSlice";
 import { AppDispatch, useAppSelector } from "../../lib/store";
 import React, { use, useEffect } from "react";
 import { format } from "date-fns"; // Import format

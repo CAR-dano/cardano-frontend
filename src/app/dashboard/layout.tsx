@@ -1,10 +1,10 @@
 "use client";
-import Header from "@/components/Admin/Header";
-import Sidebar from "@/components/Admin/Sidebar";
-import AuthGuard from "@/components/Auth/AuthGuard";
-import LoadingScreen from "@/components/LoadingFullScreen";
-import SessionTimeoutWrapper from "@/components/SessionTimeoutWrapper";
-import useAuth from "@/hooks/useAuth";
+import Header from "../../components/Admin/Header";
+import Sidebar from "../../components/Admin/Sidebar";
+import AuthGuard from "../../components/Auth/AuthGuard";
+import LoadingScreen from "../../components/LoadingFullScreen";
+import SessionTimeoutWrapper from "../../components/SessionTimeoutWrapper";
+import useAuth from "../../hooks/useAuth";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 

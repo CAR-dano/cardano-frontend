@@ -3,9 +3,9 @@
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "../lib/store";
-import LoadingScreen from "@/components/LoadingFullScreen";
-import AuthInitializer from "@/components/Auth/AuthInitializer";
-import { ThemeProvider } from "@/contexts/ThemeContext";
+import LoadingScreen from "../components/LoadingFullScreen";
+import AuthInitializer from "../components/Auth/AuthInitializer";
+import { ThemeProvider } from "../contexts/ThemeContext";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (

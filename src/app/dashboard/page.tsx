@@ -1,12 +1,12 @@
 "use client";
-import Loading, { LoadingOverlay } from "@/components/Loading";
-import { getDataForReviewer } from "@/lib/features/inspection/inspectionSlice";
+import Loading, { LoadingOverlay } from "../../components/Loading";
+import { getDataForReviewer } from "../../lib/features/inspection/inspectionSlice";
 import { AppDispatch, RootState } from "../../lib/store";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import exampleData from "@/utils/exampledata.json";
-import { getMainStats } from "@/lib/features/dashboard/dashboardSlice";
+import exampleData from "../../utils/exampledata.json";
+import { getMainStats } from "../../lib/features/dashboard/dashboardSlice";
 
 const DashboardHeader = ({
   totalInspections,

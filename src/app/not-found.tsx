@@ -1,5 +1,5 @@
-import { Layout } from "@/components/layout";
-import CustomButton from "@/components/ui/CustomButton";
+import { Layout } from "../components/layout";
+import CustomButton from "../components/ui/CustomButton";
 import Image from "next/image";
 import Link from "next/link";
 

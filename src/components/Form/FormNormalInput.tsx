@@ -1,6 +1,6 @@
 import React from "react";
 import { Label } from "../ui/label";
-import { useTheme } from "@/contexts/ThemeContext";
+import { useTheme } from "../../contexts/ThemeContext";
 
 interface FormNormalInputProps {
   label: string;
