@@ -1,4 +1,4 @@
-name: Deploy Next.js to VM
+name: Deploy Next.js Application
 
 on:
   push:
@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4 # Kode akan di-checkout ke ${{ github.workspace }}
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -20,16 +20,15 @@ jobs:
           cache: "npm"
 
       - name: Install Dependencies
-        # Tidak perlu cd di sini jika package.json ada di root repositori
-        # Perintah akan berjalan di ${{ github.workspace }}
         run: |
-          echo "Installing dependencies..."
           npm install
 
       - name: Build Next.js Application
-        # Perintah akan berjalan di ${{ github.workspace }}
+        env:
+          NODE_ENV: production
+          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+          NEXT_PUBLIC_PDF_URL: ${{ secrets.NEXT_PUBLIC_PDF_URL }}
         run: |
-          echo "Building Next.js application..."
           npm run build
 
       - name: Deploy to PM2
@@ -37,11 +36,7 @@ jobs:
           NODE_ENV: production
           NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
           NEXT_PUBLIC_PDF_URL: ${{ secrets.NEXT_PUBLIC_PDF_URL }}
-        # Perintah PM2 harus menargetkan aplikasi yang sudah di-build
-        # di ${{ github.workspace }}/.next (untuk Next.js)
-        # atau Anda perlu memindahkan/menyalin hasil build ke lokasi PM2 Anda
         run: |
-          echo "Deploying application with PM2..."
           if pm2 describe frontend > /dev/null; then
             echo "Application 'frontend' found. Reloading..."
             pm2 reload ecosystem.config.js --env production
