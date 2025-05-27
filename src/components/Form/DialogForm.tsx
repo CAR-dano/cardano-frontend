@@ -8,14 +8,11 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "../../components/ui/button";
 import FormNormalInput from "./FormNormalInput";
 import FormDateInput from "./FormDateInput";
 import FormSelect2Option from "./FormSelect2Option";
 import FormDropdownInput from "./FormDropdownInput";
-import { AppDispatch } from "@/lib/store";
-import { useDispatch } from "react-redux";
-import { setEditedData } from "@/lib/features/inspection/inspectionSlice";
 import { useState } from "react";
 import FormPenilaianSummmary from "./FormPenilaianSummary";
 import FormArray from "./FormArray";

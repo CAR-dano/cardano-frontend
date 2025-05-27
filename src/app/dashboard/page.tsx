@@ -1,7 +1,7 @@
 "use client";
 import Loading, { LoadingOverlay } from "@/components/Loading";
 import { getDataForReviewer } from "@/lib/features/inspection/inspectionSlice";
-import { AppDispatch, RootState } from "@/lib/store";
+import { AppDispatch, RootState } from "../../lib/store";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";

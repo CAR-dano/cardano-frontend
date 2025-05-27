@@ -1,9 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { AppDispatch, useAppSelector } from "@/lib/store";
-import { getAllInspectors } from "@/lib/features/admin/adminSlice";
-import { LoadingSkeleton } from "@/components/Loading";
+import { AppDispatch, useAppSelector } from "../../../lib/store";
+import { getAllInspectors } from "../../../lib/features/admin/adminSlice";
+import { LoadingSkeleton } from "../../../components/Loading";
 import {
   Table,
   TableBody,
@@ -11,9 +11,14 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+} from "../../../components/ui/table";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../../../components/ui/card";
+import { Button } from "../../../components/ui/button";
 import {
   Drawer,
   DrawerClose,
@@ -23,19 +28,19 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@/components/ui/drawer";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+} from "../../../components/ui/drawer";
+import { Input } from "../../../components/ui/input";
+import { Label } from "../../../components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "../../../components/ui/select";
 import { FaUserTie, FaSearch, FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 import { format } from "date-fns";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "../../../components/ui/use-toast";
 
 const InspectorPage = () => {
   const dispatch = useDispatch<AppDispatch>();

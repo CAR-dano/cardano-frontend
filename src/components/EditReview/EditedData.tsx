@@ -3,14 +3,12 @@ import {
   deleteEditedData,
   getDataEdited,
 } from "@/lib/features/inspection/inspectionSlice";
-import { AppDispatch, useAppSelector } from "@/lib/store";
+import { AppDispatch, useAppSelector } from "../../lib/store";
 import React, { use, useEffect } from "react";
 import { format } from "date-fns"; // Import format
 
-import { GiCancel } from "react-icons/gi";
 import { useDispatch } from "react-redux";
-import Button from "../Button/Button";
-import { useTheme } from "@/contexts/ThemeContext";
+import { useTheme } from "../../contexts/ThemeContext";
 
 interface EditedDataProps {
   cancelEdit: (oldValue: any, subFieldName: string, fieldName: string) => void;

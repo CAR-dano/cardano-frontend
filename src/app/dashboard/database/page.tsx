@@ -1,11 +1,11 @@
 "use client";
-import Loading, { LoadingSkeleton } from "@/components/Loading";
-import TableInspectionReviewer from "@/components/Table/TableInspectionReviewer";
-import { toast } from "@/components/ui/use-toast";
-import { getDataForReviewer } from "@/lib/features/inspection/inspectionSlice";
-import { useTheme } from "@/contexts/ThemeContext";
+import Loading, { LoadingSkeleton } from "../../../components/Loading";
+import TableInspectionReviewer from "../../../components/Table/TableInspectionReviewer";
+import { toast } from "../../../components/ui/use-toast";
+import { getDataForReviewer } from "../../../lib/features/inspection/inspectionSlice";
+import { useTheme } from "../../../contexts/ThemeContext";
 
-import { AppDispatch, RootState } from "@/lib/store";
+import { AppDispatch, RootState } from "../../../lib/store";
 import { useEffect, useState } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";

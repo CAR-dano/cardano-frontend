@@ -6,11 +6,10 @@ import {
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+} from "../../components/ui/breadcrumb";
 import { usePathname } from "next/navigation";
-import { useAppSelector } from "@/lib/store";
-import { Bell, Search, Settings, ChevronDown } from "lucide-react";
-import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { useAppSelector } from "../../lib/store";
+import { ThemeToggle } from "../../components/ui/ThemeToggle";
 
 const Header = () => {
   const user = useAppSelector((state) => state.auth.user);

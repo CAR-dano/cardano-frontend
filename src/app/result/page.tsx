@@ -1,16 +1,16 @@
 "use client";
-import CardData from "@/components/ui/Card/CardData";
-import SearchBar from "@/components/ui/SearchBar";
+import CardData from "../../components/ui/Card/CardData";
+import SearchBar from "../../components/ui/SearchBar";
 import { useSearchParams } from "next/navigation";
 import React, { Suspense, useState, useEffect } from "react";
-import CardHasil from "@/components/ui/Card/CardHasil";
+import CardHasil from "../../components/ui/Card/CardHasil";
 import Image from "next/image";
-import CustomButton from "@/components/ui/CustomButton";
-import MadeByCardano from "@/components/ui/MadeByCardano";
+import CustomButton from "../../components/ui/CustomButton";
+import MadeByCardano from "../../components/ui/MadeByCardano";
 import { useDispatch, useSelector } from "react-redux";
-import { searchByVehiclePlat } from "@/lib/features/inspection/inspectionSlice";
-import { AppDispatch, RootState } from "@/lib/store";
-import LoadingFullScreen from "@/components/LoadingFullScreen";
+import { searchByVehiclePlat } from "../../lib/features/inspection/inspectionSlice";
+import { AppDispatch, RootState } from "../../lib/store";
+import LoadingFullScreen from "../../components/LoadingFullScreen";
 import Link from "next/link";
 
 function ResultPageContent() {

@@ -1,11 +1,11 @@
 "use client";
 
-import { useAppSelector, AppDispatch } from "@/lib/store";
-import { refreshToken, logout } from "@/lib/features/auth/authSlice";
+import { useAppSelector, AppDispatch } from "../lib/store";
+import { refreshToken, logout } from "../lib/features/auth/authSlice";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { usePathname, useRouter } from "next/navigation";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "../components/ui/use-toast";
 
 // Paths that don't require authentication
 const publicPaths = ["/auth", "/", "/result"];

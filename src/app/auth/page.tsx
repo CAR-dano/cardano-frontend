@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { UserLogin, UserSignUp } from "../../utils/Auth";
 import { useDispatch } from "react-redux";
-import { AppDispatch, useAppSelector } from "@/lib/store";
+import { AppDispatch, useAppSelector } from "../../lib/store";
 import { login, signup } from "../../lib/features/auth/authSlice";
 import LoadingScreen from "../../components/LoadingFullScreen";
 import { FiEye, FiEyeOff } from "react-icons/fi";

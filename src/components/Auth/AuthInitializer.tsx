@@ -2,23 +2,26 @@
 
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { useAppSelector, AppDispatch } from "@/lib/store";
-import { checkToken, setAuthInitialized } from "@/lib/features/auth/authSlice";
-import LoadingScreen from "@/components/LoadingFullScreen";
+import { useAppSelector, AppDispatch } from "../../lib/store";
+import {
+  checkToken,
+  setAuthInitialized,
+} from "../../lib/features/auth/authSlice";
+import LoadingScreen from "../../components/LoadingFullScreen";
 
 interface AuthInitializerProps {
   children: React.ReactNode;
 }
 
 /**
- * AuthInitializer verifies authentication state at app startup and 
+ * AuthInitializer verifies authentication state at app startup and
  * ensures proper initialization before rendering the app content.
  * This prevents flashing of protected content or unnecessary redirects.
  */
 const AuthInitializer: React.FC<AuthInitializerProps> = ({ children }) => {
   const dispatch = useDispatch<AppDispatch>();
   const [isInitializing, setIsInitializing] = useState(true);
-  
+
   const { isAuthenticated, isAuthInitialized, accessToken } = useAppSelector(
     (state) => state.auth
   );

@@ -7,17 +7,14 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import Link from "next/link";
+} from "../../components/ui/table";
 import SecondaryButton from "../Button/SecondaryButton";
 import { useDispatch } from "react-redux";
-import { AppDispatch, useAppSelector } from "@/lib/store";
-import { mintingToBlockchain } from "@/lib/features/inspection/inspectionSlice";
-import DialogResult from "../Dialog/DialogResult";
+import { AppDispatch, useAppSelector } from "../../lib/store";
 import { useRouter } from "next/navigation";
 import DialogEditRole from "../Form/DialogEditRole";
-import LoadingScreen from "@/components/LoadingFullScreen";
-import { updateRole } from "@/lib/features/admin/adminSlice";
+import LoadingScreen from "../../components/LoadingFullScreen";
+import { updateRole } from "../../lib/features/admin/adminSlice";
 
 const TableData = ({ data }: any) => {
   const [fetchStatus, setFetchStatus] = useState(false);
@@ -38,29 +35,31 @@ const TableData = ({ data }: any) => {
 
   // Generate initials for avatar
   const getInitials = (name: string | null | undefined) => {
-    if (!name || typeof name !== 'string') {
-      return 'U'; // Default to 'U' for User
+    if (!name || typeof name !== "string") {
+      return "U"; // Default to 'U' for User
     }
-    return name
-      .split(' ')
-      .map(word => word && word[0])
-      .filter(Boolean)
-      .join('')
-      .toUpperCase()
-      .slice(0, 2) || 'U';
+    return (
+      name
+        .split(" ")
+        .map((word) => word && word[0])
+        .filter(Boolean)
+        .join("")
+        .toUpperCase()
+        .slice(0, 2) || "U"
+    );
   };
 
   // Get role badge color
   const getRoleBadgeStyle = (role: string) => {
     switch (role.toLowerCase()) {
-      case 'admin':
-        return 'bg-red-100 text-red-800 border-red-200';
-      case 'reviewer':
-        return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'inspector':
-        return 'bg-green-100 text-green-800 border-green-200';
+      case "admin":
+        return "bg-red-100 text-red-800 border-red-200";
+      case "reviewer":
+        return "bg-blue-100 text-blue-800 border-blue-200";
+      case "inspector":
+        return "bg-green-100 text-green-800 border-green-200";
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+        return "bg-gray-100 text-gray-800 border-gray-200";
     }
   };
 
@@ -75,33 +74,58 @@ const TableData = ({ data }: any) => {
       <Table>
         <TableHeader>
           <TableRow className="bg-gray-50 dark:bg-gray-900">
-            <TableHead className="text-left font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">User</TableHead>
-            <TableHead className="text-left font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">Contact</TableHead>
-            <TableHead className="text-center font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">Role</TableHead>
-            <TableHead className="text-center font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">Actions</TableHead>
+            <TableHead className="text-left font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
+              User
+            </TableHead>
+            <TableHead className="text-left font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
+              Contact
+            </TableHead>
+            <TableHead className="text-center font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
+              Role
+            </TableHead>
+            <TableHead className="text-center font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
+              Actions
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {data && data.length > 0 ? (
             data.map((item: any, index: number) => (
-              <TableRow key={item.id} className={`hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150 ${index !== data.length - 1 ? 'border-b border-gray-100 dark:border-gray-700' : ''}`}>
+              <TableRow
+                key={item.id}
+                className={`hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150 ${
+                  index !== data.length - 1
+                    ? "border-b border-gray-100 dark:border-gray-700"
+                    : ""
+                }`}
+              >
                 <TableCell className="py-4 px-6">
                   <div className="flex items-center space-x-3">
                     <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-medium text-sm">
                       {getInitials(item.name)}
                     </div>
                     <div>
-                      <div className="text-sm font-semibold text-gray-900 dark:text-gray-100">{item.name || 'Nama tidak tersedia'}</div>
-                      <div className="text-sm text-gray-500 dark:text-gray-400">@{item.username || 'username'}</div>
+                      <div className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                        {item.name || "Nama tidak tersedia"}
+                      </div>
+                      <div className="text-sm text-gray-500 dark:text-gray-400">
+                        ../..{item.username || "username"}
+                      </div>
                     </div>
                   </div>
                 </TableCell>
                 <TableCell className="py-4 px-6">
-                  <div className="text-sm text-gray-900 dark:text-gray-100">{item.email || 'Email tidak tersedia'}</div>
+                  <div className="text-sm text-gray-900 dark:text-gray-100">
+                    {item.email || "Email tidak tersedia"}
+                  </div>
                 </TableCell>
                 <TableCell className="py-4 px-6 text-center">
-                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getRoleBadgeStyle(item.role || 'user')}`}>
-                    {item.role || 'User'}
+                  <span
+                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getRoleBadgeStyle(
+                      item.role || "user"
+                    )}`}
+                  >
+                    {item.role || "User"}
                   </span>
                 </TableCell>
                 <TableCell className="py-4 px-6 text-center">
@@ -112,8 +136,18 @@ const TableData = ({ data }: any) => {
                       setEditRoleValue(item.role);
                     }}
                   >
-                    <svg className="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    <svg
+                      className="w-3 h-3 mr-1"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                      />
                     </svg>
                     Edit Role
                   </button>
@@ -148,7 +182,9 @@ const TableData = ({ data }: any) => {
                     />
                   </svg>
                   <p className="text-sm font-medium">Tidak ada pengguna</p>
-                  <p className="text-xs text-gray-400 mt-1">Belum ada data pengguna yang terdaftar</p>
+                  <p className="text-xs text-gray-400 mt-1">
+                    Belum ada data pengguna yang terdaftar
+                  </p>
                 </div>
               </TableCell>
             </TableRow>

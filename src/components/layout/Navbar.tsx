@@ -3,9 +3,9 @@ import { useState } from "react";
 import Image from "next/image";
 import { IoMenu, IoClose } from "react-icons/io5";
 import { useRouter } from "next/navigation";
-import { AppDispatch, useAppSelector } from "@/lib/store";
+import { AppDispatch, useAppSelector } from "../../lib/store";
 import { useDispatch } from "react-redux";
-import { logout } from "@/lib/features/auth/authSlice";
+import { logout } from "../../lib/features/auth/authSlice";
 import Link from "next/link";
 import {
   AlertDialog,

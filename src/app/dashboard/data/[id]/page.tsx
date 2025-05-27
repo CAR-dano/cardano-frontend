@@ -1,19 +1,12 @@
 "use client";
-import PrimaryButton from "@/components/Button/PrimaryButton";
-import SecondaryButton from "@/components/Button/SecondaryButton";
-import DialogResult from "@/components/Dialog/DialogResult";
-import EditedData from "@/components/EditReview/EditedData";
-import EditReviewComponents from "@/components/EditReview/EditReview";
-import { DialogForm } from "@/components/Form/DialogForm";
-import Loading from "@/components/Loading";
+import DialogResult from "../../../..//components/Dialog/DialogResult";
+import EditReviewComponents from "../../../..//components/EditReview/EditReview";
+import Loading from "../../../..//components/Loading";
 import {
-  approveInspectionData,
   getDataForPreview,
   mintingToBlockchain,
-  saveDataEdited,
-  setEditedData,
-} from "@/lib/features/inspection/inspectionSlice";
-import { AppDispatch, useAppSelector } from "@/lib/store";
+} from "../../../..//lib/features/inspection/inspectionSlice";
+import { AppDispatch, useAppSelector } from "../../../..//lib/store";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";

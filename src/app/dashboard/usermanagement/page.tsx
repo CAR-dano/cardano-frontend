@@ -1,13 +1,11 @@
 "use client";
-import Loading, { LoadingSkeleton } from "@/components/Loading";
-import TableInspectionReviewer from "@/components/Table/TableInspectionReviewer";
-import TableUsers from "@/components/Table/TableUsers";
-import { toast } from "@/components/ui/use-toast";
-import { getAllUsers } from "@/lib/features/admin/adminSlice";
-import { getDataForReviewer } from "@/lib/features/inspection/inspectionSlice";
-import { useTheme } from "@/contexts/ThemeContext";
+import Loading, { LoadingSkeleton } from "../../../components/Loading";
+import TableUsers from "../../../components/Table/TableUsers";
+import { toast } from "../../../components/ui/use-toast";
+import { getAllUsers } from "../../../lib/features/admin/adminSlice";
+import { useTheme } from "../../../contexts/ThemeContext";
 
-import { AppDispatch, RootState, useAppSelector } from "@/lib/store";
+import { AppDispatch, RootState, useAppSelector } from "../../../lib/store";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { IoIosSearch } from "react-icons/io";

@@ -7,17 +7,17 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "../../components/ui/table";
 import Link from "next/link";
 import SecondaryButton from "../Button/SecondaryButton"; // Assuming this exists
 import { useDispatch } from "react-redux";
-import { AppDispatch, useAppSelector } from "@/lib/store";
-import { mintingToBlockchain } from "@/lib/features/inspection/inspectionSlice";
+import { AppDispatch, useAppSelector } from "../../lib/store";
+import { mintingToBlockchain } from "../../lib/features/inspection/inspectionSlice";
 import DialogResult from "../Dialog/DialogResult"; // Your existing dialog
 import { useRouter } from "next/navigation";
-import { Input } from "@/components/ui/input"; // Assuming Input component exists
+import { Input } from "../../components/ui/input"; // Assuming Input component exists
 import { FaSearch } from "react-icons/fa"; // Assuming FaSearch icon exists
-import { toast } from "@/hooks/use-toast";
+import { toast } from "../../hooks/use-toast";
 
 const TableData = ({
   data,
