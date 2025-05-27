@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "@/lib/store";
-import { fetchBranches } from "@/lib/features/admin/adminSlice";
+import { useAppDispatch, useAppSelector } from "../../../lib/store";
+import { fetchBranches } from "../../../lib/features/admin/adminSlice";
 import {
   Table,
   TableBody,
@@ -10,9 +10,14 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+} from "../../../components/ui/table";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../../../components/ui/card";
+import { Button } from "../../../components/ui/button";
 import {
   Drawer,
   DrawerClose,
@@ -22,17 +27,17 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@/components/ui/drawer";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+} from "../../../components/ui/drawer";
+import { Input } from "../../../components/ui/input";
+import { Label } from "../../../components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { LoadingSkeleton } from "@/components/Loading";
+} from "../../../components/ui/select";
+import { LoadingSkeleton } from "../../../components/Loading";
 import {
   FaBuilding,
   FaSearch,
@@ -43,7 +48,7 @@ import {
   FaPhone,
 } from "react-icons/fa";
 import { format } from "date-fns";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "../../../components/ui/use-toast";
 
 export default function BranchPage() {
   const dispatch = useAppDispatch();
