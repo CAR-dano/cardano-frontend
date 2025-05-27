@@ -33,7 +33,7 @@ jobs:
         run: |
           echo "Installing dependencies..."
           # Jika runner tidak berada di root proyek Anda secara otomatis, Anda mungkin perlu cd
-          # cd ./home/farhan/cardano-frontend # github.workspace adalah path default checkout
+          cd /home/farhan/cardano-frontend
           npm install
 
       - name: Build Next.js Application
