@@ -1,0 +1,81 @@
+name: Deploy Next.js to VM
+
+# Memicu workflow setiap kali ada 'push' ke branch 'main'
+on:
+  push:
+    branches:
+      - main # Ganti dengan branch yang Anda gunakan untuk production/deployment
+
+jobs:
+  build-and-deploy:
+    # Menentukan bahwa job ini akan berjalan di self-hosted runner Anda
+    # Pastikan label 'self-hosted' atau label kustom yang Anda set saat konfigurasi runner cocok
+    runs-on: self-hosted # Anda bisa menggunakan label yang lebih spesifik jika punya banyak runner
+
+    # Environment variables untuk Next.js (opsional, jika dibutuhkan saat build)
+    # Untuk runtime environment variables, sebaiknya konfigurasikan langsung di VM
+    # atau melalui file .env.production yang tidak di-commit atau PM2 ecosystem file.
+    env:
+      NODE_ENV: production
+      # NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL_FOR_BUILD }} # Contoh jika perlu saat build
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18" # Ganti dengan versi Node.js yang digunakan proyek Next.js Anda
+          cache: "npm" # atau 'yarn' jika Anda menggunakan yarn
+
+      - name: Install Dependencies
+        run: |
+          echo "Installing dependencies..."
+          # Jika runner tidak berada di root proyek Anda secara otomatis, Anda mungkin perlu cd
+          # cd ${{ github.workspace }} # github.workspace adalah path default checkout
+          npm install
+
+      - name: Build Next.js Application
+        run: |
+          echo "Building Next.js application..."
+          npm run build
+        # Jika Anda menggunakan environment variables khusus build dari GitHub Secrets:
+        # env:
+        #   NEXT_PUBLIC_SOME_VAR: ${{ secrets.BUILD_TIME_NEXT_PUBLIC_SOME_VAR }}
+
+      - name: Deploy to PM2
+        run: |
+          echo "Deploying application with PM2..."
+          # Pindah ke direktori tempat kode di-checkout oleh runner jika diperlukan
+          # cd ${{ github.workspace }}
+
+          # Nama aplikasi Anda di PM2 (ganti 'my-nextjs-app' sesuai keinginan)
+          APP_NAME="fe"
+
+          # Cek apakah aplikasi sudah berjalan di PM2
+          pm2 describe $APP_NAME > /dev/null
+          if [ $? -eq 0 ]; then
+            # Jika sudah ada, restart dengan build baru
+            echo "Application '$APP_NAME' found. Restarting..."
+            pm2 reload $APP_NAME --update-env # atau pm2 restart $APP_NAME jika reload tidak cukup
+          else
+            # Jika belum ada, start aplikasi baru
+            echo "Application '$APP_NAME' not found. Starting..."
+            # Perintah start bisa bervariasi, contoh:
+            # 'npm start' biasanya menjalankan 'next start -p [port]'
+            # Pastikan port tidak konflik.
+            # Anda bisa juga menggunakan PM2 ecosystem file (lihat di bawah)
+            pm2 start npm --name "$APP_NAME" -- run start -- -p 4000 # Ganti 3000 dengan port Anda
+          fi
+
+          # (Opsional) Simpan konfigurasi PM2 agar aplikasi otomatis berjalan setelah reboot VM
+          pm2 save
+
+          echo "Deployment to PM2 finished at $(date)"
+
+      # (Opsional) Langkah pembersihan cache atau artefak lama jika perlu
+      # - name: Clean old builds (example)
+      #   run: |
+      #     # Tambahkan logika untuk membersihkan build lama jika diperlukan
+      #     echo "Cleaning up..."
