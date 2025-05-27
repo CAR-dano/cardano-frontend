@@ -3,14 +3,13 @@ import Image from "next/image";
 import React, { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { UserLogin, UserSignUp } from "@/utils/Auth";
+import { UserLogin, UserSignUp } from "../../utils/Auth";
 import { useDispatch } from "react-redux";
 import { AppDispatch, useAppSelector } from "@/lib/store";
-import { login, signup } from "@/lib/features/auth/authSlice";
-import LoadingScreen from "@/components/LoadingFullScreen";
+import { login, signup } from "../../lib/features/auth/authSlice";
+import LoadingScreen from "../../components/LoadingFullScreen";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import { toast } from "@/hooks/use-toast";
-import { set } from "date-fns";
+import { toast } from "../../hooks/use-toast";
 
 function LoginPage() {
   const [showSignup, setShowSignup] = useState(false);
@@ -142,12 +141,15 @@ function LoginPage() {
         description: "Login successful! Redirecting...",
         variant: "default",
       });
-      
+
       // The redirect will happen automatically via useEffect when user state changes
     } catch (err: any) {
       toast({
         title: "Authentication Failed",
-        description: typeof err === 'string' ? err : "Invalid credentials. Please try again.",
+        description:
+          typeof err === "string"
+            ? err
+            : "Invalid credentials. Please try again.",
         variant: "destructive",
       });
     }
@@ -175,16 +177,16 @@ function LoginPage() {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateRegister()) return;
-    
+
     try {
       await dispatch(signup(formRegister)).unwrap();
-      
+
       toast({
         title: "Registration Successful",
         description: "Your account has been created! Please log in.",
         variant: "default",
       });
-      
+
       // Reset form and switch to login view
       setFormRegister({
         username: "",
@@ -193,10 +195,11 @@ function LoginPage() {
       });
       setShowSignup(false);
     } catch (err: any) {
-      const errorMessage = typeof err === 'string' 
-        ? err 
-        : "Registration failed. Please try again with different credentials.";
-        
+      const errorMessage =
+        typeof err === "string"
+          ? err
+          : "Registration failed. Please try again with different credentials.";
+
       toast({
         title: "Registration Failed",
         description: errorMessage,
