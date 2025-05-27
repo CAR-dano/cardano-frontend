@@ -35,32 +35,18 @@ jobs:
       - name: Deploy to PM2
         env:
           NODE_ENV: production
+          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+          NEXT_PUBLIC_PDF_URL: ${{ secrets.NEXT_PUBLIC_PDF_URL }}
         # Perintah PM2 harus menargetkan aplikasi yang sudah di-build
         # di ${{ github.workspace }}/.next (untuk Next.js)
         # atau Anda perlu memindahkan/menyalin hasil build ke lokasi PM2 Anda
         run: |
           echo "Deploying application with PM2..."
-          APP_NAME="frontend" # Nama aplikasi Anda di PM2
-
-          # OPSI 1: Jika PM2 Anda dikonfigurasi untuk menjalankan dari ${{ github.workspace }}
-          # atau jika ecosystem file Anda ada di ${{ github.workspace }} dan cwd-nya benar.
-          # Anda mungkin perlu memastikan PM2 menunjuk ke direktori yang tepat
-          # di mana .next folder berada setelah build.
-
-          # Cek apakah aplikasi sudah berjalan di PM2
-          # Mungkin perlu 'cwd' jika PM2 tidak dijalankan dari direktori proyek
-          # pm2 describe $APP_NAME --cwd ${{ github.workspace }} > /dev/null
-          pm2 describe $APP_NAME > /dev/null # Coba tanpa cwd dulu jika runner service punya akses
-          if [ $? -eq 0 ]; then
-            echo "Application '$APP_NAME' found. Reloading..."
-            # Pastikan PM2 reload mengambil build baru dari ${{ github.workspace }}
-            # Jika PM2 menjalankan 'npm start' dari direktori ini, reload mungkin cukup
-            pm2 reload $APP_NAME --update-env
+          if pm2 describe frontend > /dev/null; then
+            echo "Application 'frontend' found. Reloading..."
+            pm2 reload ecosystem.config.js --env production
           else
-            echo "Application '$APP_NAME' not found. Starting..."
-            # Perintah start juga harus merujuk ke direktori yang benar
-            # 'npm start' akan dijalankan di ${{ github.workspace }}
-            pm2 start npm --name "$APP_NAME" -- run start -- -p 4001 --prefix ${{ github.workspace }}
+            echo "Application 'frontend' not found. Starting..."
+            pm2 start ecosystem.config.js --env production
           fi
           pm2 save
-          echo "Deployment to PM2 finished at $(date)"
