@@ -39,7 +39,7 @@ jobs:
         # atau Anda perlu memindahkan/menyalin hasil build ke lokasi PM2 Anda
         run: |
           echo "Deploying application with PM2..."
-          APP_NAME="fe" # Nama aplikasi Anda di PM2
+          APP_NAME="frontend" # Nama aplikasi Anda di PM2
 
           # OPSI 1: Jika PM2 Anda dikonfigurasi untuk menjalankan dari ${{ github.workspace }}
           # atau jika ecosystem file Anda ada di ${{ github.workspace }} dan cwd-nya benar.
@@ -59,7 +59,7 @@ jobs:
             echo "Application '$APP_NAME' not found. Starting..."
             # Perintah start juga harus merujuk ke direktori yang benar
             # 'npm start' akan dijalankan di ${{ github.workspace }}
-            pm2 start npm --name "$APP_NAME" -- run start -- -p 4000 --prefix ${{ github.workspace }}
+            pm2 start npm --name "$APP_NAME" -- run start -- -p 4001 --prefix ${{ github.workspace }}
           fi
           pm2 save
           echo "Deployment to PM2 finished at $(date)"
