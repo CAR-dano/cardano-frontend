@@ -41,7 +41,7 @@ jobs:
           echo "Building Next.js application..."
           npm run build
         # Jika Anda menggunakan environment variables khusus build dari GitHub Secrets:
-        # env: test
+        # env:
         #   NEXT_PUBLIC_SOME_VAR: ${{ secrets.BUILD_TIME_NEXT_PUBLIC_SOME_VAR }}
 
       - name: Deploy to PM2
