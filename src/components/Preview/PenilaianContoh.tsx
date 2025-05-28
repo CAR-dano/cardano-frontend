@@ -14,7 +14,7 @@ const PenilaianContoh: React.FC<PenilaianContohProps> = ({
   beban,
 }) => {
   return (
-    <div className="flex mx-2 font-poppins">
+    <div className="flex font-poppins">
       <div className="flex flex-col items-center">
         <p className="text-[10px]">Warna</p>
         <div
@@ -24,7 +24,7 @@ const PenilaianContoh: React.FC<PenilaianContohProps> = ({
       </div>
       <div className="flex flex-col items-center">
         <p className="text-[10px]">Nilai</p>
-        <div className="text-black font-bold w-8 h-8 border-y-[1.5px] border-black flex items-center justify-center">
+        <div className="text-black font-bold w-8 h-8 -ml-[0.8px]  border-y-[1.5px] border-black flex items-center justify-center">
           {nilai}
         </div>
       </div>

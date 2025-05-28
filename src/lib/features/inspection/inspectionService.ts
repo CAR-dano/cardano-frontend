@@ -36,8 +36,7 @@ const approveInspectionData = async (id: string) => {
   return response.data;
 };
 
-const getDataEdited = async (id: string) => {
-  const token = localStorage.getItem("accessToken");
+const getDataEdited = async (id: string, token: string) => {
   const response = await axios.get(
     `${LOCAL_API_URL}/inspections/${id}/changelog`,
     {

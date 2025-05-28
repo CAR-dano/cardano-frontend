@@ -59,9 +59,10 @@ export const approveInspectionData = createAsyncThunk(
 
 export const getDataEdited = createAsyncThunk(
   "inspection/getDataEdited",
-  async (id: string, thunkAPI) => {
+  async (id: string, thunkAPI: any) => {
     try {
-      const payload = await inspectionService.getDataEdited(id);
+      const token = thunkAPI.getState().auth.accessToken;
+      const payload = await inspectionService.getDataEdited(id, token);
       return payload;
     } catch (error: any) {
       const message = error?.response?.data?.message;

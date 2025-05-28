@@ -25,7 +25,7 @@ const Halaman5: React.FC<Halaman5Props> = ({
   };
 
   return (
-    <div className="px-[30px] font-poppins">
+    <div className="px-[30px] font-poppins text-black">
       <Header />
       <div className="w-full border-2 border-black mt-12 mb-8">
         <div className="w-full flex">

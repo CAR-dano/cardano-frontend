@@ -9,6 +9,8 @@ import Halaman5 from "../../components/Preview/Halaman5";
 import Halaman6 from "../../components/Preview/Halaman6";
 import Halaman8 from "../Preview/Halaman8";
 import Halaman7 from "../Preview/Halaman7";
+import HalamanExteriorPhoto from "../Preview/HalamanExteriorPhoto";
+import HalamanInteriorPhoto from "../Preview/HalamanInteriorPhoto";
 import { useTheme } from "../../contexts/ThemeContext";
 
 interface EditReviewComponentsProps {
@@ -28,6 +30,12 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
   const [dataHalaman6, setDataHalaman6] = useState<any>(null);
   const [dataHalaman7, setDataHalaman7] = useState<any>(null);
   const [dataHalaman8, setDataHalaman8] = useState<any>(null);
+  const [dataHalamanExteriorPhotos, setDataHalamanExteriorPhotos] = useState<
+    any[]
+  >([]);
+  const [dataHalamanInteriorPhotos, setDataHalamanInteriorPhotos] = useState<
+    any[]
+  >([]);
   const [currentPage, setCurrentPage] = useState(1);
   const { isDarkModeEnabled } = useTheme();
 
@@ -36,6 +44,14 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
       preProcessData(data);
     }
   }, [data]);
+
+  const getImageTampakDepan = (data: any) => {
+    // find in data.photos
+    const photo = data?.photos?.find(
+      (item: any) => item.label === "Tampak Depan"
+    );
+    return photo ? photo.path : "";
+  };
 
   const preProcessData = (data: any) => {
     setDataHalaman1({
@@ -46,6 +62,7 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
       overallRating: data?.overallRating,
       vehiclePlateNumber: data?.vehiclePlateNumber,
       inspectionDate: data?.inspectionDate,
+      photos: getImageTampakDepan(data),
     });
 
     setDataHalaman2({
@@ -71,8 +88,29 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
 
     setDataHalaman6({
       toolsTest: data?.detailedAssessment?.toolsTest,
-      photo: data?.photoPaths,
+      fotoGeneral: data?.photos, // Assuming fotoGeneral is part of photos
     });
+
+    // Filter exterior photos and paginate them
+    const exteriorPhotos = data?.photos?.filter(
+      (photo: any) => photo.category === "Eksterior"
+    );
+    const paginatedExteriorPhotos = [];
+    for (let i = 0; i < exteriorPhotos.length; i += 9) {
+      paginatedExteriorPhotos.push(exteriorPhotos.slice(i, i + 9));
+    }
+    setDataHalamanExteriorPhotos(paginatedExteriorPhotos);
+
+    // Filter interior photos and paginate them
+    const interiorPhotos = data?.photos?.filter(
+      (photo: any) => photo.category === "Interior"
+    );
+    const paginatedInteriorPhotos = [];
+    for (let i = 0; i < interiorPhotos.length; i += 9) {
+      paginatedInteriorPhotos.push(interiorPhotos.slice(i, i + 9));
+    }
+    setDataHalamanInteriorPhotos(paginatedInteriorPhotos);
+
     setDataHalaman7({
       bodyPaintThickness: data?.bodyPaintThickness,
     });
@@ -130,8 +168,35 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
         <Halaman6 data={dataHalaman6} editable={true} onClick={onClick} />
       ),
     },
+    // Dynamically add HalamanExteriorPhoto pages
+    ...dataHalamanExteriorPhotos.map((photosChunk, index) => ({
+      id: 7 + index, // Adjust ID based on previous pages
+      title: `Foto Eksterior - Part ${index + 1}`,
+      description: `Dokumentasi foto eksterior bagian ${index + 1}`,
+      component: (
+        <HalamanExteriorPhoto
+          data={{ photos: photosChunk }}
+          editable={true}
+          onClick={onClick}
+        />
+      ),
+    })),
+    // Dynamically add HalamanInteriorPhoto pages
+    ...dataHalamanInteriorPhotos.map((photosChunk, index) => ({
+      id: 7 + dataHalamanExteriorPhotos.length + index, // Adjust ID based on previous pages and new exterior photo pages
+      title: `Foto Interior - Part ${index + 1}`,
+      description: `Dokumentasi foto interior bagian ${index + 1}`,
+      component: (
+        <HalamanInteriorPhoto
+          data={{ photos: photosChunk }}
+          editable={true}
+          onClick={onClick}
+        />
+      ),
+    })),
     {
-      id: 7,
+      id:
+        7 + dataHalamanExteriorPhotos.length + dataHalamanInteriorPhotos.length, // Adjust ID based on previous pages and new photo pages
       title: "Ketebalan Cat - Part 1",
       description: "Pengukuran ketebalan cat bagian pertama",
       component: (
@@ -139,7 +204,8 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
       ),
     },
     {
-      id: 8,
+      id:
+        8 + dataHalamanExteriorPhotos.length + dataHalamanInteriorPhotos.length, // Adjust ID based on previous pages and new photo pages
       title: "Ketebalan Cat - Part 2",
       description: "Pengukuran ketebalan cat bagian kedua",
       component: (

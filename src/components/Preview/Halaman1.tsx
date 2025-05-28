@@ -2,6 +2,7 @@
 import React from "react";
 import Header from "./Header";
 import Footer from "./Footer";
+import Image from "next/image";
 
 interface Halaman1Props {
   data: any;
@@ -17,6 +18,8 @@ const Halaman1: React.FC<Halaman1Props> = ({
   if (data == undefined || data == null) {
     return <div>Loading...</div>; // atau bisa return null
   }
+
+  const PHOTO_URL = process.env.NEXT_PUBLIC_PDF_URL;
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -380,7 +383,15 @@ const Halaman1: React.FC<Halaman1Props> = ({
         </div>
 
         <div className="w-full flex border-t-2 border-black">
-          <div className="w-1/2 bg-[#B2BEB5] border-r-2 border-black h-48"></div>
+          <div className="w-1/2 bg-[#B2BEB5] border-r-2 border-black h-48">
+            <Image
+              src={`${PHOTO_URL}/uploads/inspection-photos/${data.photos}`}
+              alt="Tampak Depan"
+              width={200}
+              height={200}
+              className="mx-auto w-[90%] h-full object-cover"
+            />
+          </div>
           <div
             className={`w-1/2 ${
               editable ? "cursor-pointer group hover:bg-[#F4622F] " : ""

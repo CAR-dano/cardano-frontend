@@ -10,6 +10,7 @@ const nextConfig: NextConfig = {
       "i.ibb.co.com",
       "31.220.81.182",
       "69.62.80.7",
+      "api.inspeksimobil.id",
     ],
   },
   output: "standalone",
