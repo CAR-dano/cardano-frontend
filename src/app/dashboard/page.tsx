@@ -8,8 +8,8 @@ import {
   getCombinedDashboardData,
   getMainStats,
 } from "../../lib/features/dashboard/dashboardSlice";
-import BranchDistribution from "../..PieChart/components/Dashboard/BranchDistribution";
-import InspectorPerfomance from "../..PieChart/components/Dashboard/InspectorPerfomance";
+import BranchDistribution from "../../components/Dashboard/BranchDistribution";
+import InspectorPerfomance from "../../components/Dashboard/InspectorPerfomance";
 
 const DashboardHeader = ({
   totalInspections,
