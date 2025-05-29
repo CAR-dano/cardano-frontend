@@ -3,13 +3,13 @@ import Header from "./Header";
 import Footer from "./Footer";
 import PhotoItemWithDynamicText from "./PhotoItemWithDynamicText";
 
-interface HalamanExteriorPhotoProps {
+interface HalamanMesinPhotoProps {
   data: any;
   editable: boolean;
   onClick?: (data: any) => void;
 }
 
-const HalamanExteriorPhoto: React.FC<HalamanExteriorPhotoProps> = ({
+const HalamanMesinPhoto: React.FC<HalamanMesinPhotoProps> = ({
   data,
   editable,
   onClick = () => {},
@@ -39,7 +39,7 @@ const HalamanExteriorPhoto: React.FC<HalamanExteriorPhotoProps> = ({
         <div className="w-full flex">
           <div className="w-full bg-[#E95F37]">
             <p className="text-left text-white py-3 px-3 font-semibold border-b-2 border-black">
-              Foto Eksterior
+              Foto Mesin
             </p>
           </div>
         </div>
@@ -60,4 +60,4 @@ const HalamanExteriorPhoto: React.FC<HalamanExteriorPhotoProps> = ({
   );
 };
 
-export default HalamanExteriorPhoto;
+export default HalamanMesinPhoto;

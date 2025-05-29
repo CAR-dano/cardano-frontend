@@ -25,8 +25,9 @@ function FormArray({
   const handleChange = (index: number, newValue: string) => {
     const updated = [...data];
     updated[index] = newValue;
+    console.log("Updated data:", updated);
     setData(updated);
-    onChange?.(data);
+    onChange?.(updated);
   };
 
   const handleAdd = () => {

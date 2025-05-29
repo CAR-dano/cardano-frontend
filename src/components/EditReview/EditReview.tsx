@@ -11,6 +11,19 @@ import Halaman8 from "../Preview/Halaman8";
 import Halaman7 from "../Preview/Halaman7";
 import HalamanExteriorPhoto from "../Preview/HalamanExteriorPhoto";
 import HalamanInteriorPhoto from "../Preview/HalamanInteriorPhoto";
+import HalamanMesinPhoto from "../Preview/HalamanMesinPhoto";
+import HalamanKakiKakiPhoto from "../Preview/HalamanKakiKakiPhoto";
+import HalamanAlatAlatPhoto from "../Preview/HalamanAlatAlatPhoto";
+import HalamanGeneralPhoto from "../Preview/HalamanGeneralPhoto";
+import HalamanFotoDokumen from "../Preview/HalamanFotoDokumen";
+import {
+  SortingGeneralData,
+  SortingExteriorData,
+  SortingInteriorData,
+  SortingMesinData,
+  SortingKakiKakiData,
+  SortingAlatAlatData,
+} from "../Preview/SortingReference";
 import { useTheme } from "../../contexts/ThemeContext";
 
 interface EditReviewComponentsProps {
@@ -36,6 +49,18 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
   const [dataHalamanInteriorPhotos, setDataHalamanInteriorPhotos] = useState<
     any[]
   >([]);
+  const [dataHalamanMesinPhotos, setDataHalamanMesinPhotos] = useState<any[]>(
+    []
+  );
+  const [dataHalamanKakiKakiPhotos, setDataHalamanKakiKakiPhotos] = useState<
+    any[]
+  >([]);
+  const [dataHalamanAlatPhotos, setDataHalamanAlatPhotos] = useState<any[]>([]);
+  const [dataHalamanGeneralPhotos, setDataHalamanGeneralPhotos] = useState<
+    any[]
+  >([]);
+  const [dataHalamanFotoDokumenPhotos, setDataHalamanFotoDokumenPhotos] =
+    useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const { isDarkModeEnabled } = useTheme();
 
@@ -46,7 +71,6 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
   }, [data]);
 
   const getImageTampakDepan = (data: any) => {
-    // find in data.photos
     const photo = data?.photos?.find(
       (item: any) => item.label === "Tampak Depan"
     );
@@ -86,30 +110,165 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
       testDrive: data?.detailedAssessment?.testDrive,
     });
 
-    setDataHalaman6({
-      toolsTest: data?.detailedAssessment?.toolsTest,
-      fotoGeneral: data?.photos, // Assuming fotoGeneral is part of photos
+    // Filter and sort fotoGeneral
+    const fotoGeneralWajib = data?.photos?.filter(
+      (photo: any) => photo.category === "General Wajib"
+    );
+    const fotoGeneralTambahan = data?.photos?.filter(
+      (photo: any) => photo.category === "General Tambahan"
+    );
+
+    fotoGeneralWajib?.sort((a: any, b: any) => {
+      const indexA = SortingGeneralData.indexOf(a.label);
+      const indexB = SortingGeneralData.indexOf(b.label);
+      return indexA - indexB;
     });
 
-    // Filter exterior photos and paginate them
-    const exteriorPhotos = data?.photos?.filter(
-      (photo: any) => photo.category === "Eksterior"
+    const sortedFotoGeneral = [
+      ...(fotoGeneralWajib || []),
+      ...(fotoGeneralTambahan || []),
+    ];
+
+    const fotoGeneralHalaman6 = sortedFotoGeneral.slice(0, 6);
+    const fotoGeneralTambahanUntukGeneralPhoto = sortedFotoGeneral.slice(6);
+
+    setDataHalaman6({
+      toolsTest: data?.detailedAssessment?.toolsTest,
+      fotoGeneral: fotoGeneralHalaman6,
+    });
+
+    const paginatedGeneralPhotos = [];
+    for (let i = 0; i < fotoGeneralTambahanUntukGeneralPhoto.length; i += 9) {
+      paginatedGeneralPhotos.push(
+        fotoGeneralTambahanUntukGeneralPhoto.slice(i, i + 9)
+      );
+    }
+    setDataHalamanGeneralPhotos(paginatedGeneralPhotos);
+
+    // Filter exterior photos and sort them
+    const exteriorWajibPhotos = data?.photos?.filter(
+      (photo: any) => photo.category === "Eksterior Wajib"
     );
+    const exteriorTambahanPhotos = data?.photos?.filter(
+      (photo: any) => photo.category === "Eksterior Tambahan"
+    );
+
+    exteriorWajibPhotos?.sort((a: any, b: any) => {
+      const indexA = SortingExteriorData.indexOf(a.label);
+      const indexB = SortingExteriorData.indexOf(b.label);
+      return indexA - indexB;
+    });
+
+    const sortedExteriorPhotos = [
+      ...(exteriorWajibPhotos || []),
+      ...(exteriorTambahanPhotos || []),
+    ];
+
     const paginatedExteriorPhotos = [];
-    for (let i = 0; i < exteriorPhotos.length; i += 9) {
-      paginatedExteriorPhotos.push(exteriorPhotos.slice(i, i + 9));
+    for (let i = 0; i < sortedExteriorPhotos.length; i += 9) {
+      paginatedExteriorPhotos.push(sortedExteriorPhotos.slice(i, i + 9));
     }
     setDataHalamanExteriorPhotos(paginatedExteriorPhotos);
 
-    // Filter interior photos and paginate them
-    const interiorPhotos = data?.photos?.filter(
-      (photo: any) => photo.category === "Interior"
+    // Filter interior photos and sort them
+    const interiorWajibPhotos = data?.photos?.filter(
+      (photo: any) => photo.category === "Interior Wajib"
     );
+    const interiorTambahanPhotos = data?.photos?.filter(
+      (photo: any) => photo.category === "Interior Tambahan"
+    );
+
+    interiorWajibPhotos?.sort((a: any, b: any) => {
+      const indexA = SortingInteriorData.indexOf(a.label);
+      const indexB = SortingInteriorData.indexOf(b.label);
+      return indexA - indexB;
+    });
+
+    const sortedInteriorPhotos = [
+      ...(interiorWajibPhotos || []),
+      ...(interiorTambahanPhotos || []),
+    ];
+
     const paginatedInteriorPhotos = [];
-    for (let i = 0; i < interiorPhotos.length; i += 9) {
-      paginatedInteriorPhotos.push(interiorPhotos.slice(i, i + 9));
+    for (let i = 0; i < sortedInteriorPhotos.length; i += 9) {
+      paginatedInteriorPhotos.push(sortedInteriorPhotos.slice(i, i + 9));
     }
     setDataHalamanInteriorPhotos(paginatedInteriorPhotos);
+
+    // Filter Mesin photos and sort them
+    const mesinWajibPhotos = data?.photos?.filter(
+      (photo: any) => photo.category === "Mesin Wajib"
+    );
+    const mesinTambahanPhotos = data?.photos?.filter(
+      (photo: any) => photo.category === "Mesin Tambahan"
+    );
+
+    mesinWajibPhotos?.sort((a: any, b: any) => {
+      const indexA = SortingMesinData.indexOf(a.label);
+      const indexB = SortingMesinData.indexOf(b.label);
+      return indexA - indexB;
+    });
+
+    const sortedMesinPhotos = [
+      ...(mesinWajibPhotos || []),
+      ...(mesinTambahanPhotos || []),
+    ];
+
+    const paginatedMesinPhotos = [];
+    for (let i = 0; i < sortedMesinPhotos.length; i += 9) {
+      paginatedMesinPhotos.push(sortedMesinPhotos.slice(i, i + 9));
+    }
+    setDataHalamanMesinPhotos(paginatedMesinPhotos);
+
+    // Filter KakiKaki photos and sort them
+    const kakiKakiWajibPhotos = data?.photos?.filter(
+      (photo: any) => photo.category === "KakiKaki Wajib"
+    );
+    const kakiKakiTambahanPhotos = data?.photos?.filter(
+      (photo: any) => photo.category === "KakiKaki Tambahan"
+    );
+
+    kakiKakiWajibPhotos?.sort((a: any, b: any) => {
+      const indexA = SortingKakiKakiData.indexOf(a.label);
+      const indexB = SortingKakiKakiData.indexOf(b.label);
+      return indexA - indexB;
+    });
+
+    const sortedKakiKakiPhotos = [
+      ...(kakiKakiWajibPhotos || []),
+      ...(kakiKakiTambahanPhotos || []),
+    ];
+
+    const paginatedKakiKakiPhotos = [];
+    for (let i = 0; i < sortedKakiKakiPhotos.length; i += 9) {
+      paginatedKakiKakiPhotos.push(sortedKakiKakiPhotos.slice(i, i + 9));
+    }
+    setDataHalamanKakiKakiPhotos(paginatedKakiKakiPhotos);
+
+    // Filter AlatAlat photos and sort them
+    const alatAlatWajibPhotos = data?.photos?.filter(
+      (photo: any) => photo.category === "Alat-alat Wajib"
+    );
+    const alatAlatTambahanPhotos = data?.photos?.filter(
+      (photo: any) => photo.category === "Alat-alat Tambahan"
+    );
+
+    alatAlatWajibPhotos?.sort((a: any, b: any) => {
+      const indexA = SortingAlatAlatData.indexOf(a.label);
+      const indexB = SortingAlatAlatData.indexOf(b.label);
+      return indexA - indexB;
+    });
+
+    const sortedAlatAlatPhotos = [
+      ...(alatAlatWajibPhotos || []),
+      ...(alatAlatTambahanPhotos || []),
+    ];
+
+    const paginatedAlatAlatPhotos = [];
+    for (let i = 0; i < sortedAlatAlatPhotos.length; i += 9) {
+      paginatedAlatAlatPhotos.push(sortedAlatAlatPhotos.slice(i, i + 9));
+    }
+    setDataHalamanAlatPhotos(paginatedAlatAlatPhotos);
 
     setDataHalaman7({
       bodyPaintThickness: data?.bodyPaintThickness,
@@ -117,6 +276,17 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
     setDataHalaman8({
       bodyPaintThickness: data?.bodyPaintThickness,
     });
+
+    // Filter Foto Dokumen photos
+    const fotoDokumenPhotos = data?.photos?.filter(
+      (photo: any) => photo.category === "Foto Dokumen"
+    );
+
+    const paginatedFotoDokumenPhotos = [];
+    for (let i = 0; i < (fotoDokumenPhotos || []).length; i += 2) {
+      paginatedFotoDokumenPhotos.push(fotoDokumenPhotos.slice(i, i + 2));
+    }
+    setDataHalamanFotoDokumenPhotos(paginatedFotoDokumenPhotos);
   };
 
   const pages = [
@@ -168,9 +338,22 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
         <Halaman6 data={dataHalaman6} editable={true} onClick={onClick} />
       ),
     },
+    // Dynamically add HalamanGeneralPhoto pages
+    ...dataHalamanGeneralPhotos.map((photosChunk, index) => ({
+      id: 7 + index, // Adjust ID based on previous pages
+      title: `Foto General - Part ${index + 1}`,
+      description: `Dokumentasi foto general bagian ${index + 1}`,
+      component: (
+        <HalamanGeneralPhoto
+          data={{ photos: photosChunk }}
+          editable={true}
+          onClick={onClick}
+        />
+      ),
+    })),
     // Dynamically add HalamanExteriorPhoto pages
     ...dataHalamanExteriorPhotos.map((photosChunk, index) => ({
-      id: 7 + index, // Adjust ID based on previous pages
+      id: 7 + dataHalamanGeneralPhotos.length + index, // Adjust ID based on previous pages
       title: `Foto Eksterior - Part ${index + 1}`,
       description: `Dokumentasi foto eksterior bagian ${index + 1}`,
       component: (
@@ -183,7 +366,11 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
     })),
     // Dynamically add HalamanInteriorPhoto pages
     ...dataHalamanInteriorPhotos.map((photosChunk, index) => ({
-      id: 7 + dataHalamanExteriorPhotos.length + index, // Adjust ID based on previous pages and new exterior photo pages
+      id:
+        7 +
+        dataHalamanGeneralPhotos.length +
+        dataHalamanExteriorPhotos.length +
+        index, // Adjust ID based on previous pages
       title: `Foto Interior - Part ${index + 1}`,
       description: `Dokumentasi foto interior bagian ${index + 1}`,
       component: (
@@ -194,9 +381,94 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
         />
       ),
     })),
+    // Dynamically add HalamanMesinPhoto pages
+    ...dataHalamanMesinPhotos.map((photosChunk, index) => ({
+      id:
+        7 +
+        dataHalamanGeneralPhotos.length +
+        dataHalamanExteriorPhotos.length +
+        dataHalamanInteriorPhotos.length +
+        index,
+      title: `Foto Mesin - Part ${index + 1}`,
+      description: `Dokumentasi foto mesin bagian ${index + 1}`,
+      component: (
+        <HalamanMesinPhoto
+          data={{ photos: photosChunk }}
+          editable={true}
+          onClick={onClick}
+        />
+      ),
+    })),
+    // Dynamically add HalamanKakiKakiPhoto pages
+    ...dataHalamanKakiKakiPhotos.map((photosChunk, index) => ({
+      id:
+        7 +
+        dataHalamanGeneralPhotos.length +
+        dataHalamanExteriorPhotos.length +
+        dataHalamanInteriorPhotos.length +
+        dataHalamanMesinPhotos.length +
+        index,
+      title: `Foto Kaki-Kaki - Part ${index + 1}`,
+      description: `Dokumentasi foto kaki-kaki bagian ${index + 1}`,
+      component: (
+        <HalamanKakiKakiPhoto
+          data={{ photos: photosChunk }}
+          editable={true}
+          onClick={onClick}
+        />
+      ),
+    })),
+    // Dynamically add HalamanAlatAlatPhoto pages
+    ...dataHalamanAlatPhotos.map((photosChunk, index) => ({
+      id:
+        7 +
+        dataHalamanGeneralPhotos.length +
+        dataHalamanExteriorPhotos.length +
+        dataHalamanInteriorPhotos.length +
+        dataHalamanMesinPhotos.length +
+        dataHalamanKakiKakiPhotos.length +
+        index,
+      title: `Foto Alat-Alat - Part ${index + 1}`,
+      description: `Dokumentasi foto alat-alat bagian ${index + 1}`,
+      component: (
+        <HalamanAlatAlatPhoto
+          data={{ photos: photosChunk }}
+          editable={true}
+          onClick={onClick}
+        />
+      ),
+    })),
+    // Dynamically add HalamanFotoDokumen pages
+    ...dataHalamanFotoDokumenPhotos.map((photosChunk, index) => ({
+      id:
+        7 +
+        dataHalamanGeneralPhotos.length +
+        dataHalamanExteriorPhotos.length +
+        dataHalamanInteriorPhotos.length +
+        dataHalamanMesinPhotos.length +
+        dataHalamanKakiKakiPhotos.length +
+        dataHalamanAlatPhotos.length +
+        index,
+      title: `Foto Dokumen - Part ${index + 1}`,
+      description: `Dokumentasi foto dokumen bagian ${index + 1}`,
+      component: (
+        <HalamanFotoDokumen
+          data={{ photos: photosChunk }}
+          editable={true}
+          onClick={onClick}
+        />
+      ),
+    })),
     {
       id:
-        7 + dataHalamanExteriorPhotos.length + dataHalamanInteriorPhotos.length, // Adjust ID based on previous pages and new photo pages
+        7 +
+        dataHalamanGeneralPhotos.length +
+        dataHalamanExteriorPhotos.length +
+        dataHalamanInteriorPhotos.length +
+        dataHalamanMesinPhotos.length +
+        dataHalamanKakiKakiPhotos.length +
+        dataHalamanAlatPhotos.length +
+        dataHalamanFotoDokumenPhotos.length, // Adjust ID based on previous pages and new photo pages
       title: "Ketebalan Cat - Part 1",
       description: "Pengukuran ketebalan cat bagian pertama",
       component: (
@@ -205,7 +477,14 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
     },
     {
       id:
-        8 + dataHalamanExteriorPhotos.length + dataHalamanInteriorPhotos.length, // Adjust ID based on previous pages and new photo pages
+        8 +
+        dataHalamanGeneralPhotos.length +
+        dataHalamanExteriorPhotos.length +
+        dataHalamanInteriorPhotos.length +
+        dataHalamanMesinPhotos.length +
+        dataHalamanKakiKakiPhotos.length +
+        dataHalamanAlatPhotos.length +
+        dataHalamanFotoDokumenPhotos.length, // Adjust ID based on previous pages and new photo pages
       title: "Ketebalan Cat - Part 2",
       description: "Pengukuran ketebalan cat bagian kedua",
       component: (

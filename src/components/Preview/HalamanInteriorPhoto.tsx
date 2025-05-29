@@ -1,6 +1,7 @@
 import React from "react";
 import Header from "./Header";
 import Footer from "./Footer";
+import PhotoItemWithDynamicText from "./PhotoItemWithDynamicText";
 
 interface HalamanInteriorPhotoProps {
   data: any;
@@ -23,10 +24,18 @@ const HalamanInteriorPhoto: React.FC<HalamanInteriorPhotoProps> = ({
     return foundPhoto ? foundPhoto.path : "";
   };
 
+  const PHOTO_URL = process.env.NEXT_PUBLIC_PDF_URL;
+
+  const formatPath = (path: string) => {
+    if (!path) return "/assets/placeholder-photo.png";
+
+    return PHOTO_URL + "/uploads/inspection-photos/" + path;
+  };
+
   return (
     <div className="px-[30px] font-poppins">
       <Header />
-      <div className="w-full border-2 border-black mt-12 mb-8">
+      <div className="w-full border-2 border-black mt-12 mb-8 min-h-[830px]">
         <div className="w-full flex">
           <div className="w-full bg-[#E95F37]">
             <p className="text-left text-white py-3 px-3 font-semibold border-b-2 border-black">
@@ -35,21 +44,13 @@ const HalamanInteriorPhoto: React.FC<HalamanInteriorPhotoProps> = ({
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-1 gap-y-10 px-1 pb-4 justify-around mb-10">
+        <div className="flex flex-wrap gap-1 gap-y-10 px-1 py-10 justify-around">
           {data.photos.map((item: any, index: any) => (
-            <div
+            <PhotoItemWithDynamicText
               key={index}
-              className=" flex items-center justify-center flex-col"
-            >
-              <img
-                src={item.path ? item.path : "/assets/placeholder-photo.png"}
-                alt={item.label}
-                className="w-[220px] h-[150px] object-cover"
-              />
-              <p className="text-center text-[16px] font-semibold mt-2">
-                {item.label}
-              </p>
-            </div>
+              item={item}
+              formatPath={formatPath}
+            />
           ))}
         </div>
       </div>

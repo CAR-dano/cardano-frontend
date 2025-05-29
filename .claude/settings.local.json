@@ -4,5 +4,6 @@
       "Bash(npm install:*)"
     ],
     "deny": []
-  }
+  },
+  "enableAllProjectMcpServers": false
 }

@@ -44,42 +44,52 @@ const Halaman1: React.FC<Halaman1Props> = ({
   const dataKendaraan = [
     {
       label: "Merk Kendaraan",
+      subFieldName: "merekKendaraan",
       value: data.vehicleData.merekKendaraan,
     },
     {
       label: "Tipe Kendaraan",
+      subFieldName: "tipeKendaraan",
       value: data.vehicleData.tipeKendaraan,
     },
     {
       label: "Tahun",
+      subFieldName: "tahun",
       value: data.vehicleData.tahun,
     },
     {
       label: "Transmisi",
+      subFieldName: "transmisi",
       value: data.vehicleData.transmisi,
     },
     {
       label: "Warna Kendaraan",
+      subFieldName: "warnaKendaraan",
       value: data.vehicleData.warnaKendaraan,
     },
     {
       label: "Odo Meter",
+      subFieldName: "odometer",
       value: data.vehicleData.odometer,
     },
     {
       label: "Kepemilikan",
+      subFieldName: "kepemilikan",
       value: data.vehicleData.kepemilikan,
     },
     {
       label: "Pajak 1 Tahun s.d.",
+      subFieldName: "pajak1Tahun",
       value: formatDate(data.vehicleData.pajak1Tahun),
     },
     {
       label: "Pajak 5 Tahun s.d.",
+      subFieldName: "pajak5Tahun",
       value: formatDate(data.vehicleData.pajak5Tahun),
     },
     {
       label: "Biaya Pajak",
+      subFieldName: "biayaPajak",
       value: formatCurrency(data.vehicleData.biayaPajak),
     },
   ];
@@ -321,9 +331,7 @@ const Halaman1: React.FC<Halaman1Props> = ({
                         fieldName: "vehicleData",
                         oldValue: item.value,
                         type: "normal-input",
-                        subFieldName: item.label
-                          .toLowerCase()
-                          .replace(/\s/g, ""),
+                        subFieldName: item.subFieldName,
                         onClose: () => {},
                       })
                     }
@@ -522,7 +530,7 @@ const Halaman1: React.FC<Halaman1Props> = ({
                     }
                     src="/assets/icon/bekastabrak.svg"
                     alt="ok"
-                    className={`w-16 h-16
+                    className={` rounded-[20px] w-16 h-16
                       ${
                         editable
                           ? "transition group-hover:cursor-pointer hover:-translate-y-1"
@@ -530,7 +538,12 @@ const Halaman1: React.FC<Halaman1Props> = ({
                       }
                       `}
                   />
-                  <p className="">BEKAS TABRAKAN</p>
+                  <p className="">
+                    <span className="text-pink-600">
+                      TERINDIKASI <br />
+                    </span>
+                    BEKAS TABRAKAN
+                  </p>
                 </div>
               ) : (
                 <div
@@ -550,7 +563,7 @@ const Halaman1: React.FC<Halaman1Props> = ({
                         onClose: () => {},
                       })
                     }
-                    src="/assets/icon/tidakindikasi.svg"
+                    src="/assets/icon/tidakbekastabrak.svg"
                     alt="ok"
                     className={`w-16 h-16
                       ${
@@ -560,7 +573,12 @@ const Halaman1: React.FC<Halaman1Props> = ({
                       }
                       `}
                   />
-                  <p className="">TIDAK INDIKASI BEKAS TABRAKAN</p>
+                  <p className="">
+                    <span className="text-green-400">
+                      TIDAK TERINDIKASI <br />
+                    </span>{" "}
+                    BEKAS TABRAKAN
+                  </p>
                 </div>
               )}
 
@@ -580,7 +598,7 @@ const Halaman1: React.FC<Halaman1Props> = ({
                     }
                     src="/assets/icon/bekasbanjir.svg"
                     alt="ok"
-                    className={`w-16 h-16
+                    className={` rounded-[20px] w-16 h-16
                       ${
                         editable
                           ? "transition group-hover:cursor-pointer hover:-translate-y-1"
@@ -588,7 +606,12 @@ const Halaman1: React.FC<Halaman1Props> = ({
                       }
                       `}
                   />
-                  <p className="">BEKAS BANJIR</p>
+                  <p className="">
+                    <span className="text-pink-600">
+                      TERINDIKASI <br />
+                    </span>{" "}
+                    BEKAS BANJIR
+                  </p>
                 </div>
               ) : (
                 <div className="flex gap-5 items-center">
@@ -614,7 +637,13 @@ const Halaman1: React.FC<Halaman1Props> = ({
                       }
                       `}
                   />
-                  <p className="">TIDAK BEKAS BANJIR</p>
+                  <p className="">
+                    <span className="text-green-400">
+                      TIDAK TERINDIKASI
+                      <br />
+                    </span>{" "}
+                    BEKAS BANJIR
+                  </p>
                 </div>
               )}
               {data.inspectionSummary.indikasiOdometerReset ? (
@@ -631,9 +660,9 @@ const Halaman1: React.FC<Halaman1Props> = ({
                         onClose: () => {},
                       })
                     }
-                    src="/assets/icon/odometerreset.svg"
+                    src="/assets/icon/odometer_merah.svg"
                     alt="ok"
-                    className={`w-16 h-16
+                    className={` w-16 h-16 p-1
                       ${
                         editable
                           ? "transition group-hover:cursor-pointer hover:-translate-y-1"
@@ -641,7 +670,12 @@ const Halaman1: React.FC<Halaman1Props> = ({
                       }
                       `}
                   />
-                  <p className="">INDIKASI ODOMETER RESET</p>
+                  <p className="">
+                    <span className="text-pink-600">
+                      TERINDIKASI <br />{" "}
+                    </span>{" "}
+                    ODOMETER RESET
+                  </p>
                 </div>
               ) : (
                 <div className="flex gap-5 items-center">
@@ -657,7 +691,7 @@ const Halaman1: React.FC<Halaman1Props> = ({
                         onClose: () => {},
                       })
                     }
-                    src="/assets/icon/tidakindikasi.svg"
+                    src="/assets/icon/tidakodometer.svg"
                     alt="ok"
                     className={`w-16 h-16
                       ${
@@ -667,7 +701,13 @@ const Halaman1: React.FC<Halaman1Props> = ({
                       }
                       `}
                   />
-                  <p className="">TIDAK INDIKASI ODOMETER RESET</p>
+                  <p className="">
+                    <span className="text-green-400">
+                      TIDAK TERINDIKASI
+                      <br />
+                    </span>{" "}
+                    ODOMETER RESET
+                  </p>
                 </div>
               )}
             </div>

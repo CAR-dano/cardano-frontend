@@ -25,11 +25,6 @@ const poppins = Poppins({
   weight: "400",
 });
 
-export const metadata = {
-  title: "Car-Dano Frontend",
-  description: "Blockchain-based car inspection platform",
-};
-
 export default function RootLayout({
   children,
 }: {

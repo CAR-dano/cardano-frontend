@@ -32,13 +32,6 @@ const Halaman6: React.FC<Halaman6Props> = ({
     return PHOTO_URL + "/uploads/inspection-photos/" + path;
   };
 
-  const findUrlPhoto = (photos: any, label: string) => {
-    if (!photos) return "";
-    console.log("photos", photos);
-    const foundPhoto = photos.find((photo: any) => photo.label === label);
-    return foundPhoto ? formatPath(foundPhoto.path) : "";
-  };
-
   return (
     <div className="px-[30px] font-poppins text-black">
       <Header />
@@ -88,25 +81,26 @@ const Halaman6: React.FC<Halaman6Props> = ({
         </div>
 
         <div className="flex flex-wrap gap-1 gap-y-10 px-1 pb-4 justify-around mb-10">
-          {dataPhotoGeneral.map((item, index) => (
-            <div
-              key={index}
-              className=" flex items-center justify-center flex-col"
-            >
-              <img
-                src={
-                  findUrlPhoto(data.photos, item)
-                    ? findUrlPhoto(data.photos, item)
-                    : "/assets/placeholder-photo.png"
-                }
-                alt={item}
-                className="w-[220px] h-[150px] object-cover"
-              />
-              <p className="text-center text-[16px] font-semibold mt-2">
-                {item}
-              </p>
-            </div>
-          ))}
+          {data.fotoGeneral &&
+            data.fotoGeneral.map((photo: any, index: number) => (
+              <div
+                key={index}
+                className=" flex items-center justify-center flex-col"
+              >
+                <img
+                  src={
+                    photo.path
+                      ? formatPath(photo.path)
+                      : "/assets/placeholder-photo.png"
+                  }
+                  alt={photo.label}
+                  className="w-[220px] h-[150px] object-cover"
+                />
+                <p className="text-center text-[16px] font-semibold mt-2">
+                  {photo.label}
+                </p>
+              </div>
+            ))}
         </div>
       </div>
 
@@ -130,13 +124,4 @@ const toolsTest = [
   { namaPart: "Test ACCU (ON & OFF)", beban: 3, part: "testAccu" },
   { namaPart: "Temperatur AC Mobil", beban: 2, part: "temperaturACMobil" },
   { namaPart: "OBD Scanner", beban: 3, part: "obdScanner" },
-];
-
-const dataPhotoGeneral = [
-  "Tampak Depan",
-  "Tampak Belakang",
-  "Tampak Samping Kanan",
-  "Tampak Samping Kiri",
-  "Random",
-  "Random 2",
 ];

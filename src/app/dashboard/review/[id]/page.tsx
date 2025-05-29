@@ -4,7 +4,6 @@ import EditedData from "../../../../components/EditReview/EditedData";
 import EditReviewComponents from "../../../../components/EditReview/EditReview";
 import { DialogForm } from "../../../../components/Form/DialogForm";
 import Loading from "../../../../components/Loading";
-import { toast } from "../../../../components/ui/use-toast";
 import {
   approveInspectionData,
   getDataForPreview,
@@ -17,9 +16,26 @@ import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useTheme } from "../../../../contexts/ThemeContext";
+import { Button } from "../../../../components/ui/button"; // Import Button component
+import { toast } from "../../../../hooks/use-toast";
 
-const Header = ({ hasChanges, data, processing }: any) => {
+const Header = ({ hasChanges, data, processing, id, router }: any) => {
   const { isDarkModeEnabled } = useTheme();
+
+  const handleGetLinkPreview = () => {
+    const previewUrl = `${window.location.origin}/dashboard/preview/${id}`;
+    navigator.clipboard.writeText(previewUrl);
+    toast({
+      title: "Link Copied!",
+      description: "Preview link has been copied to clipboard.",
+      variant: "default",
+    });
+  };
+
+  const handlePreview = () => {
+    router.push(`/dashboard/preview/${id}`);
+  };
+
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 lg:p-6 mb-6 w-full max-w-full overflow-hidden">
       <div className="flex items-center space-x-4">
@@ -54,6 +70,20 @@ const Header = ({ hasChanges, data, processing }: any) => {
               </span>
             </div>
           )}
+        </div>
+        <div className="flex space-x-2">
+          <Button
+            onClick={handleGetLinkPreview}
+            className="bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+          >
+            Get Link Preview
+          </Button>
+          <Button
+            onClick={handlePreview}
+            className="bg-blue-500 text-white hover:bg-blue-600"
+          >
+            Preview
+          </Button>
         </div>
       </div>
 
@@ -694,6 +724,8 @@ const Edit = () => {
             hasChanges={editedItems.length}
             data={data}
             processing={processing}
+            id={id}
+            router={router}
           />
           <div className="w-full mb-20">
             <EditReviewComponents data={data} onClick={handleEditReviewClick} />

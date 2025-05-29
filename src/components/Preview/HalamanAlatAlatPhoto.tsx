@@ -3,13 +3,13 @@ import Header from "./Header";
 import Footer from "./Footer";
 import PhotoItemWithDynamicText from "./PhotoItemWithDynamicText";
 
-interface HalamanExteriorPhotoProps {
+interface HalamanAlatAlatPhotoProps {
   data: any;
   editable: boolean;
   onClick?: (data: any) => void;
 }
 
-const HalamanExteriorPhoto: React.FC<HalamanExteriorPhotoProps> = ({
+const HalamanAlatAlatPhoto: React.FC<HalamanAlatAlatPhotoProps> = ({
   data,
   editable,
   onClick = () => {},
@@ -17,12 +17,6 @@ const HalamanExteriorPhoto: React.FC<HalamanExteriorPhotoProps> = ({
   if (data == undefined || data == null) {
     return <div>Loading...</div>; // atau bisa return null
   }
-
-  const findUrlPhoto = (photos: any, label: string) => {
-    if (!photos) return "";
-    const foundPhoto = photos.find((photo: any) => photo.label === label);
-    return foundPhoto ? foundPhoto.path : "";
-  };
 
   const PHOTO_URL = process.env.NEXT_PUBLIC_PDF_URL;
 
@@ -39,7 +33,7 @@ const HalamanExteriorPhoto: React.FC<HalamanExteriorPhotoProps> = ({
         <div className="w-full flex">
           <div className="w-full bg-[#E95F37]">
             <p className="text-left text-white py-3 px-3 font-semibold border-b-2 border-black">
-              Foto Eksterior
+              Foto Alat Alat
             </p>
           </div>
         </div>
@@ -60,4 +54,4 @@ const HalamanExteriorPhoto: React.FC<HalamanExteriorPhotoProps> = ({
   );
 };
 
-export default HalamanExteriorPhoto;
+export default HalamanAlatAlatPhoto;

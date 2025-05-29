@@ -78,7 +78,7 @@ const TableData = ({ data }: any) => {
               User
             </TableHead>
             <TableHead className="text-left font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
-              Contact
+              Email
             </TableHead>
             <TableHead className="text-center font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
               Role
@@ -109,7 +109,7 @@ const TableData = ({ data }: any) => {
                         {item.name || "Nama tidak tersedia"}
                       </div>
                       <div className="text-sm text-gray-500 dark:text-gray-400">
-                        ../..{item.username || "username"}
+                        {item.username || "username"}
                       </div>
                     </div>
                   </div>

@@ -3,13 +3,13 @@ import Header from "./Header";
 import Footer from "./Footer";
 import PhotoItemWithDynamicText from "./PhotoItemWithDynamicText";
 
-interface HalamanExteriorPhotoProps {
+interface HalamanGeneralPhotoProps {
   data: any;
   editable: boolean;
   onClick?: (data: any) => void;
 }
 
-const HalamanExteriorPhoto: React.FC<HalamanExteriorPhotoProps> = ({
+const HalamanGeneralPhoto: React.FC<HalamanGeneralPhotoProps> = ({
   data,
   editable,
   onClick = () => {},
@@ -35,16 +35,16 @@ const HalamanExteriorPhoto: React.FC<HalamanExteriorPhotoProps> = ({
   return (
     <div className="text-black px-[30px] font-poppins">
       <Header />
-      <div className="w-full border-2 border-black mt-12 mb-8 min-h-[830px]">
+      <div className="w-full border-2 border-black mt-12 mb-8 min-h-[820px]">
         <div className="w-full flex">
           <div className="w-full bg-[#E95F37]">
             <p className="text-left text-white py-3 px-3 font-semibold border-b-2 border-black">
-              Foto Eksterior
+              Foto General
             </p>
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-1 gap-y-10 px-1 py-10 justify-around">
+        <div className="flex flex-wrap gap-1 gap-y-10 px-1 py-12 justify-around mb-10">
           {data.photos.map((item: any, index: any) => (
             <PhotoItemWithDynamicText
               key={index}
@@ -60,4 +60,4 @@ const HalamanExteriorPhoto: React.FC<HalamanExteriorPhotoProps> = ({
   );
 };
 
-export default HalamanExteriorPhoto;
+export default HalamanGeneralPhoto;
