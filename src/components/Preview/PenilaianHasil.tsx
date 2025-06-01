@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useState, useEffect } from "react";
 
 type PenilaianHasilProps = {
   warna: string;
@@ -7,6 +7,7 @@ type PenilaianHasilProps = {
   beban: string;
   edit?: boolean;
   subFieldName?: string;
+  subSubFieldName?: string;
   onClick?: (data: any) => void;
 };
 
@@ -17,8 +18,51 @@ const PenilaianHasil: React.FC<PenilaianHasilProps> = ({
   beban,
   edit = false,
   subFieldName,
+  subSubFieldName,
   onClick = () => {},
 }) => {
+  const namaPartRef = useRef<HTMLDivElement>(null);
+  const [currentFontSize, setCurrentFontSize] = useState(12); // Initial font size
+
+  useEffect(() => {
+    const adjustFontSize = () => {
+      if (namaPartRef.current) {
+        const containerWidth = namaPartRef.current.clientWidth;
+        const textWidth = namaPartRef.current.scrollWidth;
+
+        // If text overflows, reduce font size
+        if (textWidth > containerWidth) {
+          let newSize = currentFontSize;
+          while (
+            namaPartRef.current.scrollWidth > containerWidth &&
+            newSize > 8
+          ) {
+            // Minimum font size 8px
+            newSize -= 0.5; // Decrease by 0.5px
+            setCurrentFontSize(newSize);
+            namaPartRef.current.style.fontSize = `${newSize}px`; // Apply immediately for measurement
+          }
+        } else if (textWidth < containerWidth && currentFontSize < 12) {
+          // Max font size 12px
+          let newSize = currentFontSize;
+          while (
+            namaPartRef.current.scrollWidth < containerWidth &&
+            newSize < 12
+          ) {
+            newSize += 0.5;
+            setCurrentFontSize(newSize);
+            namaPartRef.current.style.fontSize = `${newSize}px`;
+          }
+        }
+      }
+    };
+
+    // Run adjustment on mount and when namaPart changes
+    adjustFontSize();
+    // Add a resize listener to adjust font size if the container width changes (e.g., window resize)
+    window.addEventListener("resize", adjustFontSize);
+    return () => window.removeEventListener("resize", adjustFontSize);
+  }, [namaPart, currentFontSize]); // Re-run when namaPart or currentFontSize changes
   const dataColor = [
     { val: 0, color: "#040102", textColor: "#ffffff" },
     { val: 1, color: "#E41C17", textColor: "#040102" },
@@ -55,7 +99,7 @@ const PenilaianHasil: React.FC<PenilaianHasilProps> = ({
           fieldName: `detailedAssessment`,
           oldValue: nilai,
           subFieldName: subFieldName,
-          subsubFieldName: namaPart.toLowerCase(),
+          subsubFieldName: subSubFieldName,
           type: "penilaian-summary",
           onClose: () => {},
         })
@@ -73,7 +117,16 @@ const PenilaianHasil: React.FC<PenilaianHasilProps> = ({
         </div>
       </div>
       <div className="flex flex-col items-center">
-        <div className="text-black font-bold w-[125px] h-7 border-l-[1.5px] border-y-[1.5px] border-black flex items-center justify-start text-[10px] font-bold px-1.5">
+        <div
+          ref={namaPartRef}
+          className="text-black font-bold w-[125px] h-7 border-l-[1.5px] border-y-[1.5px] border-black flex items-center justify-start px-1.5"
+          style={{
+            fontSize: `${currentFontSize}px`,
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
           {namaPart}
         </div>
       </div>

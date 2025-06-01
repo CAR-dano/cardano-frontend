@@ -41,6 +41,12 @@ const Halaman1: React.FC<Halaman1Props> = ({
     });
   };
 
+  const capitalizeFirstLetterOfSentences = (text: string) => {
+    const cleanedText = text.replace(/^•\s*/, "");
+    if (!cleanedText) return "";
+    return cleanedText.replace(/(^\s*\w|[.!?]\s*\w)/g, (c) => c.toUpperCase());
+  };
+
   const dataKendaraan = [
     {
       label: "Merk Kendaraan",
@@ -426,8 +432,8 @@ const Halaman1: React.FC<Halaman1Props> = ({
               <ol className="ml-2 list-disc list-inside text-[12px] font-semibold">
                 {data.inspectionSummary.deskripsiKeseluruhan.map(
                   (item: any, index: number) => (
-                    <li key={index} className="text-[12px] font-semibold">
-                      {item}
+                    <li key={index} className="text-[12px] font-semibold ">
+                      {capitalizeFirstLetterOfSentences(item)}
                     </li>
                   )
                 )}

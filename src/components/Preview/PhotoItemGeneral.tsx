@@ -3,11 +3,13 @@ import React, { useRef, useEffect, useState } from "react";
 interface PhotoItemGeneralProps {
   item: any; // Assuming item has path and label
   formatPath: (path: string) => string;
+  isLandscape?: boolean;
 }
 
 const PhotoItemGeneral: React.FC<PhotoItemGeneralProps> = ({
   item,
   formatPath,
+  isLandscape = false,
 }) => {
   const textRef = useRef<HTMLParagraphElement>(null);
   const [currentFontSize, setCurrentFontSize] = useState(16); // Initial font size
@@ -33,7 +35,11 @@ const PhotoItemGeneral: React.FC<PhotoItemGeneralProps> = ({
           item.path ? formatPath(item.path) : "/assets/placeholder-photo.png"
         }
         alt={item.label}
-        className="w-full max-h-[300px] object-cover"
+        className={
+          isLandscape
+            ? "w-[500px] h-[300px] object-cover"
+            : "w-full max-h-[300px] object-cover"
+        }
       />
       {/* <p
         ref={textRef}

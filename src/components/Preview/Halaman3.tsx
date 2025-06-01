@@ -25,6 +25,12 @@ const Halaman3: React.FC<Halaman3Props> = ({
     }
   };
 
+  const capitalizeFirstLetterOfSentences = (text: string) => {
+    const cleanedText = text.replace(/^•\s*/, "");
+    if (!cleanedText) return "";
+    return cleanedText.replace(/(^\s*\w|[.!?]\s*\w)/g, (c) => c.toUpperCase());
+  };
+
   return (
     <div className="text-black px-[30px] font-poppins">
       <Header />
@@ -39,15 +45,15 @@ const Halaman3: React.FC<Halaman3Props> = ({
         </div>
 
         <div className="w-full flex py-2 border-b-2 border-black ">
-          <div className="w-full flex flex-col gap-2">
-            <div className="w-full flex">
+          <div className="w-full flex flex-col gap-2 px-3">
+            <div className="w-full flex gap-5">
               <PenilaianContoh
                 warna="#f5e72f"
                 nilai="5"
                 namaPart="Shock Breaker"
                 beban="3"
               />
-              <div className="flex flex-col text-[11px] font-medium pr-5">
+              <div className="flex flex-col text-[11px] font-medium ">
                 <p>Arti Penilaian :</p>
                 <p>
                   Shock breaker memiliki{" "}
@@ -59,14 +65,14 @@ const Halaman3: React.FC<Halaman3Props> = ({
                 </p>
               </div>
             </div>
-            <div className="w-full flex">
+            <div className="w-full flex gap-5">
               <PenilaianContoh
                 warna="#fe0000"
                 nilai="1"
                 namaPart="Shock Breaker"
                 beban="3"
               />
-              <div className="flex flex-col text-[11px] font-medium pr-5">
+              <div className="flex flex-col text-[11px] font-medium ">
                 <p>Arti Penilaian :</p>
                 <p>
                   Shock breaker memiliki{" "}
@@ -78,14 +84,14 @@ const Halaman3: React.FC<Halaman3Props> = ({
                 </p>
               </div>
             </div>
-            <div className="text-black w-full flex">
+            <div className="text-black w-full flex gap-5">
               <PenilaianContoh
                 warna="#15924e"
                 nilai="9"
                 namaPart="Shock Breaker"
                 beban="3"
               />
-              <div className="flex flex-col text-[11px] font-medium pr-5">
+              <div className="flex flex-col text-[11px] font-medium ">
                 <p>Arti Penilaian :</p>
                 <p>
                   Shock breaker memiliki{" "}
@@ -109,12 +115,13 @@ const Halaman3: React.FC<Halaman3Props> = ({
         </div>
 
         <div className="w-full border-b-2 border-black py-2">
-          <div className="w-full flex flex-wrap gap-2 items-center mx-auto">
+          <div className="pl-2 w-full flex flex-wrap gap-x-3 gap-y-2.5 items-center justify-start">
             <PenilaianHasil
               edit={editable}
               onClick={handleClick}
               warna="#FFFFFF"
               namaPart="Airbag"
+              subSubFieldName="airbag"
               beban="3"
               subFieldName="fitur"
               nilai={data.fitur.airbag.toString()}
@@ -124,6 +131,7 @@ const Halaman3: React.FC<Halaman3Props> = ({
               onClick={handleClick}
               warna="#FFFFFF"
               namaPart="Sistem AC"
+              subSubFieldName="sistemAC"
               subFieldName="fitur"
               beban="3"
               nilai={data.fitur.sistemAC.toString()}
@@ -133,6 +141,7 @@ const Halaman3: React.FC<Halaman3Props> = ({
               onClick={handleClick}
               warna="#FFFFFF"
               namaPart="Electric Mirror"
+              subSubFieldName="electricMirror"
               subFieldName="fitur"
               beban="1"
               nilai={
@@ -144,6 +153,7 @@ const Halaman3: React.FC<Halaman3Props> = ({
               onClick={handleClick}
               warna="#FFFFFF"
               namaPart="Sistem Audio"
+              subSubFieldName="sistemAudio"
               subFieldName="fitur"
               beban="1"
               nilai={data.fitur.sistemAudio ? data.fitur.sistemAudio : "0"}
@@ -153,6 +163,7 @@ const Halaman3: React.FC<Halaman3Props> = ({
               onClick={handleClick}
               warna="#FFFFFF"
               namaPart="Central Lock"
+              subSubFieldName="centralLock"
               subFieldName="fitur"
               beban="1"
               nilai={data.fitur.centralLock ? data.fitur.centralLock : "0"}
@@ -162,6 +173,7 @@ const Halaman3: React.FC<Halaman3Props> = ({
               onClick={handleClick}
               warna="#FFFFFF"
               namaPart="Rem ABS"
+              subSubFieldName="remABS"
               subFieldName="fitur"
               beban="3"
               nilai={data.fitur.remABS ? data.fitur.remABS : "0"}
@@ -171,16 +183,73 @@ const Halaman3: React.FC<Halaman3Props> = ({
               onClick={handleClick}
               warna="#FFFFFF"
               namaPart="Power Window"
+              subSubFieldName="powerWindow"
               subFieldName="fitur"
               beban="1"
               nilai={data.fitur.powerWindow ? data.fitur.powerWindow : "0"}
             />
           </div>
 
-          <p className="text-[12px] px-1 mt-1 font-semibold">*Catatan:</p>
-          <p className="text-[12px] px-1 py-4 mt-1 font-semibold">
-            {data.fitur.catatan}
-          </p>
+          <div
+            onClick={() =>
+              editable &&
+              onClick({
+                label: `Catatan Fitur`,
+                fieldName: `detailedAssessment`,
+                oldValue: data.fitur.catatan,
+                subFieldName: "fitur",
+                subsubFieldName: "catatan",
+                type: "penilaian-array",
+                onClose: () => {},
+              })
+            }
+            className={`text-[12px] px-1 mt-1 font-semibold flex min-h-[55px] ${
+              editable ? "cursor-pointer group hover:bg-[#F4622F]" : ""
+            }`}
+          >
+            *Catatan:
+            {data.fitur.catatan && data.fitur.catatan.length > 0 ? (
+              <div
+                className={`text-[12px] font-semibold flex ${
+                  data.fitur.catatan.length >= 3
+                    ? "flex-row flex-wrap"
+                    : "flex-col justify-center items-center"
+                } ${editable ? "group-hover:text-white" : ""}`}
+              >
+                <ol
+                  className={`list-disc pl-5 ${
+                    data.fitur.catatan.length >= 3 ? "w-1/2" : "w-full"
+                  }`}
+                >
+                  {data.fitur.catatan
+                    .slice(
+                      0,
+                      data.fitur.catatan.length >= 3
+                        ? Math.ceil(data.fitur.catatan.length / 2)
+                        : data.fitur.catatan.length
+                    )
+                    .map((item: any, index: any) => (
+                      <li key={index} className="text-[12px]">
+                        {capitalizeFirstLetterOfSentences(item)}
+                      </li>
+                    ))}
+                </ol>
+                {data.fitur.catatan.length >= 3 && (
+                  <ol className="list-disc pl-5 w-1/2">
+                    {data.fitur.catatan
+                      .slice(Math.ceil(data.fitur.catatan.length / 2))
+                      .map((item: any, index: any) => (
+                        <li key={index} className="text-[12px]">
+                          {capitalizeFirstLetterOfSentences(item)}
+                        </li>
+                      ))}
+                  </ol>
+                )}
+              </div>
+            ) : (
+              <div className="text-[12px] font-semibold py-4">-</div>
+            )}
+          </div>
         </div>
 
         <div className="w-full flex">
@@ -206,6 +275,7 @@ const Halaman3: React.FC<Halaman3Props> = ({
                 key={index}
                 warna="#FFFFFF"
                 namaPart={item.namaPart}
+                subSubFieldName={item.part}
                 beban={item.beban.toString()}
                 subFieldName="hasilInspeksiMesin"
                 nilai={

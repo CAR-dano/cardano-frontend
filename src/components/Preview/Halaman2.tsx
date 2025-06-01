@@ -18,12 +18,19 @@ const Halaman2: React.FC<Halaman2Props> = ({
     return <div>Loading...</div>; // atau bisa return null
   }
 
-  const formatPrice = (price: number) => {
-    return price.toLocaleString("id-ID", {
+  const formatPrice = (price: string) => {
+    if (!price) return "-";
+    const formattedPrice = parseFloat(price).toLocaleString("id-ID", {
       style: "currency",
       currency: "IDR",
-      minimumFractionDigits: 0,
     });
+    return formattedPrice;
+  };
+
+  const capitalizeFirstLetterOfSentences = (text: string) => {
+    const cleanedText = text.replace(/^•\s*/, "");
+    if (!cleanedText) return "";
+    return cleanedText.replace(/(^\s*\w|[.!?]\s*\w)/g, (c) => c.toUpperCase());
   };
 
   return (
@@ -70,7 +77,7 @@ const Halaman2: React.FC<Halaman2Props> = ({
                 : ""
             }`}
           >
-            <p
+            <div
               onClick={() =>
                 editable &&
                 onClick({
@@ -84,8 +91,16 @@ const Halaman2: React.FC<Halaman2Props> = ({
               }
               className="text-left text-[13px] text-black py-2 px-3 font-medium "
             >
-              - {data.inspectionSummary.mesinNotes}
-            </p>
+              <ol className="list-disc list-inside">
+                {data.inspectionSummary.mesinNotes.map(
+                  (note: string, index: number) => (
+                    <li key={index} className="font-semibold">
+                      {capitalizeFirstLetterOfSentences(note)}
+                    </li>
+                  )
+                )}
+              </ol>
+            </div>
           </div>
           <div
             className={`w-1/4 min-h-[180px] border-black border-r-2 ${
@@ -94,7 +109,7 @@ const Halaman2: React.FC<Halaman2Props> = ({
                 : ""
             }`}
           >
-            <p
+            <div
               onClick={() =>
                 editable &&
                 onClick({
@@ -108,8 +123,16 @@ const Halaman2: React.FC<Halaman2Props> = ({
               }
               className="text-left text-[13px] text-black py-2 px-3 font-medium"
             >
-              - {data.inspectionSummary.kakiKakiNotes}
-            </p>
+              <ol className="list-disc list-inside">
+                {data.inspectionSummary.kakiKakiNotes.map(
+                  (note: string, index: number) => (
+                    <li key={index} className="font-semibold">
+                      {capitalizeFirstLetterOfSentences(note)}
+                    </li>
+                  )
+                )}
+              </ol>
+            </div>
           </div>
           <div
             className={`w-1/4 min-h-[180px] border-black border-r-2 ${
@@ -118,7 +141,7 @@ const Halaman2: React.FC<Halaman2Props> = ({
                 : ""
             }`}
           >
-            <p
+            <div
               onClick={() =>
                 editable &&
                 onClick({
@@ -132,8 +155,16 @@ const Halaman2: React.FC<Halaman2Props> = ({
               }
               className="text-left text-[13px] text-black py-2 px-3 font-medium"
             >
-              - {data.inspectionSummary.interiorNotes}
-            </p>
+              <ol className="list-disc list-inside">
+                {data.inspectionSummary.interiorNotes.map(
+                  (note: string, index: number) => (
+                    <li key={index} className="font-semibold">
+                      {capitalizeFirstLetterOfSentences(note)}
+                    </li>
+                  )
+                )}
+              </ol>
+            </div>
           </div>
           <div
             className={`w-1/4 min-h-[180px] ${
@@ -142,7 +173,7 @@ const Halaman2: React.FC<Halaman2Props> = ({
                 : ""
             }`}
           >
-            <p
+            <div
               onClick={() =>
                 editable &&
                 onClick({
@@ -156,8 +187,20 @@ const Halaman2: React.FC<Halaman2Props> = ({
               }
               className="text-left text-[13px] text-black py-2 px-3 font-medium"
             >
-              - {data.inspectionSummary.exteriorNotes}
-            </p>
+              {data.inspectionSummary.exteriorNotes ? (
+                <ol className="list-disc list-inside">
+                  {data.inspectionSummary.exteriorNotes.map(
+                    (note: string, index: number) => (
+                      <li key={index} className="font-semibold">
+                        {capitalizeFirstLetterOfSentences(note)}
+                      </li>
+                    )
+                  )}
+                </ol>
+              ) : (
+                <p className="text-gray-500">-</p>
+              )}
+            </div>
           </div>
         </div>
 
@@ -213,8 +256,8 @@ const Halaman2: React.FC<Halaman2Props> = ({
             >
               <ul className="list-none">
                 {data.inspectionSummary.estimasiPerbaikan.map((item: any) => (
-                  <li key={item.namaPart} className="">
-                    {item.namaPart}
+                  <li key={item.namaPart} className="font-semibold">
+                    {capitalizeFirstLetterOfSentences(item.namaPart)}
                   </li>
                 ))}
               </ul>
@@ -232,7 +275,7 @@ const Halaman2: React.FC<Halaman2Props> = ({
             >
               <ul className="list-none">
                 {data.inspectionSummary.estimasiPerbaikan.map((item: any) => (
-                  <li key={item.harga} className="">
+                  <li key={item.harga} className="font-semibold">
                     {formatPrice(item.harga)}
                   </li>
                 ))}

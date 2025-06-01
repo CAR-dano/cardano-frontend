@@ -199,7 +199,7 @@ function EditedData({ updateData, cancelEdit, id }: EditedDataProps) {
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
           {/* Table Header */}
           <div className="bg-gray-50 dark:bg-gray-700 px-6 py-4">
-            <div className="grid grid-cols-5 gap-4 text-sm font-semibold text-gray-700 dark:text-gray-200">
+            <div className="grid grid-cols-6 gap-4 text-sm font-semibold text-gray-700 dark:text-gray-200">
               <div className="flex items-center">
                 <svg
                   className="w-4 h-4 mr-2 text-gray-400 dark:text-gray-500"
@@ -231,6 +231,22 @@ function EditedData({ updateData, cancelEdit, id }: EditedDataProps) {
                   />
                 </svg>
                 Sub Field
+              </div>
+              <div className="flex items-center">
+                <svg
+                  className="w-4 h-4 mr-2 text-gray-400 dark:text-gray-500"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.99 1.99 0 013 12V7a2 2 0 012-2z"
+                  />
+                </svg>
+                Part
               </div>
               <div className="flex items-center">
                 <svg
@@ -290,7 +306,7 @@ function EditedData({ updateData, cancelEdit, id }: EditedDataProps) {
                 key={index}
                 className="px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150"
               >
-                <div className="grid grid-cols-5 gap-4 items-center">
+                <div className="grid grid-cols-6 gap-4 items-center">
                   {/* Field Name */}
                   <div className="flex items-center">
                     <div className="w-2 h-2 bg-blue-500 dark:bg-blue-300 rounded-full mr-3"></div>
@@ -304,6 +320,19 @@ function EditedData({ updateData, cancelEdit, id }: EditedDataProps) {
                     {item.subFieldName ? (
                       <span className="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded-md text-xs dark:text-gray-200">
                         {formatPart(item.subFieldName)}
+                      </span>
+                    ) : (
+                      <span className="text-gray-400 dark:text-gray-500 italic">
+                        -
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Sub Sub Field Name */}
+                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                    {item.subsubFieldName ? (
+                      <span className="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded-md text-xs dark:text-gray-200">
+                        {formatPart(item.subsubFieldName)}
                       </span>
                     ) : (
                       <span className="text-gray-400 dark:text-gray-500 italic">

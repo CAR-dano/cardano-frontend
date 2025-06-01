@@ -40,7 +40,12 @@ const HalamanFotoDokumen: React.FC<HalamanFotoDokumenProps> = ({
 
         <div className="flex flex-col justify-center items-center h-full py-10 gap-10">
           {data.photos.slice(0, 2).map((item: any, index: any) => (
-            <PhotoItemGeneral key={index} item={item} formatPath={formatPath} />
+            <PhotoItemGeneral
+              key={index}
+              item={item}
+              formatPath={formatPath}
+              isLandscape={true}
+            />
           ))}
         </div>
       </div>

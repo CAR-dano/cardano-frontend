@@ -186,6 +186,7 @@ export const inspectionSlice = createSlice({
           inspectionId,
           fieldName,
           subFieldName,
+          subsubFieldName,
           oldValue,
           newValue,
           changesAt,

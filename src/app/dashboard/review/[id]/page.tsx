@@ -521,11 +521,17 @@ const Edit = () => {
         }
       });
 
+      const desc = subsubFieldName
+        ? `${subFieldName} - ${
+            subsubFieldName.charAt(0).toUpperCase() + subsubFieldName.slice(1)
+          }`
+        : subFieldName;
+
       // Show toast notification for confirmation
       toast({
         title: "Field updated",
-        description: `${fieldName}${
-          subFieldName ? ` - ${subFieldName}` : ""
+        description: `${subsubFieldName ? `` : fieldName}${
+          desc ? ` ${desc}` : ``
         } has been updated.`,
         variant: "default",
       });
@@ -773,6 +779,7 @@ const Edit = () => {
                   setEditedData({
                     inspectionId: data.id,
                     subFieldName: dialogData.subFieldName,
+                    subsubFieldName: dialogData.subsubFieldName,
                     fieldName: dialogData.fieldName,
                     oldValue: dialogData.oldValue,
                     newValue: newValue,

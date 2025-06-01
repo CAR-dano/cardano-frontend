@@ -24,6 +24,12 @@ const Halaman5: React.FC<Halaman5Props> = ({
     }
   };
 
+  const capitalizeFirstLetterOfSentences = (text: string) => {
+    const cleanedText = text.replace(/^•\s*/, "");
+    if (!cleanedText) return "";
+    return cleanedText.replace(/(^\s*\w|[.!?]\s*\w)/g, (c) => c.toUpperCase());
+  };
+
   return (
     <div className="px-[30px] font-poppins text-black">
       <Header />
@@ -45,6 +51,7 @@ const Halaman5: React.FC<Halaman5Props> = ({
                 key={index}
                 warna="#FFFFFF"
                 namaPart={item.namaPart}
+                subSubFieldName={item.part}
                 beban={item.beban.toString()}
                 subFieldName="hasilInspeksiEksterior"
                 nilai={
@@ -56,10 +63,75 @@ const Halaman5: React.FC<Halaman5Props> = ({
             ))}
           </div>
 
-          <p className="text-[12px] px-2 mt-1 font-semibold">*Catatan:</p>
-          <p className="text-[12px] px-3 min-h-[45px] mt-1 font-semibold">
-            {data.hasilInspeksiEksterior.catatan}
-          </p>
+          <div
+            onClick={() =>
+              editable &&
+              onClick({
+                label: `Catatan Eksterior Kendaraan`,
+                fieldName: `detailAssessment`,
+                subsubFieldName: "catatan",
+                oldValue: data.hasilInspeksiEksterior.catatan,
+                subFieldName: "hasilInspeksiEksterior",
+                type: "penilaian-array",
+                onClose: () => {},
+              })
+            }
+            className={`text-[12px] px-1 mt-1 font-semibold flex min-h-[70px] ${
+              editable ? "cursor-pointer group hover:bg-[#F4622F]" : ""
+            }`}
+          >
+            *Catatan:
+            {data.hasilInspeksiEksterior.catatan &&
+            data.hasilInspeksiEksterior.catatan.length > 0 ? (
+              <div
+                className={`text-[12px] font-semibold flex ${
+                  data.testDrive.catatan.length >= 4
+                    ? "flex-row flex-wrap"
+                    : "flex-col justify-center items-center"
+                } ${editable ? "group-hover:text-white" : ""}`}
+              >
+                <ol
+                  className={`list-disc pl-5 ${
+                    data.hasilInspeksiEksterior.catatan.length >= 4
+                      ? "w-1/2"
+                      : "w-full"
+                  }`}
+                >
+                  {data.hasilInspeksiEksterior.catatan
+                    .slice(
+                      0,
+                      data.hasilInspeksiEksterior.catatan.length >= 4
+                        ? Math.ceil(
+                            data.hasilInspeksiEksterior.catatan.length / 2
+                          )
+                        : data.hasilInspeksiEksterior.catatan.length
+                    )
+                    .map((item: any, index: any) => (
+                      <li key={index} className="text-[12px]">
+                        {capitalizeFirstLetterOfSentences(item)}
+                      </li>
+                    ))}
+                </ol>
+                {data.hasilInspeksiEksterior.catatan.length >= 4 && (
+                  <ol className="list-disc pl-5 w-1/2">
+                    {data.hasilInspeksiEksterior.catatan
+                      .slice(
+                        Math.ceil(
+                          data.hasilInspeksiEksterior.catatan.length / 2
+                        )
+                      )
+                      .map((item: any, index: any) => (
+                        <li key={index} className="text-[12px]">
+                          {capitalizeFirstLetterOfSentences(item)}
+                        </li>
+                      ))}
+                  </ol>
+                )}
+              </div>
+            ) : (
+              <div className="text-[12px] font-semibold py-4">-</div>
+            )}
+          </div>
         </div>
 
         <div className="w-full border-b-2 border-black py-2">
@@ -77,6 +149,7 @@ const Halaman5: React.FC<Halaman5Props> = ({
                 key={index}
                 warna="#FFFFFF"
                 namaPart={item.namaPart}
+                subSubFieldName={item.part}
                 beban={item.beban.toString()}
                 subFieldName="banDanKakiKaki"
                 nilai={
@@ -88,10 +161,67 @@ const Halaman5: React.FC<Halaman5Props> = ({
             ))}
           </div>
 
-          <p className="text-[12px] px-2  mt-1 font-semibold">*Catatan:</p>
-          <p className="text-[12px] px-3 min-h-[45px] mt-1 font-semibold">
-            {data.banDanKakiKaki.catatan}
-          </p>
+          <div
+            onClick={() =>
+              editable &&
+              onClick({
+                label: `Catatan Ban dan Kaki-Kaki`,
+                fieldName: `detailAssessment`,
+                oldValue: data.banDanKakiKaki.catatan,
+                subFieldName: "banDanKakiKaki",
+                subsubFieldName: "catatan",
+                type: "penilaian-array",
+                onClose: () => {},
+              })
+            }
+            className={`text-[12px] px-1 mt-1 font-semibold flex min-h-[70px] ${
+              editable ? "cursor-pointer group hover:bg-[#F4622F]" : ""
+            }`}
+          >
+            *Catatan:
+            {data.banDanKakiKaki.catatan &&
+            data.banDanKakiKaki.catatan.length > 0 ? (
+              <div
+                className={`text-[12px] font-semibold flex ${
+                  data.banDanKakiKaki.catatan.length >= 4
+                    ? "flex-row flex-wrap"
+                    : "flex-col justify-center items-center"
+                } ${editable ? "group-hover:text-white" : ""}`}
+              >
+                <ol
+                  className={`list-disc pl-5 ${
+                    data.banDanKakiKaki.catatan.length >= 4 ? "w-1/2" : "w-full"
+                  }`}
+                >
+                  {data.banDanKakiKaki.catatan
+                    .slice(
+                      0,
+                      data.banDanKakiKaki.catatan.length >= 4
+                        ? Math.ceil(data.banDanKakiKaki.catatan.length / 2)
+                        : data.banDanKakiKaki.catatan.length
+                    )
+                    .map((item: any, index: any) => (
+                      <li key={index} className="text-[12px]">
+                        {capitalizeFirstLetterOfSentences(item)}
+                      </li>
+                    ))}
+                </ol>
+                {data.banDanKakiKaki.catatan.length >= 4 && (
+                  <ol className="list-disc pl-5 w-1/2">
+                    {data.banDanKakiKaki.catatan
+                      .slice(Math.ceil(data.banDanKakiKaki.catatan.length / 2))
+                      .map((item: any, index: any) => (
+                        <li key={index} className="text-[12px]">
+                          {capitalizeFirstLetterOfSentences(item)}
+                        </li>
+                      ))}
+                  </ol>
+                )}
+              </div>
+            ) : (
+              <div className="text-[12px] font-semibold py-4">-</div>
+            )}
+          </div>
         </div>
 
         <div className="w-full  py-2 mb-2 ">
@@ -109,6 +239,7 @@ const Halaman5: React.FC<Halaman5Props> = ({
                 key={index}
                 warna="#FFFFFF"
                 namaPart={item.namaPart}
+                subSubFieldName={item.part}
                 beban={item.beban.toString()}
                 subFieldName="testDrive"
                 nilai={
@@ -120,10 +251,66 @@ const Halaman5: React.FC<Halaman5Props> = ({
             ))}
           </div>
 
-          <p className="text-[12px] px-2  mt-1 font-semibold">*Catatan:</p>
-          <p className="text-[12px] px-3 min-h-[45px] mt-1 font-semibold">
-            {data.testDrive.catatan}
-          </p>
+          <div
+            onClick={() =>
+              editable &&
+              onClick({
+                label: `Catatan Test Drive`,
+                fieldName: `detailAssessment`,
+                oldValue: data.testDrive.catatan,
+                subFieldName: "testDrive",
+                subsubFieldName: "catatan",
+                type: "penilaian-array",
+                onClose: () => {},
+              })
+            }
+            className={`text-[12px] px-1 mt-1 font-semibold flex min-h-[70px] ${
+              editable ? "cursor-pointer group hover:bg-[#F4622F]" : ""
+            }`}
+          >
+            *Catatan:
+            {data.testDrive.catatan && data.testDrive.catatan.length > 0 ? (
+              <div
+                className={`text-[12px] font-semibold flex ${
+                  data.testDrive.catatan.length >= 4
+                    ? "flex-row flex-wrap"
+                    : "flex-col justify-center items-center"
+                } ${editable ? "group-hover:text-white" : ""}`}
+              >
+                <ol
+                  className={`list-disc pl-5 ${
+                    data.testDrive.catatan.length >= 4 ? "w-1/2" : "w-full"
+                  }`}
+                >
+                  {data.testDrive.catatan
+                    .slice(
+                      0,
+                      data.testDrive.catatan.length >= 4
+                        ? Math.ceil(data.testDrive.catatan.length / 2)
+                        : data.testDrive.catatan.length
+                    )
+                    .map((item: any, index: any) => (
+                      <li key={index} className="text-[12px]">
+                        {capitalizeFirstLetterOfSentences(item)}
+                      </li>
+                    ))}
+                </ol>
+                {data.testDrive.catatan.length >= 4 && (
+                  <ol className="list-disc pl-5 w-1/2">
+                    {data.testDrive.catatan
+                      .slice(Math.ceil(data.testDrive.catatan.length / 2))
+                      .map((item: any, index: any) => (
+                        <li key={index} className="text-[12px]">
+                          {capitalizeFirstLetterOfSentences(item)}
+                        </li>
+                      ))}
+                  </ol>
+                )}
+              </div>
+            ) : (
+              <div className="text-[12px] font-semibold py-4">-</div>
+            )}
+          </div>
         </div>
       </div>
 
