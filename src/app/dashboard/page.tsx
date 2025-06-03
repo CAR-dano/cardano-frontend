@@ -10,6 +10,7 @@ import {
 } from "../../lib/features/dashboard/dashboardSlice";
 import BranchDistribution from "../../components/Dashboard/BranchDistribution";
 import InspectorPerfomance from "../../components/Dashboard/InspectorPerfomance";
+import useAuth from "../../hooks/useAuth";
 
 const DashboardHeader = ({
   totalInspections,
@@ -118,19 +119,27 @@ const StatsCard = ({
 
 const Dashboard: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { mainStats, combinedDashboardData, isLoadingCombinedDashboardData } =
-    useSelector((state: RootState) => state.dashboard);
+  const {
+    mainStats,
+    combinedDashboardData,
+    isLoadingCombinedDashboardData,
+    isLoadingMainStats,
+  } = useSelector((state: RootState) => state.dashboard);
   const [hasMounted, setHasMounted] = useState(false);
+  const { user } = useAuth();
+  const isAdmin = user?.role === "ADMIN";
 
   useEffect(() => {
     setHasMounted(true);
     dispatch(getMainStats());
-    dispatch(getCombinedDashboardData());
-  }, [dispatch]);
+    if (isAdmin) {
+      dispatch(getCombinedDashboardData());
+    }
+  }, [dispatch, isAdmin]);
 
   if (!hasMounted) return null;
 
-  if (isLoadingCombinedDashboardData)
+  if (isLoadingCombinedDashboardData || isLoadingMainStats)
     return <LoadingOverlay message="Memuat Dashboard" />;
 
   return (
@@ -233,17 +242,23 @@ const Dashboard: React.FC = () => {
         />
       </div>
 
-      {/* Charts and Activity Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-        <div className="lg:col-span-3 border-none h-full">
-          <BranchDistribution data={combinedDashboardData.branchDistribution} />
+      {isAdmin && (
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+          <div className="lg:col-span-3 border-none h-full">
+            <BranchDistribution
+              data={combinedDashboardData.branchDistribution}
+            />
+          </div>
+          <div className="lg:col-span-2 border-none h-full">
+            <InspectorPerfomance
+              data={combinedDashboardData.inspectorPerformance.data.slice(
+                0,
+                10
+              )}
+            />
+          </div>
         </div>
-        <div className="lg:col-span-2 border-none h-full">
-          <InspectorPerfomance
-            data={combinedDashboardData.inspectorPerformance.data.slice(0, 10)}
-          />
-        </div>
-      </div>
+      )}
 
       {/* Sample Data */}
     </div>

@@ -633,7 +633,7 @@ const Halaman1: React.FC<Halaman1Props> = ({
                         onClose: () => {},
                       })
                     }
-                    src="/assets/icon/tidakindikasi.svg"
+                    src="/assets/icon/tidakbekasbanjir.svg"
                     alt="ok"
                     className={`w-16 h-16
                       ${
