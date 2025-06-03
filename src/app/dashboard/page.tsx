@@ -1,7 +1,6 @@
 "use client";
 import Loading, { LoadingOverlay } from "../../components/Loading";
 import { AppDispatch, RootState } from "../../lib/store";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -11,6 +10,7 @@ import {
 import BranchDistribution from "../../components/Dashboard/BranchDistribution";
 import InspectorPerfomance from "../../components/Dashboard/InspectorPerfomance";
 import useAuth from "../../hooks/useAuth";
+import Link from "next/link";
 
 const DashboardHeader = ({
   totalInspections,
