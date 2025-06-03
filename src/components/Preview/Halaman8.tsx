@@ -29,15 +29,15 @@ const Halaman8: React.FC<Halaman8Props> = ({
           </div>
         </div>
 
-        <div className="w-full relative mt-10 flex justify-center flex-col items-center mb-28">
+        <div className="w-full relative mt-16 flex justify-center flex-col items-center mb-28 ">
           <img
             src="/assets/inspection/ketebalanKiri.svg"
             alt=""
-            className="w-[90%]"
+            className="w-[80%]"
           />
           <div
             className="absolute transform -translate-x-1/2"
-            style={{ top: "10%", left: "24%" }}
+            style={{ top: "-11%", left: "13%" }}
           >
             <div
               onClick={() =>
@@ -46,7 +46,8 @@ const Halaman8: React.FC<Halaman8Props> = ({
                   label: `Ketebalan Cat Depan`,
                   fieldName: `bodyPaintThickness`,
                   oldValue: data?.bodyPaintThickness.left.frontFender,
-                  subFieldName: "left.frontFender",
+                  subFieldName: "left",
+                  subsubFieldName: "frontFender",
                   type: "normal-input",
                   onClose: () => {},
                 })
@@ -62,7 +63,7 @@ const Halaman8: React.FC<Halaman8Props> = ({
           </div>
           <div
             className="absolute transform -translate-x-1/2"
-            style={{ top: "4%", left: "44%" }}
+            style={{ top: "-11%", left: "34%" }}
           >
             <div
               onClick={() =>
@@ -71,7 +72,8 @@ const Halaman8: React.FC<Halaman8Props> = ({
                   label: `Ketebalan Cat Depan`,
                   fieldName: `bodyPaintThickness`,
                   oldValue: data?.bodyPaintThickness.left.frontDoor,
-                  subFieldName: "left.frontDoor",
+                  subFieldName: "left",
+                  subsubFieldName: "frontDoor",
                   type: "normal-input",
                   onClose: () => {},
                 })
@@ -87,7 +89,7 @@ const Halaman8: React.FC<Halaman8Props> = ({
           </div>
           <div
             className="absolute transform -translate-x-1/2"
-            style={{ top: "4%", right: "30%" }}
+            style={{ top: "-11%", right: "30%" }}
           >
             <div
               onClick={() =>
@@ -96,7 +98,8 @@ const Halaman8: React.FC<Halaman8Props> = ({
                   label: `Ketebalan Cat Depan`,
                   fieldName: `bodyPaintThickness`,
                   oldValue: data?.bodyPaintThickness.left.rearDoor,
-                  subFieldName: "left.rearDoor",
+                  subFieldName: "left",
+                  subsubFieldName: "rearDoor",
                   type: "normal-input",
                   onClose: () => {},
                 })
@@ -117,13 +120,14 @@ const Halaman8: React.FC<Halaman8Props> = ({
                 label: `Ketebalan Cat Depan`,
                 fieldName: `bodyPaintThickness`,
                 oldValue: data?.bodyPaintThickness.left.rearFender,
-                subFieldName: "left.rearFender",
+                subFieldName: "left",
+                subsubFieldName: "rearFender",
                 type: "normal-input",
                 onClose: () => {},
               })
             }
             className="absolute transform -translate-x-1/2"
-            style={{ top: "10%", right: "4%" }}
+            style={{ top: "-11%", right: "5%" }}
           >
             <div
               className={`text-black ${
@@ -135,14 +139,40 @@ const Halaman8: React.FC<Halaman8Props> = ({
               {data.bodyPaintThickness.left.rearFender}mm
             </div>
           </div>
-          <p className="font-bold">SAMPING KIRI</p>
+          <div
+            onClick={() =>
+              editable &&
+              onClick({
+                label: `Ketebalan Sideskirt Kiri`,
+                fieldName: `bodyPaintThickness`,
+                oldValue: data?.bodyPaintThickness.left.sideskirt,
+                subFieldName: "left",
+                subsubFieldName: "sideskirt",
+                type: "normal-input",
+                onClose: () => {},
+              })
+            }
+            className="absolute transform -translate-x-1/2"
+            style={{ top: "77%", right: "38%" }}
+          >
+            <div
+              className={`text-black ${
+                editable
+                  ? "cursor-pointer hover:text-white hover:bg-orange-600 px-2 py-1 rounded-full"
+                  : "cursor-default"
+              }`}
+            >
+              {data.bodyPaintThickness.left.sideskirt}mm
+            </div>
+          </div>
+          <p className="font-bold mt-10">SAMPING KIRI</p>
         </div>
 
-        <div className="relative w-full my-20 flex justify-center flex-col items-center">
+        <div className="relative w-full mt-16 mb-10  flex justify-center flex-col items-center">
           <img
             src="/assets/inspection/ketebalanKanan.svg"
             alt="Car diagram"
-            className="w-[90%]"
+            className="w-[80%]"
           />
           <div
             onClick={() =>
@@ -244,7 +274,33 @@ const Halaman8: React.FC<Halaman8Props> = ({
               {data.bodyPaintThickness.right.frontFender}mm
             </div>
           </div>
-          <p className="font-bold">SAMPING KANAN</p>
+          <div
+            onClick={() =>
+              editable &&
+              onClick({
+                label: `Ketebalan Sideskirt Kanan`,
+                fieldName: `bodyPaintThickness`,
+                oldValue: data?.bodyPaintThickness.right.sideskirt,
+                subFieldName: "right",
+                subsubFieldName: "sideskirt",
+                type: "normal-input",
+                onClose: () => {},
+              })
+            }
+            className="absolute transform -translate-x-1/2"
+            style={{ top: "77%", right: "38%" }}
+          >
+            <div
+              className={`text-black ${
+                editable
+                  ? "cursor-pointer hover:text-white hover:bg-orange-600 px-2 py-1 rounded-full"
+                  : "cursor-default"
+              }`}
+            >
+              {data.bodyPaintThickness.right.sideskirt}mm
+            </div>
+          </div>
+          <p className="font-bold mt-10">SAMPING KANAN</p>
         </div>
       </div>
 
