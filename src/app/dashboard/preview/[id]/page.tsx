@@ -34,7 +34,7 @@ import {
   SortingKakiKakiData,
   SortingAlatAlatData,
 } from "../../../../components/Preview/SortingReference";
-import HalamanPerluPerhatianPhoto from "@/components/Preview/HalamanPerluPerhatianPhoto";
+import HalamanPerluPerhatianPhoto from "../../../../components/Preview/HalamanPerluPerhatianPhoto";
 
 function DataPage() {
   const dispatch = useDispatch<AppDispatch>();

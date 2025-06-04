@@ -14,7 +14,7 @@ import { CustomBarChart } from "../../components/Dashboard/BarChart";
 import { LineChart } from "../../components/Dashboard/LineChart";
 import useAuth from "../../hooks/useAuth";
 import Link from "next/link";
-import { DatePickerWithRange } from "@/components/Dashboard/DatePicker";
+import { DatePickerWithRange } from "../../components/Dashboard/DatePicker";
 import { DateRange } from "react-day-picker";
 import { format, subDays } from "date-fns";
 
