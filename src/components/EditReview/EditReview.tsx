@@ -16,6 +16,7 @@ import HalamanKakiKakiPhoto from "../Preview/HalamanKakiKakiPhoto";
 import HalamanAlatAlatPhoto from "../Preview/HalamanAlatAlatPhoto";
 import HalamanGeneralPhoto from "../Preview/HalamanGeneralPhoto";
 import HalamanFotoDokumen from "../Preview/HalamanFotoDokumen";
+import HalamanPerluPerhatianPhoto from "../Preview/HalamanPerluPerhatianPhoto";
 import {
   SortingGeneralData,
   SortingExteriorData,
@@ -60,6 +61,8 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
     any[]
   >([]);
   const [dataHalamanFotoDokumenPhotos, setDataHalamanFotoDokumenPhotos] =
+    useState<any[]>([]);
+  const [dataHalamanPerluPerhatianPhotos, setDataHalamanPerluPerhatianPhotos] =
     useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const { isDarkModeEnabled } = useTheme();
@@ -287,6 +290,17 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
       paginatedFotoDokumenPhotos.push(fotoDokumenPhotos.slice(i, i + 2));
     }
     setDataHalamanFotoDokumenPhotos(paginatedFotoDokumenPhotos);
+
+    // Filter photos where needAtention is true
+    const perluPerhatianPhotos = data?.photos?.filter(
+      (photo: any) => photo.needAttention === true
+    );
+
+    const paginatedPerluPerhatianPhotos = [];
+    for (let i = 0; i < (perluPerhatianPhotos || []).length; i += 9) {
+      paginatedPerluPerhatianPhotos.push(perluPerhatianPhotos.slice(i, i + 9));
+    }
+    setDataHalamanPerluPerhatianPhotos(paginatedPerluPerhatianPhotos);
   };
 
   const pages = [
@@ -491,6 +505,28 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
         <Halaman8 data={dataHalaman8} editable={true} onClick={onClick} />
       ),
     },
+    // Dynamically add HalamanPerluPerhatianPhoto pages
+    ...dataHalamanPerluPerhatianPhotos.map((photosChunk, index) => ({
+      id:
+        9 +
+        dataHalamanGeneralPhotos.length +
+        dataHalamanExteriorPhotos.length +
+        dataHalamanInteriorPhotos.length +
+        dataHalamanMesinPhotos.length +
+        dataHalamanKakiKakiPhotos.length +
+        dataHalamanAlatPhotos.length +
+        dataHalamanFotoDokumenPhotos.length +
+        index,
+      title: `Perlu Perhatian - Part ${index + 1}`,
+      description: `Dokumentasi foto perlu perhatian bagian ${index + 1}`,
+      component: (
+        <HalamanPerluPerhatianPhoto
+          data={{ photos: photosChunk }}
+          editable={true}
+          onClick={onClick}
+        />
+      ),
+    })),
   ];
 
   const nextPage = () => {

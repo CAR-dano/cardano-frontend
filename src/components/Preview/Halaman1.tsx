@@ -84,6 +84,11 @@ const Halaman1: React.FC<Halaman1Props> = ({
       value: data.vehicleData.kepemilikan,
     },
     {
+      label: "Plat Nomor",
+      subFieldName: "vehiclePlateNumber",
+      value: data.vehiclePlateNumber,
+    },
+    {
       label: "Pajak 1 Tahun s.d.",
       subFieldName: "pajak1Tahun",
       value: formatDate(data.vehicleData.pajak1Tahun),
@@ -302,7 +307,7 @@ const Halaman1: React.FC<Halaman1Props> = ({
         <p></p>
       </div>
 
-      <div className="w-full border-2 border-black mt-2 mb-8">
+      <div className="w-full border-2 border-black mt-2 mb-5">
         <div className="w-full flex">
           <div className="w-1/2 bg-[#F4622F]">
             <p className="text-center text-white py-2 font-semibold border-r-2  border-black">
@@ -334,7 +339,10 @@ const Halaman1: React.FC<Halaman1Props> = ({
                       editable &&
                       onClick({
                         label: item.label,
-                        fieldName: "vehicleData",
+                        fieldName:
+                          item.subFieldName === "vehiclePlateNumber"
+                            ? "vehiclePlateNumber"
+                            : "vehicleData",
                         oldValue: item.value,
                         type: "normal-input",
                         subFieldName: item.subFieldName,

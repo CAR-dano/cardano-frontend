@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import dashboardService from "./dashboardService";
+import { DateRange } from "react-day-picker";
 
 // Get user from localStorage
 const user =
@@ -30,10 +31,10 @@ const initialState: DashboardState = {
 // Get Main Stats
 export const getMainStats = createAsyncThunk(
   "dashboard/getMainStats",
-  async (_, thunkAPI: any) => {
+  async (dateRange: DateRange | undefined, thunkAPI: any) => {
     try {
       const token = thunkAPI.getState().auth.accessToken;
-      return await dashboardService.getMainStats(token);
+      return await dashboardService.getMainStats(token, dateRange);
     } catch (error: any) {
       const message =
         (error.response &&
@@ -49,10 +50,10 @@ export const getMainStats = createAsyncThunk(
 // Get Combined Dashboard Data
 export const getCombinedDashboardData = createAsyncThunk(
   "dashboard/getCombinedDashboardData",
-  async (_, thunkAPI: any) => {
+  async (dateRange: DateRange | undefined, thunkAPI: any) => {
     try {
       const token = thunkAPI.getState().auth.accessToken;
-      return await dashboardService.getCombinedDashboardData(token);
+      return await dashboardService.getCombinedDashboardData(token, dateRange);
     } catch (error: any) {
       const message =
         (error.response &&

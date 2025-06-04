@@ -35,7 +35,7 @@ export function PieChartComponent({
   totalChanges,
 }: PieChartProps) {
   return (
-    <Card className="flex flex-col w-1/2 border-none p-0 shadow-none">
+    <Card className="flex flex-col w-1/2 border-none p-0 shadow-none bg-transparent">
       <CardContent className="flex-1 pb-0 border-none p-0">
         <ChartContainer
           config={config}

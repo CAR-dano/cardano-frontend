@@ -1,4 +1,5 @@
 "use client";
+import * as React from "react";
 import Loading, { LoadingOverlay } from "../../components/Loading";
 import { AppDispatch, RootState } from "../../lib/store";
 import { useEffect, useState } from "react";
@@ -9,8 +10,13 @@ import {
 } from "../../lib/features/dashboard/dashboardSlice";
 import BranchDistribution from "../../components/Dashboard/BranchDistribution";
 import InspectorPerfomance from "../../components/Dashboard/InspectorPerfomance";
+import { CustomBarChart } from "../../components/Dashboard/BarChart";
+import { LineChart } from "../../components/Dashboard/LineChart";
 import useAuth from "../../hooks/useAuth";
 import Link from "next/link";
+import { DatePickerWithRange } from "@/components/Dashboard/DatePicker";
+import { DateRange } from "react-day-picker";
+import { format, subDays } from "date-fns";
 
 const DashboardHeader = ({
   totalInspections,
@@ -128,14 +134,72 @@ const Dashboard: React.FC = () => {
   const [hasMounted, setHasMounted] = useState(false);
   const { user } = useAuth();
   const isAdmin = user?.role === "ADMIN";
+  const [activeChartType, setActiveChartType] = useState<"bar" | "line">("bar");
+
+  const trendDataMapped = React.useMemo(() => {
+    return (
+      combinedDashboardData?.trendData?.data?.map((d: any) => ({
+        date: d.period_end,
+        count: d.count,
+      })) || []
+    );
+  }, [combinedDashboardData?.trendData?.data]);
+
+  const totalTrendCount = React.useMemo(() => {
+    return trendDataMapped.reduce(
+      (acc: number, curr: any) => acc + curr.count,
+      0
+    );
+  }, [trendDataMapped]);
+
+  const initialDateRange = React.useMemo(() => {
+    const today = new Date();
+    const sevenDaysAgo = subDays(today, 7);
+    return { from: sevenDaysAgo, to: today };
+  }, []);
+
+  const [selectedDateRange, setSelectedDateRange] = useState<
+    DateRange | undefined
+  >(initialDateRange);
+  const [selectedDateLabel, setSelectedDateLabel] = useState<
+    string | undefined
+  >("Last 7 Days");
+
+  const textDateRange = React.useMemo(() => {
+    if (selectedDateLabel) return selectedDateLabel;
+    if (!selectedDateRange?.from) return "Pilih tanggal";
+    if (!selectedDateRange.to)
+      return format(selectedDateRange.from, "LLL dd, y");
+    return `${format(selectedDateRange.from, "LLL dd, y")} - ${format(
+      selectedDateRange.to,
+      "LLL dd, y"
+    )}`;
+  }, [selectedDateRange, selectedDateLabel]);
+
+  const handleDateChange = (
+    dateRange: DateRange | undefined,
+    label?: string
+  ) => {
+    setSelectedDateRange(dateRange);
+    setSelectedDateLabel(label);
+    // Here you would typically dispatch an action to fetch data based on the new date range
+    // For now, we'll just update the state
+  };
 
   useEffect(() => {
     setHasMounted(true);
-    dispatch(getMainStats());
+    dispatch(getMainStats(selectedDateRange));
     if (isAdmin) {
-      dispatch(getCombinedDashboardData());
+      dispatch(getCombinedDashboardData(selectedDateRange));
     }
-  }, [dispatch, isAdmin]);
+  }, [dispatch, isAdmin, selectedDateRange]);
+
+  useEffect(() => {
+    dispatch(getMainStats(selectedDateRange));
+    if (isAdmin) {
+      dispatch(getCombinedDashboardData(selectedDateRange));
+    }
+  }, [selectedDateRange]);
 
   if (!hasMounted) return null;
 
@@ -145,6 +209,14 @@ const Dashboard: React.FC = () => {
   return (
     <div className="space-y-6">
       <DashboardHeader totalInspections={mainStats.totalOrders} />
+
+      <div className="flex justify-between items-center mb-6">
+        <p className="text-xl font-semibold">Data dari {textDateRange}</p>
+        <DatePickerWithRange
+          initialDateRange={selectedDateRange}
+          onDateChange={handleDateChange}
+        />
+      </div>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -243,21 +315,40 @@ const Dashboard: React.FC = () => {
       </div>
 
       {isAdmin && (
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-          <div className="lg:col-span-3 border-none h-full">
-            <BranchDistribution
-              data={combinedDashboardData.branchDistribution}
-            />
+        <>
+          <div className="w-full">
+            {activeChartType === "bar" ? (
+              <CustomBarChart
+                data={trendDataMapped}
+                total={totalTrendCount}
+                setActiveChartType={setActiveChartType}
+                activeChartType={activeChartType}
+              />
+            ) : (
+              <LineChart
+                data={trendDataMapped}
+                total={totalTrendCount}
+                setActiveChartType={setActiveChartType}
+                activeChartType={activeChartType}
+              />
+            )}
           </div>
-          <div className="lg:col-span-2 border-none h-full">
-            <InspectorPerfomance
-              data={combinedDashboardData.inspectorPerformance.data.slice(
-                0,
-                10
-              )}
-            />
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+            <div className="lg:col-span-3 border-none h-full">
+              <BranchDistribution
+                data={combinedDashboardData.branchDistribution}
+              />
+            </div>
+            <div className="lg:col-span-2 border-none h-full">
+              <InspectorPerfomance
+                data={combinedDashboardData.inspectorPerformance.data.slice(
+                  0,
+                  10
+                )}
+              />
+            </div>
           </div>
-        </div>
+        </>
       )}
 
       {/* Sample Data */}
