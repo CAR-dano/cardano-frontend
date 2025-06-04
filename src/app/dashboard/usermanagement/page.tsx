@@ -164,7 +164,11 @@ const Database: React.FC = () => {
           <LoadingSkeleton rows={4} />
         </div>
       ) : data ? (
-        <TableUsers isDatabase={true} data={data} />
+        <TableUsers
+          isDatabase={true}
+          data={data}
+          handleRefresh={handleRefresh}
+        />
       ) : (
         <div className="flex flex-col items-center justify-center py-16 px-4">
           <div className="text-center">

@@ -16,7 +16,7 @@ import DialogEditRole from "../Form/DialogEditRole";
 import LoadingScreen from "../../components/LoadingFullScreen";
 import { updateRole } from "../../lib/features/admin/adminSlice";
 
-const TableData = ({ data }: any) => {
+const TableData = ({ data, handleRefresh }: any) => {
   const [fetchStatus, setFetchStatus] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
@@ -31,6 +31,7 @@ const TableData = ({ data }: any) => {
       updateRole({ id: userId, role: newRole, token: accessToken })
     );
     setEditDialogOpen(null);
+    handleRefresh();
   };
 
   // Generate initials for avatar
@@ -234,7 +235,7 @@ const TableInfo: React.FC<TableInfoProps> = ({ data }) => {
   );
 };
 
-const TableUsers = ({ data, isDatabase }: any) => {
+const TableUsers = ({ data, isDatabase, handleRefresh }: any) => {
   const loading = useAppSelector((state) => state.admin.isLoading);
   return (
     <div className="flex flex-col space-y-4">
@@ -244,7 +245,11 @@ const TableUsers = ({ data, isDatabase }: any) => {
         <>
           <div className="overflow-x-auto">
             <div className="w-full inline-block align-middle">
-              <TableData data={data} isDatabase={isDatabase} />
+              <TableData
+                data={data}
+                isDatabase={isDatabase}
+                handleRefresh={handleRefresh}
+              />
               {data && data.length > 0 && (
                 <div className="mt-4">
                   <TableInfo data={data} />

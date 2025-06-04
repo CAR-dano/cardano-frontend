@@ -54,7 +54,7 @@ export function LineChart({
   activeChartType,
 }: LineChartProps) {
   return (
-    <Card className="py-0">
+    <Card className="py-0 bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700">
       <CardHeader className="flex flex-col items-stretch border-b !p-0 sm:flex-row py-5">
         <div className="flex flex-1 flex-row justify-between gap-1 px-6 py-5 ">
           <div className=" flex flex-col justify-center gap-1">
@@ -98,7 +98,7 @@ export function LineChart({
             accessibilityLayer
             data={data}
             margin={{
-              left: 12,
+              left: 0,
               right: 30,
             }}
           >
