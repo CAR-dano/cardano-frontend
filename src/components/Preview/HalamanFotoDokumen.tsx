@@ -2,6 +2,7 @@ import React from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import PhotoItemWithDynamicText from "./PhotoItemWithDynamicText";
+import PhotoItemGeneral from "./PhotoItemGeneral";
 
 interface HalamanFotoDokumenProps {
   data: any;
@@ -45,7 +46,8 @@ const HalamanFotoDokumen: React.FC<HalamanFotoDokumenProps> = ({
 
         <div className="flex flex-wrap gap-1 gap-y-10 px-1 py-10 justify-around">
           {data.photos.map((item: any, index: any) => (
-            <PhotoItemWithDynamicText
+            <PhotoItemGeneral
+              isLandscape={true}
               key={index}
               item={item}
               formatPath={formatPath}

@@ -18,6 +18,7 @@ interface FormEditPhotoProps {
   };
   inspectionId: string;
   onChange?: (value: any) => void;
+  onSave?: (result: { success: boolean }) => void;
 }
 
 function FormEditPhoto({
@@ -26,6 +27,7 @@ function FormEditPhoto({
   photo,
   inspectionId,
   onChange,
+  onSave,
 }: FormEditPhotoProps) {
   const [photoLabel, setPhotoLabel] = useState(photo.label || "");
   const [needAttention, setNeedAttention] = useState(
@@ -52,11 +54,6 @@ function FormEditPhoto({
 
   const handleLabelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPhotoLabel(e.target.value);
-    onChange?.({
-      label: e.target.value,
-      needAttention,
-      displayInPdf,
-    });
   };
 
   const handleNeedAttentionChange = (
@@ -64,21 +61,11 @@ function FormEditPhoto({
   ) => {
     const checked = e.target.checked;
     setNeedAttention(checked);
-    onChange?.({
-      label: photoLabel,
-      needAttention: checked,
-      displayInPdf,
-    });
   };
 
   const handleDisplayInPdfChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const checked = e.target.checked;
     setDisplayInPdf(checked);
-    onChange?.({
-      label: photoLabel,
-      needAttention,
-      displayInPdf: checked,
-    });
   };
 
   const handleSave = async () => {
@@ -90,13 +77,22 @@ function FormEditPhoto({
           photosId: photo.id,
           data: {
             label: photoLabel,
-            needAtention: needAttention,
+            needAttention: needAttention,
             displayInPdf: displayInPdf,
           },
         })
       ).unwrap();
 
+      onChange?.({
+        label: photoLabel,
+        needAttention: needAttention,
+        displayInPdf: displayInPdf,
+      });
+
       console.log("Photo updated successfully");
+      onSave?.({
+        success: true,
+      });
     } catch (error) {
       console.error("Error updating photo:", error);
     } finally {

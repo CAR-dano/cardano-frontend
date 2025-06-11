@@ -478,6 +478,7 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
           data={{ photos: photosChunk }}
           editable={true}
           onClick={onClick}
+          inspectionId={inspectionId}
         />
       ),
     })),
@@ -532,6 +533,7 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
           data={{ photos: photosChunk }}
           editable={true}
           onClick={onClick}
+          inspectionId={inspectionId}
         />
       ),
     })),

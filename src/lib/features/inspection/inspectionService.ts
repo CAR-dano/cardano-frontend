@@ -70,7 +70,7 @@ const searchByVehiclePlat = async (platNumber: string) => {
 };
 
 interface EditPartPhoto {
-  needAtention?: boolean;
+  needAttention?: boolean;
   label?: string;
   displayInPdf?: boolean;
 }
@@ -82,8 +82,8 @@ const updatePhoto = async (
 ) => {
   const formData = new FormData();
 
-  if (data.needAtention !== undefined) {
-    formData.append("needAtention", data.needAtention.toString());
+  if (data.needAttention !== undefined) {
+    formData.append("needAttention", data.needAttention.toString());
   }
 
   if (data.label !== undefined) {

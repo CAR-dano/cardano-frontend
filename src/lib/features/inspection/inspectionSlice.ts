@@ -121,7 +121,7 @@ export const updatePhoto = createAsyncThunk(
     }: {
       id: string;
       photosId: string;
-      data: { needAtention?: boolean; label?: string; displayInPdf?: boolean };
+      data: { needAttention?: boolean; label?: string; displayInPdf?: boolean };
     },
     thunkAPI
   ) => {
