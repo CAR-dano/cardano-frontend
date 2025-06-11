@@ -179,17 +179,17 @@ const Halaman2: React.FC<Halaman2Props> = ({
                 onClick({
                   label: `Inspection Summary`,
                   fieldName: `inspectionSummary`,
-                  oldValue: data.inspectionSummary.exteriorNotes,
-                  subFieldName: "exteriorNotes",
+                  oldValue: data.inspectionSummary.eksteriorNotes,
+                  subFieldName: "eksteriorNotes",
                   type: "penilaian-array",
                   onClose: () => {},
                 })
               }
               className="text-left text-[13px] text-black py-2 px-3 font-medium"
             >
-              {data.inspectionSummary.exteriorNotes ? (
+              {data.inspectionSummary.eksteriorNotes ? (
                 <ol className="list-disc list-inside">
-                  {data.inspectionSummary.exteriorNotes.map(
+                  {data.inspectionSummary.eksteriorNotes.map(
                     (note: string, index: number) => (
                       <li key={index} className="font-semibold">
                         {capitalizeFirstLetterOfSentences(note)}
@@ -256,7 +256,7 @@ const Halaman2: React.FC<Halaman2Props> = ({
             >
               <ul className="list-none">
                 {data.inspectionSummary.estimasiPerbaikan.map((item: any) => (
-                  <li key={item.namaPart} className="font-semibold">
+                  <li key={item.namaPart} className="text-black font-semibold">
                     {capitalizeFirstLetterOfSentences(item.namaPart)}
                   </li>
                 ))}
@@ -275,7 +275,7 @@ const Halaman2: React.FC<Halaman2Props> = ({
             >
               <ul className="list-none">
                 {data.inspectionSummary.estimasiPerbaikan.map((item: any) => (
-                  <li key={item.harga} className="font-semibold">
+                  <li key={item.harga} className="text-black font-semibold">
                     {formatPrice(item.harga)}
                   </li>
                 ))}

@@ -181,7 +181,8 @@ const Halaman8: React.FC<Halaman8Props> = ({
                 label: `Ketebalan Cat Depan`,
                 fieldName: `bodyPaintThickness`,
                 oldValue: data?.bodyPaintThickness.right.rearFender,
-                subFieldName: "right.rearFender",
+                subFieldName: "right",
+                subsubFieldName: "rearFender",
                 type: "normal-input",
                 onClose: () => {},
               })
@@ -206,7 +207,8 @@ const Halaman8: React.FC<Halaman8Props> = ({
                 label: `Ketebalan Cat Depan`,
                 fieldName: `bodyPaintThickness`,
                 oldValue: data?.bodyPaintThickness.right.rearDoor,
-                subFieldName: "right.rearDoor",
+                subFieldName: "right",
+                subsubFieldName: "rearDoor",
                 type: "normal-input",
                 onClose: () => {},
               })
@@ -231,7 +233,8 @@ const Halaman8: React.FC<Halaman8Props> = ({
                 label: `Ketebalan Cat Depan`,
                 fieldName: `bodyPaintThickness`,
                 oldValue: data?.bodyPaintThickness.right.frontDoor,
-                subFieldName: "right.frontDoor",
+                subFieldName: "right",
+                subsubFieldName: "frontDoor",
                 type: "normal-input",
                 onClose: () => {},
               })
@@ -256,7 +259,8 @@ const Halaman8: React.FC<Halaman8Props> = ({
                 label: `Ketebalan Cat Depan`,
                 fieldName: `bodyPaintThickness`,
                 oldValue: data?.bodyPaintThickness.right.frontFender,
-                subFieldName: "right.frontFender",
+                subFieldName: "right",
+                subsubFieldName: "frontFender",
                 type: "normal-input",
                 onClose: () => {},
               })

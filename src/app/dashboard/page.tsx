@@ -123,6 +123,26 @@ const StatsCard = ({
   return href ? <Link href={href}>{card}</Link> : card;
 };
 
+const getChangeType = (
+  changePercentage: string | undefined
+): "increase" | "decrease" | "neutral" => {
+  if (!changePercentage) return "neutral";
+
+  // Remove the '+' or '-' sign and '%' symbol to get the numeric value
+  const numericValue = parseFloat(changePercentage.replace(/[+\-%]/g, ""));
+
+  if (
+    changePercentage.startsWith("+") ||
+    (!changePercentage.startsWith("-") && numericValue > 0)
+  ) {
+    return "increase";
+  } else if (changePercentage.startsWith("-") || numericValue < 0) {
+    return "decrease";
+  } else {
+    return "neutral";
+  }
+};
+
 const Dashboard: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const {
@@ -222,9 +242,9 @@ const Dashboard: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatsCard
           title="Total Inspeksi"
-          value={mainStats.totalOrders}
-          change="+12% dari bulan lalu"
-          changeType="increase"
+          value={mainStats.totalOrders.count}
+          change={mainStats.totalOrders.changePercentage}
+          changeType={getChangeType(mainStats.totalOrders.changePercentage)}
           color="bg-blue-100"
           href="/dashboard"
           icon={
@@ -245,9 +265,9 @@ const Dashboard: React.FC = () => {
         />
         <StatsCard
           title="Perlu Review"
-          value={mainStats.needReview}
-          change="Prioritas tinggi"
-          changeType="neutral"
+          value={mainStats.needReview.count}
+          change={mainStats.needReview.changePercentage}
+          changeType={getChangeType(mainStats.needReview.changePercentage)}
           color="bg-yellow-100"
           href="/dashboard/review"
           icon={
@@ -268,9 +288,9 @@ const Dashboard: React.FC = () => {
         />
         <StatsCard
           title="Disetujui"
-          value={mainStats.approved}
-          change="+8% minggu ini"
-          changeType="increase"
+          value={mainStats.approved.count}
+          change={mainStats.approved.changePercentage}
+          changeType={getChangeType(mainStats.approved.changePercentage)}
           color="bg-green-100"
           href="/dashboard/database"
           icon={
@@ -291,9 +311,9 @@ const Dashboard: React.FC = () => {
         />
         <StatsCard
           title="Di Blockchain"
-          value={mainStats.archived}
-          change="Tersimpan aman"
-          changeType="neutral"
+          value={mainStats.archived.count}
+          change={mainStats.archived.changePercentage}
+          changeType={getChangeType(mainStats.archived.changePercentage)}
           color="bg-purple-100"
           href="/dashboard/database"
           icon={

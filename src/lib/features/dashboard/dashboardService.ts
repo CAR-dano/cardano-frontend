@@ -6,8 +6,8 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 // Dashboard Main Stats
 interface DateParams {
-  startDate?: string;
-  endDate?: string;
+  start_date?: string;
+  end_date?: string;
 }
 
 export const getMainStats = async (token: string, dateRange?: DateRange) => {
@@ -19,10 +19,10 @@ export const getMainStats = async (token: string, dateRange?: DateRange) => {
   };
 
   if (dateRange?.from) {
-    config.params.startDate = format(dateRange.from, "yyyy-MM-dd");
+    config.params.start_date = format(dateRange.from, "yyyy-MM-dd");
   }
   if (dateRange?.to) {
-    config.params.endDate = format(dateRange.to, "yyyy-MM-dd");
+    config.params.end_date = format(dateRange.to, "yyyy-MM-dd");
   }
 
   const response = await axios.get(`${API_URL}/dashboard/main-stats`, config);
@@ -42,10 +42,10 @@ export const getCombinedDashboardData = async (
   };
 
   if (dateRange?.from) {
-    config.params.startDate = format(dateRange.from, "yyyy-MM-dd");
+    config.params.start_date = format(dateRange.from, "yyyy-MM-dd");
   }
   if (dateRange?.to) {
-    config.params.endDate = format(dateRange.to, "yyyy-MM-dd");
+    config.params.end_date = format(dateRange.to, "yyyy-MM-dd");
   }
 
   const configOrder = {

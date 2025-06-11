@@ -31,11 +31,15 @@ const Halaman1: React.FC<Halaman1Props> = ({
     return formatted;
   };
 
-  const formatCurrency = (value: number) => {
-    if (value === undefined || value === null) {
-      return "0";
+  const formatCurrency = (value: number | string) => {
+    // Convert string to number if needed
+    const numValue = typeof value === "string" ? parseFloat(value) : value;
+
+    if (numValue === undefined || numValue === null || isNaN(numValue)) {
+      return "Rp 0";
     }
-    return value.toLocaleString("id-ID", {
+
+    return numValue.toLocaleString("id-ID", {
       style: "currency",
       currency: "IDR",
     });
@@ -47,16 +51,23 @@ const Halaman1: React.FC<Halaman1Props> = ({
     return cleanedText.replace(/(^\s*\w|[.!?]\s*\w)/g, (c) => c.toUpperCase());
   };
 
+  const capitalizeFirstLetter = (text: string | number) => {
+    if (typeof text === "number") return text.toString();
+    if (!text) return "";
+    const str = text.toString();
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
+
   const dataKendaraan = [
     {
       label: "Merk Kendaraan",
       subFieldName: "merekKendaraan",
-      value: data.vehicleData.merekKendaraan,
+      value: capitalizeFirstLetter(data.vehicleData.merekKendaraan),
     },
     {
       label: "Tipe Kendaraan",
       subFieldName: "tipeKendaraan",
-      value: data.vehicleData.tipeKendaraan,
+      value: capitalizeFirstLetter(data.vehicleData.tipeKendaraan),
     },
     {
       label: "Tahun",
@@ -66,12 +77,12 @@ const Halaman1: React.FC<Halaman1Props> = ({
     {
       label: "Transmisi",
       subFieldName: "transmisi",
-      value: data.vehicleData.transmisi,
+      value: capitalizeFirstLetter(data.vehicleData.transmisi),
     },
     {
       label: "Warna Kendaraan",
       subFieldName: "warnaKendaraan",
-      value: data.vehicleData.warnaKendaraan,
+      value: capitalizeFirstLetter(data.vehicleData.warnaKendaraan),
     },
     {
       label: "Odo Meter",
@@ -437,15 +448,23 @@ const Halaman1: React.FC<Halaman1Props> = ({
             >
               Deskripsi:
               <br />
-              <ol className="ml-2 list-disc list-inside text-[12px] font-semibold">
-                {data.inspectionSummary.deskripsiKeseluruhan.map(
-                  (item: any, index: number) => (
-                    <li key={index} className="text-[12px] font-semibold ">
-                      {capitalizeFirstLetterOfSentences(item)}
-                    </li>
-                  )
-                )}
-              </ol>
+              {data.inspectionSummary.deskripsiKeseluruhan.length === 1 ? (
+                <p className="text-justify mt-2 text-[12px] font-semibold">
+                  {capitalizeFirstLetterOfSentences(
+                    data.inspectionSummary.deskripsiKeseluruhan[0]
+                  )}
+                </p>
+              ) : (
+                <ol className="ml-2 list-disc list-inside text-[12px] font-semibold">
+                  {data.inspectionSummary.deskripsiKeseluruhan.map(
+                    (item: any, index: number) => (
+                      <li key={index} className="text-[12px] font-semibold ">
+                        {capitalizeFirstLetterOfSentences(item)}
+                      </li>
+                    )
+                  )}
+                </ol>
+              )}
             </div>
           </div>
         </div>

@@ -29,8 +29,10 @@ export default function DashboardClientLayout({
   }
 
   if (isPreviewPage) {
-    // Render children directly without dashboard layout for preview pages
-    return <>{children}</>;
+    // Render children with AuthGuard but without dashboard layout for preview pages
+    return (
+      <AuthGuard requiredRoles={["ADMIN", "REVIEWER"]}>{children}</AuthGuard>
+    );
   }
 
   return (
