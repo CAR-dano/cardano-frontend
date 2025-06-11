@@ -111,6 +111,31 @@ export const searchByVehiclePlat = createAsyncThunk(
   }
 );
 
+export const updatePhoto = createAsyncThunk(
+  "inspection/updatePhoto",
+  async (
+    {
+      id,
+      photosId,
+      data,
+    }: {
+      id: string;
+      photosId: string;
+      data: { needAtention?: boolean; label?: string; displayInPdf?: boolean };
+    },
+    thunkAPI
+  ) => {
+    try {
+      console.log("Updating photo with data:", id);
+      const payload = await inspectionService.updatePhoto(id, photosId, data);
+      return payload;
+    } catch (error: any) {
+      const message = error?.response?.data?.message;
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export interface EditedItem {
   inspectionId: string;
   fieldName: string;

@@ -381,8 +381,28 @@ const Edit = () => {
   );
 
   const handleEditReviewClick = (data: any) => {
-    setDialogData(data);
-    setIsDialogOpen(true);
+    if (data.type !== "photo_update") {
+      setDialogData(data);
+      setIsDialogOpen(true);
+    } else {
+      updateFoto(data.photoId, data.data);
+    }
+  };
+
+  const updateFoto = (photoId: string, updatedData: any) => {
+    if (!id) return;
+
+    // Update the data state with the new photo data
+    setData((prevData: any) => {
+      if (!prevData || !prevData.photos) return prevData;
+
+      return {
+        ...prevData,
+        photos: prevData.photos.map((photo: any) =>
+          photo.id === photoId ? { ...photo, ...updatedData } : photo
+        ),
+      };
+    });
   };
 
   const getData = async (id: string) => {
@@ -415,7 +435,6 @@ const Edit = () => {
   };
 
   const updateData = (data: any) => {
-    console.log("updateData called with data:", data);
     data.map((item: any) => {
       const {
         inspectionId,
@@ -734,7 +753,11 @@ const Edit = () => {
             router={router}
           />
           <div className="w-full mb-20">
-            <EditReviewComponents data={data} onClick={handleEditReviewClick} />
+            <EditReviewComponents
+              data={data}
+              onClick={handleEditReviewClick}
+              inspectionId={id}
+            />
           </div>
 
           {/* Bottom Action Bar */}

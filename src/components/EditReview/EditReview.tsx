@@ -28,13 +28,15 @@ import {
 import { useTheme } from "../../contexts/ThemeContext";
 
 interface EditReviewComponentsProps {
-  onClick: (data: any) => void; // Fungsi yang dipanggil saat klik
-  data: any; // Data yang akan diproses
+  onClick: (data: any) => void;
+  data: any;
+  inspectionId?: string; // Add inspectionId prop
 }
 
 const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
   onClick,
   data,
+  inspectionId = "",
 }) => {
   const [dataHalaman1, setDataHalaman1] = useState<any>(null);
   const [dataHalaman2, setDataHalaman2] = useState<any>(null);
@@ -362,6 +364,7 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
           data={{ photos: photosChunk }}
           editable={true}
           onClick={onClick}
+          inspectionId={inspectionId}
         />
       ),
     })),
@@ -375,6 +378,7 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
           data={{ photos: photosChunk }}
           editable={true}
           onClick={onClick}
+          inspectionId={inspectionId}
         />
       ),
     })),
@@ -392,6 +396,7 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
           data={{ photos: photosChunk }}
           editable={true}
           onClick={onClick}
+          inspectionId={inspectionId}
         />
       ),
     })),
@@ -410,6 +415,7 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
           data={{ photos: photosChunk }}
           editable={true}
           onClick={onClick}
+          inspectionId={inspectionId}
         />
       ),
     })),
@@ -429,6 +435,7 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
           data={{ photos: photosChunk }}
           editable={true}
           onClick={onClick}
+          inspectionId={inspectionId}
         />
       ),
     })),
@@ -449,6 +456,7 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
           data={{ photos: photosChunk }}
           editable={true}
           onClick={onClick}
+          inspectionId={inspectionId}
         />
       ),
     })),

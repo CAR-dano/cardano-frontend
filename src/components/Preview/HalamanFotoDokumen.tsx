@@ -1,29 +1,34 @@
 import React from "react";
 import Header from "./Header";
 import Footer from "./Footer";
-import PhotoItemGeneral from "./PhotoItemGeneral";
+import PhotoItemWithDynamicText from "./PhotoItemWithDynamicText";
 
 interface HalamanFotoDokumenProps {
   data: any;
   editable: boolean;
   onClick?: (data: any) => void;
+  inspectionId?: string;
 }
 
 const HalamanFotoDokumen: React.FC<HalamanFotoDokumenProps> = ({
   data,
   editable,
   onClick = () => {},
+  inspectionId = "",
 }) => {
   if (data == undefined || data == null) {
-    return <div>Loading...</div>; // atau bisa return null
+    return <div>Loading...</div>;
   }
 
   const PHOTO_URL = process.env.NEXT_PUBLIC_PDF_URL;
 
   const formatPath = (path: string) => {
     if (!path) return "/assets/placeholder-photo.png";
-
     return PHOTO_URL + "/uploads/inspection-photos/" + path;
+  };
+
+  const handlePhotoUpdate = (photoId: string, updatedData: any) => {
+    onClick?.({ type: "photo_update", photoId, data: updatedData });
   };
 
   return (
@@ -38,18 +43,19 @@ const HalamanFotoDokumen: React.FC<HalamanFotoDokumenProps> = ({
           </div>
         </div>
 
-        <div className="flex flex-col justify-center items-center h-full py-10 gap-10">
-          {data.photos.slice(0, 2).map((item: any, index: any) => (
-            <PhotoItemGeneral
+        <div className="flex flex-wrap gap-1 gap-y-10 px-1 py-10 justify-around">
+          {data.photos.map((item: any, index: any) => (
+            <PhotoItemWithDynamicText
               key={index}
               item={item}
               formatPath={formatPath}
-              isLandscape={true}
+              editable={editable}
+              inspectionId={inspectionId}
+              onPhotoUpdate={handlePhotoUpdate}
             />
           ))}
         </div>
       </div>
-
       <Footer />
     </div>
   );

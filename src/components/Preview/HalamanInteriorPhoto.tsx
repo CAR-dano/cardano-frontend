@@ -7,33 +7,32 @@ interface HalamanInteriorPhotoProps {
   data: any;
   editable: boolean;
   onClick?: (data: any) => void;
+  inspectionId?: string;
 }
 
 const HalamanInteriorPhoto: React.FC<HalamanInteriorPhotoProps> = ({
   data,
   editable,
   onClick = () => {},
+  inspectionId = "",
 }) => {
   if (data == undefined || data == null) {
-    return <div>Loading...</div>; // atau bisa return null
+    return <div>Loading...</div>;
   }
-
-  const findUrlPhoto = (photos: any, label: string) => {
-    if (!photos) return "";
-    const foundPhoto = photos.find((photo: any) => photo.label === label);
-    return foundPhoto ? foundPhoto.path : "";
-  };
 
   const PHOTO_URL = process.env.NEXT_PUBLIC_PDF_URL;
 
   const formatPath = (path: string) => {
     if (!path) return "/assets/placeholder-photo.png";
-
     return PHOTO_URL + "/uploads/inspection-photos/" + path;
   };
 
+  const handlePhotoUpdate = (photoId: string, updatedData: any) => {
+    onClick?.({ type: "photo_update", photoId, data: updatedData });
+  };
+
   return (
-    <div className="px-[30px] font-poppins">
+    <div className="text-black px-[30px] font-poppins">
       <Header />
       <div className="w-full border-2 border-black mt-12 mb-8 min-h-[830px]">
         <div className="w-full flex">
@@ -50,11 +49,13 @@ const HalamanInteriorPhoto: React.FC<HalamanInteriorPhotoProps> = ({
               key={index}
               item={item}
               formatPath={formatPath}
+              editable={editable}
+              inspectionId={inspectionId}
+              onPhotoUpdate={handlePhotoUpdate}
             />
           ))}
         </div>
       </div>
-
       <Footer />
     </div>
   );

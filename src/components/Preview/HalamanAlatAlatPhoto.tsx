@@ -7,23 +7,28 @@ interface HalamanAlatAlatPhotoProps {
   data: any;
   editable: boolean;
   onClick?: (data: any) => void;
+  inspectionId?: string;
 }
 
 const HalamanAlatAlatPhoto: React.FC<HalamanAlatAlatPhotoProps> = ({
   data,
   editable,
   onClick = () => {},
+  inspectionId = "",
 }) => {
   if (data == undefined || data == null) {
-    return <div>Loading...</div>; // atau bisa return null
+    return <div>Loading...</div>;
   }
 
   const PHOTO_URL = process.env.NEXT_PUBLIC_PDF_URL;
 
   const formatPath = (path: string) => {
     if (!path) return "/assets/placeholder-photo.png";
-
     return PHOTO_URL + "/uploads/inspection-photos/" + path;
+  };
+
+  const handlePhotoUpdate = (photoId: string, updatedData: any) => {
+    onClick?.({ type: "photo_update", photoId, data: updatedData });
   };
 
   return (
@@ -33,7 +38,7 @@ const HalamanAlatAlatPhoto: React.FC<HalamanAlatAlatPhotoProps> = ({
         <div className="w-full flex">
           <div className="w-full bg-[#E95F37]">
             <p className="text-left text-white py-3 px-3 font-semibold border-b-2 border-black">
-              Foto Alat Alat
+              Foto Alat-Alat
             </p>
           </div>
         </div>
@@ -44,11 +49,13 @@ const HalamanAlatAlatPhoto: React.FC<HalamanAlatAlatPhotoProps> = ({
               key={index}
               item={item}
               formatPath={formatPath}
+              editable={editable}
+              inspectionId={inspectionId}
+              onPhotoUpdate={handlePhotoUpdate}
             />
           ))}
         </div>
       </div>
-
       <Footer />
     </div>
   );

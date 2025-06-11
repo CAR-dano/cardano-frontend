@@ -50,7 +50,6 @@ const getDataEdited = async (id: string, token: string) => {
 };
 
 const saveChanges = async (id: any, data: any) => {
-  console.log("savechanges", data);
   const response = await axios.put(`${LOCAL_API_URL}/inspections/${id}`, data);
   return response.data;
 };
@@ -70,6 +69,43 @@ const searchByVehiclePlat = async (platNumber: string) => {
   return response.data;
 };
 
+interface EditPartPhoto {
+  needAtention?: boolean;
+  label?: string;
+  displayInPdf?: boolean;
+}
+
+const updatePhoto = async (
+  id: string,
+  photosId: string,
+  data: EditPartPhoto
+) => {
+  const formData = new FormData();
+
+  if (data.needAtention !== undefined) {
+    formData.append("needAtention", data.needAtention.toString());
+  }
+
+  if (data.label !== undefined) {
+    formData.append("label", data.label);
+  }
+
+  if (data.displayInPdf !== undefined) {
+    formData.append("displayInPdf", data.displayInPdf.toString());
+  }
+
+  const response = await axios.put(
+    `${LOCAL_API_URL}/inspections/${id}/photos/${photosId}`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+  return response.data;
+};
+
 const inspectionService = {
   getDataForReview,
   getDataForPreview,
@@ -79,5 +115,6 @@ const inspectionService = {
   saveChanges,
   mintingToBlockchain,
   searchByVehiclePlat,
+  updatePhoto,
 };
 export default inspectionService;

@@ -7,29 +7,28 @@ interface HalamanGeneralPhotoProps {
   data: any;
   editable: boolean;
   onClick?: (data: any) => void;
+  inspectionId?: string;
 }
 
 const HalamanGeneralPhoto: React.FC<HalamanGeneralPhotoProps> = ({
   data,
   editable,
   onClick = () => {},
+  inspectionId = "",
 }) => {
   if (data == undefined || data == null) {
-    return <div>Loading...</div>; // atau bisa return null
+    return <div>Loading...</div>;
   }
-
-  const findUrlPhoto = (photos: any, label: string) => {
-    if (!photos) return "";
-    const foundPhoto = photos.find((photo: any) => photo.label === label);
-    return foundPhoto ? foundPhoto.path : "";
-  };
 
   const PHOTO_URL = process.env.NEXT_PUBLIC_PDF_URL;
 
   const formatPath = (path: string) => {
     if (!path) return "/assets/placeholder-photo.png";
-
     return PHOTO_URL + "/uploads/inspection-photos/" + path;
+  };
+
+  const handlePhotoUpdate = (photoId: string, updatedData: any) => {
+    onClick?.({ type: "photo_update", photoId, data: updatedData });
   };
 
   return (
@@ -44,17 +43,19 @@ const HalamanGeneralPhoto: React.FC<HalamanGeneralPhotoProps> = ({
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-1 gap-y-10 px-1 py-10 justify-around ">
+        <div className="flex flex-wrap gap-1 gap-y-10 px-1 py-10 justify-around">
           {data.photos.map((item: any, index: any) => (
             <PhotoItemWithDynamicText
               key={index}
               item={item}
               formatPath={formatPath}
+              editable={editable}
+              inspectionId={inspectionId}
+              onPhotoUpdate={handlePhotoUpdate}
             />
           ))}
         </div>
       </div>
-
       <Footer />
     </div>
   );
