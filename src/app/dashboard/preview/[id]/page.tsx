@@ -91,9 +91,9 @@ function DataPage() {
   }, []);
 
   const getImageTampakDepan = (data: any) => {
-    // find in data.photos
+    // find in data.photos with displayInPdf filter
     const photo = data?.photos?.find(
-      (item: any) => item.label === "Tampak Depan"
+      (item: any) => item.label === "Tampak Depan" && item.displayInPdf === true
     );
     return photo ? photo.path : "";
   };
@@ -131,12 +131,14 @@ function DataPage() {
       testDrive: data?.detailedAssessment?.testDrive,
     });
 
-    // Filter and sort fotoGeneral
+    // Filter and sort fotoGeneral - only include photos with displayInPdf = true
     const fotoGeneralWajib = data?.photos?.filter(
-      (photo: any) => photo.category === "General Wajib"
+      (photo: any) =>
+        photo.category === "General Wajib" && photo.displayInPdf === true
     );
     const fotoGeneralTambahan = data?.photos?.filter(
-      (photo: any) => photo.category === "General Tambahan"
+      (photo: any) =>
+        photo.category === "General Tambahan" && photo.displayInPdf === true
     );
 
     fotoGeneralWajib?.sort((a: any, b: any) => {
@@ -166,12 +168,14 @@ function DataPage() {
     }
     setDataHalamanGeneralPhotos(paginatedGeneralPhotos);
 
-    // Filter exterior photos and sort them
+    // Filter exterior photos and sort them - only include photos with displayInPdf = true
     const exteriorWajibPhotos = data?.photos?.filter(
-      (photo: any) => photo.category === "Eksterior Wajib"
+      (photo: any) =>
+        photo.category === "Eksterior Wajib" && photo.displayInPdf === true
     );
     const exteriorTambahanPhotos = data?.photos?.filter(
-      (photo: any) => photo.category === "Eksterior Tambahan"
+      (photo: any) =>
+        photo.category === "Eksterior Tambahan" && photo.displayInPdf === true
     );
 
     exteriorWajibPhotos?.sort((a: any, b: any) => {
@@ -191,12 +195,14 @@ function DataPage() {
     }
     setDataHalamanExteriorPhotos(paginatedExteriorPhotos);
 
-    // Filter interior photos and sort them
+    // Filter interior photos and sort them - only include photos with displayInPdf = true
     const interiorWajibPhotos = data?.photos?.filter(
-      (photo: any) => photo.category === "Interior Wajib"
+      (photo: any) =>
+        photo.category === "Interior Wajib" && photo.displayInPdf === true
     );
     const interiorTambahanPhotos = data?.photos?.filter(
-      (photo: any) => photo.category === "Interior Tambahan"
+      (photo: any) =>
+        photo.category === "Interior Tambahan" && photo.displayInPdf === true
     );
 
     interiorWajibPhotos?.sort((a: any, b: any) => {
@@ -216,12 +222,14 @@ function DataPage() {
     }
     setDataHalamanInteriorPhotos(paginatedInteriorPhotos);
 
-    // Filter Mesin photos and sort them
+    // Filter Mesin photos and sort them - only include photos with displayInPdf = true
     const mesinWajibPhotos = data?.photos?.filter(
-      (photo: any) => photo.category === "Mesin Wajib"
+      (photo: any) =>
+        photo.category === "Mesin Wajib" && photo.displayInPdf === true
     );
     const mesinTambahanPhotos = data?.photos?.filter(
-      (photo: any) => photo.category === "Mesin Tambahan"
+      (photo: any) =>
+        photo.category === "Mesin Tambahan" && photo.displayInPdf === true
     );
 
     mesinWajibPhotos?.sort((a: any, b: any) => {
@@ -241,12 +249,14 @@ function DataPage() {
     }
     setDataHalamanMesinPhotos(paginatedMesinPhotos);
 
-    // Filter KakiKaki photos and sort them
+    // Filter KakiKaki photos and sort them - only include photos with displayInPdf = true
     const kakiKakiWajibPhotos = data?.photos?.filter(
-      (photo: any) => photo.category === "KakiKaki Wajib"
+      (photo: any) =>
+        photo.category === "KakiKaki Wajib" && photo.displayInPdf === true
     );
     const kakiKakiTambahanPhotos = data?.photos?.filter(
-      (photo: any) => photo.category === "KakiKaki Tambahan"
+      (photo: any) =>
+        photo.category === "KakiKaki Tambahan" && photo.displayInPdf === true
     );
 
     kakiKakiWajibPhotos?.sort((a: any, b: any) => {
@@ -266,12 +276,14 @@ function DataPage() {
     }
     setDataHalamanKakiKakiPhotos(paginatedKakiKakiPhotos);
 
-    // Filter AlatAlat photos and sort them
+    // Filter AlatAlat photos and sort them - only include photos with displayInPdf = true
     const alatAlatWajibPhotos = data?.photos?.filter(
-      (photo: any) => photo.category === "Alat-alat Wajib"
+      (photo: any) =>
+        photo.category === "Alat-alat Wajib" && photo.displayInPdf === true
     );
     const alatAlatTambahanPhotos = data?.photos?.filter(
-      (photo: any) => photo.category === "Alat-alat Tambahan"
+      (photo: any) =>
+        photo.category === "Alat-alat Tambahan" && photo.displayInPdf === true
     );
 
     alatAlatWajibPhotos?.sort((a: any, b: any) => {
@@ -298,9 +310,10 @@ function DataPage() {
       bodyPaintThickness: data?.bodyPaintThickness,
     });
 
-    // Filter Foto Dokumen photos
+    // Filter Foto Dokumen photos - only include photos with displayInPdf = true
     const fotoDokumenPhotos = data?.photos?.filter(
-      (photo: any) => photo.category === "Foto Dokumen"
+      (photo: any) =>
+        photo.category === "Foto Dokumen" && photo.displayInPdf === true
     );
 
     const paginatedFotoDokumenPhotos = [];
@@ -309,8 +322,10 @@ function DataPage() {
     }
     setDataHalamanFotoDokumenPhotos(paginatedFotoDokumenPhotos);
 
+    // Filter photos where needAtention is true and displayInPdf is true
     const perluPerhatianPhotos = data?.photos?.filter(
-      (photo: any) => photo.needAttention === true
+      (photo: any) =>
+        photo.needAttention === true && photo.displayInPdf === true
     );
 
     const paginatedPerluPerhatianPhotos = [];
