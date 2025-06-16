@@ -426,22 +426,22 @@ const Halaman1: React.FC<Halaman1Props> = ({
             />
           </div>
           <div
+            onClick={() =>
+              editable &&
+              onClick({
+                label: `Inspection Summary`,
+                fieldName: `inspectionSummary`,
+                oldValue: data.inspectionSummary.deskripsiKeseluruhan,
+                subFieldName: "deskripsiKeseluruhan",
+                type: "penilaian-array",
+                onClose: () => {},
+              })
+            }
             className={`w-1/2 ${
               editable ? "cursor-pointer group hover:bg-[#F4622F] " : ""
             }`}
           >
             <div
-              onClick={() =>
-                editable &&
-                onClick({
-                  label: `Inspection Summary`,
-                  fieldName: `inspectionSummary`,
-                  oldValue: data.inspectionSummary.deskripsiKeseluruhan,
-                  subFieldName: "deskripsiKeseluruhan",
-                  type: "penilaian-array",
-                  onClose: () => {},
-                })
-              }
               className={`text-[12px] text-left 
                 ${editable ? "group-hover:text-white" : ""}
                 text-black py-2 px-2 font-bold `}

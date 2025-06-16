@@ -173,10 +173,10 @@ const Halaman3: React.FC<Halaman3Props> = ({
               onClick={handleClick}
               warna="#FFFFFF"
               namaPart="Rem ABS"
-              subSubFieldName="remABS"
+              subSubFieldName="remAbs"
               subFieldName="fitur"
               beban="3"
-              nilai={data.fitur.remABS ? data.fitur.remABS : "0"}
+              nilai={data.fitur.remAbs ? data.fitur.remAbs : "0"}
             />
             <PenilaianHasil
               edit={editable}

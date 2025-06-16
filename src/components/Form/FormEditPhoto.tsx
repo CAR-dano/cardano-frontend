@@ -61,6 +61,11 @@ function FormEditPhoto({
   ) => {
     const checked = e.target.checked;
     setNeedAttention(checked);
+
+    // Reset label when hiding input
+    if (!checked) {
+      setPhotoLabel("");
+    }
   };
 
   const handleDisplayInPdfChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -123,24 +128,26 @@ function FormEditPhoto({
         </div>
       </div>
 
-      {/* Label Input */}
-      <div>
-        <Label
-          className="text-lg font-medium dark:text-gray-200 mb-2 block"
-          htmlFor={`${inputFor}-label`}
-        >
-          Label Foto
-        </Label>
-        <input
-          type="text"
-          id={`${inputFor}-label`}
-          name={`${inputFor}-label`}
-          value={photoLabel}
-          onChange={handleLabelChange}
-          placeholder="Masukkan label foto..."
-          className="mt-1 px-4 py-3 block w-full rounded-md border-2 border-purple-500 text-lg focus:border-purple-500 focus:ring-purple-500 dark:bg-gray-700 dark:text-gray-100 dark:border-purple-800 dark:focus:border-purple-800 dark:focus:ring-purple-800"
-        />
-      </div>
+      {/* Label Input - Hidden when needAttention is false */}
+      {needAttention && (
+        <div>
+          <Label
+            className="text-lg font-medium dark:text-gray-200 mb-2 block"
+            htmlFor={`${inputFor}-label`}
+          >
+            Label Foto
+          </Label>
+          <input
+            type="text"
+            id={`${inputFor}-label`}
+            name={`${inputFor}-label`}
+            value={photoLabel}
+            onChange={handleLabelChange}
+            placeholder="Masukkan label foto..."
+            className="mt-1 px-4 py-3 block w-full rounded-md border-2 border-purple-500 text-lg focus:border-purple-500 focus:ring-purple-500 dark:bg-gray-700 dark:text-gray-100 dark:border-purple-800 dark:focus:border-purple-800 dark:focus:ring-purple-800"
+          />
+        </div>
+      )}
 
       {/* Checkboxes */}
       <div className="space-y-4">

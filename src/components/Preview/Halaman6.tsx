@@ -59,6 +59,7 @@ const Halaman6: React.FC<Halaman6Props> = ({
                 key={index}
                 warna="#FFFFFF"
                 namaPart={item.namaPart}
+                subSubFieldName={item.part}
                 subFieldName="toolsTest"
                 beban={item.beban.toString()}
                 nilai={
@@ -122,6 +123,6 @@ const toolsTest = [
     part: "tebalCatBodyBelakang",
   },
   { namaPart: "Test ACCU (ON & OFF)", beban: 3, part: "testAccu" },
-  { namaPart: "Temperatur AC Mobil", beban: 2, part: "temperaturACMobil" },
+  { namaPart: "Temperatur AC Mobil", beban: 2, part: "temperatureAC" },
   { namaPart: "OBD Scanner", beban: 3, part: "obdScanner" },
 ];

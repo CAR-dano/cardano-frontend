@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import FormEditPhoto from "../Form/FormEditPhoto";
 
-interface PhotoItemWithDynamicTextProps {
+interface PhotoItemPerluPerhatianProps {
   item: {
     id: string;
     path: string;
@@ -16,7 +16,7 @@ interface PhotoItemWithDynamicTextProps {
   onPhotoUpdate?: (photoId: string, data: any) => void;
 }
 
-const PhotoItemWithDynamicText: React.FC<PhotoItemWithDynamicTextProps> = ({
+const PhotoItemPerluPerhatian: React.FC<PhotoItemPerluPerhatianProps> = ({
   item,
   formatPath,
   editable = false,
@@ -89,8 +89,11 @@ const PhotoItemWithDynamicText: React.FC<PhotoItemWithDynamicTextProps> = ({
             item.path ? formatPath(item.path) : "/assets/placeholder-photo.png"
           }
           alt={capitalizedLabel}
-          className="w-[220px] h-[165px] object-cover "
+          className="w-[220px] h-[150px] object-cover "
         />
+        <p className="w-[220px] h-[48px] overflow-hidden text-center font-semibold mt-2 text-base break-words">
+          {capitalizedLabel}
+        </p>
 
         {/* Status Indicators */}
         {editable && (
@@ -100,16 +103,9 @@ const PhotoItemWithDynamicText: React.FC<PhotoItemWithDynamicTextProps> = ({
                 Perlu Perhatian
               </span>
             )}
-            {item.displayInPdf ? (
+            {item.displayInPdf && (
               <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
-                Tampil PDF
-              </span>
-            ) : (
-              <span
-                className="text-xs bg-gray-100 text-gray-800 px-2
-              py-1 rounded-full"
-              >
-                Tidak Tampil PDF
+                PDF
               </span>
             )}
           </div>
@@ -144,4 +140,4 @@ const PhotoItemWithDynamicText: React.FC<PhotoItemWithDynamicTextProps> = ({
   );
 };
 
-export default PhotoItemWithDynamicText;
+export default PhotoItemPerluPerhatian;

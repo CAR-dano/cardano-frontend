@@ -1,7 +1,7 @@
 import React from "react";
 import Header from "./Header";
 import Footer from "./Footer";
-import PhotoItemWithDynamicText from "./PhotoItemWithDynamicText";
+import PhotoItemPerluPerhatian from "./PhotoItemPerluPerhatian";
 
 interface HalamanPerluPerhatianPhotoProps {
   data: any;
@@ -46,7 +46,7 @@ const HalamanPerluPerhatianPhoto: React.FC<HalamanPerluPerhatianPhotoProps> = ({
 
         <div className="flex flex-wrap gap-1 gap-y-10 px-1 py-10 justify-around">
           {data.photos.map((item: any, index: any) => (
-            <PhotoItemWithDynamicText
+            <PhotoItemPerluPerhatian
               key={index}
               item={item}
               formatPath={formatPath}

@@ -109,7 +109,7 @@ const PhotoItemGeneral: React.FC<PhotoItemGeneralProps> = ({
           alt={capitalizedLabel}
           className={
             isLandscape
-              ? "w-[500px] h-[300px] object-cover"
+              ? "w-[500px] h-[375px] object-cover"
               : "w-[220px] h-[150px] object-cover"
           }
         />

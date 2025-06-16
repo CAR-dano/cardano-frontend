@@ -71,26 +71,24 @@ const Halaman2: React.FC<Halaman2Props> = ({
 
         <div className="w-full flex border-b-2 border-black">
           <div
+            onClick={() =>
+              editable &&
+              onClick({
+                label: `Inspection Summary`,
+                fieldName: `inspectionSummary`,
+                oldValue: data.inspectionSummary.mesinNotes,
+                subFieldName: "mesinNotes",
+                type: "penilaian-array",
+                onClose: () => {},
+              })
+            }
             className={`w-1/4 min-h-[180px] border-black border-r-2 ${
               editable
                 ? "cursor-pointer hover:bg-[#F4622F] hover:text-white"
                 : ""
             }`}
           >
-            <div
-              onClick={() =>
-                editable &&
-                onClick({
-                  label: `Inspection Summary`,
-                  fieldName: `inspectionSummary`,
-                  oldValue: data.inspectionSummary.mesinNotes,
-                  subFieldName: "mesinNotes",
-                  type: "penilaian-array",
-                  onClose: () => {},
-                })
-              }
-              className="text-left text-[13px] text-black py-2 px-3 font-medium "
-            >
+            <div className="text-left text-[13px] text-black py-2 px-3 font-medium ">
               <ol className="list-disc list-inside">
                 {data.inspectionSummary.mesinNotes.map(
                   (note: string, index: number) => (
@@ -103,26 +101,24 @@ const Halaman2: React.FC<Halaman2Props> = ({
             </div>
           </div>
           <div
+            onClick={() =>
+              editable &&
+              onClick({
+                label: `Inspection Summary`,
+                fieldName: `inspectionSummary`,
+                oldValue: data.inspectionSummary.kakiKakiNotes,
+                subFieldName: "kakiKakiNotes",
+                type: "penilaian-array",
+                onClose: () => {},
+              })
+            }
             className={`w-1/4 min-h-[180px] border-black border-r-2 ${
               editable
                 ? "cursor-pointer hover:bg-[#F4622F] hover:text-white"
                 : ""
             }`}
           >
-            <div
-              onClick={() =>
-                editable &&
-                onClick({
-                  label: `Inspection Summary`,
-                  fieldName: `inspectionSummary`,
-                  oldValue: data.inspectionSummary.kakiKakiNotes,
-                  subFieldName: "kakiKakiNotes",
-                  type: "penilaian-array",
-                  onClose: () => {},
-                })
-              }
-              className="text-left text-[13px] text-black py-2 px-3 font-medium"
-            >
+            <div className="text-left text-[13px] text-black py-2 px-3 font-medium">
               <ol className="list-disc list-inside">
                 {data.inspectionSummary.kakiKakiNotes.map(
                   (note: string, index: number) => (
@@ -135,26 +131,24 @@ const Halaman2: React.FC<Halaman2Props> = ({
             </div>
           </div>
           <div
+            onClick={() =>
+              editable &&
+              onClick({
+                label: `Inspection Summary`,
+                fieldName: `inspectionSummary`,
+                oldValue: data.inspectionSummary.interiorNotes,
+                subFieldName: "interiorNotes",
+                type: "penilaian-array",
+                onClose: () => {},
+              })
+            }
             className={`w-1/4 min-h-[180px] border-black border-r-2 ${
               editable
                 ? "cursor-pointer hover:bg-[#F4622F] hover:text-white"
                 : ""
             }`}
           >
-            <div
-              onClick={() =>
-                editable &&
-                onClick({
-                  label: `Inspection Summary`,
-                  fieldName: `inspectionSummary`,
-                  oldValue: data.inspectionSummary.interiorNotes,
-                  subFieldName: "interiorNotes",
-                  type: "penilaian-array",
-                  onClose: () => {},
-                })
-              }
-              className="text-left text-[13px] text-black py-2 px-3 font-medium"
-            >
+            <div className="text-left text-[13px] text-black py-2 px-3 font-medium">
               <ol className="list-disc list-inside">
                 {data.inspectionSummary.interiorNotes.map(
                   (note: string, index: number) => (
@@ -167,26 +161,24 @@ const Halaman2: React.FC<Halaman2Props> = ({
             </div>
           </div>
           <div
+            onClick={() =>
+              editable &&
+              onClick({
+                label: `Inspection Summary`,
+                fieldName: `inspectionSummary`,
+                oldValue: data.inspectionSummary.eksteriorNotes,
+                subFieldName: "eksteriorNotes",
+                type: "penilaian-array",
+                onClose: () => {},
+              })
+            }
             className={`w-1/4 min-h-[180px] ${
               editable
                 ? "cursor-pointer hover:bg-[#F4622F] hover:text-white"
                 : ""
             }`}
           >
-            <div
-              onClick={() =>
-                editable &&
-                onClick({
-                  label: `Inspection Summary`,
-                  fieldName: `inspectionSummary`,
-                  oldValue: data.inspectionSummary.eksteriorNotes,
-                  subFieldName: "eksteriorNotes",
-                  type: "penilaian-array",
-                  onClose: () => {},
-                })
-              }
-              className="text-left text-[13px] text-black py-2 px-3 font-medium"
-            >
+            <div className="text-left text-[13px] text-black py-2 px-3 font-medium">
               {data.inspectionSummary.eksteriorNotes ? (
                 <ol className="list-disc list-inside">
                   {data.inspectionSummary.eksteriorNotes.map(
@@ -283,7 +275,7 @@ const Halaman2: React.FC<Halaman2Props> = ({
             </div>
           </div>
           <div className="w-[20%] h-50 flex justify-center items-center">
-            <p className="text-center text-[10px] text-black px-3 font-light -mt-10">
+            <p className="text-center font-semibold text-[10px] text-black px-3 font-light -mt-10">
               *Biaya estimasi dapat lebih murah atau mahal tergantung bengkel
             </p>
           </div>
