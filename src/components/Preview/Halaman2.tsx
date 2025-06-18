@@ -36,7 +36,7 @@ const Halaman2: React.FC<Halaman2Props> = ({
       if (ref.current) {
         const scrollHeight = ref.current.scrollHeight;
         if (scrollHeight > 220) {
-          setFontSizeClass("text-[11px]");
+          setFontSizeClass("text-[10px]");
         } else if (scrollHeight > 200) {
           setFontSizeClass("text-[11px]");
         } else if (scrollHeight > 180) {
