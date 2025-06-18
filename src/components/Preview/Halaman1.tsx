@@ -196,12 +196,12 @@ const Halaman1: React.FC<Halaman1Props> = ({
       value: data.inspectionSummary.eksteriorScore,
     },
     {
-      label: "Kaki-Kaki",
-      value: data.inspectionSummary.kakiKakiScore,
-    },
-    {
       label: "Mesin",
       value: data.inspectionSummary.mesinScore,
+    },
+    {
+      label: "Kaki-Kaki",
+      value: data.inspectionSummary.kakiKakiScore,
     },
   ];
 
@@ -485,7 +485,11 @@ const Halaman1: React.FC<Halaman1Props> = ({
                         editable &&
                         onClick({
                           label: `${item}`,
-                          subFieldName: `${item.toLowerCase()}Score`,
+                          subFieldName: `${
+                            item === "Kaki-Kaki"
+                              ? "kakiKakiScore"
+                              : `${item.toLowerCase()}Score`
+                          }`,
                           oldValue: summaryScore[index]?.value,
                           fieldName: "inspectionSummary",
                           type: "penilaian-summary",
