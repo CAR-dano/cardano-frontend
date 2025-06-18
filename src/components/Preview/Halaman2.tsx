@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useEffect, useState } from "react";
 import Footer from "./Footer";
 import Header from "./Header";
 import PenilaianContoh from "./PenilaianContoh";
@@ -14,6 +14,45 @@ const Halaman2: React.FC<Halaman2Props> = ({
   editable,
   onClick = () => {},
 }) => {
+  const mesinNotesRef = useRef<HTMLDivElement>(null);
+  const kakiKakiNotesRef = useRef<HTMLDivElement>(null);
+  const interiorNotesRef = useRef<HTMLDivElement>(null);
+  const eksteriorNotesRef = useRef<HTMLDivElement>(null);
+
+  const [mesinNotesFontSizeClass, setMesinNotesFontSizeClass] =
+    useState("text-[13px]");
+  const [kakiKakiNotesFontSizeClass, setKakiKakiNotesFontSizeClass] =
+    useState("text-[13px]");
+  const [interiorNotesFontSizeClass, setInteriorNotesFontSizeClass] =
+    useState("text-[13px]");
+  const [eksteriorNotesFontSizeClass, setEksteriorNotesFontSizeClass] =
+    useState("text-[13px]");
+
+  useEffect(() => {
+    const checkFontSize = (
+      ref: React.RefObject<HTMLDivElement | null>,
+      setFontSizeClass: React.Dispatch<React.SetStateAction<string>>
+    ) => {
+      if (ref.current) {
+        const scrollHeight = ref.current.scrollHeight;
+        if (scrollHeight > 220) {
+          setFontSizeClass("text-[11px]");
+        } else if (scrollHeight > 200) {
+          setFontSizeClass("text-[11px]");
+        } else if (scrollHeight > 180) {
+          setFontSizeClass("text-[12px]");
+        } else {
+          setFontSizeClass("text-[13px]");
+        }
+      }
+    };
+
+    checkFontSize(mesinNotesRef, setMesinNotesFontSizeClass);
+    checkFontSize(kakiKakiNotesRef, setKakiKakiNotesFontSizeClass);
+    checkFontSize(interiorNotesRef, setInteriorNotesFontSizeClass);
+    checkFontSize(eksteriorNotesRef, setEksteriorNotesFontSizeClass);
+  }, [data]);
+
   if (data == undefined || data == null) {
     return <div>Loading...</div>; // atau bisa return null
   }
@@ -82,13 +121,16 @@ const Halaman2: React.FC<Halaman2Props> = ({
                 onClose: () => {},
               })
             }
-            className={`w-1/4 min-h-[180px] border-black border-r-2 ${
+            className={`w-1/4 mn-h-[180px] border-black border-r-2 ${
               editable
                 ? "cursor-pointer hover:bg-[#F4622F] hover:text-white"
                 : ""
             }`}
           >
-            <div className="text-left text-[13px] text-black py-2 px-3 font-medium ">
+            <div
+              ref={mesinNotesRef}
+              className={`text-left text-black py-2 px-3 font-medium ${mesinNotesFontSizeClass}`}
+            >
               <ol className="list-disc list-inside">
                 {data.inspectionSummary.mesinNotes.map(
                   (note: string, index: number) => (
@@ -118,7 +160,10 @@ const Halaman2: React.FC<Halaman2Props> = ({
                 : ""
             }`}
           >
-            <div className="text-left text-[13px] text-black py-2 px-3 font-medium">
+            <div
+              ref={kakiKakiNotesRef}
+              className={`text-left text-black py-2 px-3 font-medium ${kakiKakiNotesFontSizeClass}`}
+            >
               <ol className="list-disc list-inside">
                 {data.inspectionSummary.kakiKakiNotes.map(
                   (note: string, index: number) => (
@@ -148,7 +193,10 @@ const Halaman2: React.FC<Halaman2Props> = ({
                 : ""
             }`}
           >
-            <div className="text-left text-[13px] text-black py-2 px-3 font-medium">
+            <div
+              ref={interiorNotesRef}
+              className={`text-left text-black py-2 px-3 font-medium ${interiorNotesFontSizeClass}`}
+            >
               <ol className="list-disc list-inside">
                 {data.inspectionSummary.interiorNotes.map(
                   (note: string, index: number) => (
@@ -178,7 +226,10 @@ const Halaman2: React.FC<Halaman2Props> = ({
                 : ""
             }`}
           >
-            <div className="text-left text-[13px] text-black py-2 px-3 font-medium">
+            <div
+              ref={eksteriorNotesRef}
+              className={`text-left text-black py-2 px-3 font-medium ${eksteriorNotesFontSizeClass}`}
+            >
               {data.inspectionSummary.eksteriorNotes ? (
                 <ol className="list-disc list-inside">
                   {data.inspectionSummary.eksteriorNotes.map(
@@ -247,11 +298,13 @@ const Halaman2: React.FC<Halaman2Props> = ({
               }`}
             >
               <ul className="list-none">
-                {data.inspectionSummary.estimasiPerbaikan.map((item: any) => (
-                  <li key={item.namaPart} className="text-black font-semibold">
-                    {capitalizeFirstLetterOfSentences(item.namaPart)}
-                  </li>
-                ))}
+                {data.inspectionSummary.estimasiPerbaikan.map(
+                  (item: any, index: any) => (
+                    <li key={index} className="text-black font-semibold">
+                      {capitalizeFirstLetterOfSentences(item.namaPart)}
+                    </li>
+                  )
+                )}
               </ul>
             </div>
           </div>
@@ -266,11 +319,13 @@ const Halaman2: React.FC<Halaman2Props> = ({
               }`}
             >
               <ul className="list-none">
-                {data.inspectionSummary.estimasiPerbaikan.map((item: any) => (
-                  <li key={item.harga} className="text-black font-semibold">
-                    {formatPrice(item.harga)}
-                  </li>
-                ))}
+                {data.inspectionSummary.estimasiPerbaikan.map(
+                  (item: any, index: any) => (
+                    <li key={index} className="text-black font-semibold">
+                      {formatPrice(item.harga)}
+                    </li>
+                  )
+                )}
               </ul>
             </div>
           </div>

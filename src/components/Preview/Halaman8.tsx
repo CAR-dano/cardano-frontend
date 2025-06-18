@@ -47,7 +47,7 @@ const Halaman8: React.FC<Halaman8Props> = ({
                   fieldName: `bodyPaintThickness`,
                   oldValue: data?.bodyPaintThickness.left.frontFender,
                   subFieldName: "left",
-                  subsubFieldName: "frontFender",
+                  subsubfieldname: "frontFender",
                   type: "normal-input",
                   onClose: () => {},
                 })
@@ -73,7 +73,7 @@ const Halaman8: React.FC<Halaman8Props> = ({
                   fieldName: `bodyPaintThickness`,
                   oldValue: data?.bodyPaintThickness.left.frontDoor,
                   subFieldName: "left",
-                  subsubFieldName: "frontDoor",
+                  subsubfieldname: "frontDoor",
                   type: "normal-input",
                   onClose: () => {},
                 })
@@ -99,7 +99,7 @@ const Halaman8: React.FC<Halaman8Props> = ({
                   fieldName: `bodyPaintThickness`,
                   oldValue: data?.bodyPaintThickness.left.rearDoor,
                   subFieldName: "left",
-                  subsubFieldName: "rearDoor",
+                  subsubfieldname: "rearDoor",
                   type: "normal-input",
                   onClose: () => {},
                 })
@@ -121,7 +121,7 @@ const Halaman8: React.FC<Halaman8Props> = ({
                 fieldName: `bodyPaintThickness`,
                 oldValue: data?.bodyPaintThickness.left.rearFender,
                 subFieldName: "left",
-                subsubFieldName: "rearFender",
+                subsubfieldname: "rearFender",
                 type: "normal-input",
                 onClose: () => {},
               })
@@ -147,13 +147,13 @@ const Halaman8: React.FC<Halaman8Props> = ({
                 fieldName: `bodyPaintThickness`,
                 oldValue: data?.bodyPaintThickness.left.sideSkirt,
                 subFieldName: "left",
-                subsubFieldName: "sideSkirt",
+                subsubfieldname: "sideSkirt",
                 type: "normal-input",
                 onClose: () => {},
               })
             }
             className="absolute transform -translate-x-1/2"
-            style={{ top: "77%", right: "38%" }}
+            style={{ top: "77%", right: "43%" }}
           >
             <div
               className={`text-black ${
@@ -182,7 +182,7 @@ const Halaman8: React.FC<Halaman8Props> = ({
                 fieldName: `bodyPaintThickness`,
                 oldValue: data?.bodyPaintThickness.right.rearFender,
                 subFieldName: "right",
-                subsubFieldName: "rearFender",
+                subsubfieldname: "rearFender",
                 type: "normal-input",
                 onClose: () => {},
               })
@@ -208,7 +208,7 @@ const Halaman8: React.FC<Halaman8Props> = ({
                 fieldName: `bodyPaintThickness`,
                 oldValue: data?.bodyPaintThickness.right.rearDoor,
                 subFieldName: "right",
-                subsubFieldName: "rearDoor",
+                subsubfieldname: "rearDoor",
                 type: "normal-input",
                 onClose: () => {},
               })
@@ -234,7 +234,7 @@ const Halaman8: React.FC<Halaman8Props> = ({
                 fieldName: `bodyPaintThickness`,
                 oldValue: data?.bodyPaintThickness.right.frontDoor,
                 subFieldName: "right",
-                subsubFieldName: "frontDoor",
+                subsubfieldname: "frontDoor",
                 type: "normal-input",
                 onClose: () => {},
               })
@@ -260,7 +260,7 @@ const Halaman8: React.FC<Halaman8Props> = ({
                 fieldName: `bodyPaintThickness`,
                 oldValue: data?.bodyPaintThickness.right.frontFender,
                 subFieldName: "right",
-                subsubFieldName: "frontFender",
+                subsubfieldname: "frontFender",
                 type: "normal-input",
                 onClose: () => {},
               })
@@ -286,13 +286,13 @@ const Halaman8: React.FC<Halaman8Props> = ({
                 fieldName: `bodyPaintThickness`,
                 oldValue: data?.bodyPaintThickness.right.sideSkirt,
                 subFieldName: "right",
-                subsubFieldName: "sideSkirt",
+                subsubfieldname: "sideSkirt",
                 type: "normal-input",
                 onClose: () => {},
               })
             }
             className="absolute transform -translate-x-1/2"
-            style={{ top: "79%", right: "40%" }}
+            style={{ top: "79%", right: "43%" }}
           >
             <div
               className={`text-black ${

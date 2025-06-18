@@ -140,7 +140,7 @@ export interface EditedItem {
   inspectionId: string;
   fieldName: string;
   subFieldName?: string;
-  subsubFieldName?: string;
+  subsubfieldname?: string;
   oldValue: string;
   newValue: string;
   changesAt?: string;
@@ -181,7 +181,7 @@ export const inspectionSlice = createSlice({
         inspectionId,
         fieldName,
         subFieldName,
-        subsubFieldName,
+        subsubfieldname,
         oldValue,
         newValue,
         changesAt,
@@ -189,14 +189,14 @@ export const inspectionSlice = createSlice({
       const normalizedFieldName = fieldName?.toLowerCase().trim();
       const normalizedSubFieldName = subFieldName?.toLowerCase().trim() || "";
       const normalizedSubsubFieldName =
-        subsubFieldName?.toLowerCase().trim() || "";
+        subsubfieldname?.toLowerCase().trim() || "";
 
       const existingEdit = state.edited.find((edit) => {
         const editNormalizedFieldName = edit.fieldName?.toLowerCase().trim();
         const editNormalizedSubFieldName =
           edit.subFieldName?.toLowerCase().trim() || "";
         const editNormalizedSubsubFieldName =
-          edit.subsubFieldName?.toLowerCase().trim() || "";
+          edit.subsubfieldname?.toLowerCase().trim() || "";
         return (
           editNormalizedFieldName === normalizedFieldName &&
           editNormalizedSubFieldName === normalizedSubFieldName &&
@@ -211,7 +211,7 @@ export const inspectionSlice = createSlice({
           inspectionId,
           fieldName,
           subFieldName,
-          subsubFieldName,
+          subsubfieldname,
           oldValue,
           newValue,
           changesAt,
@@ -220,7 +220,7 @@ export const inspectionSlice = createSlice({
     },
 
     deleteEditedData: (state, action) => {
-      const { inspectionId, fieldName, subFieldName, subsubFieldName } =
+      const { inspectionId, fieldName, subFieldName, subsubfieldname } =
         action.payload;
       state.edited = state.edited.filter(
         (edit) =>
@@ -228,7 +228,7 @@ export const inspectionSlice = createSlice({
             edit.inspectionId === inspectionId &&
             edit.fieldName === fieldName &&
             edit.subFieldName === subFieldName &&
-            edit.subsubFieldName === subsubFieldName
+            edit.subsubfieldname === subsubfieldname
           )
       );
     },

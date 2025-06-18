@@ -68,10 +68,10 @@ const Halaman4: React.FC<Halaman4Props> = ({
               editable &&
               onClick({
                 label: `Catatan Mesin Kendaraan`,
-                fieldName: `detailAssessment`,
+                fieldName: `detailedAssessment`,
                 oldValue: data.hasilInspeksiMesin.catatan,
                 subFieldName: "hasilInspeksiMesin",
-                subsubFieldName: "catatan",
+                subsubfieldname: "catatan",
                 type: "penilaian-array",
                 onClose: () => {},
               })
@@ -164,8 +164,8 @@ const Halaman4: React.FC<Halaman4Props> = ({
               editable &&
               onClick({
                 label: `Catatan Interior Kendaraan`,
-                fieldName: `detailAssessment`,
-                subsubFieldName: "catatan",
+                fieldName: `detailedAssessment`,
+                subsubfieldname: "catatan",
                 oldValue: data.hasilInspeksiInterior.catatan,
                 subFieldName: "hasilInspeksiInterior",
                 type: "penilaian-array",

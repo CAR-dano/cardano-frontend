@@ -26,6 +26,7 @@ import {
   SortingAlatAlatData,
 } from "../Preview/SortingReference";
 import { useTheme } from "../../contexts/ThemeContext";
+import { useToast } from "../../hooks/use-toast";
 
 interface EditReviewComponentsProps {
   onClick: (data: any) => void;
@@ -34,11 +35,69 @@ interface EditReviewComponentsProps {
 }
 
 const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
-  onClick,
+  onClick: parentOnClick, // Renamed to avoid conflict with local onClick logic
   data,
   inspectionId = "",
 }) => {
   const [dataHalaman1, setDataHalaman1] = useState<any>(null);
+  const { toast } = useToast();
+
+  const onClick = async (actionData: any) => {
+    if (actionData.type === "add_new_photo") {
+      const { file, needAttention, label, category } = actionData;
+
+      const metadata = [
+        {
+          needAttention: needAttention || false,
+          // Default to false if not provided
+          label: label || "",
+          category: category || "General Wajib", // Default to "General Wajib" if not provided
+        },
+      ];
+
+      const formData = new FormData();
+      formData.append("metadata", JSON.stringify(metadata));
+      formData.append("photos", file); // 'photos' is the field name for the file
+
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/inspections/${inspectionId}/photos/multiple`,
+          {
+            method: "POST",
+            headers: {
+              // Add authorization header if needed
+              // 'Authorization': `Bearer ${yourAuthToken}`,
+            },
+            body: formData,
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to upload photo");
+        }
+
+        const result = await response.json();
+        console.log("Photo upload successful:", result);
+        toast({
+          title: "Success",
+          description: "Photo uploaded successfully.",
+          variant: "default",
+        });
+        // Optionally, you might want to refetch data or update state here
+        // to show the newly added photo.
+        parentOnClick?.({ type: "photo_added", newPhotoData: result }); // Notify parent of new photo
+      } catch (error) {
+        console.error("Error uploading photo:", error);
+        toast({
+          title: "Error",
+          description: "Failed to upload photo. Please try again.",
+          variant: "destructive",
+        });
+      }
+    } else {
+      parentOnClick?.(actionData); // Pass other actions to the original onClick
+    }
+  };
   const [dataHalaman2, setDataHalaman2] = useState<any>(null);
   const [dataHalaman3, setDataHalaman3] = useState<any>(null);
   const [dataHalaman4, setDataHalaman4] = useState<any>(null);

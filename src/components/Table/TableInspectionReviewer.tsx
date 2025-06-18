@@ -44,6 +44,7 @@ const TableData = ({
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const formatted = date.toLocaleDateString("id-ID", {
+      timeZone: "UTC", // penting!
       day: "numeric",
       month: "long",
       year: "numeric",

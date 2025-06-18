@@ -35,6 +35,7 @@ import {
   SortingAlatAlatData,
 } from "../../../../components/Preview/SortingReference";
 import HalamanPerluPerhatianPhoto from "../../../../components/Preview/HalamanPerluPerhatianPhoto";
+import HalamanGlosarium from "@/components/Preview/HalamanGlosarium";
 
 function DataPage() {
   const dispatch = useDispatch<AppDispatch>();
@@ -556,6 +557,20 @@ function DataPage() {
         />
       ),
     })),
+    {
+      id:
+        9 +
+        dataHalamanGeneralPhotos.length +
+        dataHalamanExteriorPhotos.length +
+        dataHalamanInteriorPhotos.length +
+        dataHalamanMesinPhotos.length +
+        dataHalamanKakiKakiPhotos.length +
+        dataHalamanAlatPhotos.length +
+        dataHalamanFotoDokumenPhotos.length +
+        dataHalamanPerluPerhatianPhotos.length,
+      title: "Glosarium",
+      component: <HalamanGlosarium />,
+    },
   ];
 
   return (

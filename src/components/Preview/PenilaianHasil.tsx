@@ -99,7 +99,7 @@ const PenilaianHasil: React.FC<PenilaianHasilProps> = ({
           fieldName: `detailedAssessment`,
           oldValue: nilai,
           subFieldName: subFieldName,
-          subsubFieldName: subSubFieldName,
+          subsubfieldname: subSubFieldName,
           type: "penilaian-summary",
           onClose: () => {},
         })

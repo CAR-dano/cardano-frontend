@@ -330,9 +330,9 @@ function EditedData({ updateData, cancelEdit, id }: EditedDataProps) {
 
                   {/* Sub Sub Field Name */}
                   <div className="text-sm text-gray-600 dark:text-gray-400">
-                    {item.subsubFieldName ? (
+                    {item.subsubfieldname ? (
                       <span className="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded-md text-xs dark:text-gray-200">
-                        {formatPart(item.subsubFieldName)}
+                        {formatPart(item.subsubfieldname)}
                       </span>
                     ) : (
                       <span className="text-gray-400 dark:text-gray-500 italic">

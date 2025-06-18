@@ -198,7 +198,7 @@ const Halaman3: React.FC<Halaman3Props> = ({
                 fieldName: `detailedAssessment`,
                 oldValue: data.fitur.catatan,
                 subFieldName: "fitur",
-                subsubFieldName: "catatan",
+                subsubfieldname: "catatan",
                 type: "penilaian-array",
                 onClose: () => {},
               })

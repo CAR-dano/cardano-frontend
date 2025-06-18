@@ -32,6 +32,12 @@ const Halaman6: React.FC<Halaman6Props> = ({
     return PHOTO_URL + "/uploads/inspection-photos/" + path;
   };
 
+  const capitalizeFirstLetterOfSentences = (text: string) => {
+    const cleanedText = text.replace(/^•\s*/, "");
+    if (!cleanedText) return "";
+    return cleanedText.replace(/(^\s*\w|[.!?]\s*\w)/g, (c) => c.toUpperCase());
+  };
+
   return (
     <div className="px-[30px] font-poppins text-black">
       <Header />
@@ -71,10 +77,66 @@ const Halaman6: React.FC<Halaman6Props> = ({
             ))}
           </div>
 
-          <p className="text-[12px] px-2  mt-1 font-semibold">*Catatan:</p>
-          <p className="text-[12px] px-3 min-h-[50px] mt-1 font-semibold">
-            {data.toolsTest.catatan}
-          </p>
+          <div
+            onClick={() =>
+              editable &&
+              onClick({
+                label: `Catatan toolsTest`,
+                fieldName: `detailedAssessment`,
+                oldValue: data.toolsTest.catatan,
+                subFieldName: "toolsTest",
+                subsubfieldname: "catatan",
+                type: "penilaian-array",
+                onClose: () => {},
+              })
+            }
+            className={`text-[12px] px-1 mt-1 font-semibold flex min-h-[55px] ${
+              editable ? "cursor-pointer group hover:bg-[#F4622F]" : ""
+            }`}
+          >
+            *Catatan:
+            {data.toolsTest.catatan && data.toolsTest.catatan.length > 0 ? (
+              <div
+                className={`text-[12px] font-semibold flex ${
+                  data.toolsTest.catatan.length >= 3
+                    ? "flex-row flex-wrap"
+                    : "flex-col justify-center items-center"
+                } ${editable ? "group-hover:text-white" : ""}`}
+              >
+                <ol
+                  className={`list-disc pl-5 ${
+                    data.toolsTest.catatan.length >= 3 ? "w-1/2" : "w-full"
+                  }`}
+                >
+                  {data.toolsTest.catatan
+                    .slice(
+                      0,
+                      data.toolsTest.catatan.length >= 3
+                        ? Math.ceil(data.toolsTest.catatan.length / 2)
+                        : data.toolsTest.catatan.length
+                    )
+                    .map((item: any, index: any) => (
+                      <li key={index} className="text-[12px]">
+                        {capitalizeFirstLetterOfSentences(item)}
+                      </li>
+                    ))}
+                </ol>
+                {data.toolsTest.catatan.length >= 3 && (
+                  <ol className="list-disc pl-5 w-1/2">
+                    {data.toolsTest.catatan
+                      .slice(Math.ceil(data.toolsTest.catatan.length / 2))
+                      .map((item: any, index: any) => (
+                        <li key={index} className="text-[12px]">
+                          {capitalizeFirstLetterOfSentences(item)}
+                        </li>
+                      ))}
+                  </ol>
+                )}
+              </div>
+            ) : (
+              <div className="text-[12px] font-semibold py-4">-</div>
+            )}
+          </div>
         </div>
 
         <div className="flex gap-1 text-[14px] px-2 mb-10 font-semibold mt-2">

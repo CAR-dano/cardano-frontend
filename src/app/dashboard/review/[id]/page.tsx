@@ -348,7 +348,7 @@ const Edit = () => {
   const [dialogData, setDialogData] = useState<any>({
     fieldName: "",
     subFieldName: "",
-    subsubFieldName: "",
+    subsubfieldname: "",
     label: "",
     oldValue: "",
     type: "normal-input",
@@ -380,12 +380,26 @@ const Edit = () => {
     (item) => item.inspectionId === id
   );
 
-  const handleEditReviewClick = (data: any) => {
-    if (data.type !== "photo_update") {
-      setDialogData(data);
-      setIsDialogOpen(true);
+  const handleEditReviewClick = (actionData: any) => {
+    if (actionData.type === "photo_update") {
+      updateFoto(actionData.photoId, actionData.data);
+    } else if (actionData.type === "photo_added") {
+      // Handle new photo added from AddPhotoDialog
+      setData((prevData: any) => {
+        if (!prevData) return prevData;
+        return {
+          ...prevData,
+          photos: [...(prevData.photos || []), actionData.newPhotoData],
+        };
+      });
+      toast({
+        title: "Photo Added",
+        description: "New photo has been successfully added.",
+        variant: "default",
+      });
     } else {
-      updateFoto(data.photoId, data.data);
+      setDialogData(actionData);
+      setIsDialogOpen(true);
     }
   };
 
@@ -436,7 +450,7 @@ const Edit = () => {
 
   const updateData = (data: any) => {
     data.map((item: any) => {
-      const {
+      let {
         inspectionId,
         fieldName,
         subFieldName,
@@ -462,6 +476,20 @@ const Edit = () => {
       } else if (subFieldName) {
         setData((prevData: any) => {
           if (!prevData) return prevData;
+
+          if (subFieldName === "estimasiPerbaikan") {
+            // Handle special case for estimasiPerbaikan
+            if (typeof newValue === "string") {
+              try {
+                const parsedValue = JSON.parse(newValue);
+                if (Array.isArray(parsedValue)) {
+                  newValue = parsedValue;
+                }
+              } catch (error) {
+                // Not JSON or not an array, keep as string
+              }
+            }
+          }
 
           return {
             ...prevData,
@@ -495,7 +523,7 @@ const Edit = () => {
   const updateDataHandler = async (
     newValue: any,
     subFieldName: any,
-    subsubFieldName: any,
+    subsubfieldname: any,
     fieldName: string
   ) => {
     try {
@@ -513,14 +541,14 @@ const Edit = () => {
       setData((prevData: any) => {
         if (!prevData) return prevData;
 
-        if (subsubFieldName) {
+        if (subsubfieldname) {
           return {
             ...prevData,
             [fieldName]: {
               ...(prevData[fieldName] || {}),
               [subFieldName]: {
                 ...(prevData[fieldName]?.[subFieldName] || {}),
-                [subsubFieldName]: newValue,
+                [subsubfieldname]: newValue,
               },
             },
           };
@@ -540,16 +568,16 @@ const Edit = () => {
         }
       });
 
-      const desc = subsubFieldName
+      const desc = subsubfieldname
         ? `${subFieldName} - ${
-            subsubFieldName.charAt(0).toUpperCase() + subsubFieldName.slice(1)
+            subsubfieldname.charAt(0).toUpperCase() + subsubfieldname.slice(1)
           }`
         : subFieldName;
 
       // Show toast notification for confirmation
       toast({
         title: "Field updated",
-        description: `${subsubFieldName ? `` : fieldName}${
+        description: `${subsubfieldname ? `` : fieldName}${
           desc ? ` ${desc}` : ``
         } has been updated.`,
         variant: "default",
@@ -684,8 +712,10 @@ const Edit = () => {
 
     const result: Record<string, any> = {};
 
+    console.log("Saving changes for inspection ID:", editedItems);
+
     editedItems.forEach(
-      ({ fieldName, subFieldName, subsubFieldName, newValue }) => {
+      ({ fieldName, subFieldName, subsubfieldname, newValue }) => {
         if (!result[fieldName]) {
           result[fieldName] = {};
         }
@@ -694,8 +724,12 @@ const Edit = () => {
           if (!result[fieldName][subFieldName]) {
             result[fieldName][subFieldName] = {};
           }
-          if (subsubFieldName) {
-            result[fieldName][subFieldName][subsubFieldName] = newValue;
+          if (subsubfieldname) {
+            console.log(
+              `Updating ${fieldName}.${subFieldName}.${subsubfieldname} with value:
+              ${newValue}`
+            );
+            result[fieldName][subFieldName][subsubfieldname] = newValue;
           } else {
             result[fieldName][subFieldName] = newValue;
           }
@@ -704,6 +738,8 @@ const Edit = () => {
         }
       }
     );
+
+    console.log("Data to be saved:", result);
 
     if (id) {
       setProcessing(true);
@@ -795,14 +831,14 @@ const Edit = () => {
                 updateDataHandler(
                   newValue,
                   dialogData.subFieldName,
-                  dialogData.subsubFieldName,
+                  dialogData.subsubfieldname,
                   dialogData.fieldName
                 );
                 dispatch(
                   setEditedData({
                     inspectionId: data.id,
                     subFieldName: dialogData.subFieldName,
-                    subsubFieldName: dialogData.subsubFieldName,
+                    subsubfieldname: dialogData.subsubfieldname,
                     fieldName: dialogData.fieldName,
                     oldValue: dialogData.oldValue,
                     newValue: newValue,

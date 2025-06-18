@@ -13,8 +13,8 @@ const publicPaths = ["/auth", "/", "/result"];
 // Token refresh interval in milliseconds (15 minutes)
 const TOKEN_REFRESH_INTERVAL = 15 * 60 * 1000;
 
-// Session timeout in milliseconds (30 minutes of inactivity)
-const SESSION_TIMEOUT = 30 * 60 * 1000;
+// Session timeout in milliseconds (120 minutes of inactivity)
+const SESSION_TIMEOUT = 120 * 60 * 1000;
 
 // Warning before session timeout in milliseconds (1 minute before timeout)
 const WARNING_BEFORE_TIMEOUT = 60 * 1000;

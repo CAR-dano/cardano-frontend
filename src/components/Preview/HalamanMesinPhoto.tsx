@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import PhotoItemWithDynamicText from "./PhotoItemWithDynamicText";
+import AddPhotoDialog from "./AddPhotoDialog";
 
 interface HalamanMesinPhotoProps {
   data: any;
@@ -16,6 +17,8 @@ const HalamanMesinPhoto: React.FC<HalamanMesinPhotoProps> = ({
   onClick = () => {},
   inspectionId = "",
 }) => {
+  const [isAddPhotoDialogOpen, setIsAddPhotoDialogOpen] = useState(false);
+
   if (data == undefined || data == null) {
     return <div>Loading...</div>;
   }
@@ -54,9 +57,37 @@ const HalamanMesinPhoto: React.FC<HalamanMesinPhotoProps> = ({
               onPhotoUpdate={handlePhotoUpdate}
             />
           ))}
+          {editable && data.photos.length < 9 && (
+            <div
+              className="w-[200px] h-[200px] border border-gray-300 flex flex-col items-center justify-center cursor-pointer"
+              onClick={() => setIsAddPhotoDialogOpen(true)}
+            >
+              <div className="relative w-12 h-12 flex items-center justify-center">
+                <div className="absolute w-full h-1 bg-gray-500"></div>
+                <div className="absolute w-1 h-full bg-gray-500"></div>
+              </div>
+              <p className="text-gray-500 mt-2">Add Photo</p>
+            </div>
+          )}
         </div>
       </div>
       <Footer />
+      <AddPhotoDialog
+        isOpen={isAddPhotoDialogOpen}
+        inspectionId={inspectionId}
+        category="Mesin Tambahan"
+        onClose={() => setIsAddPhotoDialogOpen(false)}
+        onSave={(file, needsAttention, description) => {
+          onClick?.({
+            type: "add_new_photo",
+            file,
+            needAttention: needsAttention,
+            label: description,
+            category: "Mesin Tambahan",
+          });
+          setIsAddPhotoDialogOpen(false);
+        }}
+      />
     </div>
   );
 };
