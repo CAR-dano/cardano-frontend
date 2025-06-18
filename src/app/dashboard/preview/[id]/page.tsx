@@ -361,7 +361,14 @@ function DataPage() {
       let updatedData = { ...prevRawData };
 
       editedItems.forEach((item: any) => {
-        let { fieldName, subFieldName, subsubfieldname, newValue } = item;
+        const {
+          inspectionId,
+          fieldName,
+          subFieldName,
+          subsubfieldname,
+          oldValue,
+        } = item;
+        let { newValue } = item;
 
         if (subsubfieldname) {
           updatedData = {

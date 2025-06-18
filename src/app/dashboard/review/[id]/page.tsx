@@ -450,14 +450,14 @@ const Edit = () => {
 
   const updateData = (data: any) => {
     data.map((item: any) => {
-      let {
+      const {
         inspectionId,
         fieldName,
         subFieldName,
         subsubfieldname,
-        newValue,
         oldValue,
       } = item;
+      let { newValue } = item;
       if (subsubfieldname) {
         setData((prevData: any) => {
           if (!prevData) return prevData;
