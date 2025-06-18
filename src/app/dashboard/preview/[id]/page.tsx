@@ -361,7 +361,7 @@ function DataPage() {
       let updatedData = { ...prevRawData };
 
       editedItems.forEach((item: any) => {
-        const { fieldName, subFieldName, subsubfieldname, newValue } = item;
+        let { fieldName, subFieldName, subsubfieldname, newValue } = item;
 
         if (subsubfieldname) {
           updatedData = {
@@ -375,6 +375,20 @@ function DataPage() {
             },
           };
         } else if (subFieldName) {
+          if (subFieldName === "estimasiPerbaikan") {
+            // Handle special case for estimasiPerbaikan
+            if (typeof newValue === "string") {
+              try {
+                const parsedValue = JSON.parse(newValue);
+                if (Array.isArray(parsedValue)) {
+                  newValue = parsedValue;
+                }
+              } catch (error) {
+                // Not JSON or not an array, keep as string
+              }
+            }
+          }
+
           updatedData = {
             ...updatedData,
             [fieldName]: {
