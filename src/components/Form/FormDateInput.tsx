@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 
-import { format, formatISO } from "date-fns";
+import { format, formatISO, parseISO } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 
 import { cn } from "../../lib/utils";
@@ -50,16 +50,45 @@ function DatePickerDemo({
   value?: string; // Change type to string
   onChange?: (date: string) => void; // Change type to string
 }) {
-  // Parse the incoming string value to a Date object for internal state
+  console.log("DatePickerDemo value:", value);
+  // Parse the incoming string value to a Date object for internal state,
+  // ensuring it represents the local midnight of the intended date.
   const [date, setDate] = React.useState<Date | undefined>(
-    value ? new Date(value) : undefined
+    value
+      ? (() => {
+          const parsed = parseISO(value);
+          // Create a Date object representing UTC midnight of the parsed date's UTC day
+          return new Date(
+            Date.UTC(
+              parsed.getUTCFullYear(),
+              parsed.getUTCMonth(),
+              parsed.getUTCDate()
+            )
+          );
+        })()
+      : undefined
   );
   const [isPopoverOpen, setIsPopoverOpen] = React.useState(false); // State to control popover open/close
   const { isDarkModeEnabled } = useTheme();
 
   React.useEffect(() => {
-    // Update internal date state when the external value prop changes
-    setDate(value ? new Date(value) : undefined);
+    // Update internal date state when the external value prop changes,
+    // ensuring it represents the local midnight of the intended date.
+    setDate(
+      value
+        ? (() => {
+            const parsed = parseISO(value);
+            // Create a Date object representing UTC midnight of the parsed date's UTC day
+            return new Date(
+              Date.UTC(
+                parsed.getUTCFullYear(),
+                parsed.getUTCMonth(),
+                parsed.getUTCDate()
+              )
+            );
+          })()
+        : undefined
+    );
   }, [value]);
 
   function handleSelect(selectedDate: Date | undefined) {
@@ -71,8 +100,8 @@ function DatePickerDemo({
     }
     setDate(selectedDate);
     console.log("Selected date:", selectedDate);
-    // Format the date to ISO string before sending to onChange
-    if (onChange) onChange(formatISO(selectedDate));
+    // Format the date to 'yyyy-MM-dd' string before sending to onChange to avoid timezone issues
+    if (onChange) onChange(format(selectedDate, "yyyy-MM-dd"));
     setIsPopoverOpen(false); // Close popover after selection
   }
 

@@ -402,6 +402,7 @@ const Halaman2: React.FC<Halaman2Props> = ({
               {/* Baris Huruf */}
               <div className="flex border-t-2 border-black">
                 {[
+                  "",
                   "E",
                   "D-",
                   "D",
@@ -410,7 +411,6 @@ const Halaman2: React.FC<Halaman2Props> = ({
                   "B-",
                   "B",
                   "B+",
-                  "A-",
                   "A-",
                   "A",
                 ].map((grade, i) => (
