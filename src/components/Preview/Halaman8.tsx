@@ -153,7 +153,7 @@ const Halaman8: React.FC<Halaman8Props> = ({
               })
             }
             className="absolute transform -translate-x-1/2"
-            style={{ top: "77%", right: "43%" }}
+            style={{ top: "77%", right: "40%" }}
           >
             <div
               className={`text-black ${
@@ -165,7 +165,7 @@ const Halaman8: React.FC<Halaman8Props> = ({
               {data.bodyPaintThickness.left.sideSkirt}mm
             </div>
           </div>
-          <p className="font-bold mt-10">SAMPING KIRI</p>
+          <p className="text-black  font-bold mt-10">SAMPING KIRI</p>
         </div>
 
         <div className="relative w-full mt-16 mb-10  flex justify-center flex-col items-center">
@@ -292,7 +292,7 @@ const Halaman8: React.FC<Halaman8Props> = ({
               })
             }
             className="absolute transform -translate-x-1/2"
-            style={{ top: "79%", right: "43%" }}
+            style={{ top: "79%", right: "40%" }}
           >
             <div
               className={`text-black ${
@@ -304,7 +304,7 @@ const Halaman8: React.FC<Halaman8Props> = ({
               {data.bodyPaintThickness.right.sideSkirt}mm
             </div>
           </div>
-          <p className="font-bold mt-10">SAMPING KANAN</p>
+          <p className="text-black font-bold mt-10">SAMPING KANAN</p>
         </div>
       </div>
 

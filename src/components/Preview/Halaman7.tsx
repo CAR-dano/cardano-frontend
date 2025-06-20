@@ -57,7 +57,7 @@ const Halaman7: React.FC<Halaman7Props> = ({
           >
             {data.bodyPaintThickness.front}mm
           </div>
-          <p className="font-bold">DEPAN</p>
+          <p className="text-black  font-bold">DEPAN</p>
         </div>
 
         <div className="relative w-full my-10 flex justify-center flex-col items-center">
@@ -77,7 +77,8 @@ const Halaman7: React.FC<Halaman7Props> = ({
                   label: `Ketebalan Cat Belakang Bumper`,
                   fieldName: `bodyPaintThickness`,
                   oldValue: data?.bodyPaintThickness.rear.bumper,
-                  subFieldName: "rearBumper",
+                  subFieldName: "rear",
+                  subsubfieldname: "bumper",
                   type: "normal-input",
                   onClose: () => {},
                 })
@@ -102,7 +103,8 @@ const Halaman7: React.FC<Halaman7Props> = ({
                   label: `Ketebalan Cat Belakang Pintu Bagasi`,
                   fieldName: `bodyPaintThickness`,
                   oldValue: data?.bodyPaintThickness.rear.trunk,
-                  subFieldName: "rearTrunk",
+                  subFieldName: "rear",
+                  subsubfieldname: "trunk",
                   type: "normal-input",
                   onClose: () => {},
                 })
@@ -116,7 +118,7 @@ const Halaman7: React.FC<Halaman7Props> = ({
               {data.bodyPaintThickness.rear.trunk}mm
             </div>
           </div>
-          <p className="font-bold">BELAKANG</p>
+          <p className="text-black font-bold">BELAKANG</p>
         </div>
       </div>
 
