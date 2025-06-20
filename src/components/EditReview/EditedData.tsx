@@ -77,6 +77,17 @@ function EditedData({ updateData, cancelEdit, id }: EditedDataProps) {
     return value;
   };
 
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const formatted = date.toLocaleDateString("id-ID", {
+      timeZone: "UTC", // penting!
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+    return formatted;
+  };
+
   useEffect(() => {
     if (id && status) {
       getChangeData(id);
@@ -351,7 +362,7 @@ function EditedData({ updateData, cancelEdit, id }: EditedDataProps) {
                         {item.fieldName?.toLowerCase() === "inspectiondate" &&
                         item.oldValue &&
                         !isNaN(new Date(item.oldValue).getTime())
-                          ? format(new Date(item.oldValue), "PPP") // Format date
+                          ? formatDate(item.oldValue) // Format date
                           : typeof item.oldValue === "boolean"
                           ? item.oldValue
                             ? "Ada"
@@ -371,7 +382,7 @@ function EditedData({ updateData, cancelEdit, id }: EditedDataProps) {
                         {item.fieldName?.toLowerCase() === "inspectiondate" &&
                         item.newValue &&
                         !isNaN(new Date(item.newValue).getTime())
-                          ? format(new Date(item.newValue), "PPP") // Format date
+                          ? formatDate(item.newValue) // Format date
                           : typeof item.newValue === "boolean"
                           ? item.newValue
                             ? "Ada"
