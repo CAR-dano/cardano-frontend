@@ -10,8 +10,7 @@ interface VehicleInspectionProps {
 }
 
 function CardData({ platNomor, data }: VehicleInspectionProps) {
-  const images = data.photos;
-  console.log(images);
+  const images = data.photos.slice(0, 5) || [];
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -60,13 +59,17 @@ function CardData({ platNomor, data }: VehicleInspectionProps) {
                 transition={{ duration: 0.3 }}
                 className="absolute w-full h-full"
               >
-                <Image
-                  src={`http://69.62.80.7/uploads/inspection-photos/${images[currentIndex].path}`}
-                  alt="slider image"
-                  fill
-                  className="object-cover"
-                  priority
-                />
+                {images.length > 0 ? (
+                  <Image
+                    src={images[currentIndex].url}
+                    alt={`Image ${currentIndex + 1}`}
+                    fill
+                    className="object-cover rounded-[24px] md:rounded-[20px]"
+                    sizes="(max-width: 768px) 100vw, (min-width: 769px) 50vw"
+                  />
+                ) : (
+                  <></>
+                )}
               </motion.div>
             </AnimatePresence>
           </div>
