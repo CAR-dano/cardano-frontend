@@ -31,7 +31,7 @@ const Halaman8: React.FC<Halaman8Props> = ({
 
         <div className="w-full relative mt-16 flex justify-center flex-col items-center mb-28 ">
           <img
-            src="/assets/inspection/ketebalanKiri.svg"
+            src="/assets/inspection/ketebalanKiri.png"
             alt=""
             className="w-[80%]"
           />
@@ -170,7 +170,7 @@ const Halaman8: React.FC<Halaman8Props> = ({
 
         <div className="relative w-full mt-16 mb-10  flex justify-center flex-col items-center">
           <img
-            src="/assets/inspection/ketebalanKanan.svg"
+            src="/assets/inspection/ketebalanKanan.png"
             alt="Car diagram"
             className="w-[80%]"
           />
