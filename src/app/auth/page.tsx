@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import React, { useState, useCallback, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { UserLogin, UserSignUp } from "../../utils/Auth";
 import { useDispatch } from "react-redux";
@@ -36,7 +36,7 @@ function LoginPage() {
     }
   }, [user]);
 
-  const pageVariants = {
+  const pageVariants: Variants = {
     loginInitial: { x: "100%", opacity: 0, scale: 0.9 },
     signupInitial: { x: "-100%", opacity: 0, scale: 0.9 },
     active: {
@@ -77,7 +77,7 @@ function LoginPage() {
   };
 
   // Animation for child elements
-  const childVariants = {
+  const childVariants: Variants = {
     initial: { y: 20, opacity: 0 },
     animate: {
       y: 0,
@@ -92,7 +92,7 @@ function LoginPage() {
   };
 
   // Coin animation
-  const coinVariants = {
+  const coinVariants: Variants = {
     initial: { scale: 0.5, opacity: 0, rotate: -10 },
     animate: {
       scale: 1,
