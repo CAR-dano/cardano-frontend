@@ -566,7 +566,7 @@ const Halaman1: React.FC<Halaman1Props> = ({
                         onClose: () => {},
                       })
                     }
-                    src="/assets/icon/bekastabrak.svg"
+                    src="/assets/icon/bekastabrak.png"
                     alt="ok"
                     className={` rounded-[20px] w-16 h-16
                       ${
@@ -601,7 +601,7 @@ const Halaman1: React.FC<Halaman1Props> = ({
                         onClose: () => {},
                       })
                     }
-                    src="/assets/icon/tidakbekastabrak.svg"
+                    src="/assets/icon/tidakbekastabrak.png"
                     alt="ok"
                     className={`w-16 h-16
                       ${
