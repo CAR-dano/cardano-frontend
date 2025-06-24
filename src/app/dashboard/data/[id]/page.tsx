@@ -11,15 +11,6 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
-const Header = () => {
-  return (
-    <div className="flex justify-between items-center mb-5">
-      <h1 className="text-sm lg:text-xl font-semibold">Data</h1>
-      <div className="flex gap-2"></div>
-    </div>
-  );
-};
-
 const Edit = () => {
   const dispatch = useDispatch<AppDispatch>();
   const isLoading = useAppSelector((state: any) => state.inspection.isLoading);
@@ -103,8 +94,7 @@ const Edit = () => {
         <Loading />
       ) : (
         <>
-          <Header />
-          <div className="flex flex-col lg:flex-row gap-4 justify-center">
+          <div className="w-full mb-20">
             <EditReviewComponents data={data} onClick={handleEditReviewClick} />
           </div>
 

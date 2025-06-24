@@ -19,11 +19,18 @@ import { useTheme } from "../../../../contexts/ThemeContext";
 import { Button } from "../../../../components/ui/button"; // Import Button component
 import { toast } from "../../../../hooks/use-toast";
 
-const Header = ({ hasChanges, data, processing, id, router }: any) => {
+const Header = ({
+  hasChanges,
+  data,
+  processing,
+  id,
+  router,
+  handleApprove,
+}: any) => {
   const { isDarkModeEnabled } = useTheme();
 
   const handleGetLinkPreview = () => {
-    const previewUrl = `${window.location.origin}/dashboard/preview/${id}`;
+    const previewUrl = `https://cardano-pdf.vercel.app/data/${id}`;
     navigator.clipboard.writeText(previewUrl);
     toast({
       title: "Link Copied!",
@@ -34,6 +41,18 @@ const Header = ({ hasChanges, data, processing, id, router }: any) => {
 
   const handlePreview = () => {
     router.push(`/dashboard/preview/${id}`);
+  };
+
+  const handleApproveClick = () => {
+    if (hasChanges > 0) {
+      toast({
+        title: "Cannot Approve",
+        description: "Please save all changes before approving the inspection.",
+        variant: "destructive",
+      });
+      return;
+    }
+    handleApprove();
   };
 
   return (
@@ -84,15 +103,18 @@ const Header = ({ hasChanges, data, processing, id, router }: any) => {
           >
             Preview
           </Button>
-        </div>
-      </div>
-
-      {/* Status Indicators */}
-      {hasChanges > 0 && (
-        <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 rounded-lg">
-          <div className="flex items-center">
+          <Button
+            onClick={handleApproveClick}
+            disabled={processing || hasChanges > 0}
+            className={`${
+              hasChanges > 0
+                ? "bg-gray-400 text-gray-600 cursor-not-allowed"
+                : "bg-green-500 text-white hover:bg-green-600"
+            } disabled:opacity-50 disabled:cursor-not-allowed transition-colors`}
+            title={hasChanges > 0 ? "Save changes before approving" : ""}
+          >
             <svg
-              className="w-4 h-4 text-blue-500 dark:text-blue-300 mr-2"
+              className="w-4 h-4 mr-2"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -101,12 +123,38 @@ const Header = ({ hasChanges, data, processing, id, router }: any) => {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth={2}
-                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-            <span className="text-sm text-blue-800 dark:text-blue-300">
-              Ada {hasChanges} perubahan yang belum disimpan. Akses kontrol di
-              bagian bawah halaman.
+            {processing
+              ? "Memproses..."
+              : hasChanges > 0
+              ? "Simpan Dulu"
+              : "Setujui"}
+          </Button>
+        </div>
+      </div>
+
+      {/* Status Indicators */}
+      {hasChanges > 0 && (
+        <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-900 border border-amber-200 dark:border-amber-700 rounded-lg">
+          <div className="flex items-center">
+            <svg
+              className="w-4 h-4 text-amber-500 dark:text-amber-300 mr-2"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+              />
+            </svg>
+            <span className="text-sm text-amber-800 dark:text-amber-300">
+              Ada {hasChanges} perubahan yang belum disimpan. Simpan perubahan
+              sebelum menyetujui inspeksi.
             </span>
           </div>
         </div>
@@ -116,7 +164,6 @@ const Header = ({ hasChanges, data, processing, id, router }: any) => {
 };
 
 const BottomActionBar = ({
-  handleApprove,
   handleSaveChanges,
   hasChanges,
   data,
@@ -187,8 +234,6 @@ const BottomActionBar = ({
 
           {/* Action Buttons */}
           <div className="flex items-center space-x-2">
-            {/* Delete Button */}
-
             {/* Save Changes Button */}
             <button
               onClick={handleSaveChanges}
@@ -213,28 +258,6 @@ const BottomActionBar = ({
                 />
               </svg>
               {hasChanges ? `Simpan (${hasChanges})` : "Simpan"}
-            </button>
-
-            {/* Approve Button */}
-            <button
-              onClick={handleApprove}
-              disabled={processing}
-              className="inline-flex items-center px-3 py-2 border border-green-300 dark:border-green-600 shadow-sm text-xs font-medium rounded-md text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900 hover:bg-green-100 dark:hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <svg
-                className="w-3 h-3 mr-1"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              {processing ? "Memproses..." : "Setujui"}
             </button>
           </div>
         </div>
@@ -372,10 +395,13 @@ const Edit = () => {
   const [processing, setProcessing] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
+  // Add new state to track unsaved changes
+  const [unsavedChanges, setUnsavedChanges] = useState<any[]>([]);
+
   // Get the id from URL params
   const id = typeof params?.id === "string" ? params.id : "";
 
-  // Get edited items from Redux store
+  // Get edited items from Redux store (for history/log)
   const editedItems = useAppSelector((state) => state.inspection.edited).filter(
     (item) => item.inspectionId === id
   );
@@ -701,7 +727,7 @@ const Edit = () => {
   };
 
   const handleSaveChanges = () => {
-    if (!editedItems || editedItems.length === 0) {
+    if (!unsavedChanges || unsavedChanges.length === 0) {
       toast({
         title: "No changes to save",
         description: "You haven't made any changes to the inspection data.",
@@ -712,9 +738,9 @@ const Edit = () => {
 
     const result: Record<string, any> = {};
 
-    console.log("Saving changes for inspection ID:", editedItems);
+    console.log("Saving changes for inspection ID:", unsavedChanges);
 
-    editedItems.forEach(
+    unsavedChanges.forEach(
       ({ fieldName, subFieldName, subsubfieldname, newValue }) => {
         if (!result[fieldName]) {
           result[fieldName] = {};
@@ -747,6 +773,8 @@ const Edit = () => {
         .unwrap()
         .then(() => {
           setProcessing(false);
+          // Clear unsaved changes after successful save
+          setUnsavedChanges([]);
           setDialogResultData({
             isOpen: true,
             isSuccess: true,
@@ -782,11 +810,12 @@ const Edit = () => {
       ) : (
         <>
           <Header
-            hasChanges={editedItems.length}
+            hasChanges={unsavedChanges.length} // Use unsavedChanges instead of editedItems
             data={data}
             processing={processing}
             id={id}
             router={router}
+            handleApprove={approveInspection}
           />
           <div className="w-full mb-20">
             <EditReviewComponents
@@ -798,9 +827,8 @@ const Edit = () => {
 
           {/* Bottom Action Bar */}
           <BottomActionBar
-            handleApprove={approveInspection}
             handleSaveChanges={handleSaveChanges}
-            hasChanges={editedItems.length}
+            hasChanges={unsavedChanges.length} // Use unsavedChanges instead of editedItems
             data={data}
             processing={processing}
             onOpenDrawer={() => setIsDrawerOpen(true)}
@@ -814,7 +842,7 @@ const Edit = () => {
             id={id}
             cancelEdit={cancelEdit}
             updateData={updateData}
-            hasChanges={editedItems.length}
+            hasChanges={unsavedChanges.length} // Use unsavedChanges instead of editedItems
           />
 
           {/* Dialog Form */}
@@ -834,6 +862,8 @@ const Edit = () => {
                   dialogData.subsubfieldname,
                   dialogData.fieldName
                 );
+
+                // Add to Redux store (for history/log)
                 dispatch(
                   setEditedData({
                     inspectionId: data.id,
@@ -844,6 +874,31 @@ const Edit = () => {
                     newValue: newValue,
                   })
                 );
+
+                // Add to unsaved changes state
+                const changeData = {
+                  inspectionId: data.id,
+                  subFieldName: dialogData.subFieldName,
+                  subsubfieldname: dialogData.subsubfieldname,
+                  fieldName: dialogData.fieldName,
+                  oldValue: dialogData.oldValue,
+                  newValue: newValue,
+                };
+
+                setUnsavedChanges((prev) => {
+                  // Remove existing change for the same field if exists
+                  const filtered = prev.filter(
+                    (item) =>
+                      !(
+                        item.fieldName === changeData.fieldName &&
+                        item.subFieldName === changeData.subFieldName &&
+                        item.subsubfieldname === changeData.subsubfieldname
+                      )
+                  );
+                  // Add the new change
+                  return [...filtered, changeData];
+                });
+
                 setIsDialogOpen(false);
               }}
             />
