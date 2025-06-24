@@ -357,7 +357,10 @@ const Halaman1: React.FC<Halaman1Props> = ({
                             : "vehicleData",
                         oldValue: item.value,
                         type: "normal-input",
-                        subFieldName: item.subFieldName,
+                        subFieldName:
+                          item.subFieldName === "vehiclePlateNumber"
+                            ? ""
+                            : item.subFieldName,
                         onClose: () => {},
                       })
                     }
