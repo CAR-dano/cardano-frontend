@@ -43,6 +43,7 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
   const { toast } = useToast();
 
   const onClick = async (actionData: any) => {
+    console.log("Action Data:", actionData);
     if (actionData.type === "add_new_photo") {
       const { file, needAttention, label, category } = actionData;
 

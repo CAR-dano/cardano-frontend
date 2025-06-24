@@ -55,7 +55,7 @@ function FormEstimasiPerbaikan({
       >
         {label}
       </Label>
-      <div className="flex flex-col gap-2 mt-2">
+      <div className="flex flex-col gap-2 mt-2 max-h-[300px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-gray-100 dark:scrollbar-track-gray-800">
         {data.map((item, index) => (
           <div
             key={index}

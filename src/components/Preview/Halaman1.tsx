@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useRef, useEffect, useState } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import Image from "next/image";
@@ -15,8 +15,39 @@ const Halaman1: React.FC<Halaman1Props> = ({
   editable,
   onClick = () => {},
 }) => {
-  if (data == undefined || data == null) {
-    return <div>Loading...</div>; // atau bisa return null
+  const deskripsiRef = useRef<HTMLDivElement>(null);
+  const [fontSize, setFontSize] = useState(12);
+
+  useEffect(() => {
+    // Tambahkan pengecekan yang lebih lengkap
+    if (deskripsiRef.current && data?.inspectionSummary?.deskripsiKeseluruhan) {
+      const maxHeight = 192; // h-48 dalam pixel (48 * 4 = 192px)
+      let currentFontSize = 12;
+
+      // Reset font size
+      deskripsiRef.current.style.fontSize = `${currentFontSize}px`;
+
+      // Kurangi font size jika tinggi melebihi maxHeight
+      while (
+        deskripsiRef.current.scrollHeight > maxHeight &&
+        currentFontSize > 8
+      ) {
+        currentFontSize -= 0.5;
+        deskripsiRef.current.style.fontSize = `${currentFontSize}px`;
+      }
+
+      setFontSize(currentFontSize);
+    }
+  }, [data?.inspectionSummary?.deskripsiKeseluruhan]);
+
+  // Pengecekan yang lebih komprehensif
+  if (
+    !data ||
+    !data.inspectionSummary ||
+    !data.vehicleData ||
+    !data.identityDetails
+  ) {
+    return <div>Loading...</div>;
   }
 
   const PHOTO_URL = process.env.NEXT_PUBLIC_PDF_URL;
@@ -441,28 +472,30 @@ const Halaman1: React.FC<Halaman1Props> = ({
                 onClose: () => {},
               })
             }
-            className={`w-1/2 ${
+            className={`w-1/2 h-48 overflow-hidden ${
               editable ? "cursor-pointer group hover:bg-[#F4622F] " : ""
             }`}
           >
             <div
-              className={`text-[12px] text-left 
+              ref={deskripsiRef}
+              className={`text-left 
                 ${editable ? "group-hover:text-white" : ""}
-                text-black py-2 px-2 font-bold `}
+                text-black py-2 px-2 font-bold h-full overflow-hidden`}
+              style={{ fontSize: `${fontSize}px` }}
             >
               Deskripsi:
               <br />
               {data.inspectionSummary.deskripsiKeseluruhan.length === 1 ? (
-                <p className="text-justify mt-2 text-[12px] font-semibold">
+                <p className="text-justify mt-2 font-semibold">
                   {capitalizeFirstLetterOfSentences(
                     data.inspectionSummary.deskripsiKeseluruhan[0]
                   )}
                 </p>
               ) : (
-                <ol className="ml-2 list-disc list-inside text-[12px] font-semibold">
+                <ol className="ml-2 list-disc list-inside font-semibold">
                   {data.inspectionSummary.deskripsiKeseluruhan.map(
                     (item: any, index: number) => (
-                      <li key={index} className="text-[12px] font-semibold ">
+                      <li key={index} className="font-semibold">
                         {capitalizeFirstLetterOfSentences(item)}
                       </li>
                     )
@@ -569,9 +602,9 @@ const Halaman1: React.FC<Halaman1Props> = ({
                         onClose: () => {},
                       })
                     }
-                    src="/assets/icon/tidakbekastabrak.png"
+                    src="/assets/icon/bekastabrak.png"
                     alt="ok"
-                    className={` rounded-[20px] w-16 h-16
+                    className={` w-18 h-16
                       ${
                         editable
                           ? "transition group-hover:cursor-pointer hover:-translate-y-1"
@@ -604,9 +637,9 @@ const Halaman1: React.FC<Halaman1Props> = ({
                         onClose: () => {},
                       })
                     }
-                    src="/assets/icon/bekastabrak.png"
+                    src="/assets/icon/tidakbekastabrak.png"
                     alt="ok"
-                    className={`w-16 h-16
+                    className={`w-18 h-16
                       ${
                         editable
                           ? "transition group-hover:cursor-pointer hover:-translate-y-1"
@@ -637,7 +670,7 @@ const Halaman1: React.FC<Halaman1Props> = ({
                         onClose: () => {},
                       })
                     }
-                    src="/assets/icon/bekasbanjir.svg"
+                    src="/assets/icon/bekasbanjir.png"
                     alt="ok"
                     className={` rounded-[20px] w-16 h-16
                       ${
@@ -668,7 +701,7 @@ const Halaman1: React.FC<Halaman1Props> = ({
                         onClose: () => {},
                       })
                     }
-                    src="/assets/icon/tidakbekasbanjir.svg"
+                    src="/assets/icon/tidakbekasbanjir.png"
                     alt="ok"
                     className={`w-16 h-16
                       ${
@@ -694,16 +727,16 @@ const Halaman1: React.FC<Halaman1Props> = ({
                       editable &&
                       onClick({
                         label: `Indikasi Odometer Reset`,
-                        fieldName: `indikasiOdometerReset`,
+                        subFieldName: `indikasiOdometerReset`,
                         oldValue: data.inspectionSummary.indikasiOdometerReset,
-                        subFieldName: "inspectionSummary",
+                        fieldName: "inspectionSummary",
                         type: "select-2-input-indikasi",
                         onClose: () => {},
                       })
                     }
-                    src="/assets/icon/odometer_merah.svg"
+                    src="/assets/icon/odometerreset.png"
                     alt="ok"
-                    className={` w-16 h-16 p-1
+                    className={` w-18 h-16 -ml-1
                       ${
                         editable
                           ? "transition group-hover:cursor-pointer hover:-translate-y-1"
@@ -726,15 +759,15 @@ const Halaman1: React.FC<Halaman1Props> = ({
                       onClick({
                         label: `Indikasi Odometer Reset`,
                         subFieldName: `indikasiOdometerReset`,
-                        value: data.inspectionSummary.indikasiOdometerReset,
+                        oldValue: data.inspectionSummary.indikasiOdometerReset,
                         fieldName: "inspectionSummary",
                         type: "select-2-input-indikasi",
                         onClose: () => {},
                       })
                     }
-                    src="/assets/icon/tidakodometer.svg"
+                    src="/assets/icon/tidakodometer.png"
                     alt="ok"
-                    className={`w-16 h-16
+                    className={`w-18 h-16 -ml-1
                       ${
                         editable
                           ? "transition group-hover:cursor-pointer hover:-translate-y-1"

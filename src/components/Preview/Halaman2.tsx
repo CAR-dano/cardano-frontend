@@ -18,39 +18,45 @@ const Halaman2: React.FC<Halaman2Props> = ({
   const kakiKakiNotesRef = useRef<HTMLDivElement>(null);
   const interiorNotesRef = useRef<HTMLDivElement>(null);
   const eksteriorNotesRef = useRef<HTMLDivElement>(null);
+  const estimasiPartRef = useRef<HTMLDivElement>(null);
+  const estimasiHargaRef = useRef<HTMLDivElement>(null);
 
-  const [mesinNotesFontSizeClass, setMesinNotesFontSizeClass] =
-    useState("text-[13px]");
-  const [kakiKakiNotesFontSizeClass, setKakiKakiNotesFontSizeClass] =
-    useState("text-[13px]");
-  const [interiorNotesFontSizeClass, setInteriorNotesFontSizeClass] =
-    useState("text-[13px]");
-  const [eksteriorNotesFontSizeClass, setEksteriorNotesFontSizeClass] =
-    useState("text-[13px]");
+  const [mesinNotesFontSize, setMesinNotesFontSize] = useState(13);
+  const [kakiKakiNotesFontSize, setKakiKakiNotesFontSize] = useState(13);
+  const [interiorNotesFontSize, setInteriorNotesFontSize] = useState(13);
+  const [eksteriorNotesFontSize, setEksteriorNotesFontSize] = useState(13);
+  const [estimasiPartFontSize, setEstimasiPartFontSize] = useState(13);
+  const [estimasiHargaFontSize, setEstimasiHargaFontSize] = useState(13);
 
   useEffect(() => {
-    const checkFontSize = (
+    const adjustFontSize = (
       ref: React.RefObject<HTMLDivElement | null>,
-      setFontSizeClass: React.Dispatch<React.SetStateAction<string>>
+      setFontSize: React.Dispatch<React.SetStateAction<number>>,
+      maxHeight: number = 180
     ) => {
       if (ref.current) {
-        const scrollHeight = ref.current.scrollHeight;
-        if (scrollHeight > 220) {
-          setFontSizeClass("text-[10px]");
-        } else if (scrollHeight > 200) {
-          setFontSizeClass("text-[11px]");
-        } else if (scrollHeight > 180) {
-          setFontSizeClass("text-[12px]");
-        } else {
-          setFontSizeClass("text-[13px]");
+        let currentFontSize = 13;
+
+        // Reset font size
+        ref.current.style.fontSize = `${currentFontSize}px`;
+
+        // Kurangi font size jika tinggi melebihi maxHeight
+        while (ref.current.scrollHeight > maxHeight && currentFontSize > 8) {
+          currentFontSize -= 0.5;
+          ref.current.style.fontSize = `${currentFontSize}px`;
         }
+
+        setFontSize(currentFontSize);
       }
     };
 
-    checkFontSize(mesinNotesRef, setMesinNotesFontSizeClass);
-    checkFontSize(kakiKakiNotesRef, setKakiKakiNotesFontSizeClass);
-    checkFontSize(interiorNotesRef, setInteriorNotesFontSizeClass);
-    checkFontSize(eksteriorNotesRef, setEksteriorNotesFontSizeClass);
+    // Adjust font sizes for all sections
+    adjustFontSize(mesinNotesRef, setMesinNotesFontSize, 180);
+    adjustFontSize(kakiKakiNotesRef, setKakiKakiNotesFontSize, 180);
+    adjustFontSize(interiorNotesRef, setInteriorNotesFontSize, 180);
+    adjustFontSize(eksteriorNotesRef, setEksteriorNotesFontSize, 180);
+    adjustFontSize(estimasiPartRef, setEstimasiPartFontSize, 200);
+    adjustFontSize(estimasiHargaRef, setEstimasiHargaFontSize, 200);
   }, [data]);
 
   if (data == undefined || data == null) {
@@ -129,7 +135,10 @@ const Halaman2: React.FC<Halaman2Props> = ({
           >
             <div
               ref={mesinNotesRef}
-              className={`text-left text-black py-2 px-3 font-medium ${mesinNotesFontSizeClass}`}
+              className={`text-left text-black py-2 px-3 font-medium overflow-hidden ${
+                editable ? "hover:text-white" : ""
+              }`}
+              style={{ fontSize: `${mesinNotesFontSize}px` }}
             >
               <ol className="list-disc list-inside">
                 {data.inspectionSummary.mesinNotes.map(
@@ -162,7 +171,10 @@ const Halaman2: React.FC<Halaman2Props> = ({
           >
             <div
               ref={kakiKakiNotesRef}
-              className={`text-left text-black py-2 px-3 font-medium ${kakiKakiNotesFontSizeClass}`}
+              className={`text-left text-black py-2 px-3 font-medium overflow-hidden ${
+                editable ? "hover:text-white" : ""
+              }`}
+              style={{ fontSize: `${kakiKakiNotesFontSize}px` }}
             >
               <ol className="list-disc list-inside">
                 {data.inspectionSummary.kakiKakiNotes.map(
@@ -195,7 +207,10 @@ const Halaman2: React.FC<Halaman2Props> = ({
           >
             <div
               ref={interiorNotesRef}
-              className={`text-left text-black py-2 px-3 font-medium ${interiorNotesFontSizeClass}`}
+              className={`text-left text-black py-2 px-3 font-medium overflow-hidden ${
+                editable ? "hover:text-white" : ""
+              }`}
+              style={{ fontSize: `${interiorNotesFontSize}px` }}
             >
               <ol className="list-disc list-inside">
                 {data.inspectionSummary.interiorNotes.map(
@@ -228,7 +243,10 @@ const Halaman2: React.FC<Halaman2Props> = ({
           >
             <div
               ref={eksteriorNotesRef}
-              className={`text-left text-black py-2 px-3 font-medium ${eksteriorNotesFontSizeClass}`}
+              className={`text-left text-black py-2 px-3 font-medium overflow-hidden ${
+                editable ? "hover:text-white" : ""
+              }`}
+              style={{ fontSize: `${eksteriorNotesFontSize}px` }}
             >
               {data.inspectionSummary.eksteriorNotes ? (
                 <ol className="list-disc list-inside">
@@ -293,9 +311,11 @@ const Halaman2: React.FC<Halaman2Props> = ({
             `}
           >
             <div
-              className={`text-left text-[13px] py-2 px-3 font-medium list-none ${
+              ref={estimasiPartRef}
+              className={`text-left py-2 px-3 font-medium list-none overflow-hidden ${
                 editable ? "group-hover:text-white" : ""
               }`}
+              style={{ fontSize: `${estimasiPartFontSize}px` }}
             >
               <ul className="list-none">
                 {data.inspectionSummary.estimasiPerbaikan.map(
@@ -314,9 +334,11 @@ const Halaman2: React.FC<Halaman2Props> = ({
             }`}
           >
             <div
-              className={`text-left text-[13px] py-2 px-3 font-medium list-none ${
+              ref={estimasiHargaRef}
+              className={`text-left py-2 px-3 font-medium list-none overflow-hidden ${
                 editable ? "group-hover:text-white" : ""
               }`}
+              style={{ fontSize: `${estimasiHargaFontSize}px` }}
             >
               <ul className="list-none">
                 {data.inspectionSummary.estimasiPerbaikan.map(
