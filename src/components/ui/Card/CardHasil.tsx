@@ -46,17 +46,20 @@ function CardHasil({ inspectionSummary, overallRating, urlPdf }: any) {
           <div className="flex flex-col gap-2 lg:gap-6 mt-2 lg:mt-5 px-5 lg:px-0">
             {[
               {
-                icon: "/assets/icon/bekastabrak.svg",
+                iconYes: "/assets/icon/bekastabrak.png",
+                iconNo: "/assets/icon/tidakbekastabrak.png",
                 title: "Bekas Tabrakan",
                 description: inspectionSummary.indikasiTabrakan,
               },
               {
-                icon: "/assets/icon/bekasbanjir.svg",
+                iconYes: "/assets/icon/bekasbanjir.png",
+                iconNo: "/assets/icon/tidakbekasbanjir.png",
                 title: "Bekas Banjir",
                 description: inspectionSummary.indikasiBanjir,
               },
               {
-                icon: "/assets/icon/odometerreset.svg",
+                iconYes: "/assets/icon/odometerreset.png",
+                iconNo: "/assets/icon/tidakodometer.png",
                 title: "Odometer Reset",
                 description: inspectionSummary.indikasiOdometerReset,
               },
@@ -66,13 +69,11 @@ function CardHasil({ inspectionSummary, overallRating, urlPdf }: any) {
                 className="flex gap-5 items-center text-neutral-900"
               >
                 <Image
-                  src={item.icon}
+                  src={item.description ? item.iconYes : item.iconNo}
                   alt="icon"
                   width={80}
                   height={80}
-                  className={`w-20 h-20 lg:w-24 lg:h-24  rounded-[20px] ${
-                    item.description ? "bg-pink-400" : "bg-blue-500"
-                  } ${item.title != "Odometer Reset" ? "p-3" : " p-2"}
+                  className={`w-20 h-20 lg:w-24 lg:h-24  rounded-[20px]  
             `}
                 />
                 <div>

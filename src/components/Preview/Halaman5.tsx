@@ -85,7 +85,7 @@ const Halaman5: React.FC<Halaman5Props> = ({
             data.hasilInspeksiEksterior.catatan.length > 0 ? (
               <div
                 className={`text-[12px] font-semibold flex ${
-                  data.testDrive.catatan.length >= 4
+                  data.hasilInspeksiEksterior.catatan.length >= 4
                     ? "flex-row flex-wrap"
                     : "flex-col justify-center items-center"
                 } ${editable ? "group-hover:text-white" : ""}`}

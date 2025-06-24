@@ -13,6 +13,7 @@ import { AiFillDatabase } from "react-icons/ai";
 import { FaUserGroup } from "react-icons/fa6";
 import { FaUserTie } from "react-icons/fa";
 import { FaCodeBranch } from "react-icons/fa";
+import { SiHiveBlockchain } from "react-icons/si";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -128,10 +129,16 @@ const menu = [
     access: ["ADMIN", "REVIEWER"],
   },
   {
-    title: "Data Tersimpan",
+    title: "Data Approved",
     link: "/dashboard/database",
     children: <AiFillDatabase size={20} />,
     access: ["ADMIN", "REVIEWER"],
+  },
+  {
+    title: "Blockchain",
+    link: "/dashboard/blockchain",
+    children: <SiHiveBlockchain size={20} />,
+    access: ["ADMIN"],
   },
   {
     title: "User Management",
