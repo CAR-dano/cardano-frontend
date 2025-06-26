@@ -43,7 +43,6 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
   const { toast } = useToast();
 
   const onClick = async (actionData: any) => {
-    console.log("Action Data:", actionData);
     if (actionData.type === "add_new_photo") {
       const { file, needAttention, label, category } = actionData;
 
@@ -78,7 +77,6 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
         }
 
         const result = await response.json();
-        console.log("Photo upload successful:", result);
         toast({
           title: "Success",
           description: "Photo uploaded successfully.",

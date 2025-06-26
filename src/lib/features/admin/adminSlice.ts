@@ -123,7 +123,6 @@ export const fetchBranches = createAsyncThunk(
       const state: any = thunkAPI.getState();
       const token = state.auth.accessToken;
       const payload = await adminService.getAllBranches(token);
-      console.log("Fetched branches:", payload);
       return payload;
     } catch (error: any) {
       const message = error?.response?.data?.message;

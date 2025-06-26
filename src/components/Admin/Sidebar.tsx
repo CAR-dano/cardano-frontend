@@ -171,8 +171,6 @@ const Sidebar: React.FC = () => {
       await dispatch(logout()).unwrap();
       window.location.href = "/auth";
     } catch (error) {
-      console.error("Logout error:", error);
-      // Even if logout fails, still redirect to auth
       window.location.href = "/auth";
     }
   };

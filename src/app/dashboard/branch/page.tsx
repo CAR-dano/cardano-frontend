@@ -72,10 +72,6 @@ export default function BranchPage() {
     dispatch(fetchBranches());
   }, [dispatch]);
 
-  useEffect(() => {
-    console.log(branches);
-  }, [branches]);
-
   const filteredBranches = branches.filter(
     (branch) =>
       (branch.code &&

@@ -75,7 +75,6 @@ function DataPage() {
   const getData = async (id: string) => {
     const response = await dispatch(getDataForPreview(id)).unwrap();
     if (response) {
-      console.log("response", response);
       setRawInspectionData(response); // Store the raw data
       preProcessData(response);
       getChangeData(id); // Call getChangeData after initial data is processed

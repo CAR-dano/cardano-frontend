@@ -1,4 +1,4 @@
-import axios from "axios";
+import apiClient from "@/lib/services/apiClient";
 
 const LOCAL_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -15,7 +15,7 @@ const getDataForReview = async ({
 } = {}) => {
   const params: any = { page, pageSize };
   if (status) params.status = status;
-  const response = await axios.get(`${LOCAL_API_URL}/inspections`, {
+  const response = await apiClient.get(`${LOCAL_API_URL}/inspections`, {
     params,
     headers: {
       "Content-Type": "application/json",
@@ -26,24 +26,30 @@ const getDataForReview = async ({
 };
 
 const getDataForPreview = async (id: string) => {
-  const response = await axios.get(`${LOCAL_API_URL}/inspections/${id}`, {});
+  const response = await apiClient.get(
+    `${LOCAL_API_URL}/inspections/${id}`,
+    {}
+  );
   return response.data;
 };
 
 const getDataForReviewById = async (id: string) => {
-  const response = await axios.get(`${LOCAL_API_URL}/inspections/${id}`, {});
+  const response = await apiClient.get(
+    `${LOCAL_API_URL}/inspections/${id}`,
+    {}
+  );
   return response.data;
 };
 
 const approveInspectionData = async (id: string) => {
-  const response = await axios.patch(
+  const response = await apiClient.patch(
     `${LOCAL_API_URL}/inspections/${id}/approve`
   );
   return response.data;
 };
 
 const getDataEdited = async (id: string, token: string) => {
-  const response = await axios.get(
+  const response = await apiClient.get(
     `${LOCAL_API_URL}/inspections/${id}/changelog`,
     {
       headers: {
@@ -56,12 +62,15 @@ const getDataEdited = async (id: string, token: string) => {
 };
 
 const saveChanges = async (id: any, data: any) => {
-  const response = await axios.put(`${LOCAL_API_URL}/inspections/${id}`, data);
+  const response = await apiClient.put(
+    `${LOCAL_API_URL}/inspections/${id}`,
+    data
+  );
   return response.data;
 };
 
 const mintingToBlockchain = async (id: string) => {
-  const response = await axios.put(
+  const response = await apiClient.put(
     `${LOCAL_API_URL}/inspections/${id}/archive`,
     {}
   );
@@ -69,7 +78,7 @@ const mintingToBlockchain = async (id: string) => {
 };
 
 const searchByVehiclePlat = async (platNumber: string, token: any) => {
-  const response = await axios.get(
+  const response = await apiClient.get(
     `${LOCAL_API_URL}/inspections/search?vehicleNumber=${platNumber}`,
     {
       headers: {
@@ -82,13 +91,10 @@ const searchByVehiclePlat = async (platNumber: string, token: any) => {
 };
 
 const searchByKeyword = async (keyword: string, page = 1, pageSize = 10) => {
-  const response = await axios.get(
+  const response = await apiClient.get(
     `${LOCAL_API_URL}/inspections/search/keyword?q=${encodeURIComponent(
       keyword
-    )}`,
-    {
-      params: { page, pageSize },
-    }
+    )}`
   );
   return response.data;
 };
@@ -118,7 +124,7 @@ const updatePhoto = async (
     formData.append("displayInPdf", data.displayInPdf.toString());
   }
 
-  const response = await axios.put(
+  const response = await apiClient.put(
     `${LOCAL_API_URL}/inspections/${id}/photos/${photosId}`,
     formData,
     {

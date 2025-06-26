@@ -1,4 +1,4 @@
-import axios from "axios";
+import apiClient from "@/lib/services/apiClient";
 import { format } from "date-fns";
 import { DateRange } from "react-day-picker";
 
@@ -25,7 +25,10 @@ export const getMainStats = async (token: string, dateRange?: DateRange) => {
     config.params.end_date = format(dateRange.to, "yyyy-MM-dd");
   }
 
-  const response = await axios.get(`${API_URL}/dashboard/main-stats`, config);
+  const response = await apiClient.get(
+    `${API_URL}/dashboard/main-stats`,
+    config
+  );
   return response.data;
 };
 
@@ -65,9 +68,9 @@ export const getCombinedDashboardData = async (
 
   const [trendData, branchDistribution, inspectorPerformance] =
     await Promise.all([
-      axios.get(`${API_URL}/dashboard/order-trend`, configOrder),
-      axios.get(`${API_URL}/dashboard/branch-distribution`, config),
-      axios.get(`${API_URL}/dashboard/inspector-performance`, config),
+      apiClient.get(`${API_URL}/dashboard/order-trend`, configOrder),
+      apiClient.get(`${API_URL}/dashboard/branch-distribution`, config),
+      apiClient.get(`${API_URL}/dashboard/inspector-performance`, config),
     ]);
 
   return {

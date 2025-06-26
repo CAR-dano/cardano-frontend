@@ -64,8 +64,6 @@ function ResultPageContent() {
       hasSearched &&
       !hasReSearchedAfterAuth
     ) {
-      console.log("Re-searching after authentication - conditions met");
-
       // Set flags first to prevent multiple calls
       setHasReSearchedAfterAuth(true);
       setWasUnauthorizedBeforeAuth(false);
@@ -90,7 +88,6 @@ function ResultPageContent() {
   // Reset flags when user logs out
   useEffect(() => {
     if (!isAuthenticated) {
-      console.log("User logged out, resetting flags");
       setHasReSearchedAfterAuth(false);
       setWasUnauthorizedBeforeAuth(false);
     }

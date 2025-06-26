@@ -31,7 +31,6 @@ function FormSelect2Option({
   const [isLengkap, setIsLengkap] = React.useState(value);
 
   const handleClick = (optionValue: boolean) => {
-    console.log("Selected option:", optionValue);
     setIsLengkap(optionValue);
     const newValue = optionValue;
     if (onChange) onChange(newValue);
@@ -43,7 +42,6 @@ function FormSelect2Option({
   ]);
 
   useEffect(() => {
-    console.log("isLengkap", isLengkap);
     if (type === "indikasi") {
       setOptions([
         { value: true, label: "Indikasi" },

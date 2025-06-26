@@ -50,7 +50,6 @@ function DatePickerDemo({
   value?: string; // Change type to string
   onChange?: (date: string) => void; // Change type to string
 }) {
-  console.log("DatePickerDemo value:", value);
   // Parse the incoming string value to a Date object for internal state,
   // ensuring it represents the local midnight of the intended date.
   const [date, setDate] = React.useState<Date | undefined>(
@@ -99,7 +98,6 @@ function DatePickerDemo({
       return;
     }
     setDate(selectedDate);
-    console.log("Selected date:", selectedDate);
     // Format the date to 'yyyy-MM-dd' string before sending to onChange to avoid timezone issues
     if (onChange) onChange(format(selectedDate, "yyyy-MM-dd"));
     setIsPopoverOpen(false); // Close popover after selection

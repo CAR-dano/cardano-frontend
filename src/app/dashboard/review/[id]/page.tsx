@@ -738,8 +738,6 @@ const Edit = () => {
 
     const result: Record<string, any> = {};
 
-    console.log("Saving changes for inspection ID:", unsavedChanges);
-
     unsavedChanges.forEach(
       ({ fieldName, subFieldName, subsubfieldname, newValue }) => {
         if (!result[fieldName]) {
@@ -751,10 +749,6 @@ const Edit = () => {
             result[fieldName][subFieldName] = {};
           }
           if (subsubfieldname) {
-            console.log(
-              `Updating ${fieldName}.${subFieldName}.${subsubfieldname} with value:
-              ${newValue}`
-            );
             result[fieldName][subFieldName][subsubfieldname] = newValue;
           } else {
             result[fieldName][subFieldName] = newValue;
@@ -764,8 +758,6 @@ const Edit = () => {
         }
       }
     );
-
-    console.log("Data to be saved:", result);
 
     if (id) {
       setProcessing(true);

@@ -94,7 +94,6 @@ function FormEditPhoto({
         displayInPdf: displayInPdf,
       });
 
-      console.log("Photo updated successfully");
       onSave?.({
         success: true,
       });

@@ -57,7 +57,6 @@ export const approveInspectionData = createAsyncThunk(
   async (id: string, thunkAPI) => {
     try {
       const payload = await inspectionService.approveInspectionData(id);
-      console.log("payload", payload);
       return payload;
     } catch (error: any) {
       const message = error?.response?.data?.message;
@@ -109,28 +108,19 @@ export const mintingToBlockchain = createAsyncThunk(
 export const searchByVehiclePlat = createAsyncThunk(
   "inspection/searchByPlat",
   async (platNumber: string, thunkAPI: any) => {
-    console.log("🔍 searchByVehiclePlat called with:", platNumber);
     try {
       const token = thunkAPI.getState().auth.accessToken;
       const payload = await inspectionService.searchByVehiclePlat(
         platNumber,
         token
       );
-      console.log("✅ searchByVehiclePlat success:", payload);
       return payload;
     } catch (error: any) {
       const status = error?.response?.status;
       const message = error?.response?.data?.message;
-      console.log(
-        "❌ searchByVehiclePlat error - status:",
-        status,
-        "message:",
-        message
-      );
 
       // For unauthorized, return mock data with unauthorized flag
       if (status === 401) {
-        console.log("🔐 Returning mock data for 401");
         const mockData = {
           vehiclePlateNumber: platNumber,
           vehicleData: {
@@ -187,11 +177,7 @@ export const searchByKeyword = createAsyncThunk(
   ) => {
     try {
       const { keyword, page = 1, pageSize = 10 } = params;
-      const payload = await inspectionService.searchByKeyword(
-        keyword,
-        page,
-        pageSize
-      );
+      const payload = await inspectionService.searchByKeyword(keyword);
       return payload;
     } catch (error: any) {
       const message = error?.response?.data?.message;
@@ -215,7 +201,6 @@ export const updatePhoto = createAsyncThunk(
     thunkAPI
   ) => {
     try {
-      console.log("Updating photo with data:", id);
       const payload = await inspectionService.updatePhoto(id, photosId, data);
       return payload;
     } catch (error: any) {
@@ -276,9 +261,7 @@ export const inspectionSlice = createSlice({
     setDataReview: (state, action) => {
       state.review = { ...state.review, ...action.payload };
     },
-    updateData: (state, action) => {
-      console.log("action", action.payload);
-    },
+    updateData: (state, action) => {},
     clearSearchResults: (state) => {
       state.searchResults.data = [];
       state.searchResults.meta = null;
@@ -286,7 +269,6 @@ export const inspectionSlice = createSlice({
       state.searchResults.isLoading = false;
     },
     clearUnauthorizedState: (state) => {
-      console.log("Clearing unauthorized state");
       state.isUnauthorized = false;
       state.error = null;
     },
@@ -438,18 +420,15 @@ export const inspectionSlice = createSlice({
         // Don't reset isUnauthorized here, let the result determine it
       })
       .addCase(searchByVehiclePlat.fulfilled, (state, action) => {
-        console.log("searchByVehiclePlat.fulfilled - payload:", action.payload);
         state.isLoading = false;
         state.review = action.payload;
         state.error = null;
 
         // Check if this is unauthorized mock data
         if (action.payload._isUnauthorized) {
-          console.log("Setting isUnauthorized to true (mock data)");
           state.isUnauthorized = true;
           state.error = "Anda perlu login untuk melihat detail lengkap";
         } else {
-          console.log("Setting isUnauthorized to false (real data)");
           state.isUnauthorized = false;
         }
       })

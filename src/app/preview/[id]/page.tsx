@@ -40,7 +40,6 @@ function DataPage() {
   const getData = async (id: string) => {
     const response = await dispatch(getDataForPreview(id)).unwrap();
     if (response) {
-      console.log("response", response);
       preProcessData(response);
     } else {
       console.error("Failed to fetch data");

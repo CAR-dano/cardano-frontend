@@ -65,11 +65,8 @@ const TableData = ({
 
   // This is the actual minting logic, now called after confirmation
   const proceedWithMinting = (id: string) => {
-    console.log("Proceeding with minting to blockchain with ID:", id);
-    console.log("Attempting dispatch of mintingToBlockchain with ID:", id); // New log
     dispatch(mintingToBlockchain(id))
       .then((response) => {
-        console.log("Minting response:", response);
         toast({
           title: "Success",
           description:
@@ -91,7 +88,6 @@ const TableData = ({
 
   // This handler now opens the confirmation dialog
   const mintingToBlockchainHandler = (id: string) => {
-    console.log("Requesting confirmation for minting with ID:", id);
     setConfirmMintDialog({ isOpen: true, itemId: id });
   };
 
@@ -602,10 +598,6 @@ const TableInspectionReviewer = ({
       debouncedSearch.cancel();
     };
   }, [searchTerm, debouncedSearch]);
-
-  useEffect(() => {
-    console.log("dialogResultData updated:", dialogResultData);
-  }, [dialogResultData]);
 
   // Clear search when component unmounts or when explicitly clearing
   useEffect(() => {
