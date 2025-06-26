@@ -1,9 +1,10 @@
 import React from "react";
+import type { Metadata } from "next";
 
-export const metadata = {
-  title: "Review",
-  description:
-    "Review page for CarDano dashboard, managing inspections that need review.",
+export const metadata: Metadata = {
+  title: "Review Detail",
+  description: "Detail review inspeksi kendaraan yang memerlukan persetujuan",
+  robots: "noindex, nofollow",
 };
 
 export default function ReviewLayout({

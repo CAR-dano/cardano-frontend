@@ -2,11 +2,10 @@ import type { Metadata } from "next";
 import DashboardClientLayout from "./client-layout";
 
 export const metadata: Metadata = {
-  title: {
-    template: "%s | CAR-dano",
-    default: "Dashboard | CAR-dano",
-  },
-  robots: "noindex, nofollow", // Dashboard should not be indexed
+  title: "Dashboard | CAR-dano",
+  description:
+    "CAR-dano Dashboard - Manage your car inspection and verification",
+  robots: "noindex, nofollow",
 };
 
 export default function DashboardLayout({
