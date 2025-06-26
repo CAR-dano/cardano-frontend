@@ -29,6 +29,7 @@ const TableData = ({
   isDatabase = false,
   setDialogData,
   handleRefresh,
+  userRole,
 }: any) => {
   const [fetchStatus, setFetchStatus] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
@@ -285,8 +286,8 @@ const TableData = ({
                           </svg>
                           {isDatabase ? "Lihat" : "Review"}
                         </button>
-                      </Link>
-                      {item.status == "APPROVED" && (
+                      </Link>{" "}
+                      {item.status == "APPROVED" && userRole === "ADMIN" && (
                         <button
                           onClick={() => mintingToBlockchainHandler(item.id)} // Calls the handler that opens confirmation
                           className="inline-flex items-center px-3 py-1.5 border border-purple-300 shadow-sm text-xs font-medium rounded-md text-purple-700 bg-purple-50 hover:bg-purple-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors duration-200"
@@ -560,6 +561,7 @@ const TableInspectionReviewer = ({
   meta,
   onPageChange,
   handleRefresh,
+  userRole,
 }: any) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isSearching, setIsSearching] = useState(false);
@@ -656,6 +658,7 @@ const TableInspectionReviewer = ({
               isDatabase={isDatabase}
               setDialogData={setDialogResultData}
               handleRefresh={handleRefresh}
+              userRole={userRole}
             />
           )}
           {/* Show pagination only if there's data and meta */}

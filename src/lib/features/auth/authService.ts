@@ -1,15 +1,9 @@
-import axios from "axios";
-
+import apiClient from "../../services/apiClient";
 import { UserLogin, UserSignUp } from "../../../utils/Auth";
-
-const LOCAL_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const checkToken = async (token: string) => {
   try {
-    // Set the token in axios for subsequent requests
-    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-
-    const response = await axios.get(`${LOCAL_API_URL}/auth/check-token`, {
+    const response = await apiClient.get("/auth/check-token", {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -22,6 +16,8 @@ const checkToken = async (token: string) => {
       if (storedUser) {
         response.data.user = JSON.parse(storedUser);
       }
+      // Ensure token is stored in localStorage
+      localStorage.setItem("token", token);
     }
 
     return response.data;
@@ -36,7 +32,7 @@ const checkToken = async (token: string) => {
 };
 
 const login = async (userData: UserLogin) => {
-  const response = await axios.post(`${LOCAL_API_URL}/auth/login`, userData, {
+  const response = await apiClient.post("/auth/login", userData, {
     headers: {
       "Content-Type": "application/json",
     },
@@ -50,26 +46,17 @@ const login = async (userData: UserLogin) => {
     // Store auth data in localStorage
     localStorage.setItem("token", response.data.accessToken);
     localStorage.setItem("user", JSON.stringify(response.data.user));
-
-    // Set the token for all subsequent requests
-    axios.defaults.headers.common[
-      "Authorization"
-    ] = `Bearer ${response.data.accessToken}`;
   }
 
   return response.data;
 };
 
 const signup = async (userData: UserSignUp) => {
-  const response = await axios.post(
-    `${LOCAL_API_URL}/auth/register`,
-    userData,
-    {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
+  const response = await apiClient.post("/auth/register", userData, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 
   return response.data;
 };
@@ -81,16 +68,12 @@ const logout = async () => {
       localStorage.clear();
     }
 
-    // Clear axios auth header
-    delete axios.defaults.headers.common["Authorization"];
-
     return { success: true, message: "Logged out successfully" };
   } catch (error) {
     // Even if there's an error, ensure cleanup happens
     if (typeof window !== "undefined") {
       localStorage.clear();
     }
-    delete axios.defaults.headers.common["Authorization"];
 
     return { success: true, message: "Logged out successfully" };
   }
@@ -106,16 +89,7 @@ const logout = async () => {
 // //   return response.data;
 // // };
 
-// // const loadUser = () => {
-// //   if (typeof window !== "undefined") {
-// //     const token = localStorage.getItem("token");
-// //     if (token) {
-// //       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-// //     }
-// //   }
-// // };
-
-// // loadUser();
+// Removed loadUser function as interceptor handles token automatically
 
 const refreshToken = async () => {
   if (typeof window !== "undefined") {
@@ -123,8 +97,8 @@ const refreshToken = async () => {
     if (!token) return null;
 
     try {
-      const response = await axios.post(
-        `${LOCAL_API_URL}/auth/refresh-token`,
+      const response = await apiClient.post(
+        "/auth/refresh-token",
         {},
         {
           headers: {
@@ -136,9 +110,6 @@ const refreshToken = async () => {
 
       if (response.data && response.data.accessToken) {
         localStorage.setItem("token", response.data.accessToken);
-        axios.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${response.data.accessToken}`;
         return response.data;
       }
 

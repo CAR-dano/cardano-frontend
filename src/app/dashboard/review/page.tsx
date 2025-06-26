@@ -3,6 +3,7 @@ import Loading, { LoadingSkeleton } from "../../../components/Loading";
 import TableInspectionReviewer from "../../../components/Table/TableInspectionReviewer";
 import { getDataForReviewer } from "../../../lib/features/inspection/inspectionSlice";
 import { useTheme } from "../../../contexts/ThemeContext";
+import useAuth from "../../../hooks/useAuth";
 
 import { AppDispatch, RootState } from "../../../lib/store";
 import { useEffect, useState } from "react";
@@ -86,6 +87,7 @@ const Review: React.FC = () => {
     (state: RootState) => state.inspection
   );
   const accessToken = useSelector((state: RootState) => state.auth.accessToken);
+  const { user } = useAuth();
 
   const [hasMounted, setHasMounted] = useState(false);
 
@@ -157,6 +159,7 @@ const Review: React.FC = () => {
           isDatabase={false}
           onPageChange={handlePageChange}
           handleRefresh={handleRefresh}
+          userRole={user?.role}
         />
       ) : (
         <div className="flex flex-col items-center justify-center py-16 px-4">

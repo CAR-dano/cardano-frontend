@@ -9,6 +9,8 @@ interface VehicleInspectionProps {
   platNomor: string | undefined;
 }
 
+const PHOTO_URL = process.env.NEXT_PUBLIC_PDF_URL;
+
 function CardData({ platNomor, data }: VehicleInspectionProps) {
   const images = data.photos.slice(0, 5) || [];
 
@@ -61,7 +63,7 @@ function CardData({ platNomor, data }: VehicleInspectionProps) {
               >
                 {images.length > 0 ? (
                   <Image
-                    src={images[currentIndex].url}
+                    src={`${PHOTO_URL}/uploads/inspection-photos/${images[currentIndex].path}`}
                     alt={`Image ${currentIndex + 1}`}
                     fill
                     className="object-cover rounded-[24px] md:rounded-[20px]"

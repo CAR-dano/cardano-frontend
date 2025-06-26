@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getCombinedDashboardData,
   getMainStats,
+  reset,
 } from "../../lib/features/dashboard/dashboardSlice";
 import BranchDistribution from "../../components/Dashboard/BranchDistribution";
 import InspectorPerfomance from "../../components/Dashboard/InspectorPerfomance";
@@ -151,6 +152,9 @@ const Dashboard: React.FC = () => {
     isLoadingCombinedDashboardData,
     isLoadingMainStats,
   } = useSelector((state: RootState) => state.dashboard);
+  
+  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+  
   const [hasMounted, setHasMounted] = useState(false);
   const { user } = useAuth();
   const isAdmin = user?.role === "ADMIN";
@@ -204,24 +208,51 @@ const Dashboard: React.FC = () => {
     setSelectedDateLabel(label);
     // Here you would typically dispatch an action to fetch data based on the new date range
     // For now, we'll just update the state
-  };
-
-  useEffect(() => {
+  };  useEffect(() => {
     setHasMounted(true);
-    dispatch(getMainStats(selectedDateRange));
-    if (isAdmin) {
-      dispatch(getCombinedDashboardData(selectedDateRange));
+    // Only fetch data if user is authenticated and we have user data
+    if (isAuthenticated && user && isAdmin !== undefined) {
+      dispatch(getMainStats(selectedDateRange));
+      if (isAdmin) {
+        dispatch(getCombinedDashboardData(selectedDateRange));
+      }
     }
-  }, [dispatch, isAdmin, selectedDateRange]);
+  }, [dispatch, isAuthenticated, user, isAdmin, selectedDateRange]);
 
   useEffect(() => {
-    dispatch(getMainStats(selectedDateRange));
-    if (isAdmin) {
-      dispatch(getCombinedDashboardData(selectedDateRange));
+    // Only fetch data when date range changes and user is authenticated
+    if (isAuthenticated && user && isAdmin !== undefined) {
+      dispatch(getMainStats(selectedDateRange));
+      if (isAdmin) {
+        dispatch(getCombinedDashboardData(selectedDateRange));
+      }
+    }  }, [selectedDateRange, isAuthenticated, user, isAdmin, dispatch]);
+
+  // Reset dashboard data when user logs out
+  useEffect(() => {
+    if (!isAuthenticated) {
+      // Clear dashboard data when user is not authenticated
+      dispatch(reset());
     }
-  }, [selectedDateRange]);
+  }, [isAuthenticated, dispatch]);
 
   if (!hasMounted) return null;
+
+  // If user is not authenticated, show message
+  if (!isAuthenticated) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+            Access Denied
+          </h2>
+          <p className="text-gray-600 dark:text-gray-400">
+            Please log in to access the dashboard.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoadingCombinedDashboardData || isLoadingMainStats)
     return <LoadingOverlay message="Memuat Dashboard" />;

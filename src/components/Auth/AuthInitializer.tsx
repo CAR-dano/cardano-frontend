@@ -25,7 +25,6 @@ const AuthInitializer: React.FC<AuthInitializerProps> = ({ children }) => {
   const { isAuthenticated, isAuthInitialized, accessToken } = useAppSelector(
     (state) => state.auth
   );
-
   useEffect(() => {
     const initializeAuth = async () => {
       // Skip initialization if already done
@@ -35,9 +34,12 @@ const AuthInitializer: React.FC<AuthInitializerProps> = ({ children }) => {
       }
 
       try {
-        // If we have a token in storage, try to validate it
-        if (accessToken) {
-          await dispatch(checkToken(accessToken)).unwrap();
+        // Check for token in localStorage first, then Redux state
+        const storedToken =
+          typeof window !== "undefined" ? localStorage.getItem("token") : null;
+        const tokenToCheck = storedToken || accessToken;
+        if (tokenToCheck) {
+          await dispatch(checkToken(tokenToCheck)).unwrap();
         } else {
           // No token found, mark as initialized with not authenticated
           dispatch(setAuthInitialized(true));

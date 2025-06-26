@@ -6,15 +6,21 @@ const getDataForReview = async ({
   page = 1,
   pageSize = 10,
   status,
+  token,
 }: {
   page?: number;
   pageSize?: number;
   status?: string;
+  token?: string;
 } = {}) => {
   const params: any = { page, pageSize };
   if (status) params.status = status;
   const response = await axios.get(`${LOCAL_API_URL}/inspections`, {
     params,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
   });
   return response.data;
 };
@@ -62,9 +68,15 @@ const mintingToBlockchain = async (id: string) => {
   return response.data;
 };
 
-const searchByVehiclePlat = async (platNumber: string) => {
+const searchByVehiclePlat = async (platNumber: string, token: any) => {
   const response = await axios.get(
-    `${LOCAL_API_URL}/inspections/search?vehicleNumber=${platNumber}`
+    `${LOCAL_API_URL}/inspections/search?vehicleNumber=${platNumber}`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
   );
   return response.data;
 };

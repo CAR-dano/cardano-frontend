@@ -4,11 +4,20 @@ import inspectionService from "./inspectionService";
 export const getDataForReviewer = createAsyncThunk(
   "inspection/getDataForReviewer",
   async (
-    params: { page?: number; pageSize?: number; status?: string } = {},
-    thunkAPI
+    params: {
+      page?: number;
+      pageSize?: number;
+      status?: string;
+      token?: string;
+    } = {},
+    thunkAPI: any
   ) => {
     try {
-      const payload = await inspectionService.getDataForReview(params);
+      const token = thunkAPI.getState().auth.accessToken;
+      const payload = await inspectionService.getDataForReview({
+        ...params,
+        token,
+      });
       return payload;
     } catch (error: any) {
       const message = error?.response?.data?.message;
@@ -99,14 +108,73 @@ export const mintingToBlockchain = createAsyncThunk(
 
 export const searchByVehiclePlat = createAsyncThunk(
   "inspection/searchByPlat",
-  async (platNumber: string, thunkAPI) => {
+  async (platNumber: string, thunkAPI: any) => {
+    console.log("🔍 searchByVehiclePlat called with:", platNumber);
     try {
-      const payload = await inspectionService.searchByVehiclePlat(platNumber);
-      console.log(payload);
+      const token = thunkAPI.getState().auth.accessToken;
+      const payload = await inspectionService.searchByVehiclePlat(
+        platNumber,
+        token
+      );
+      console.log("✅ searchByVehiclePlat success:", payload);
       return payload;
     } catch (error: any) {
+      const status = error?.response?.status;
       const message = error?.response?.data?.message;
-      return thunkAPI.rejectWithValue(message);
+      console.log(
+        "❌ searchByVehiclePlat error - status:",
+        status,
+        "message:",
+        message
+      );
+
+      // For unauthorized, return mock data with unauthorized flag
+      if (status === 401) {
+        console.log("🔐 Returning mock data for 401");
+        const mockData = {
+          vehiclePlateNumber: platNumber,
+          vehicleData: {
+            merekKendaraan: "Mitsubishi",
+            tipeKendaraan: "Xpander 1.5 Ultimate",
+            tahun: "2019",
+            odometer: "60.965",
+            warnaKendaraan: "Abu-abu",
+            kepemilikan: "Pribadi",
+            transmisi: "Automatic (CVT)",
+            pajak1Tahun: "20 Agustus 2025",
+            pajak5Tahun: "20 Agustus 2030",
+            biayaPajak: "Rp 7.021.700",
+          },
+
+          inspectionDate: new Date().toISOString(),
+          overallRating: "B",
+          inspectionSummary: {
+            indikasiTabrakan: false,
+            indikasiBanjir: true,
+            indikasiOdometerReset: false,
+            interiorScore: "7",
+            eksteriorScore: "9",
+            mesinScore: "8",
+            kakiKakiScore: "6",
+          },
+          urlPdf: "sample-report.pdf",
+          photos: [
+            "/assets/placeholder-photo.png",
+            "/assets/placeholder-photo.png",
+            "/assets/placeholder-photo.png",
+          ],
+          _isUnauthorized: true,
+        };
+
+        return mockData;
+      }
+
+      // Return both status and message for better error handling
+      return thunkAPI.rejectWithValue({
+        status,
+        message,
+        isUnauthorized: status === 401,
+      });
     }
   }
 );
@@ -172,6 +240,7 @@ export interface InspectionState {
   isLoading: boolean;
   isLoadingEdited: boolean;
   error: string | null;
+  isUnauthorized: boolean;
   data: any[];
   edited: EditedItem[];
   meta: any;
@@ -188,6 +257,7 @@ const initialState: InspectionState = {
   isLoading: false,
   isLoadingEdited: false,
   error: null,
+  isUnauthorized: false,
   review: null,
   edited: [],
   meta: null,
@@ -214,6 +284,11 @@ export const inspectionSlice = createSlice({
       state.searchResults.meta = null;
       state.searchResults.error = null;
       state.searchResults.isLoading = false;
+    },
+    clearUnauthorizedState: (state) => {
+      console.log("Clearing unauthorized state");
+      state.isUnauthorized = false;
+      state.error = null;
     },
     setEditedData: (state, action) => {
       const {
@@ -358,18 +433,42 @@ export const inspectionSlice = createSlice({
       })
       .addCase(searchByVehiclePlat.pending, (state) => {
         state.isLoading = true;
-        state.review = null; // Clear previous search results
+        // Don't clear previous search results when pending to avoid flickering
         state.error = null;
+        // Don't reset isUnauthorized here, let the result determine it
       })
       .addCase(searchByVehiclePlat.fulfilled, (state, action) => {
+        console.log("searchByVehiclePlat.fulfilled - payload:", action.payload);
         state.isLoading = false;
-        state.review = action.payload; // Assuming payload is the inspection data
+        state.review = action.payload;
         state.error = null;
+
+        // Check if this is unauthorized mock data
+        if (action.payload._isUnauthorized) {
+          console.log("Setting isUnauthorized to true (mock data)");
+          state.isUnauthorized = true;
+          state.error = "Anda perlu login untuk melihat detail lengkap";
+        } else {
+          console.log("Setting isUnauthorized to false (real data)");
+          state.isUnauthorized = false;
+        }
       })
       .addCase(searchByVehiclePlat.rejected, (state, action) => {
         state.isLoading = false;
-        state.review = null;
-        state.error = action.payload as string;
+        const errorPayload = action.payload as any;
+
+        if (errorPayload?.isUnauthorized) {
+          // For unauthorized, keep existing review data but mark as unauthorized
+          state.isUnauthorized = true;
+          state.error = errorPayload.message || "Unauthorized access";
+          // Don't clear review data for unauthorized - let user see blurred content
+        } else {
+          // For other errors, clear review data
+          state.review = null;
+          state.isUnauthorized = false;
+          state.error =
+            errorPayload?.message || errorPayload || "An error occurred";
+        }
       })
       .addCase(searchByKeyword.pending, (state) => {
         state.searchResults.isLoading = true;
@@ -396,5 +495,6 @@ export const {
   setEditedData,
   deleteEditedData,
   clearSearchResults,
+  clearUnauthorizedState,
 } = inspectionSlice.actions;
 export const inspectionReducer = inspectionSlice.reducer;

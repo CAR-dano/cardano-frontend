@@ -10,6 +10,7 @@ import { login, signup } from "../../lib/features/auth/authSlice";
 import LoadingScreen from "../../components/LoadingFullScreen";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { toast } from "../../hooks/use-toast";
+import { getAndClearRedirectUrl } from "../../utils/redirectUtils";
 
 function LoginPage() {
   const [showSignup, setShowSignup] = useState(false);
@@ -25,16 +26,24 @@ function LoginPage() {
     [key: string]: string;
   }>({});
   const [loginErrors, setLoginErrors] = useState<{ [key: string]: string }>({});
-
   useEffect(() => {
     if (user) {
-      if (user.role === "ADMIN" || user.role === "REVIEWER") {
-        router.push("/dashboard");
+      // Check for saved redirect URL
+      const redirectUrl = getAndClearRedirectUrl();
+
+      if (redirectUrl) {
+        // Redirect to the saved URL
+        router.push(redirectUrl);
       } else {
-        router.push("/");
+        // Default redirect behavior
+        if (user.role === "ADMIN" || user.role === "REVIEWER") {
+          router.push("/dashboard");
+        } else {
+          router.push("/");
+        }
       }
     }
-  }, [user]);
+  }, [user, router]);
 
   const pageVariants: Variants = {
     loginInitial: { x: "100%", opacity: 0, scale: 0.9 },

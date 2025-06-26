@@ -192,6 +192,10 @@ export const authSlice = createSlice({
         state.accessToken = action.payload.accessToken;
         state.lastTokenCheck = Date.now();
         state.error = null;
+        // Also update axios header when token is refreshed
+        if (typeof window !== "undefined") {
+          localStorage.setItem("token", action.payload.accessToken);
+        }
       })
       .addCase(refreshToken.rejected, (state, action) => {
         state.isLoading = false;

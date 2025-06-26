@@ -4,6 +4,7 @@ import TableInspectionReviewer from "../../../components/Table/TableInspectionRe
 import { toast } from "../../../components/ui/use-toast";
 import { getDataForReviewer } from "../../../lib/features/inspection/inspectionSlice";
 import { useTheme } from "../../../contexts/ThemeContext";
+import useAuth from "../../../hooks/useAuth";
 
 import { AppDispatch, RootState } from "../../../lib/store";
 import { useEffect, useState } from "react";
@@ -119,8 +120,16 @@ const Database: React.FC = () => {
   const [metapage, setMetapage] = useState({});
   const [hasMounted, setHasMounted] = useState(false);
   const { isLoading } = useSelector((state: RootState) => state.inspection);
-
+  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const { user } = useAuth();
+  const isAdmin = user?.role === "ADMIN";
   const fetchData = (pageNum = page) => {
+    // Only fetch if user is authenticated
+    if (!isAuthenticated || !user) {
+      console.log("User not authenticated, skipping data fetch");
+      return;
+    }
+
     dispatch(
       getDataForReviewer({
         status: "APPROVED",
@@ -152,13 +161,30 @@ const Database: React.FC = () => {
   const handleRefresh = () => {
     fetchData();
   };
-
   useEffect(() => {
     setHasMounted(true);
-    fetchData();
-  }, [dispatch]);
-
+    // Only fetch data if user is authenticated
+    if (isAuthenticated && user) {
+      fetchData();
+    }
+  }, [dispatch, isAuthenticated, user]);
   if (!hasMounted) return null; // Hindari render di server
+
+  // If user is not authenticated, show message
+  if (!isAuthenticated) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+            Access Denied
+          </h2>
+          <p className="text-gray-600 dark:text-gray-400">
+            Please log in to access the database.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -177,6 +203,7 @@ const Database: React.FC = () => {
           meta={metapage}
           onPageChange={handlePageChange}
           handleRefresh={handleRefresh}
+          userRole={user?.role}
         />
       ) : (
         <div className="flex flex-col items-center justify-center py-16 px-4">

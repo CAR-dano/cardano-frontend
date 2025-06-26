@@ -3,17 +3,28 @@ import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { EmblaOptionsType } from "embla-carousel";
 import { motion } from "framer-motion";
+import axios from "axios";
 
 const EmblaCarousel = dynamic(() => import("../ui/Carousel/Carousel"), {
   ssr: false, // Hindari SSR untuk komponen Carousel
 });
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 function HasilInspeksi() {
   const OPTIONS: EmblaOptionsType = { loop: true };
-  const SLIDE_COUNT = 5;
-  const SLIDES = Array.from(Array(SLIDE_COUNT).keys());
+  const [data, setData] = useState<any[]>([]);
 
   const [bgImage, setBgImage] = useState("");
+
+  const getData = async () => {
+    const response = await axios.get(`${API_URL}/public/latest-archived`);
+    setData(response.data);
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
 
   useEffect(() => {
     setBgImage("url('/assets/pattern/inspeksi.png')");
@@ -45,7 +56,7 @@ function HasilInspeksi() {
         viewport={{ once: true }}
         className="w-full"
       >
-        <EmblaCarousel slides={SLIDES} options={OPTIONS} />
+        <EmblaCarousel slides={data} options={OPTIONS} />
       </motion.div>
     </motion.div>
   );

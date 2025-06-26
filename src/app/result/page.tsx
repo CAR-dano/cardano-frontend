@@ -1,35 +1,100 @@
 "use client";
 import CardData from "../../components/ui/Card/CardData";
 import SearchBar from "../../components/ui/SearchBar";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import React, { Suspense, useState, useEffect } from "react";
 import CardHasil from "../../components/ui/Card/CardHasil";
 import Image from "next/image";
 import CustomButton from "../../components/ui/CustomButton";
 import MadeByCardano from "../../components/ui/MadeByCardano";
 import { useDispatch, useSelector } from "react-redux";
-import { searchByVehiclePlat } from "../../lib/features/inspection/inspectionSlice";
+import {
+  searchByVehiclePlat,
+  clearUnauthorizedState,
+} from "../../lib/features/inspection/inspectionSlice";
 import { AppDispatch, RootState } from "../../lib/store";
 import LoadingFullScreen from "../../components/LoadingFullScreen";
 import Link from "next/link";
+import { useLoginRedirect } from "../../hooks/useLoginRedirect";
 
 function ResultPageContent() {
   const dispatch = useDispatch<AppDispatch>();
-  const { review, isLoading, error } = useSelector(
+  const { review, isLoading, error, isUnauthorized } = useSelector(
     (state: RootState) => state.inspection
   );
+  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
 
   const searchParams = useSearchParams();
+  const router = useRouter();
   const initialPlatNomor = searchParams.get("platNomor");
-
   const [platNomorInput, setPlatNomorInput] = useState("");
+  const [hasSearched, setHasSearched] = useState(false);
+  const [hasReSearchedAfterAuth, setHasReSearchedAfterAuth] = useState(false);
+  const [wasUnauthorizedBeforeAuth, setWasUnauthorizedBeforeAuth] =
+    useState(false);
 
+  // Initial search effect - only runs once
   useEffect(() => {
-    if (initialPlatNomor) {
+    if (initialPlatNomor && !hasSearched) {
       setPlatNomorInput(initialPlatNomor);
       dispatch(searchByVehiclePlat(initialPlatNomor));
+      setHasSearched(true);
     }
-  }, [initialPlatNomor, dispatch]);
+  }, [initialPlatNomor, hasSearched, dispatch]);
+
+  // Track when we become unauthorized
+  useEffect(() => {
+    if (isUnauthorized) {
+      setWasUnauthorizedBeforeAuth(true);
+    }
+  }, [isUnauthorized]);
+
+  // Re-search when user becomes authenticated after being unauthorized
+  useEffect(() => {
+    // Only re-search if:
+    // 1. User is authenticated
+    // 2. We previously were in an unauthorized state
+    // 3. We have a plate number
+    // 4. Initial search was done
+    // 5. We haven't already re-searched after auth
+    if (
+      isAuthenticated &&
+      wasUnauthorizedBeforeAuth &&
+      initialPlatNomor &&
+      hasSearched &&
+      !hasReSearchedAfterAuth
+    ) {
+      console.log("Re-searching after authentication - conditions met");
+
+      // Set flags first to prevent multiple calls
+      setHasReSearchedAfterAuth(true);
+      setWasUnauthorizedBeforeAuth(false);
+
+      // Clear unauthorized state immediately to prevent re-triggering
+      dispatch(clearUnauthorizedState());
+
+      // Small delay to ensure auth header is set
+      setTimeout(() => {
+        dispatch(searchByVehiclePlat(initialPlatNomor));
+      }, 100);
+    }
+  }, [
+    isAuthenticated,
+    wasUnauthorizedBeforeAuth,
+    initialPlatNomor,
+    hasSearched,
+    hasReSearchedAfterAuth,
+    dispatch,
+  ]);
+
+  // Reset flags when user logs out
+  useEffect(() => {
+    if (!isAuthenticated) {
+      console.log("User logged out, resetting flags");
+      setHasReSearchedAfterAuth(false);
+      setWasUnauthorizedBeforeAuth(false);
+    }
+  }, [isAuthenticated]);
 
   function formatPlatNomor(plat: string | null) {
     if (!plat) return "";
@@ -45,13 +110,14 @@ function ResultPageContent() {
     };
     return new Date(dateString).toLocaleDateString(undefined, options);
   }
-
   const PDF_URL = process.env.NEXT_PUBLIC_PDF_URL;
+
+  // Use the login redirect hook
+  const handleLoginRedirect = useLoginRedirect();
 
   return (
     <div className="font-rubik w-full relative flex flex-col items-center px-4 lg:px-10 mb-20">
       {isLoading && <LoadingFullScreen />}
-
       <div className="w-full flex flex-col items-center mb-10">
         {/* <input
           type="text"
@@ -68,63 +134,215 @@ function ResultPageContent() {
         </CustomButton> */}
         <SearchBar value={platNomorInput} />
       </div>
-
-      {error && <div className="text-red-500 mb-4">{error}</div>}
-
+      {error && !isUnauthorized && (
+        <div className="text-red-500 mb-4">{error}</div>
+      )}{" "}
       {review ? (
-        <>
-          {/* Data kendaraan */}
-          <div className="w-full flex flex-col lg:flex-row justify-start lg:justify-between items-start lg:items-end text-neutral-900 font-light mb-2 lg:mb-5">
-            <p className="text-[clamp(24px,3vw,36px)]">Data Kendaraan</p>
-            <p className="text-[clamp(16px,3vw,24px)]">
-              *Tanggal Inspeksi:
-              <span className="text-[clamp(16px,3vw,24px)] font-medium">
-                {" "}
-                {formatInspectionDate(review?.inspectionDate)}
-              </span>
-            </p>
-          </div>
+        <div className={`w-full ${isUnauthorized ? "relative" : ""}`}>
+          {/* Blur overlay for unauthorized users */}
+          {isUnauthorized && (
+            <div className="absolute inset-0 z-50 bg-white/80 backdrop-blur-sm flex items-center justify-center">
+              <div className="absolute top-0 bg-white rounded-xl shadow-2xl p-8 max-w-md mx-4 text-center border">
+                {/* Premium badge */}
+                <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-full text-sm font-semibold mb-4">
+                  <svg
+                    className="w-4 h-4 mr-2"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                    />
+                  </svg>
+                  KONTEN PREMIUM
+                </div>
+                {/* Lock icon */}
+                <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg
+                    className="w-8 h-8 text-orange-500"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                    />
+                  </svg>
+                </div>
+                {/* Title */}
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">
+                  Login untuk Akses Penuh
+                </h3>
+                {/* Description */}
+                <p className="text-gray-600 text-sm leading-relaxed mb-6">
+                  Data inspeksi untuk kendaraan ini tersedia! Login untuk
+                  melihat detail lengkap laporan inspeksi, termasuk:
+                </p>
+                {/* Feature list */}
+                <div className="text-left text-sm text-gray-700 mb-6 space-y-2">
+                  <div className="flex items-center">
+                    <svg
+                      className="w-4 h-4 text-green-500 mr-2"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                    Detail kondisi kendaraan lengkap
+                  </div>
+                  <div className="flex items-center">
+                    <svg
+                      className="w-4 h-4 text-green-500 mr-2"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                    Laporan PDF 19 halaman
+                  </div>
+                  <div className="flex items-center">
+                    <svg
+                      className="w-4 h-4 text-green-500 mr-2"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                    Foto-foto inspeksi detail
+                  </div>
+                  <div className="flex items-center">
+                    <svg
+                      className="w-4 h-4 text-green-500 mr-2"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                    Rating dan analisis komprehensif
+                  </div>
+                </div>{" "}
+                {/* Login button */}
+                <CustomButton
+                  className="w-full text-base font-medium rounded-lg gradient-details text-white px-6 py-3 mb-3"
+                  onClick={handleLoginRedirect}
+                >
+                  <div className="flex items-center justify-center">
+                    <svg
+                      className="w-4 h-4 mr-2"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+                      />
+                    </svg>
+                    Login Sekarang
+                  </div>
+                </CustomButton>{" "}
+                {/* Register link */}
+                <p className="text-xs text-gray-500">
+                  Belum punya akun?{" "}
+                  <button
+                    onClick={handleLoginRedirect}
+                    className="text-orange-600 hover:text-orange-700 font-medium underline bg-transparent border-none cursor-pointer"
+                  >
+                    Daftar di sini
+                  </button>
+                </p>
+              </div>
+            </div>
+          )}
 
-          {/* Card Data Kendaraan */}
-          <CardData
-            platNomor={formatPlatNomor(review?.vehiclePlateNumber)}
-            data={review}
-          />
+          {/* Content with conditional blur */}
+          <div className={isUnauthorized ? "blur-md pointer-events-none" : ""}>
+            {/* Data kendaraan */}
+            <div className="w-full flex flex-col lg:flex-row justify-start lg:justify-between items-start lg:items-end text-neutral-900 font-light mb-2 lg:mb-5">
+              <p className="text-[clamp(24px,3vw,36px)]">Data Kendaraan</p>
+              <p className="text-[clamp(16px,3vw,24px)]">
+                *Tanggal Inspeksi:
+                <span className="text-[clamp(16px,3vw,24px)] font-medium">
+                  {" "}
+                  {formatInspectionDate(review?.inspectionDate)}
+                </span>
+              </p>
+            </div>
 
-          {/* Hasil Inspeksi */}
-          <div className="w-full flex justify-between items-end text-neutral-900 font-light mt-10 mb-0 lg:mb-5">
-            <p className="text-[clamp(32px,3vw,36px)]">Hasil Inspeksi</p>
-          </div>
+            {/* Card Data Kendaraan */}
+            <CardData
+              platNomor={formatPlatNomor(review?.vehiclePlateNumber)}
+              data={review}
+            />
 
-          {/* Card Hasil Inspeksi */}
-          <CardHasil
-            urlPdf={review.urlPdf}
-            inspectionSummary={review.inspectionSummary}
-            overallRating={review.overallRating}
-          />
+            {/* Hasil Inspeksi */}
+            <div className="w-full flex justify-between items-end text-neutral-900 font-light mt-10 mb-0 lg:mb-5">
+              <p className="text-[clamp(32px,3vw,36px)]">Hasil Inspeksi</p>
+            </div>
 
-          {/* Download data */}
-          <div className="w-full flex justify-center lg:justify-between items-end text-neutral-900 font-light mt-5 lg:mt-10 mb-5">
-            <p className="hidden lg:block w-1/2 text-4xl">
-              Download laporan inspeksi lengkap <br /> (19 halaman PDF)
-            </p>
-            <div className="z-10 flex flex-wrap justify-start items-center gap-3 sm:gap-5 mt-4 sm:mt-5">
-              <Image
-                src="/assets/logo/pdf.svg"
-                width={48}
-                height={48}
-                alt="PDF Icon"
-                className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 object-contain"
-              />
-              <CustomButton className="text-[clamp(16px,3vw,28px)] font-white font-light rounded-full gradient-details text-white">
-                <a href={`${PDF_URL}${review.urlPdf}`} download>
-                  Download Detail (PDF)
-                </a>
-              </CustomButton>
+            {/* Card Hasil Inspeksi */}
+            <CardHasil
+              urlPdf={review.urlPdf}
+              inspectionSummary={review.inspectionSummary}
+              overallRating={review.overallRating}
+            />
+
+            {/* Download data */}
+            <div className="w-full flex justify-center lg:justify-between items-end text-neutral-900 font-light mt-5 lg:mt-10 mb-5">
+              <p className="hidden lg:block w-1/2 text-4xl">
+                Download laporan inspeksi lengkap <br /> (19 halaman PDF)
+              </p>
+              <div className="z-10 flex flex-wrap justify-start items-center gap-3 sm:gap-5 mt-4 sm:mt-5">
+                <Image
+                  src="/assets/logo/pdf.svg"
+                  width={48}
+                  height={48}
+                  alt="PDF Icon"
+                  className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 object-contain"
+                />
+                <CustomButton className="text-[clamp(16px,3vw,28px)] font-white font-light rounded-full gradient-details text-white">
+                  <a href={`${PDF_URL}${review.urlPdf}`} download>
+                    Download Detail (PDF)
+                  </a>
+                </CustomButton>
+              </div>
             </div>
           </div>
-        </>
-      ) : initialPlatNomor && !isLoading ? (
+        </div>
+      ) : initialPlatNomor && !isLoading && !isUnauthorized ? (
         <div className="w-full max-w-2xl mx-auto text-center mt-10 px-4">
           {/* Custom Car Illustration */}
           <div className="mb-8 relative">
@@ -286,7 +504,6 @@ function ResultPageContent() {
           </div>
         </div>
       ) : null}
-
       {/* Made by Cardano */}
     </div>
   );
