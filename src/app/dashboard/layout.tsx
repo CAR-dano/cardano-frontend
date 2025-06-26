@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import DashboardClientLayout from "./client-layout";
 
 export const metadata: Metadata = {
-  title: "Dashboard | CAR-dano",
+  title: "Dashboard",
   description:
     "CAR-dano Dashboard - Manage your car inspection and verification",
   robots: "noindex, nofollow",
