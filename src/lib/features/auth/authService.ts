@@ -75,14 +75,25 @@ const signup = async (userData: UserSignUp) => {
 };
 
 const logout = async () => {
-  if (typeof window !== "undefined") {
-    localStorage.clear();
+  try {
+    // Clear localStorage first
+    if (typeof window !== "undefined") {
+      localStorage.clear();
+    }
+
+    // Clear axios auth header
+    delete axios.defaults.headers.common["Authorization"];
+
+    return { success: true, message: "Logged out successfully" };
+  } catch (error) {
+    // Even if there's an error, ensure cleanup happens
+    if (typeof window !== "undefined") {
+      localStorage.clear();
+    }
+    delete axios.defaults.headers.common["Authorization"];
+
+    return { success: true, message: "Logged out successfully" };
   }
-
-  axios.defaults.headers.common["Authorization"] = "";
-  delete axios.defaults.headers.common["Authorization"];
-
-  return { success: true, message: "Logged out successfully" };
 };
 
 // // const updateProfile = async (userData: User) => {

@@ -19,18 +19,25 @@ const AuthGuard: React.FC<AuthGuardProps> = ({
   const router = useRouter();
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [isAuthChecked, setIsAuthChecked] = useState(false);
-
   useEffect(() => {
     // Wait until auth is fully initialized and not loading
     if (isAuthInitialized && !isLoading) {
       // Authentication check
       if (!isAuthenticated) {
-        toast({
-          title: "Authentication Required",
-          description: "Please log in to access this page",
-          variant: "destructive",
-        });
-        router.push("/auth");
+        // Don't show toast if we're already on auth page to prevent duplicate messages
+        if (
+          typeof window !== "undefined" &&
+          !window.location.pathname.includes("/auth")
+        ) {
+          toast({
+            title: "Authentication Required",
+            description: "Please log in to access this page",
+            variant: "destructive",
+          });
+        }
+
+        // Use window.location for hard redirect to ensure clean state
+        window.location.href = "/auth";
         return;
       }
 
@@ -45,7 +52,7 @@ const AuthGuard: React.FC<AuthGuardProps> = ({
             description: "You don't have permission to access this page",
             variant: "destructive",
           });
-          router.push("/");
+          window.location.href = "/";
           return;
         }
       }
@@ -53,14 +60,7 @@ const AuthGuard: React.FC<AuthGuardProps> = ({
       setIsAuthorized(true);
       setIsAuthChecked(true);
     }
-  }, [
-    isAuthenticated,
-    isLoading,
-    router,
-    user,
-    requiredRoles,
-    isAuthInitialized,
-  ]);
+  }, [isAuthenticated, isLoading, user, requiredRoles, isAuthInitialized]);
 
   // Show loading while waiting for auth to initialize or complete checking
   if (!isAuthInitialized || isLoading || !isAuthChecked) {

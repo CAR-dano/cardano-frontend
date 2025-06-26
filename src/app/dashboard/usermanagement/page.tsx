@@ -123,8 +123,10 @@ const Database: React.FC = () => {
   );
   const { error } = useSelector((state: RootState) => state.admin);
   const router = useRouter();
-
   const fetchUsers = () => {
+    // Only proceed if authenticated and have access token
+    if (!accessToken) return;
+
     dispatch(getAllUsers(accessToken))
       .unwrap()
       .then((response) => {
@@ -144,10 +146,16 @@ const Database: React.FC = () => {
 
   useEffect(() => {
     setHasMounted(true);
-    fetchUsers();
-  }, [dispatch]);
+
+    // Only fetch if authenticated and have token
+    if (accessToken) {
+      fetchUsers();
+    }
+  }, [dispatch, accessToken]);
 
   const handleRefresh = () => {
+    // Only refresh if authenticated
+    if (!accessToken) return;
     fetchUsers();
   };
 

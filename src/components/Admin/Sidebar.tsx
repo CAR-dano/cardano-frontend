@@ -166,10 +166,15 @@ const Sidebar: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const user = useAppSelector((state) => state.auth.user);
-
   const logOut = async () => {
-    await dispatch(logout()).unwrap();
-    router.push("/auth");
+    try {
+      await dispatch(logout()).unwrap();
+      window.location.href = "/auth";
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Even if logout fails, still redirect to auth
+      window.location.href = "/auth";
+    }
   };
 
   return (

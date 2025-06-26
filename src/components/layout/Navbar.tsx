@@ -28,10 +28,18 @@ const Navbar = () => {
   const handleToHome = () => {
     router.push("/");
   };
-
   const handleLogout = async () => {
-    await dispatch(logout()).unwrap();
-    router.push("/auth");
+    try {
+      // Dispatch logout and wait for it to complete
+      await dispatch(logout()).unwrap();
+
+      // Force a hard navigation to ensure clean state
+      window.location.href = "/auth";
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Even if logout fails, still redirect to auth
+      window.location.href = "/auth";
+    }
   };
 
   return (

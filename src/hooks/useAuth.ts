@@ -89,7 +89,6 @@ export default function useAuth() {
     if (isTimeoutWarningOpen && timeoutWarningTimestamp) {
       const now = Date.now();
       const timeoutWarningTime = now - timeoutWarningTimestamp;
-
       if (timeoutWarningTime >= WARNING_BEFORE_TIMEOUT) {
         handleLogout();
 
@@ -103,21 +102,42 @@ export default function useAuth() {
     }
   };
 
-  // Handle logout with optional message
-  const handleLogout = (message?: string) => {
-    // Clear timeout warning
+  // Cleanup function to cancel any ongoing requests
+  const cleanupOnLogout = () => {
+    // Clear any timeouts
+    if (sessionTimeoutId) {
+      clearInterval(sessionTimeoutId);
+      setSessionTimeoutId(null);
+    }
+
+    // Reset activity states
     setIsTimeoutWarningOpen(false);
     setTimeoutWarningTimestamp(null);
+  }; // Handle logout with optional message
+  const handleLogout = async (message?: string) => {
+    try {
+      // Cleanup first
+      cleanupOnLogout();
 
-    dispatch(logout());
-    router.push("/auth");
+      // Dispatch logout and wait for completion
+      await dispatch(logout()).unwrap();
 
-    if (message) {
-      toast({
-        title: "Logged Out",
-        description: message,
-        variant: "default",
-      });
+      // Show message if provided
+      if (message) {
+        toast({
+          title: "Logged Out",
+          description: message,
+          variant: "default",
+        });
+      }
+
+      // Force a hard navigation to ensure clean state
+      window.location.href = "/auth";
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Even if logout fails, still cleanup and redirect
+      cleanupOnLogout();
+      window.location.href = "/auth";
     }
   };
 
