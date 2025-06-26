@@ -94,7 +94,10 @@ const searchByKeyword = async (keyword: string, page = 1, pageSize = 10) => {
   const response = await apiClient.get(
     `${LOCAL_API_URL}/inspections/search/keyword?q=${encodeURIComponent(
       keyword
-    )}`
+    )}`,
+    {
+      params: { page, pageSize },
+    }
   );
   return response.data;
 };

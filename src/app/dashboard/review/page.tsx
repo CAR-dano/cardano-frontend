@@ -42,7 +42,7 @@ const Header = ({
             </h1>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
               {dataCount > 0
-                ? `${dataCount} inspeksi menunggu review`
+                ? `Beberapa inspeksi menunggu review`
                 : "Belum ada inspeksi yang perlu direview"}
             </p>
           </div>

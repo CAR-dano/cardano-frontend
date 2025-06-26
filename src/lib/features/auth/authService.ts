@@ -38,9 +38,17 @@ const login = async (userData: UserLogin) => {
     },
   });
 
+  // Debug: Log the complete response to see its structure
+  console.log("Login response:", response.data);
+  console.log("Response err value:", response.data?.err);
+  console.log("Response accessToken:", response.data?.accessToken);
+  console.log("Response user:", response.data?.user);
+  console.log("Window check:", typeof window !== "undefined");
+
   if (
     response.data &&
-    response.data.err === false &&
+    response.data.accessToken &&
+    response.data.user &&
     typeof window !== "undefined"
   ) {
     // Store auth data in localStorage

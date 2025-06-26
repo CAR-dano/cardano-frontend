@@ -177,7 +177,11 @@ export const searchByKeyword = createAsyncThunk(
   ) => {
     try {
       const { keyword, page = 1, pageSize = 10 } = params;
-      const payload = await inspectionService.searchByKeyword(keyword);
+      const payload = await inspectionService.searchByKeyword(
+        keyword || "",
+        page,
+        pageSize
+      );
       return payload;
     } catch (error: any) {
       const message = error?.response?.data?.message;
