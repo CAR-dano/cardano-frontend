@@ -8,7 +8,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch, useAppSelector } from "../../lib/store";
 import { login, signup } from "../../lib/features/auth/authSlice";
 import LoadingScreen from "../../components/LoadingFullScreen";
-import { FiEye, FiEyeOff } from "react-icons/fi";
+import { FiEye, FiEyeOff, FiArrowLeft } from "react-icons/fi";
 import { toast } from "../../hooks/use-toast";
 import { getAndClearRedirectUrl } from "../../utils/redirectUtils";
 
@@ -218,7 +218,20 @@ function LoginPage() {
   };
 
   return (
-    <div className="w-full h-screen overflow-hidden bg-[url('/assets/pattern/bg.png')] bg-cover">
+    <div className="w-full h-screen overflow-hidden bg-[url('/assets/pattern/bg.png')] bg-cover relative">
+      {/* Back Button */}
+      <motion.button
+        onClick={() => router.push("/")}
+        className="absolute top-6 left-6 z-50 flex items-center justify-center w-12 h-12 bg-white/10 backdrop-blur-md rounded-full border border-white/20 text-white hover:bg-white/20 transition-all duration-300"
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.95 }}
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.3 }}
+      >
+        <FiArrowLeft size={20} />
+      </motion.button>
+
       {isLoading && <LoadingScreen message="Authenticating..." />}
 
       <AnimatePresence initial={false} mode="wait">
