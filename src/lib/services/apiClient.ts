@@ -36,9 +36,9 @@ apiClient.interceptors.response.use(
       // Redirect to login or handle unauthorized access
       if (
         typeof window !== "undefined" &&
-        window.location.pathname !== "/auth/login"
+        window.location.pathname !== "/auth"
       ) {
-        window.location.href = "/auth/login";
+        window.location.href = "/auth";
       }
     }
     return Promise.reject(error);
