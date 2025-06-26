@@ -34,11 +34,14 @@ apiClient.interceptors.response.use(
         localStorage.removeItem("user");
       }
       // Redirect to login or handle unauthorized access
+      // if in page result not redirect to login
       if (
         typeof window !== "undefined" &&
         window.location.pathname !== "/auth"
       ) {
-        window.location.href = "/auth";
+        if (window.location.pathname !== "/result") {
+          window.location.href = "/auth";
+        }
       }
     }
     return Promise.reject(error);
