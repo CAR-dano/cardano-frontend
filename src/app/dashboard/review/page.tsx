@@ -4,7 +4,7 @@ import TableInspectionReviewer from "../../../components/Table/TableInspectionRe
 import { getDataForReviewer } from "../../../lib/features/inspection/inspectionSlice";
 import { useTheme } from "../../../contexts/ThemeContext";
 
-import { AppDispatch, RootState, useAppSelector } from "../../../lib/store";
+import { AppDispatch, RootState } from "../../../lib/store";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -85,9 +85,7 @@ const Review: React.FC = () => {
   const { data, isLoading, meta } = useSelector(
     (state: RootState) => state.inspection
   );
-
-  // Add authentication check
-  const { isAuthenticated, user } = useAppSelector((state) => state.auth);
+  const accessToken = useSelector((state: RootState) => state.auth.accessToken);
 
   const [hasMounted, setHasMounted] = useState(false);
 
@@ -96,9 +94,9 @@ const Review: React.FC = () => {
     setHasMounted(true);
   }, []);
 
-  // Data fetching setelah komponen mounted - with auth guard
+  // Data fetching setelah komponen mounted
   useEffect(() => {
-    if (hasMounted && isAuthenticated && user) {
+    if (hasMounted && accessToken) {
       dispatch(
         getDataForReviewer({
           status: "NEED_REVIEW",
@@ -107,12 +105,9 @@ const Review: React.FC = () => {
         })
       );
     }
-  }, [dispatch, hasMounted, page, isAuthenticated, user]);
-
+  }, [dispatch, hasMounted, page, accessToken]);
   const handlePageChange = (newPage: number) => {
-    // Only proceed if authenticated
-    if (!isAuthenticated || !user) return;
-
+    if (!accessToken) return;
     setPage(newPage);
     dispatch(
       getDataForReviewer({
@@ -124,8 +119,7 @@ const Review: React.FC = () => {
   };
 
   const handleRefresh = () => {
-    // Only proceed if authenticated
-    if (!isAuthenticated || !user) return;
+    if (!accessToken) return;
     dispatch(
       getDataForReviewer({
         status: "NEED_REVIEW",

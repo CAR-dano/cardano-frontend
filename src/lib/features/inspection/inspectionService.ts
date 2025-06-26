@@ -69,6 +69,18 @@ const searchByVehiclePlat = async (platNumber: string) => {
   return response.data;
 };
 
+const searchByKeyword = async (keyword: string, page = 1, pageSize = 10) => {
+  const response = await axios.get(
+    `${LOCAL_API_URL}/inspections/search/keyword?q=${encodeURIComponent(
+      keyword
+    )}`,
+    {
+      params: { page, pageSize },
+    }
+  );
+  return response.data;
+};
+
 interface EditPartPhoto {
   needAttention?: boolean;
   label?: string;
@@ -115,6 +127,7 @@ const inspectionService = {
   saveChanges,
   mintingToBlockchain,
   searchByVehiclePlat,
+  searchByKeyword,
   updatePhoto,
 };
 export default inspectionService;

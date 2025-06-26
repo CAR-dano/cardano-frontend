@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   Table,
   TableBody,
@@ -12,12 +12,17 @@ import Link from "next/link";
 import SecondaryButton from "../Button/SecondaryButton"; // Assuming this exists
 import { useDispatch } from "react-redux";
 import { AppDispatch, useAppSelector } from "../../lib/store";
-import { mintingToBlockchain } from "../../lib/features/inspection/inspectionSlice";
+import {
+  mintingToBlockchain,
+  searchByKeyword,
+  clearSearchResults,
+} from "../../lib/features/inspection/inspectionSlice";
 import DialogResult from "../Dialog/DialogResult"; // Your existing dialog
 import { useRouter } from "next/navigation";
 import { Input } from "../../components/ui/input"; // Assuming Input component exists
 import { FaSearch } from "react-icons/fa"; // Assuming FaSearch icon exists
 import { toast } from "../../hooks/use-toast";
+import { LoadingSkeleton } from "../Loading";
 
 const TableData = ({
   data,
@@ -557,6 +562,10 @@ const TableInspectionReviewer = ({
   handleRefresh,
 }: any) => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+  const { searchResults } = useAppSelector((state) => state.inspection);
+
   const [dialogResultData, setDialogResultData] = useState<{
     isOpen: boolean;
     isSuccess: boolean;
@@ -568,26 +577,47 @@ const TableInspectionReviewer = ({
     action2: () => void;
   } | null>(null);
 
+  // Debounced search function
+  const debouncedSearch = useCallback(
+    debounce((keyword: string) => {
+      if (keyword.trim()) {
+        setIsSearching(true);
+        dispatch(searchByKeyword({ keyword: keyword.trim() })).finally(() =>
+          setIsSearching(false)
+        );
+      } else {
+        dispatch(clearSearchResults());
+        setIsSearching(false);
+      }
+    }, 500),
+    [dispatch]
+  );
+
+  useEffect(() => {
+    debouncedSearch(searchTerm);
+    // Cleanup debounce on unmount
+    return () => {
+      debouncedSearch.cancel();
+    };
+  }, [searchTerm, debouncedSearch]);
+
   useEffect(() => {
     console.log("dialogResultData updated:", dialogResultData);
   }, [dialogResultData]);
 
-  const filteredData = data.filter(
-    (item: any) =>
-      item.identityDetails?.namaCustomer
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      item.vehiclePlateNumber
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      item.vehicleData?.merekKendaraan
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      item.vehicleData?.tipeKendaraan
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase())
-  );
+  // Clear search when component unmounts or when explicitly clearing
+  useEffect(() => {
+    return () => {
+      dispatch(clearSearchResults());
+    };
+  }, [dispatch]);
 
+  // Determine which data to display
+  const displayData = searchTerm.trim() ? searchResults.data : data;
+
+  const displayMeta = searchTerm.trim() ? searchResults.meta : meta;
+
+  const isLoading = isSearching || searchResults.isLoading;
   return (
     <div className="flex flex-col space-y-4">
       {/* Search Bar */}
@@ -601,23 +631,45 @@ const TableInspectionReviewer = ({
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all"
           />
+          {isLoading && (
+            <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500"></div>
+            </div>
+          )}
         </div>
+        {searchResults.error && (
+          <div className="mt-2 text-sm text-red-600 dark:text-red-400">
+            Search error: {searchResults.error}
+          </div>
+        )}
       </div>
 
       <div className="overflow-x-auto">
         <div className="w-full inline-block align-middle">
-          <TableData
-            data={filteredData} // Pass filtered data
-            isDatabase={isDatabase}
-            setDialogData={setDialogResultData}
-            handleRefresh={handleRefresh} // Pass handleRefresh to TableData
-          />
-          {/* Ensure meta is checked before trying to access its properties for TableInfo */}
-          {meta && filteredData && filteredData.length > 0 && (
-            <div className="mt-4">
-              <TableInfo data={meta} onPageChange={onPageChange} />
+          {isLoading ? (
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+              <LoadingSkeleton rows={5} />
             </div>
+          ) : (
+            <TableData
+              data={displayData}
+              isDatabase={isDatabase}
+              setDialogData={setDialogResultData}
+              handleRefresh={handleRefresh}
+            />
           )}
+          {/* Show pagination only if there's data and meta */}
+          {displayMeta &&
+            displayData &&
+            displayData.length > 0 &&
+            !isLoading && (
+              <div className="mt-4">
+                <TableInfo
+                  data={displayMeta}
+                  onPageChange={searchTerm.trim() ? undefined : onPageChange}
+                />
+              </div>
+            )}
         </div>
       </div>
 
@@ -638,5 +690,24 @@ const TableInspectionReviewer = ({
     </div>
   );
 };
+
+// Simple debounce utility function
+function debounce<T extends (...args: any[]) => any>(
+  func: T,
+  wait: number
+): T & { cancel: () => void } {
+  let timeout: NodeJS.Timeout | null = null;
+
+  const debounced = (...args: Parameters<T>) => {
+    if (timeout) clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), wait);
+  };
+
+  debounced.cancel = () => {
+    if (timeout) clearTimeout(timeout);
+  };
+
+  return debounced as T & { cancel: () => void };
+}
 
 export default TableInspectionReviewer;

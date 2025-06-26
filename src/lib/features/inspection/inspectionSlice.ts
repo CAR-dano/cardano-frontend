@@ -111,6 +111,27 @@ export const searchByVehiclePlat = createAsyncThunk(
   }
 );
 
+export const searchByKeyword = createAsyncThunk(
+  "inspection/searchByKeyword",
+  async (
+    params: { keyword: string; page?: number; pageSize?: number },
+    thunkAPI
+  ) => {
+    try {
+      const { keyword, page = 1, pageSize = 10 } = params;
+      const payload = await inspectionService.searchByKeyword(
+        keyword,
+        page,
+        pageSize
+      );
+      return payload;
+    } catch (error: any) {
+      const message = error?.response?.data?.message;
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const updatePhoto = createAsyncThunk(
   "inspection/updatePhoto",
   async (
@@ -154,6 +175,12 @@ export interface InspectionState {
   data: any[];
   edited: EditedItem[];
   meta: any;
+  searchResults: {
+    data: any[];
+    meta: any;
+    isLoading: boolean;
+    error: string | null;
+  };
 }
 
 const initialState: InspectionState = {
@@ -164,6 +191,12 @@ const initialState: InspectionState = {
   review: null,
   edited: [],
   meta: null,
+  searchResults: {
+    data: [],
+    meta: null,
+    isLoading: false,
+    error: null,
+  },
 };
 
 export const inspectionSlice = createSlice({
@@ -175,6 +208,12 @@ export const inspectionSlice = createSlice({
     },
     updateData: (state, action) => {
       console.log("action", action.payload);
+    },
+    clearSearchResults: (state) => {
+      state.searchResults.data = [];
+      state.searchResults.meta = null;
+      state.searchResults.error = null;
+      state.searchResults.isLoading = false;
     },
     setEditedData: (state, action) => {
       const {
@@ -331,9 +370,31 @@ export const inspectionSlice = createSlice({
         state.isLoading = false;
         state.review = null;
         state.error = action.payload as string;
+      })
+      .addCase(searchByKeyword.pending, (state) => {
+        state.searchResults.isLoading = true;
+        state.searchResults.error = null;
+      })
+      .addCase(searchByKeyword.fulfilled, (state, action) => {
+        state.searchResults.isLoading = false;
+        state.searchResults.data = action.payload.data || action.payload;
+        state.searchResults.meta =
+          action.payload.meta || action.payload.pagination || null;
+        state.searchResults.error = null;
+      })
+      .addCase(searchByKeyword.rejected, (state, action) => {
+        state.searchResults.isLoading = false;
+        state.searchResults.data = [];
+        state.searchResults.meta = null;
+        state.searchResults.error = action.payload as string;
       });
   },
 });
-export const { setDataReview, updateData, setEditedData, deleteEditedData } =
-  inspectionSlice.actions;
+export const {
+  setDataReview,
+  updateData,
+  setEditedData,
+  deleteEditedData,
+  clearSearchResults,
+} = inspectionSlice.actions;
 export const inspectionReducer = inspectionSlice.reducer;
