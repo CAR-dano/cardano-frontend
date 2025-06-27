@@ -1,0 +1,26 @@
+# Defines the services that make up your application
+services:
+  # The frontend service for your Next.js app
+  frontend:
+    # Specifies how to build the image for this service
+    build:
+      # The build context is the current directory
+      context: .
+      # The Dockerfile to use for building
+      dockerfile: Dockerfile
+    # A friendly name for the container
+    container_name: cardano-frontend
+    # Maps port 3000 on the host to port 3000 in the container
+    ports:
+      - "3000:3000"
+    # The restart policy for the container
+    restart: unless-stopped
+    # Connects the service to a custom network
+    networks:
+      - cardano-net
+
+# Defines the networks for your services
+networks:
+  cardano-net:
+    # Uses the default bridge driver
+    driver: bridge
