@@ -38,9 +38,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../../components/ui/select";
-import { FaUserTie, FaSearch, FaPlus, FaEdit, FaTrash } from "react-icons/fa";
+import {
+  FaUserTie,
+  FaSearch,
+  FaPlus,
+  FaEdit,
+  FaTrash,
+  FaEye,
+  FaEyeSlash,
+} from "react-icons/fa";
 import { format } from "date-fns";
 import { useToast } from "../../../components/ui/use-toast";
+import apiClient from "@/lib/services/apiClient";
 
 const InspectorPage = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -50,15 +59,27 @@ const InspectorPage = () => {
   const accessToken = useAppSelector((state) => state.auth.accessToken);
   const [searchTerm, setSearchTerm] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isViewDrawerOpen, setIsViewDrawerOpen] = useState(false);
+  const [selectedInspector, setSelectedInspector] = useState<any>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [showPin, setShowPin] = useState(false);
   const { toast } = useToast();
 
   // Form states
   const [formData, setFormData] = useState({
     name: "",
+    username: "",
     email: "",
-    phone: "",
-    branch: "",
-    password: "",
+  });
+
+  // View/Edit form states
+  const [viewFormData, setViewFormData] = useState({
+    name: "",
+    username: "",
+    email: "",
+    pin: "",
+    status: "",
+    createdAt: "",
   });
 
   useEffect(() => {
@@ -77,19 +98,135 @@ const InspectorPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement add inspector API call
-    toast({
-      title: "Inspector Added",
-      description: "New inspector has been added successfully.",
+    apiClient.post("/admin/users/inspector", formData, {}).then((response) => {
+      toast({
+        title: "Inspector Added",
+        description: "New inspector has been added successfully.",
+      });
+      setIsDrawerOpen(false);
+      setFormData({
+        name: "",
+        username: "",
+        email: "",
+      });
     });
-    setIsDrawerOpen(false);
-    setFormData({
-      name: "",
-      email: "",
-      phone: "",
-      branch: "",
-      password: "",
+  };
+
+  const handleViewInspector = (inspector: any) => {
+    setSelectedInspector(inspector);
+    setViewFormData({
+      name: inspector.name || "",
+      username: inspector.username || "",
+      email: inspector.email || "",
+      pin: inspector.pin || "****",
+      status: inspector.status || "active",
+      createdAt: inspector.createdAt
+        ? format(new Date(inspector.createdAt), "dd MMM yyyy")
+        : "-",
     });
+    setIsEditing(false);
+    setShowPin(false); // Reset PIN visibility when opening drawer
+    setIsViewDrawerOpen(true);
+  };
+
+  const togglePinVisibility = () => {
+    setShowPin(!showPin);
+  };
+
+  const handleEditMode = () => {
+    console.log("Edit mode clicked"); // Debug log
+    setIsEditing(true);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setShowPin(false); // Reset PIN visibility when canceling edit
+    // Reset form data to original values
+    if (selectedInspector) {
+      setViewFormData({
+        name: selectedInspector.name || "",
+        username: selectedInspector.username || "",
+        email: selectedInspector.email || "",
+        pin: selectedInspector.pin || "****",
+        status: selectedInspector.status || "active",
+        createdAt: selectedInspector.createdAt
+          ? format(new Date(selectedInspector.createdAt), "dd MMM yyyy")
+          : "-",
+      });
+    }
+  };
+
+  const handleUpdateInspector = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedInspector) return;
+
+    try {
+      // Compare current form data with original inspector data to get only changed fields
+      const changedData: any = {};
+
+      if (viewFormData.name !== (selectedInspector.name || "")) {
+        changedData.name = viewFormData.name;
+      }
+
+      if (viewFormData.username !== (selectedInspector.username || "")) {
+        changedData.username = viewFormData.username;
+      }
+
+      if (viewFormData.email !== (selectedInspector.email || "")) {
+        changedData.email = viewFormData.email;
+      }
+
+      if (viewFormData.pin !== (selectedInspector.pin || "****")) {
+        changedData.pin = viewFormData.pin;
+      }
+
+      if (viewFormData.status !== (selectedInspector.status || "active")) {
+        changedData.status = viewFormData.status;
+      }
+
+      // Only proceed if there are changes
+      if (Object.keys(changedData).length === 0) {
+        toast({
+          title: "No Changes",
+          description: "No changes were made to update.",
+          variant: "default",
+        });
+        setIsEditing(false);
+        return;
+      }
+
+      await apiClient.put(
+        `/admin/users/inspector/${selectedInspector.id}`,
+        changedData,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      toast({
+        title: "Inspector Updated",
+        description: `Inspector data has been updated successfully. ${
+          Object.keys(changedData).length
+        } field(s) changed.`,
+      });
+
+      setIsEditing(false);
+      setIsViewDrawerOpen(false);
+
+      // Refresh the inspector list
+      if (accessToken) {
+        dispatch(getAllInspectors(accessToken));
+      }
+    } catch (error) {
+      console.error("Update error:", error);
+      toast({
+        title: "Update Failed",
+        description: "Failed to update inspector data.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -140,6 +277,18 @@ const InspectorPage = () => {
                   />
                 </div>
                 <div className="space-y-2">
+                  <Label htmlFor="username">Username</Label>
+                  <Input
+                    id="username"
+                    placeholder="Enter inspector username"
+                    value={formData.username}
+                    onChange={(e) =>
+                      setFormData({ ...formData, username: e.target.value })
+                    }
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
                   <Input
                     id="email"
@@ -152,31 +301,8 @@ const InspectorPage = () => {
                     required
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="Enter password"
-                    value={formData.password}
-                    onChange={(e) =>
-                      setFormData({ ...formData, password: e.target.value })
-                    }
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Phone Number</Label>
-                  <Input
-                    id="phone"
-                    placeholder="+62 xxx xxxx xxxx"
-                    value={formData.phone}
-                    onChange={(e) =>
-                      setFormData({ ...formData, phone: e.target.value })
-                    }
-                  />
-                </div>
-                <div className="space-y-2">
+
+                {/* <div className="space-y-2">
                   <Label htmlFor="branch">Branch</Label>
                   <Select
                     value={formData.branch}
@@ -194,7 +320,7 @@ const InspectorPage = () => {
                       <SelectItem value="medan">Medan</SelectItem>
                     </SelectContent>
                   </Select>
-                </div>
+                </div> */}
               </div>
               <DrawerFooter>
                 <Button
@@ -213,6 +339,211 @@ const InspectorPage = () => {
           </DrawerContent>
         </Drawer>
       </div>
+
+      {/* View/Edit Inspector Drawer */}
+      <Drawer open={isViewDrawerOpen} onOpenChange={setIsViewDrawerOpen}>
+        <DrawerContent className="sm:max-w-[425px] fixed right-0 top-0 bottom-0 left-auto">
+          <DrawerHeader>
+            <DrawerTitle>
+              {isEditing ? "Edit Inspector" : "Inspector Details"}
+            </DrawerTitle>
+            <DrawerDescription>
+              {isEditing
+                ? "Update inspector information below."
+                : "View inspector details. Click Edit to modify information."}
+            </DrawerDescription>
+          </DrawerHeader>
+
+          {isEditing ? (
+            <form onSubmit={handleUpdateInspector}>
+              <div className="mb-5 space-y-4 px-4">
+                <div className="space-y-2">
+                  <Label htmlFor="view-name">Full Name</Label>
+                  <Input
+                    id="view-name"
+                    value={viewFormData.name}
+                    onChange={(e) =>
+                      setViewFormData({ ...viewFormData, name: e.target.value })
+                    }
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="view-username">Username</Label>
+                  <Input
+                    id="view-username"
+                    value={viewFormData.username}
+                    onChange={(e) =>
+                      setViewFormData({
+                        ...viewFormData,
+                        username: e.target.value,
+                      })
+                    }
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="view-email">Email</Label>
+                  <Input
+                    id="view-email"
+                    type="email"
+                    value={viewFormData.email}
+                    onChange={(e) =>
+                      setViewFormData({
+                        ...viewFormData,
+                        email: e.target.value,
+                      })
+                    }
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="view-pin">PIN</Label>
+                  <Input
+                    id="view-pin"
+                    type="text"
+                    value={viewFormData.pin}
+                    onChange={(e) =>
+                      setViewFormData({ ...viewFormData, pin: e.target.value })
+                    }
+                    placeholder="Enter PIN"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="view-status">Status</Label>
+                  <Select
+                    value={viewFormData.status}
+                    onValueChange={(value) =>
+                      setViewFormData({ ...viewFormData, status: value })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="active">Active</SelectItem>
+                      <SelectItem value="inactive">Inactive</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="view-created">Created At</Label>
+                  <Input
+                    id="view-created"
+                    value={viewFormData.createdAt}
+                    readOnly
+                    className="bg-gray-50 dark:bg-gray-800"
+                  />
+                </div>
+              </div>
+              <DrawerFooter>
+                <Button
+                  type="submit"
+                  className="w-full bg-orange-600 hover:bg-orange-700"
+                >
+                  Update Inspector
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full"
+                  onClick={handleCancelEdit}
+                >
+                  Cancel
+                </Button>
+              </DrawerFooter>
+            </form>
+          ) : (
+            <>
+              <div className="mb-5 space-y-4 px-4">
+                <div className="space-y-2">
+                  <Label htmlFor="view-name">Full Name</Label>
+                  <Input
+                    id="view-name"
+                    value={viewFormData.name}
+                    readOnly
+                    className="bg-gray-50 dark:bg-gray-800"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="view-username">Username</Label>
+                  <Input
+                    id="view-username"
+                    value={viewFormData.username}
+                    readOnly
+                    className="bg-gray-50 dark:bg-gray-800"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="view-email">Email</Label>
+                  <Input
+                    id="view-email"
+                    type="email"
+                    value={viewFormData.email}
+                    readOnly
+                    className="bg-gray-50 dark:bg-gray-800"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="view-pin">PIN</Label>
+                  <div className="relative">
+                    <Input
+                      id="view-pin"
+                      type={showPin ? "text" : "password"}
+                      value={viewFormData.pin}
+                      readOnly
+                      className="bg-gray-50 dark:bg-gray-800 pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={togglePinVisibility}
+                      className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+                    >
+                      {showPin ? (
+                        <FaEyeSlash className="w-4 h-4" />
+                      ) : (
+                        <FaEye className="w-4 h-4" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="view-status">Status</Label>
+                  <Input
+                    value={viewFormData.status}
+                    readOnly
+                    className="bg-gray-50 dark:bg-gray-800 capitalize"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="view-created">Created At</Label>
+                  <Input
+                    id="view-created"
+                    value={viewFormData.createdAt}
+                    readOnly
+                    className="bg-gray-50 dark:bg-gray-800"
+                  />
+                </div>
+              </div>
+              <DrawerFooter>
+                <Button
+                  type="button"
+                  className="w-full bg-blue-600 hover:bg-blue-700"
+                  onClick={handleEditMode}
+                >
+                  <FaEdit className="mr-2" />
+                  Edit Inspector
+                </Button>
+                <DrawerClose asChild>
+                  <Button variant="outline" className="w-full">
+                    Close
+                  </Button>
+                </DrawerClose>
+              </DrawerFooter>
+            </>
+          )}
+        </DrawerContent>
+      </Drawer>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -296,12 +627,6 @@ const InspectorPage = () => {
               </TableHead>
               <TableHead className="text-left font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
                 Email
-              </TableHead>
-              <TableHead className="text-left font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
-                Phone
-              </TableHead>
-              <TableHead className="text-left font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
-                Branch
               </TableHead>
               <TableHead className="text-left font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
                 Status
@@ -463,14 +788,6 @@ const InspectorPage = () => {
                   <TableCell className="py-4 px-6 text-gray-600 dark:text-gray-300">
                     {inspector.email}
                   </TableCell>
-                  <TableCell className="py-4 px-6 text-gray-600 dark:text-gray-300">
-                    {inspector.phone || "-"}
-                  </TableCell>
-                  <TableCell className="py-4 px-6 text-gray-600 dark:text-gray-300">
-                    <span className="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded-md text-xs">
-                      {inspector.branch || "-"}
-                    </span>
-                  </TableCell>
                   <TableCell className="py-4 px-6">
                     <span
                       className={`px-3 py-1 text-xs font-medium rounded-full ${
@@ -489,9 +806,12 @@ const InspectorPage = () => {
                   </TableCell>
                   <TableCell className="py-4 px-6 text-center">
                     <div className="flex items-center justify-center gap-2">
-                      <button className="inline-flex items-center px-3 py-1.5 border border-gray-300 dark:border-gray-600 shadow-sm text-xs font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
-                        <FaEdit className="w-3 h-3 mr-1" />
-                        Edit
+                      <button
+                        onClick={() => handleViewInspector(inspector)}
+                        className="inline-flex items-center px-3 py-1.5 border border-blue-300 dark:border-blue-600 shadow-sm text-xs font-medium rounded-md text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-800/20 hover:bg-blue-100 dark:hover:bg-blue-700/30 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+                      >
+                        <FaEye className="w-3 h-3 mr-1" />
+                        View
                       </button>
                       <button className="inline-flex items-center px-3 py-1.5 border border-red-300 shadow-sm text-xs font-medium rounded-md text-red-700 bg-red-50 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200">
                         <FaTrash className="w-3 h-3 mr-1" />
