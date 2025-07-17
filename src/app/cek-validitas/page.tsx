@@ -27,6 +27,7 @@ import {
   Lock,
   Sparkles,
 } from "lucide-react";
+import apiClient from "@/lib/services/apiClient";
 
 interface VerificationResult {
   numberPlate: string;
@@ -517,8 +518,16 @@ export default function CekValiditasPage() {
   };
 
   const fetchBlockchainHash = async (numberPlate: string): Promise<string> => {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    return "a214621b9163db8acd5c731d19eb9381f6c47d4675631b9529cb8bfc3a5d6242";
+    const platFormat = numberPlate.replace(/\s+/g, "").toUpperCase();
+    const response = await apiClient.get(
+      `/inspections/search?vehicleNumber=${platFormat}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data.pdfFileHash;
   };
 
   const handleVerification = async () => {
@@ -541,7 +550,9 @@ export default function CekValiditasPage() {
     } catch (error) {
       console.error("Verification failed:", error);
     } finally {
-      setIsLoading(false);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 3000);
     }
   };
 
@@ -662,16 +673,17 @@ export default function CekValiditasPage() {
                       <div className="w-3 h-3 bg-purple-500 rounded-full mr-3 animate-pulse"></div>
                       PDF Inspection Document
                     </Label>
-                    <div className="relative">
+                    <div className="relative flex items-center">
                       <Input
                         id="pdfFile"
                         type="file"
                         accept=".pdf"
                         onChange={handleFileChange}
-                        className="h-14 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-gradient-to-r file:from-purple-50 file:to-pink-50 file:text-purple-700 hover:file:from-purple-100 hover:file:to-pink-100 border-2 border-purple-200 focus:border-purple-500 rounded-xl transition-all duration-300 focus:shadow-lg focus:shadow-purple-500/20"
+                        className="h-14 w-full file:-mt-1 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-gradient-to-r file:from-purple-50 file:to-pink-50 file:text-purple-700 hover:file:from-purple-100 hover:file:to-pink-100 border-2 border-purple-200 focus:border-purple-500 rounded-xl transition-all duration-300 focus:shadow-lg focus:shadow-purple-500/20"
                       />
-                      <Upload className="absolute right-4 top-1/2 transform -translate-y-1/2 h-6 w-6 text-purple-400 animate-bounce" />
+                      <Upload className="absolute -mt-2 right-4 top-1/2 -translate-y-1/2 h-6 w-6 text-purple-400 animate-bounce" />
                     </div>
+
                     {pdfFile && (
                       <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-xl border-2 border-green-200 dark:border-green-800 animate-fade-in">
                         <p className="text-sm text-green-700 dark:text-green-400 flex items-center">

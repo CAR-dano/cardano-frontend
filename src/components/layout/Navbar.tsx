@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { IoMenu, IoClose } from "react-icons/io5";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { AppDispatch, useAppSelector } from "../../lib/store";
 import { useDispatch } from "react-redux";
 import { logout } from "../../lib/features/auth/authSlice";
@@ -24,6 +24,7 @@ const Navbar = () => {
   const router = useRouter();
   const user = useAppSelector((state) => state.auth.user);
   const dispatch = useDispatch<AppDispatch>();
+  const pathName = usePathname();
 
   const handleToHome = () => {
     router.push("/");
@@ -41,6 +42,12 @@ const Navbar = () => {
       window.location.href = "/auth";
     }
   };
+
+  const activeLinkStyle = "text-orange-400 border-b-2 border-orange-500";
+
+  function isActiveLink(link: string) {
+    return pathName === link;
+  }
 
   return (
     <nav className=" font-rubik w-full bg-white text-white px-6 md:px-14 py-4 flex justify-between items-center navbar-shadow">
@@ -76,8 +83,19 @@ const Navbar = () => {
           <li className="text-base font-semibold group cursor-pointer hover:text-orange-400">
             <a href="https://inspeksimobil.id/booking/">Booking</a>
           </li>
-          <li className="text-base font-bold text-orange-400 border-b-2 border-orange-500 cursor-pointer">
-            Cari Data
+          <li
+            className={`text-base font-bold cursor-pointer ${
+              isActiveLink("/") ? activeLinkStyle : ""
+            }`}
+          >
+            <a href="/">Cari Data</a>
+          </li>
+          <li
+            className={`text-base font-bold cursor-pointer ${
+              isActiveLink("/cek-validitas") ? activeLinkStyle : ""
+            }`}
+          >
+            <a href="/cek-validitas/">Cek Validitas PDF</a>
           </li>
         </ul>
       </div>
