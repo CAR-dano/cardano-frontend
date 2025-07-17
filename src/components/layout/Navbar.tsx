@@ -88,14 +88,14 @@ const Navbar = () => {
               isActiveLink("/") ? activeLinkStyle : ""
             }`}
           >
-            <a href="/">Cari Data</a>
+            <Link href="/">Cari Data</Link>
           </li>
           <li
             className={`text-base font-bold cursor-pointer ${
               isActiveLink("/cek-validitas") ? activeLinkStyle : ""
             }`}
           >
-            <a href="/cek-validitas/">Cek Validitas PDF</a>
+            <Link href="/cek-validitas/">Cek Validitas PDF</Link>
           </li>
         </ul>
       </div>

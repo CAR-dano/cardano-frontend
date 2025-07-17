@@ -32,9 +32,11 @@ import apiClient from "@/lib/services/apiClient";
 interface VerificationResult {
   numberPlate: string;
   uploadedHash: string;
-  blockchainHash: string;
+  blockchainHash: string | null;
   isVerified: boolean;
   timestamp: string;
+  isVehicleFound: boolean;
+  errorMessage?: string;
 }
 
 const BlockchainConnectionVisualization = ({
@@ -46,10 +48,13 @@ const BlockchainConnectionVisualization = ({
 }: {
   isVerified: boolean;
   uploadedHash?: string;
-  blockchainHash?: string;
+  blockchainHash?: string | null;
   isLoading: boolean;
   verificationResult?: VerificationResult | null;
 }) => {
+  const isVehicleNotFound =
+    verificationResult && !verificationResult.isVehicleFound;
+
   return (
     <div className="relative w-full h-80 mb-8 bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-blue-900 rounded-2xl p-8 overflow-hidden">
       {/* Background Grid */}
@@ -189,7 +194,9 @@ const BlockchainConnectionVisualization = ({
                     {/* Left Connection */}
                     <div
                       className={`absolute left-0 top-1/2 w-1/2 h-0.5 transform -translate-y-1/2 ${
-                        isVerified
+                        isVehicleNotFound
+                          ? "bg-gradient-to-r from-orange-400 to-gray-400"
+                          : isVerified
                           ? "bg-gradient-to-r from-orange-400 to-green-400"
                           : "bg-gradient-to-r from-orange-400 to-red-400"
                       }`}
@@ -201,7 +208,9 @@ const BlockchainConnectionVisualization = ({
                     {/* Right Connection */}
                     <div
                       className={`absolute right-0 top-1/2 w-1/2 h-0.5 transform -translate-y-1/2 ${
-                        isVerified
+                        isVehicleNotFound
+                          ? "bg-gradient-to-l from-gray-400 to-gray-400"
+                          : isVerified
                           ? "bg-gradient-to-l from-purple-400 to-green-400"
                           : "bg-gradient-to-l from-purple-400 to-red-400"
                       }`}
@@ -215,7 +224,9 @@ const BlockchainConnectionVisualization = ({
                   <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
                     <div
                       className={`relative w-16 h-16 rounded-full flex items-center justify-center shadow-2xl ${
-                        isVerified
+                        isVehicleNotFound
+                          ? "bg-gradient-to-br from-gray-400 to-slate-500"
+                          : isVerified
                           ? "bg-gradient-to-br from-green-400 to-blue-500"
                           : "bg-gradient-to-br from-red-400 to-orange-500"
                       }`}
@@ -223,7 +234,9 @@ const BlockchainConnectionVisualization = ({
                         animation: `verificationPulse 2s ease-in-out infinite`,
                       }}
                     >
-                      {isVerified ? (
+                      {isVehicleNotFound ? (
+                        <XCircle className="h-8 w-8 text-white animate-pulse" />
+                      ) : isVerified ? (
                         <CheckCircle className="h-8 w-8 text-white animate-pulse" />
                       ) : (
                         <XCircle className="h-8 w-8 text-white animate-pulse" />
@@ -232,7 +245,11 @@ const BlockchainConnectionVisualization = ({
                       {/* Ripple Effect */}
                       <div
                         className={`absolute inset-0 rounded-full ${
-                          isVerified ? "bg-green-400" : "bg-red-400"
+                          isVehicleNotFound
+                            ? "bg-gray-400"
+                            : isVerified
+                            ? "bg-green-400"
+                            : "bg-red-400"
                         }`}
                         style={{
                           animation: `rippleEffect 3s ease-out infinite`,
@@ -246,19 +263,31 @@ const BlockchainConnectionVisualization = ({
                     <div className="text-center">
                       <h3
                         className={`text-lg font-bold ${
-                          isVerified
+                          isVehicleNotFound
+                            ? "text-gray-600 dark:text-gray-400"
+                            : isVerified
                             ? "text-green-600 dark:text-green-400"
                             : "text-red-600 dark:text-red-400"
                         }`}
                       >
-                        {isVerified ? "VERIFIED" : "FAILED"}
+                        {isVehicleNotFound
+                          ? "NOT FOUND"
+                          : isVerified
+                          ? "VERIFIED"
+                          : "FAILED"}
                       </h3>
                       <p
                         className={`text-xs ${
-                          isVerified ? "text-green-500" : "text-red-500"
+                          isVehicleNotFound
+                            ? "text-gray-500"
+                            : isVerified
+                            ? "text-green-500"
+                            : "text-red-500"
                         }`}
                       >
-                        {isVerified
+                        {isVehicleNotFound
+                          ? "Vehicle not in records"
+                          : isVerified
                           ? "Document authenticated"
                           : "Document not verified"}
                       </p>
@@ -273,13 +302,17 @@ const BlockchainConnectionVisualization = ({
           <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2">
             <div
               className={`px-4 py-2 rounded-full text-xs font-bold ${
-                isVerified
+                isVehicleNotFound
+                  ? "bg-gray-100 text-gray-700 border border-gray-300"
+                  : isVerified
                   ? "bg-green-100 text-green-700 border border-green-300"
                   : "bg-purple-100 text-purple-700 border border-purple-300"
               }`}
             >
               {isLoading
                 ? "VERIFYING..."
+                : isVehicleNotFound
+                ? "VEHICLE NOT FOUND"
                 : isVerified
                 ? "VERIFIED"
                 : "NOT VERIFIED"}
@@ -292,16 +325,26 @@ const BlockchainConnectionVisualization = ({
           <div className="relative">
             <div
               className={`w-24 h-24 bg-gradient-to-br rounded-xl flex items-center justify-center shadow-2xl transform hover:scale-105 transition-all duration-300 ${
-                isVerified
+                isVehicleNotFound
+                  ? "from-gray-500 to-slate-600"
+                  : isVerified
                   ? "from-green-500 to-blue-600"
                   : "from-purple-500 to-pink-600"
               }`}
             >
               <div className="relative">
-                <Database className="h-10 w-10 text-white animate-pulse" />
+                {isVehicleNotFound ? (
+                  <XCircle className="h-10 w-10 text-white animate-pulse" />
+                ) : (
+                  <Database className="h-10 w-10 text-white animate-pulse" />
+                )}
                 <div
                   className={`absolute -top-2 -right-2 w-4 h-4 rounded-full animate-ping ${
-                    isVerified ? "bg-green-300" : "bg-purple-300"
+                    isVehicleNotFound
+                      ? "bg-gray-300"
+                      : isVerified
+                      ? "bg-green-300"
+                      : "bg-purple-300"
                   }`}
                 ></div>
               </div>
@@ -309,7 +352,11 @@ const BlockchainConnectionVisualization = ({
             {/* Connecting Lines */}
             <div
               className={`absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-0.5 h-8 bg-gradient-to-b to-transparent ${
-                isVerified ? "from-green-500" : "from-purple-500"
+                isVehicleNotFound
+                  ? "from-gray-500"
+                  : isVerified
+                  ? "from-green-500"
+                  : "from-purple-500"
               }`}
             ></div>
           </div>
@@ -317,36 +364,50 @@ const BlockchainConnectionVisualization = ({
           <div className="text-center">
             <h3
               className={`text-lg font-bold mb-2 ${
-                isVerified
+                isVehicleNotFound
+                  ? "text-gray-600 dark:text-gray-400"
+                  : isVerified
                   ? "text-green-600 dark:text-green-400"
                   : "text-purple-600 dark:text-purple-400"
               }`}
             >
-              BLOCKCHAIN HASH
+              {isVehicleNotFound ? "VEHICLE NOT FOUND" : "BLOCKCHAIN HASH"}
             </h3>
             <div
               className={`w-48 p-3 bg-white/80 dark:bg-slate-800/80 rounded-lg backdrop-blur-sm border ${
-                isVerified
+                isVehicleNotFound
+                  ? "border-gray-200 dark:border-gray-700"
+                  : isVerified
                   ? "border-green-200 dark:border-green-700"
                   : "border-purple-200 dark:border-purple-700"
               }`}
             >
               <div className="flex items-center justify-center mb-2">
-                <Lock
-                  className={`h-4 w-4 mr-2 ${
-                    isVerified ? "text-green-500" : "text-purple-500"
-                  }`}
-                />
+                {isVehicleNotFound ? (
+                  <XCircle className="h-4 w-4 mr-2 text-gray-500" />
+                ) : (
+                  <Lock
+                    className={`h-4 w-4 mr-2 ${
+                      isVerified ? "text-green-500" : "text-purple-500"
+                    }`}
+                  />
+                )}
                 <span
                   className={`text-xs font-semibold ${
-                    isVerified ? "text-green-600" : "text-purple-600"
+                    isVehicleNotFound
+                      ? "text-gray-600"
+                      : isVerified
+                      ? "text-green-600"
+                      : "text-purple-600"
                   }`}
                 >
-                  CARDANO
+                  {isVehicleNotFound ? "NOT FOUND" : "CARDANO"}
                 </span>
               </div>
               <div className="text-xs font-mono text-slate-600 dark:text-slate-400 break-all">
-                {blockchainHash
+                {isVehicleNotFound
+                  ? "Vehicle plate not found in blockchain records"
+                  : blockchainHash
                   ? blockchainHash.substring(0, 32) + "..."
                   : "Fetching from blockchain..."}
               </div>
@@ -356,16 +417,20 @@ const BlockchainConnectionVisualization = ({
       </div>
 
       {/* Verification Result Overlay */}
-      {!isLoading && uploadedHash && blockchainHash && (
+      {!isLoading && uploadedHash && (blockchainHash || isVehicleNotFound) && (
         <div className="absolute top-4 right-4">
           <div
             className={`p-3 rounded-full shadow-lg transform hover:scale-105 transition-all duration-300 ${
-              isVerified
+              isVehicleNotFound
+                ? "bg-gradient-to-r from-gray-400 to-slate-500"
+                : isVerified
                 ? "bg-gradient-to-r from-green-400 to-blue-500"
                 : "bg-gradient-to-r from-red-400 to-orange-500"
             }`}
           >
-            {isVerified ? (
+            {isVehicleNotFound ? (
+              <XCircle className="h-6 w-6 text-white animate-pulse" />
+            ) : isVerified ? (
               <CheckCircle className="h-6 w-6 text-white animate-pulse" />
             ) : (
               <XCircle className="h-6 w-6 text-white animate-pulse" />
@@ -517,17 +582,27 @@ export default function CekValiditasPage() {
     return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
   };
 
-  const fetchBlockchainHash = async (numberPlate: string): Promise<string> => {
+  const fetchBlockchainHash = async (
+    numberPlate: string
+  ): Promise<string | null> => {
     const platFormat = numberPlate.replace(/\s+/g, "").toUpperCase();
-    const response = await apiClient.get(
-      `/inspections/search?vehicleNumber=${platFormat}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
+    try {
+      const response = await apiClient.get(
+        `/inspections/search?vehicleNumber=${platFormat}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.data && response.data.pdfFileHash) {
+        return response.data.pdfFileHash;
       }
-    );
-    return response.data.pdfFileHash;
+      return null;
+    } catch (error) {
+      return null;
+    }
   };
 
   const handleVerification = async () => {
@@ -542,17 +617,37 @@ export default function CekValiditasPage() {
         numberPlate,
         uploadedHash,
         blockchainHash,
-        isVerified: uploadedHash === blockchainHash,
+        isVerified: blockchainHash !== null && uploadedHash === blockchainHash,
         timestamp: new Date().toISOString(),
+        isVehicleFound: blockchainHash !== null,
+        errorMessage:
+          blockchainHash === null
+            ? "Vehicle plate not found in blockchain records"
+            : undefined,
       };
 
       setVerificationResult(result);
     } catch (error) {
       console.error("Verification failed:", error);
+      const result: VerificationResult = {
+        numberPlate,
+        uploadedHash: "",
+        blockchainHash: null,
+        isVerified: false,
+        timestamp: new Date().toISOString(),
+        isVehicleFound: false,
+        errorMessage:
+          "An error occurred during verification. Please try again.",
+      };
+      setVerificationResult(result);
     } finally {
-      setTimeout(() => {
+      if (verificationResult) {
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 3000);
+      } else {
         setIsLoading(false);
-      }, 3000);
+      }
     }
   };
 
@@ -738,14 +833,23 @@ export default function CekValiditasPage() {
             {verificationResult && !isLoading && (
               <Card
                 className={`shadow-2xl border-0 backdrop-blur-sm relative overflow-hidden ${
-                  verificationResult.isVerified
+                  !verificationResult.isVehicleFound
+                    ? "bg-gradient-to-br from-gray-50/90 to-slate-50/90 dark:from-gray-900/20 dark:to-slate-900/20"
+                    : verificationResult.isVerified
                     ? "bg-gradient-to-br from-green-50/90 to-blue-50/90 dark:from-green-900/20 dark:to-blue-900/20"
                     : "bg-gradient-to-br from-red-50/90 to-orange-50/90 dark:from-red-900/20 dark:to-orange-900/20"
                 }`}
               >
                 <CardHeader className="text-center">
                   <CardTitle className="text-3xl flex items-center justify-center mb-4">
-                    {verificationResult.isVerified ? (
+                    {!verificationResult.isVehicleFound ? (
+                      <div className="flex items-center text-gray-600">
+                        <XCircle className="h-10 w-10 mr-4 animate-pulse" />
+                        <span className="bg-gradient-to-r from-gray-600 to-slate-600 bg-clip-text text-transparent">
+                          VEHICLE NOT FOUND
+                        </span>
+                      </div>
+                    ) : verificationResult.isVerified ? (
                       <div className="flex items-center text-green-600">
                         <CheckCircle className="h-10 w-10 mr-4 animate-pulse" />
                         <span className="bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
@@ -762,7 +866,9 @@ export default function CekValiditasPage() {
                     )}
                   </CardTitle>
                   <CardDescription className="text-lg">
-                    {verificationResult.isVerified
+                    {!verificationResult.isVehicleFound
+                      ? "The vehicle plate number was not found in the blockchain records"
+                      : verificationResult.isVerified
                       ? "Document has been successfully verified on the Cardano blockchain"
                       : "Document could not be verified on the blockchain network"}
                   </CardDescription>
@@ -786,37 +892,87 @@ export default function CekValiditasPage() {
                       </h4>
                       <p
                         className={`text-2xl font-bold ${
-                          verificationResult.isVerified
+                          !verificationResult.isVehicleFound
+                            ? "text-gray-600"
+                            : verificationResult.isVerified
                             ? "text-green-600"
                             : "text-red-600"
                         }`}
                       >
-                        {verificationResult.isVerified ? "VERIFIED" : "FAILED"}
+                        {!verificationResult.isVehicleFound
+                          ? "NOT FOUND"
+                          : verificationResult.isVerified
+                          ? "VERIFIED"
+                          : "FAILED"}
                       </p>
                     </div>
                   </div>
 
-                  <div className="p-6 bg-white/70 dark:bg-slate-800/70 rounded-xl backdrop-blur-sm border border-white/20">
-                    <h4 className="text-lg font-bold mb-4">Hash Comparison</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-sm font-semibold text-blue-600 mb-2">
-                          Uploaded Document Hash:
-                        </p>
-                        <p className="text-xs font-mono bg-blue-50 dark:bg-blue-900/20 p-3 rounded break-all">
-                          {verificationResult.uploadedHash}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold text-purple-600 mb-2">
-                          Blockchain Hash:
-                        </p>
-                        <p className="text-xs font-mono bg-purple-50 dark:bg-purple-900/20 p-3 rounded break-all">
-                          {verificationResult.blockchainHash}
-                        </p>
+                  {verificationResult.isVehicleFound ? (
+                    <div className="p-6 bg-white/70 dark:bg-slate-800/70 rounded-xl backdrop-blur-sm border border-white/20">
+                      <h4 className="text-lg font-bold mb-4">
+                        Hash Comparison
+                      </h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <p className="text-sm font-semibold text-blue-600 mb-2">
+                            Uploaded Document Hash:
+                          </p>
+                          <p className="text-xs font-mono bg-blue-50 dark:bg-blue-900/20 p-3 rounded break-all">
+                            {verificationResult.uploadedHash}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-purple-600 mb-2">
+                            Blockchain Hash:
+                          </p>
+                          <p className="text-xs font-mono bg-purple-50 dark:bg-purple-900/20 p-3 rounded break-all">
+                            {verificationResult.blockchainHash}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  ) : (
+                    <div className="p-6 bg-white/70 dark:bg-slate-800/70 rounded-xl backdrop-blur-sm border border-white/20">
+                      <h4 className="text-lg font-bold mb-4 flex items-center">
+                        <XCircle className="h-5 w-5 mr-2 text-gray-600" />
+                        Error Details
+                      </h4>
+                      <div className="space-y-4">
+                        <div className="p-4 bg-gray-50 dark:bg-gray-900/20 rounded-lg">
+                          <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                            Error Message:
+                          </p>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                            {verificationResult.errorMessage}
+                          </p>
+                        </div>
+                        <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                          <p className="text-sm font-semibold text-blue-700 dark:text-blue-300 mb-2">
+                            Uploaded Document Hash:
+                          </p>
+                          <p className="text-xs font-mono text-blue-600 dark:text-blue-400 break-all">
+                            {verificationResult.uploadedHash}
+                          </p>
+                        </div>
+                        <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
+                          <p className="text-sm font-semibold text-yellow-700 dark:text-yellow-300 mb-2">
+                            Suggestions:
+                          </p>
+                          <ul className="text-sm text-yellow-600 dark:text-yellow-400 space-y-1">
+                            <li>
+                              • Double-check the vehicle plate number format
+                            </li>
+                            <li>
+                              • Ensure the vehicle has been inspected and
+                              registered
+                            </li>
+                            <li>• Contact support if the issue persists</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   <div className="text-center p-6 bg-white/70 dark:bg-slate-800/70 rounded-xl backdrop-blur-sm border border-white/20">
                     <p className="text-sm text-slate-600 dark:text-slate-400">
