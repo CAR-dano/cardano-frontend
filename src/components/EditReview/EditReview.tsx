@@ -285,7 +285,7 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
 
     // Filter KakiKaki photos and sort them
     const kakiKakiWajibPhotos = data?.photos?.filter(
-      (photo: any) => photo.category === "KakiKaki Wajib"
+      (photo: any) => photo.category === "Kaki-kaki Tambahan"
     );
     const kakiKakiTambahanPhotos = data?.photos?.filter(
       (photo: any) => photo.category === "KakiKaki Tambahan"

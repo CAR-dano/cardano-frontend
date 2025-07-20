@@ -252,7 +252,7 @@ function DataPage() {
     // Filter KakiKaki photos and sort them - only include photos with displayInPdf = true
     const kakiKakiWajibPhotos = data?.photos?.filter(
       (photo: any) =>
-        photo.category === "KakiKaki Wajib" && photo.displayInPdf === true
+        photo.category === "Kaki-kaki Tambahan" && photo.displayInPdf === true
     );
     const kakiKakiTambahanPhotos = data?.photos?.filter(
       (photo: any) =>
