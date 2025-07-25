@@ -6,12 +6,11 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { UserLogin, UserSignUp } from "../../utils/Auth";
 import { useDispatch } from "react-redux";
 import { AppDispatch, useAppSelector } from "../../lib/store";
-import { login, signup } from "../../lib/features/auth/authSlice";
+import { checkToken, login, signup } from "../../lib/features/auth/authSlice";
 import LoadingScreen from "../../components/LoadingFullScreen";
 import { FiEye, FiEyeOff, FiArrowLeft } from "react-icons/fi";
 import { toast } from "../../hooks/use-toast";
 import { getAndClearRedirectUrl } from "../../utils/redirectUtils";
-import axios from "axios";
 
 function LoginPage() {
   const [showSignup, setShowSignup] = useState(false);
@@ -241,6 +240,19 @@ function LoginPage() {
       toast({
         title: "Registration Failed",
         description: errorMessage,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
+    } catch (error) {
+      console.error("Google login error:", error);
+      toast({
+        title: "Google Login Failed",
+        description: "Please try again later.",
         variant: "destructive",
       });
     }
