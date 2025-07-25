@@ -127,10 +127,10 @@ export default function BranchPage() {
           </div>
           <div>
             <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
-              Branch Management
+              Manajemen Cabang
             </h1>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-              Manage and monitor all inspection branches
+              Kelola dan pantau semua cabang inspeksi
             </p>
           </div>
         </div>
@@ -140,23 +140,23 @@ export default function BranchPage() {
           <DrawerTrigger asChild>
             <Button className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-lg">
               <FaPlus className="mr-2" />
-              Add Branch
+              Tambah Cabang
             </Button>
           </DrawerTrigger>
           <DrawerContent className="sm:max-w-[425px] fixed right-0 top-0 bottom-0 left-auto">
             <form onSubmit={handleSubmit}>
               <DrawerHeader>
-                <DrawerTitle>Add New Branch</DrawerTitle>
+                <DrawerTitle>Tambah Cabang Baru</DrawerTitle>
                 <DrawerDescription>
-                  Create a new branch with the required details.
+                  Buat cabang baru dengan detail yang diperlukan.
                 </DrawerDescription>
               </DrawerHeader>
               <div className="px-4 space-y-4 max-h-[calc(100vh-200px)] overflow-y-auto">
                 <div className="space-y-2">
-                  <Label htmlFor="name">Branch Name</Label>
+                  <Label htmlFor="name">Nama Cabang</Label>
                   <Input
                     id="name"
-                    placeholder="Enter branch name"
+                    placeholder="Masukkan nama cabang"
                     value={formData.name}
                     onChange={(e) =>
                       setFormData({ ...formData, name: e.target.value })
@@ -165,10 +165,10 @@ export default function BranchPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="code">Branch Code</Label>
+                  <Label htmlFor="code">Kode Cabang</Label>
                   <Input
                     id="code"
-                    placeholder="e.g., JKT-001"
+                    placeholder="Contoh: JKT-001"
                     value={formData.code}
                     onChange={(e) =>
                       setFormData({ ...formData, code: e.target.value })
@@ -177,10 +177,10 @@ export default function BranchPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="address">Address</Label>
+                  <Label htmlFor="address">Alamat</Label>
                   <Input
                     id="address"
-                    placeholder="Enter branch address"
+                    placeholder="Masukkan alamat cabang"
                     value={formData.address}
                     onChange={(e) =>
                       setFormData({ ...formData, address: e.target.value })
@@ -189,7 +189,7 @@ export default function BranchPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="city">City</Label>
+                  <Label htmlFor="city">Kota</Label>
                   <Select
                     value={formData.city}
                     onValueChange={(value) =>
@@ -197,7 +197,7 @@ export default function BranchPage() {
                     }
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select a city" />
+                      <SelectValue placeholder="Pilih kota" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="Jakarta">Jakarta</SelectItem>
@@ -210,7 +210,7 @@ export default function BranchPage() {
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="phone">Phone Number</Label>
+                  <Label htmlFor="phone">Nomor Telepon</Label>
                   <Input
                     id="phone"
                     placeholder="+62 xxx xxxx xxxx"
@@ -234,10 +234,10 @@ export default function BranchPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="managerName">Branch Manager</Label>
+                  <Label htmlFor="managerName">Manajer Cabang</Label>
                   <Input
                     id="managerName"
-                    placeholder="Enter manager name"
+                    placeholder="Masukkan nama manajer"
                     value={formData.managerName}
                     onChange={(e) =>
                       setFormData({ ...formData, managerName: e.target.value })
@@ -250,11 +250,11 @@ export default function BranchPage() {
                   type="submit"
                   className="w-full bg-blue-600 hover:bg-blue-700"
                 >
-                  Create Branch
+                  Buat Cabang
                 </Button>
                 <DrawerClose asChild>
                   <Button variant="outline" className="w-full">
-                    Cancel
+                    Batal
                   </Button>
                 </DrawerClose>
               </DrawerFooter>
@@ -270,7 +270,7 @@ export default function BranchPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-blue-600 dark:text-blue-400">
-                  Total Branches
+                  Jumlah Total Cabang
                 </p>
                 <p className="text-2xl font-bold text-gray-900 dark:text-white">
                   {branches.length}
@@ -382,10 +382,10 @@ export default function BranchPage() {
                 Branch Name
               </TableHead> */}
               <TableHead className="text-left font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
-                Code
+                Kode
               </TableHead>
               <TableHead className="text-left font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
-                City
+                Kota
               </TableHead>
               <TableHead className="text-left font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
                 Status
@@ -514,15 +514,14 @@ export default function BranchPage() {
                     </div>
                     <div className="text-center max-w-sm">
                       <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
-                        No branches found
+                        Tidak ada cabang ditemukan
                       </h3>
                       <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                        There are no branch accounts to display at this time.
+                        Tidak ada akun cabang yang dapat ditampilkan saat ini.
                       </p>
                       <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mt-4">
                         <p className="text-xs text-blue-800 dark:text-blue-200">
-                          New branch accounts will appear here after they are
-                          created.
+                          Akun cabang baru akan muncul di sini setelah dibuat.
                         </p>
                       </div>
                     </div>
@@ -590,4 +589,5 @@ export default function BranchPage() {
       </div>
     </div>
   );
+}
 }
