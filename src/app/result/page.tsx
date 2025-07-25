@@ -319,9 +319,9 @@ function ResultPageContent() {
 
             {/* Download data */}
             <div className="w-full flex justify-center lg:justify-between items-end text-neutral-900 font-light mt-5 lg:mt-10 mb-5">
-              <p className="hidden lg:block w-1/2 text-4xl">
-                Download laporan inspeksi lengkap <br /> (19 halaman PDF)
-              </p>
+          <p className="hidden lg:block w-1/2 text-4xl">
+            Unduh laporan inspeksi lengkap <br /> (PDF 19 halaman)
+          </p>
               <div className="z-10 flex flex-wrap justify-start items-center gap-3 sm:gap-5 mt-4 sm:mt-5">
                 <Image
                   src="/assets/logo/pdf.svg"
@@ -332,7 +332,7 @@ function ResultPageContent() {
                 />
                 <CustomButton className="text-[clamp(16px,3vw,28px)] font-white font-light rounded-full gradient-details text-white">
                   <a href={`${PDF_URL}${review.urlPdf}`} download>
-                    Download Detail (PDF)
+                    Unduh Detail (PDF)
                   </a>
                 </CustomButton>
               </div>
@@ -508,7 +508,7 @@ function ResultPageContent() {
 
 export default function ResultPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div>Memuat...</div>}>
       <ResultPageContent />
     </Suspense>
   );
