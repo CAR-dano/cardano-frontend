@@ -107,13 +107,13 @@ const BlockchainConnectionVisualization = ({
               <div className="flex items-center justify-center mb-2">
                 <Hash className="h-4 w-4 text-orange-500 mr-2" />
                 <span className="text-xs font-semibold text-orange-600">
-                  DOCUMENT
+                  DOKUMEN
                 </span>
               </div>
               <div className="text-xs font-mono text-slate-600 dark:text-slate-400 break-all">
                 {uploadedHash
                   ? uploadedHash.substring(0, 32) + "..."
-                  : "Upload document to generate hash"}
+                  : "Upload dokumen untuk generate hash"}
               </div>
             </div>
           </div>
@@ -271,10 +271,10 @@ const BlockchainConnectionVisualization = ({
                         }`}
                       >
                         {isVehicleNotFound
-                          ? "NOT FOUND"
+                          ? "TIDAK DITEMUKAN"
                           : isVerified
-                          ? "VERIFIED"
-                          : "FAILED"}
+                          ? "TERVERIFIKASI"
+                          : "GAGAL"}
                       </h3>
                       <p
                         className={`text-xs ${
@@ -286,10 +286,10 @@ const BlockchainConnectionVisualization = ({
                         }`}
                       >
                         {isVehicleNotFound
-                          ? "Vehicle not in records"
+                          ? "Kendaraan tidak ada di database"
                           : isVerified
-                          ? "Document authenticated"
-                          : "Document not verified"}
+                          ? "Dokumen terautentikasi"
+                          : "Dokumen tidak terverifikasi"}
                       </p>
                     </div>
                   </div>
@@ -310,12 +310,12 @@ const BlockchainConnectionVisualization = ({
               }`}
             >
               {isLoading
-                ? "VERIFYING..."
+                ? "MEMVERIFIKASI..."
                 : isVehicleNotFound
-                ? "VEHICLE NOT FOUND"
+                ? "KENDARAAN TIDAK DITEMUKAN"
                 : isVerified
-                ? "VERIFIED"
-                : "NOT VERIFIED"}
+                ? "TERVERIFIKASI"
+                : "TIDAK TERVERIFIKASI"}
             </div>
           </div>
         </div>
@@ -371,7 +371,7 @@ const BlockchainConnectionVisualization = ({
                   : "text-purple-600 dark:text-purple-400"
               }`}
             >
-              {isVehicleNotFound ? "VEHICLE NOT FOUND" : "BLOCKCHAIN HASH"}
+              {isVehicleNotFound ? "KENDARAAN TIDAK DITEMUKAN" : "BLOCKCHAIN HASH"}
             </h3>
             <div
               className={`w-48 p-3 bg-white/80 dark:bg-slate-800/80 rounded-lg backdrop-blur-sm border ${
@@ -401,15 +401,15 @@ const BlockchainConnectionVisualization = ({
                       : "text-purple-600"
                   }`}
                 >
-                  {isVehicleNotFound ? "NOT FOUND" : "CARDANO"}
+                  {isVehicleNotFound ? "TIDAK DITEMUKAN" : "CARDANO"}
                 </span>
               </div>
               <div className="text-xs font-mono text-slate-600 dark:text-slate-400 break-all">
                 {isVehicleNotFound
-                  ? "Vehicle plate not found in blockchain records"
+                  ? "Plat kendaraan tidak ditemukan di record blockchain"
                   : blockchainHash
                   ? blockchainHash.substring(0, 32) + "..."
-                  : "Fetching from blockchain..."}
+                  : "Mengambil dari blockchain..."}
               </div>
             </div>
           </div>
@@ -694,12 +694,11 @@ export default function CekValiditasPage() {
                 </div>
               </div>
               <h1 className="text-5xl font-bold bg-gradient-to-r from-orange-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
-                Blockchain Verification
+                Verifikasi Blockchain
               </h1>
-              <p className="text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-                Verify your vehicle inspection document authenticity using
-                Cardano blockchain technology
-              </p>
+                <p className="text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+                Verifikasi keaslian dokumen inspeksi kendaraan Anda menggunakan teknologi blockchain Cardano
+                </p>
 
               {/* Decorative Elements */}
               <div className="flex items-center justify-center mt-8 space-x-4">
@@ -717,12 +716,11 @@ export default function CekValiditasPage() {
                 <CardTitle className="flex items-center text-2xl">
                   <Car className="h-8 w-8 mr-3 text-orange-600 animate-bounce" />
                   <span className="bg-gradient-to-r from-orange-600 to-purple-600 bg-clip-text text-transparent">
-                    Vehicle Information
+                    Informasi Kendaraan
                   </span>
                 </CardTitle>
                 <CardDescription className="text-lg">
-                  Enter your vehicle plate number and upload the PDF inspection
-                  document
+                  Masukkan nomor plat kendaraan dan unggah dokumen inspeksi PDF
                 </CardDescription>
               </CardHeader>
 
@@ -735,13 +733,13 @@ export default function CekValiditasPage() {
                       className="text-lg font-semibold flex items-center"
                     >
                       <div className="w-3 h-3 bg-orange-500 rounded-full mr-3 animate-pulse"></div>
-                      License Plate Number
+                      Nomor Plat Kendaraan
                     </Label>
                     <div className="relative">
                       <Input
                         id="numberPlate"
                         type="text"
-                        placeholder="Example: B 1234 ABC"
+                        placeholder="Contoh: B 1234 ABC"
                         value={numberPlate}
                         onChange={(e) =>
                           setNumberPlate(e.target.value.toUpperCase())
@@ -766,7 +764,7 @@ export default function CekValiditasPage() {
                       className="text-lg font-semibold flex items-center"
                     >
                       <div className="w-3 h-3 bg-purple-500 rounded-full mr-3 animate-pulse"></div>
-                      PDF Inspection Document
+                      Dokumen Inspeksi PDF
                     </Label>
                     <div className="relative flex items-center">
                       <Input
@@ -804,12 +802,12 @@ export default function CekValiditasPage() {
                   {isLoading ? (
                     <>
                       <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white mr-3" />
-                      Verifying on Blockchain...
+                      Melakukan verifikasi di Blockchain...
                     </>
                   ) : (
                     <>
                       <Zap className="h-6 w-6 mr-3 animate-pulse" />
-                      Verify Document
+                      Verifikasi Dokumen
                     </>
                   )}
                 </Button>
@@ -846,31 +844,31 @@ export default function CekValiditasPage() {
                       <div className="flex items-center text-gray-600">
                         <XCircle className="h-10 w-10 mr-4 animate-pulse" />
                         <span className="bg-gradient-to-r from-gray-600 to-slate-600 bg-clip-text text-transparent">
-                          VEHICLE NOT FOUND
+                          KENDARAAN TIDAK DITEMUKAN
                         </span>
                       </div>
                     ) : verificationResult.isVerified ? (
                       <div className="flex items-center text-green-600">
                         <CheckCircle className="h-10 w-10 mr-4 animate-pulse" />
                         <span className="bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
-                          VERIFICATION SUCCESSFUL
+                          VERIFIKASI BERHASIL
                         </span>
                       </div>
                     ) : (
                       <div className="flex items-center text-red-600">
                         <XCircle className="h-10 w-10 mr-4 animate-pulse" />
                         <span className="bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
-                          VERIFICATION FAILED
+                          VERIFIKASI GAGAL
                         </span>
                       </div>
                     )}
                   </CardTitle>
                   <CardDescription className="text-lg">
                     {!verificationResult.isVehicleFound
-                      ? "The vehicle plate number was not found in the blockchain records"
+                      ? "Nomor plat kendaraan tidak ditemukan di record blockchain"
                       : verificationResult.isVerified
-                      ? "Document has been successfully verified on the Cardano blockchain"
-                      : "Document could not be verified on the blockchain network"}
+                      ? "Dokumen berhasil diverifikasi di blockchain Cardano"
+                      : "Dokumen tidak dapat diverifikasi di jaringan blockchain"}
                   </CardDescription>
                 </CardHeader>
 
@@ -879,7 +877,7 @@ export default function CekValiditasPage() {
                     <div className="p-6 bg-white/70 dark:bg-slate-800/70 rounded-xl backdrop-blur-sm border border-white/20">
                       <h4 className="text-lg font-bold mb-4 flex items-center">
                         <Car className="h-5 w-5 mr-2" />
-                        Vehicle Information
+                        Informasi Kendaraan
                       </h4>
                       <p className="text-2xl font-mono font-bold text-blue-600">
                         {verificationResult.numberPlate}
@@ -888,7 +886,7 @@ export default function CekValiditasPage() {
                     <div className="p-6 bg-white/70 dark:bg-slate-800/70 rounded-xl backdrop-blur-sm border border-white/20">
                       <h4 className="text-lg font-bold mb-4 flex items-center">
                         <Shield className="h-5 w-5 mr-2" />
-                        Verification Status
+                        Status Verifikasi
                       </h4>
                       <p
                         className={`text-2xl font-bold ${
@@ -911,12 +909,12 @@ export default function CekValiditasPage() {
                   {verificationResult.isVehicleFound ? (
                     <div className="p-6 bg-white/70 dark:bg-slate-800/70 rounded-xl backdrop-blur-sm border border-white/20">
                       <h4 className="text-lg font-bold mb-4">
-                        Hash Comparison
+                        Perbandingan Hash
                       </h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                           <p className="text-sm font-semibold text-blue-600 mb-2">
-                            Uploaded Document Hash:
+                            Hash Dokumen yang Diunggah:
                           </p>
                           <p className="text-xs font-mono bg-blue-50 dark:bg-blue-900/20 p-3 rounded break-all">
                             {verificationResult.uploadedHash}
@@ -936,12 +934,12 @@ export default function CekValiditasPage() {
                     <div className="p-6 bg-white/70 dark:bg-slate-800/70 rounded-xl backdrop-blur-sm border border-white/20">
                       <h4 className="text-lg font-bold mb-4 flex items-center">
                         <XCircle className="h-5 w-5 mr-2 text-gray-600" />
-                        Error Details
+                        Detail Error
                       </h4>
                       <div className="space-y-4">
                         <div className="p-4 bg-gray-50 dark:bg-gray-900/20 rounded-lg">
                           <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                            Error Message:
+                            Pesan Error:
                           </p>
                           <p className="text-sm text-gray-600 dark:text-gray-400">
                             {verificationResult.errorMessage}
@@ -949,7 +947,7 @@ export default function CekValiditasPage() {
                         </div>
                         <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                           <p className="text-sm font-semibold text-blue-700 dark:text-blue-300 mb-2">
-                            Uploaded Document Hash:
+                            Hash Dokumen yang Diunggah:
                           </p>
                           <p className="text-xs font-mono text-blue-600 dark:text-blue-400 break-all">
                             {verificationResult.uploadedHash}
@@ -957,17 +955,16 @@ export default function CekValiditasPage() {
                         </div>
                         <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
                           <p className="text-sm font-semibold text-yellow-700 dark:text-yellow-300 mb-2">
-                            Suggestions:
+                            Saran:
                           </p>
                           <ul className="text-sm text-yellow-600 dark:text-yellow-400 space-y-1">
                             <li>
-                              • Double-check the vehicle plate number format
+                              • Periksa kembali format nomor plat kendaraan
                             </li>
                             <li>
-                              • Ensure the vehicle has been inspected and
-                              registered
+                              • Pastikan kendaraan telah diperiksa dan terdaftar
                             </li>
-                            <li>• Contact support if the issue persists</li>
+                            <li>• Hubungi layanan dukungan jika masalah berlanjut</li>
                           </ul>
                         </div>
                       </div>
@@ -976,7 +973,7 @@ export default function CekValiditasPage() {
 
                   <div className="text-center p-6 bg-white/70 dark:bg-slate-800/70 rounded-xl backdrop-blur-sm border border-white/20">
                     <p className="text-sm text-slate-600 dark:text-slate-400">
-                      Verified on:{" "}
+                      Diverifikasi pada:{" "}
                       {new Date(verificationResult.timestamp).toLocaleString(
                         "id-ID"
                       )}
@@ -985,6 +982,7 @@ export default function CekValiditasPage() {
                 </CardContent>
               </Card>
             )}
+          </div
           </div>
         </div>
       </div>
