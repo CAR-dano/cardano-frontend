@@ -117,7 +117,7 @@ const TableData = ({
           <TableHeader>
             <TableRow className="bg-gray-50 dark:bg-gray-900">
               <TableHead className="text-left font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
-                Customer
+                Kostumer
               </TableHead>
               <TableHead className="text-left font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
                 Kendaraan
