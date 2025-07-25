@@ -41,7 +41,7 @@ export default function HowTo() {
             <li className="ms-4 mb-10">
               <div className="absolute w-5 h-5 bg-purple-100 rounded-full mt-1.5 start-[-15px] outline outline-[12px] outline-[#FF7D43] howto-shadow"></div>
               <h3 className="text-black text-xl md:text-2xl lg:text-4xl font-semibold ">
-                Search
+                Cari
               </h3>
               <div className="mt-4 border-[#B175FF] rounded-md">
                 <Image
@@ -57,7 +57,7 @@ export default function HowTo() {
             <li className="ms-4 mb-10">
               <div className="absolute w-5 h-5 bg-purple-100 rounded-full mt-1.5 start-[-15px] outline outline-[12px] outline-[#e57f7f] howto-shadow"></div>
               <h3 className="text-black text-xl md:text-2xl lg:text-4xl font-semibold ">
-                Check
+                Cek
               </h3>
               <div className="relative mt-4 border-[#B175FF] rounded-md">
                 <Image
@@ -73,7 +73,7 @@ export default function HowTo() {
             <li className="ms-4">
               <div className="absolute w-5 h-5 bg-purple-100 rounded-full mt-1.5 start-[-15px] outline outline-[12px] outline-purple-500 howto-shadow"></div>
               <h3 className="text-black text-xl md:text-2xl lg:text-4xl font-semibold ">
-                Found
+                Ditemukan
               </h3>
             </li>
           </ol>
@@ -86,7 +86,7 @@ export default function HowTo() {
               className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 object-contain"
             />
             <CustomButton className="text-[clamp(16px,3vw,28px)] font-white font-light rounded-full gradient-details text-white">
-              Get the details
+              Dapatkan PDF
             </CustomButton>
           </div>
         </motion.div>

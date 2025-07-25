@@ -320,7 +320,7 @@ function ResultPageContent() {
             {/* Download data */}
             <div className="w-full flex justify-center lg:justify-between items-end text-neutral-900 font-light mt-5 lg:mt-10 mb-5">
               <p className="hidden lg:block w-1/2 text-4xl">
-                Download laporan inspeksi lengkap <br /> (19 halaman PDF)
+                Unduh laporan inspeksi lengkap <br /> (PDF)
               </p>
               <div className="z-10 flex flex-wrap justify-start items-center gap-3 sm:gap-5 mt-4 sm:mt-5">
                 <Image

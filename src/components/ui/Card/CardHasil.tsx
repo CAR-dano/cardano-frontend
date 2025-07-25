@@ -29,21 +29,21 @@ function CardHasil({ inspectionSummary, overallRating, urlPdf }: any) {
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
       viewport={{ once: true }}
-      className="w-full bg-white rounded-2xl card-data-shadow p-0 lg:pl-10 py-0 lg:py-6"
+      className="w-full bg-white rounded-2xl card-data-shadow p-4 sm:p-6 lg:pl-10 lg:pr-6 lg:py-6"
     >
-      <div className="flex flex-col md:flex-row gap-10 font-rubik">
-        {/* Carousel Image */}
+      <div className="flex flex-col lg:flex-row gap-6 lg:gap-10 font-rubik">
+        {/* Left Section - Indikasi */}
         <motion.div
-          className="relative w-full md:w-1/2 overflow-hidden"
+          className="relative w-full lg:w-1/2 overflow-hidden"
           initial={{ opacity: 0, scale: 0.9 }}
           whileInView={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
           viewport={{ once: true }}
         >
-          <h1 className="text-black text-[clamp(32px,3vw,48px)] font-medium">
+          <h1 className="text-black text-[clamp(24px,4vw,48px)] font-medium mb-3 lg:mb-0">
             Indikasi*
           </h1>
-          <div className="flex flex-col gap-2 lg:gap-6 mt-2 lg:mt-5 px-5 lg:px-0">
+          <div className="flex flex-col gap-3 sm:gap-4 lg:gap-6 mt-2 lg:mt-5">
             {[
               {
                 iconYes: "/assets/icon/bekastabrak.png",
@@ -66,22 +66,21 @@ function CardHasil({ inspectionSummary, overallRating, urlPdf }: any) {
             ].map((item, index) => (
               <div
                 key={index}
-                className="flex gap-5 items-center text-neutral-900"
+                className="flex gap-3 sm:gap-4 lg:gap-5 items-center text-neutral-900"
               >
                 <Image
                   src={item.description ? item.iconYes : item.iconNo}
                   alt="icon"
                   width={80}
                   height={80}
-                  className={`w-20 h-20 lg:w-24 lg:h-24  rounded-[20px]  
-            `}
+                  className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-[16px] lg:rounded-[20px] flex-shrink-0"
                 />
-                <div>
-                  <h1 className="text-[clamp(24px,3vw,32px)] font-light ">
+                <div className="flex-1 min-w-0">
+                  <h1 className="text-[clamp(18px,4vw,32px)] font-light leading-tight">
                     {item.title}
                   </h1>
                   <p
-                    className={`text-[clamp(40px,3vw,48px)] font-bold ${
+                    className={`text-[clamp(28px,6vw,48px)] font-bold leading-tight ${
                       item.description ? "text-[#F469A8]" : "text-[#30B6ED]"
                     }`}
                   >
@@ -93,21 +92,22 @@ function CardHasil({ inspectionSummary, overallRating, urlPdf }: any) {
           </div>
         </motion.div>
 
-        {/* Right Content */}
+        {/* Right Section - Penilaian */}
         <motion.div
-          className="w-full md:w-1/2 flex flex-col gap-3 text-left md:text-left text-neutral-900"
+          className="w-full lg:w-1/2 flex flex-col gap-4 lg:gap-3 text-left text-neutral-900"
           initial={{ opacity: 0, x: -50 }}
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.7, ease: "easeOut", delay: 0.3 }}
           viewport={{ once: true }}
         >
-          <h1 className="text-black text-[clamp(32px,3vw,48px)] font-medium">
+          <h1 className="text-black text-[clamp(24px,4vw,48px)] font-medium">
             Penilaian*
           </h1>
 
-          <div className="flex flex-row gap-5 text-neutral-900">
-            <div className="w-1/2">
-              <div className="grid grid-cols-2 gap-x-5 lg:gap-x-8 gap-y-3.5 lg:gap-y-5">
+          <div className="flex flex-col sm:flex-row gap-4 lg:gap-5 text-neutral-900">
+            {/* Individual Scores Grid */}
+            <div className="w-full sm:w-1/2">
+              <div className="grid grid-cols-2 gap-x-3 sm:gap-x-4 lg:gap-x-8 gap-y-4 lg:gap-y-5">
                 {[
                   {
                     title: "Mesin",
@@ -128,12 +128,12 @@ function CardHasil({ inspectionSummary, overallRating, urlPdf }: any) {
                     description: getGradeLabel(inspectionSummary.kakiKakiScore),
                   },
                 ].map((item, index) => (
-                  <div key={index} className="flex flex-col gap-1 items-center">
-                    <h1 className="text-[clamp(20px,3vw,34px)] font-light ">
+                  <div key={index} className="flex flex-col gap-2 items-center">
+                    <h1 className="text-[clamp(14px,3vw,24px)] font-light text-center leading-tight h-10 flex items-center justify-center">
                       {item.title}
                     </h1>
-                    <div className="w-20 lg:w-24 aspect-square bg-[#FF7D43] rounded-2xl flex justify-center items-center">
-                      <p className="text-[clamp(48px,3vw,60px)] font-bold text-white">
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-[#FF7D43] rounded-xl lg:rounded-2xl flex justify-center items-center">
+                      <p className="text-[clamp(24px,5vw,40px)] lg:text-[clamp(32px,3vw,48px)] font-bold text-white">
                         {item.description}
                       </p>
                     </div>
@@ -141,20 +141,22 @@ function CardHasil({ inspectionSummary, overallRating, urlPdf }: any) {
                 ))}
               </div>
             </div>
-            <div className="w-1/2 flex flex-col justify-between">
-              <p className="text-[clamp(24px,3vw,43px)] font-light">
+
+            {/* Overall Rating */}
+            <div className="w-full sm:w-1/2 flex flex-col justify-center items-center">
+              <p className="text-[clamp(16px,3vw,24px)] font-light text-center mb-4">
                 Penilaian Keseluruhan
               </p>
-              <div className="w-44 lg:w-48 aspect-square bg-[#A25DF9] rounded-2xl flex justify-center items-center">
-                <p className="text-9xl font-bold text-white">
+              <div className="w-32 h-32 sm:w-40 sm:h-40 lg:w-48 lg:h-48 bg-[#A25DF9] rounded-2xl flex justify-center items-center">
+                <p className="text-[clamp(56px,8vw,80px)] lg:text-[clamp(64px,6vw,96px)] font-bold text-white">
                   {getGradeLabel(overallRating)}
                 </p>
               </div>
             </div>
           </div>
 
-          <p className="text-neutral-700 text-[clamp(16px,3vw,24px)] font-light">
-            *Kriteria Penilaian dapat dicek pada <br /> dokumen lengkap{" "}
+          <p className="text-neutral-700 text-[clamp(14px,3vw,24px)] font-light mt-2">
+            *Kriteria Penilaian dapat dicek pada dokumen lengkap{" "}
             <a
               href={`${PDF_URL}${urlPdf}`}
               className="cursor-pointer font-bold underline"
