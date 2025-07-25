@@ -107,13 +107,13 @@ const BlockchainConnectionVisualization = ({
               <div className="flex items-center justify-center mb-2">
                 <Hash className="h-4 w-4 text-orange-500 mr-2" />
                 <span className="text-xs font-semibold text-orange-600">
-                  DOCUMENT
+                  DOKUMEN
                 </span>
               </div>
               <div className="text-xs font-mono text-slate-600 dark:text-slate-400 break-all">
                 {uploadedHash
                   ? uploadedHash.substring(0, 32) + "..."
-                  : "Upload document to generate hash"}
+                  : "Upload dokumen untuk generate hash"}
               </div>
             </div>
           </div>
@@ -271,10 +271,10 @@ const BlockchainConnectionVisualization = ({
                         }`}
                       >
                         {isVehicleNotFound
-                          ? "NOT FOUND"
+                          ? "TIDAK DITEMUKAN"
                           : isVerified
-                          ? "VERIFIED"
-                          : "FAILED"}
+                          ? "TERVERIFIKASI"
+                          : "GAGAL"}
                       </h3>
                       <p
                         className={`text-xs ${
@@ -286,10 +286,10 @@ const BlockchainConnectionVisualization = ({
                         }`}
                       >
                         {isVehicleNotFound
-                          ? "Vehicle not in records"
+                          ? "Kendaraan tidak ada di database"
                           : isVerified
-                          ? "Document authenticated"
-                          : "Document not verified"}
+                          ? "Dokumen terautentikasi"
+                          : "Dokumen tidak terverifikasi"}
                       </p>
                     </div>
                   </div>
@@ -310,12 +310,12 @@ const BlockchainConnectionVisualization = ({
               }`}
             >
               {isLoading
-                ? "VERIFYING..."
+                ? "MEMVERIFIKASI..."
                 : isVehicleNotFound
-                ? "VEHICLE NOT FOUND"
+                ? "KENDARAAN TIDAK DITEMUKAN"
                 : isVerified
-                ? "VERIFIED"
-                : "NOT VERIFIED"}
+                ? "TERVERIFIKASI"
+                : "TIDAK TERVERIFIKASI"}
             </div>
           </div>
         </div>
@@ -371,7 +371,7 @@ const BlockchainConnectionVisualization = ({
                   : "text-purple-600 dark:text-purple-400"
               }`}
             >
-              {isVehicleNotFound ? "VEHICLE NOT FOUND" : "BLOCKCHAIN HASH"}
+              {isVehicleNotFound ? "KENDARAAN TIDAK DITEMUKAN" : "BLOCKCHAIN HASH"}
             </h3>
             <div
               className={`w-48 p-3 bg-white/80 dark:bg-slate-800/80 rounded-lg backdrop-blur-sm border ${
@@ -401,15 +401,15 @@ const BlockchainConnectionVisualization = ({
                       : "text-purple-600"
                   }`}
                 >
-                  {isVehicleNotFound ? "NOT FOUND" : "CARDANO"}
+                  {isVehicleNotFound ? "TIDAK DITEMUKAN" : "CARDANO"}
                 </span>
               </div>
               <div className="text-xs font-mono text-slate-600 dark:text-slate-400 break-all">
                 {isVehicleNotFound
-                  ? "Vehicle plate not found in blockchain records"
+                  ? "Plat kendaraan tidak ditemukan di record blockchain"
                   : blockchainHash
                   ? blockchainHash.substring(0, 32) + "..."
-                  : "Fetching from blockchain..."}
+                  : "Mengambil dari blockchain..."}
               </div>
             </div>
           </div>
@@ -720,7 +720,7 @@ export default function CekValiditasPage() {
                   </span>
                 </CardTitle>
                 <CardDescription className="text-lg">
-                  Masukkan nomor plat kendaraan Anda dan unggah dokumen inspeksi PDF
+                  Masukkan nomor plat kendaraan dan unggah dokumen inspeksi PDF
                 </CardDescription>
               </CardHeader>
 
@@ -739,7 +739,7 @@ export default function CekValiditasPage() {
                       <Input
                         id="numberPlate"
                         type="text"
-                        placeholder="Example: B 1234 ABC"
+                        placeholder="Contoh: B 1234 ABC"
                         value={numberPlate}
                         onChange={(e) =>
                           setNumberPlate(e.target.value.toUpperCase())
@@ -802,7 +802,7 @@ export default function CekValiditasPage() {
                   {isLoading ? (
                     <>
                       <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white mr-3" />
-                      Melakukan verifikasi data pada Blockchain...
+                      Melakukan verifikasi di Blockchain...
                     </>
                   ) : (
                     <>
@@ -865,10 +865,10 @@ export default function CekValiditasPage() {
                   </CardTitle>
                   <CardDescription className="text-lg">
                     {!verificationResult.isVehicleFound
-                      ? "The vehicle plate number was not found in the blockchain records"
+                      ? "Nomor plat kendaraan tidak ditemukan di record blockchain"
                       : verificationResult.isVerified
-                      ? "Document has been successfully verified on the Cardano blockchain"
-                      : "Document could not be verified on the blockchain network"}
+                      ? "Dokumen berhasil diverifikasi di blockchain Cardano"
+                      : "Dokumen tidak dapat diverifikasi di jaringan blockchain"}
                   </CardDescription>
                 </CardHeader>
 
@@ -962,10 +962,9 @@ export default function CekValiditasPage() {
                               • Periksa kembali format nomor plat kendaraan
                             </li>
                             <li>
-                              • Pastikan kendaraan telah diperiksa dan
-                              terdaftar
+                              • Pastikan kendaraan telah diperiksa dan terdaftar
                             </li>
-                            <li>• Hubungi dukungan jika masalah berlanjut</li>
+                            <li>• Hubungi layanan dukungan jika masalah berlanjut</li>
                           </ul>
                         </div>
                       </div>
@@ -974,7 +973,7 @@ export default function CekValiditasPage() {
 
                   <div className="text-center p-6 bg-white/70 dark:bg-slate-800/70 rounded-xl backdrop-blur-sm border border-white/20">
                     <p className="text-sm text-slate-600 dark:text-slate-400">
-                      Verified on:{" "}
+                      Diverifikasi pada:{" "}
                       {new Date(verificationResult.timestamp).toLocaleString(
                         "id-ID"
                       )}
@@ -983,6 +982,7 @@ export default function CekValiditasPage() {
                 </CardContent>
               </Card>
             )}
+          </div
           </div>
         </div>
       </div>
