@@ -368,7 +368,7 @@ export default function BranchPage() {
         <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
         <input
           type="text"
-          placeholder="Search by name, code, or city..."
+          placeholder="Cari berdasarkan nama, kode, atau kota..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full pl-10 pr-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all"
@@ -384,17 +384,17 @@ export default function BranchPage() {
                 Branch Name
               </TableHead> */}
               <TableHead className="text-left font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
-                Code
+                Kode Cabang
               </TableHead>
               <TableHead className="text-left font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
-                City
+                Kota
               </TableHead>
               <TableHead className="text-left font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
                 Status
               </TableHead>
 
               <TableHead className="text-center font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
-                Actions
+                Aksi
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -516,15 +516,14 @@ export default function BranchPage() {
                     </div>
                     <div className="text-center max-w-sm">
                       <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
-                        No branches found
+                        Tidak ada cabang yang ditemukan
                       </h3>
                       <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                        There are no branch accounts to display at this time.
+                        Saat ini tidak ada akun cabang yang ditampilkan.
                       </p>
                       <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mt-4">
                         <p className="text-xs text-blue-800 dark:text-blue-200">
-                          New branch accounts will appear here after they are
-                          created.
+                          Akun cabang baru akan muncul di sini setelah dibuat.
                         </p>
                       </div>
                     </div>

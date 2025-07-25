@@ -113,10 +113,10 @@ export function DatePickerWithRange({
                 variant="ghost"
                 className="dark:hover:bg-gray-600 dark:hover:text-white dark:text-gray-300"
                 onClick={() =>
-                  handleQuickSelect(new Date(), new Date(), "Today")
+                  handleQuickSelect(new Date(), new Date(), "Hari Ini")
                 }
               >
-                Today
+                Hari Ini
               </Button>
               <Button
                 variant="ghost"
@@ -125,11 +125,11 @@ export function DatePickerWithRange({
                   handleQuickSelect(
                     subDays(new Date(), 6),
                     new Date(),
-                    "Last 7 Days"
+                    "7 Hari Terakhir"
                   )
                 }
               >
-                Last 7 Days
+                7 Hari Terakhir
               </Button>
               <Button
                 variant="ghost"
@@ -138,11 +138,11 @@ export function DatePickerWithRange({
                   handleQuickSelect(
                     subDays(new Date(), 29),
                     new Date(),
-                    "Last 30 Days"
+                    "30 Hari Terakhir"
                   )
                 }
               >
-                Last 30 Days
+                30 Hari Terakhir
               </Button>
               <Button
                 variant="ghost"
@@ -151,11 +151,11 @@ export function DatePickerWithRange({
                   handleQuickSelect(
                     startOfMonth(new Date()),
                     new Date(),
-                    "Month to Date"
+                    "Bulan Ini"
                   )
                 }
               >
-                Month to Date
+                Bulan Ini
               </Button>
               <Button
                 variant="ghost"
@@ -168,7 +168,7 @@ export function DatePickerWithRange({
                   )
                 }
               >
-                Last 12 Months
+                12 Bulan Terakhir
               </Button>
               <Button
                 variant="ghost"
@@ -177,11 +177,11 @@ export function DatePickerWithRange({
                   handleQuickSelect(
                     startOfYear(new Date()),
                     new Date(),
-                    "Year to Date"
+                    "Tahun Ini"
                   )
                 }
               >
-                Year to Date
+                Tahun Ini
               </Button>
               <Button
                 variant="ghost"
@@ -190,11 +190,11 @@ export function DatePickerWithRange({
                   handleQuickSelect(
                     subYears(new Date(), 2),
                     new Date(),
-                    "Last 3 Years"
+                    "3 Tahun Terakhir"
                   )
                 }
               >
-                Last 3 Years
+                3 Tahun Terakhir
               </Button>
             </div>
           </div>
@@ -204,13 +204,13 @@ export function DatePickerWithRange({
               className="dark:hover:bg-gray-600 dark:hover:text-white dark:text-gray-300"
               onClick={handleCancel}
             >
-              Cancel
+              Batal
             </Button>
             <Button
               className="bg-blue-400 hover:bg-blue-500 text-white"
               onClick={handleApply}
             >
-              Apply
+              Terapkan
             </Button>
           </div>
         </PopoverContent>

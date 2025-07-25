@@ -57,6 +57,7 @@ import {
   FaTrash,
   FaEye,
   FaEyeSlash,
+  FaWhatsapp,
 } from "react-icons/fa";
 import { format } from "date-fns";
 import apiClient from "@/lib/services/apiClient";
@@ -83,7 +84,7 @@ const InspectorPage = () => {
     name: "",
     username: "",
     email: "",
-    phone: "",
+    whatsappNumber: "",
     inspectionBranchCityId: "",
   });
 
@@ -95,6 +96,7 @@ const InspectorPage = () => {
     pin: "",
     status: "",
     createdAt: "",
+    whatsappNumber: "",
   });
 
   useEffect(() => {
@@ -122,9 +124,17 @@ const InspectorPage = () => {
         description: "Please wait while we create the new inspector account.",
       });
 
+      // Format WhatsApp number to start with 62
+      const formattedData = {
+        ...formData,
+        whatsappNumber: formData.whatsappNumber.startsWith("+62")
+          ? formData.whatsappNumber
+          : `+62${formData.whatsappNumber.replace(/^0+/, "")}`,
+      };
+
       const response = await apiClient.post(
         "/admin/users/inspector",
-        formData,
+        formattedData,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -135,9 +145,7 @@ const InspectorPage = () => {
       // Success notification
       toast({
         title: "✅ Inspektor Berhasil Ditambahkan",
-        description: "Inspektur ${formData.name} telah dibuat dan sekarang dapat mulai bekerja",
-        title: "✅ Inspector Added Successfully",
-        description: `Inspector ${formData.name} has been created and can now start working.`,
+        description: `Inspektur ${formData.name} telah dibuat dan sekarang dapat mulai bekerja`,
         duration: 5000,
       });
 
@@ -147,7 +155,7 @@ const InspectorPage = () => {
         name: "",
         username: "",
         email: "",
-        phone: "",
+        whatsappNumber: "",
         inspectionBranchCityId: "",
       });
 
@@ -183,6 +191,7 @@ const InspectorPage = () => {
       email: inspector.email || "",
       pin: inspector.pin || "****",
       status: inspector.status || "active",
+      whatsappNumber: inspector.whatsappNumber || "",
       createdAt: inspector.createdAt
         ? format(new Date(inspector.createdAt), "dd MMM yyyy")
         : "-",
@@ -212,6 +221,7 @@ const InspectorPage = () => {
         email: selectedInspector.email || "",
         pin: selectedInspector.pin || "****",
         status: selectedInspector.status || "active",
+        whatsappNumber: selectedInspector.whatsappNumber || "",
         createdAt: selectedInspector.createdAt
           ? format(new Date(selectedInspector.createdAt), "dd MMM yyyy")
           : "-",
@@ -245,6 +255,18 @@ const InspectorPage = () => {
 
       if (viewFormData.status !== (selectedInspector.status || "active")) {
         changedData.status = viewFormData.status;
+      }
+
+      if (
+        viewFormData.whatsappNumber !== (selectedInspector.whatsappNumber || "")
+      ) {
+        // Format WhatsApp number to start with 62
+        const formattedWhatsappNumber = viewFormData.whatsappNumber.startsWith(
+          "+62"
+        )
+          ? viewFormData.whatsappNumber
+          : `62${viewFormData.whatsappNumber.replace(/^0+/, "")}`;
+        changedData.whatsappNumber = formattedWhatsappNumber;
       }
 
       // Only proceed if there are changes
@@ -336,6 +358,50 @@ const InspectorPage = () => {
     setInspectorToDelete(null);
   };
 
+  const handleSendWhatsApp = () => {
+    if (!selectedInspector || !selectedInspector.whatsappNumber) {
+      toast({
+        title: "Nomor WhatsApp Tidak Tersedia",
+        description:
+          "Inspector ini tidak memiliki nomor WhatsApp yang terdaftar.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Format WhatsApp number - remove +62 if exists and ensure it starts with 62
+    let phoneNumber = selectedInspector.whatsappNumber.toString();
+    if (phoneNumber.startsWith("+62")) {
+      phoneNumber = phoneNumber.substring(1); // Remove the + sign
+    } else if (!phoneNumber.startsWith("62")) {
+      phoneNumber = `62${phoneNumber.replace(/^0+/, "")}`;
+    }
+
+    // Create message template with inspector data
+    const messageTemplate = `Halo ${selectedInspector.name || "Inspector"},
+
+Berikut adalah data akun Inspector Anda:
+
+📧 *Email:* ${selectedInspector.email || "-"}
+🔐 *PIN:* ${selectedInspector.pin || "-"}
+
+Silakan gunakan data di atas untuk login ke sistem Car-Dano Inspector.
+
+Terima kasih.
+
+---
+*Pesan ini dikirim otomatis dari sistem Car-Dano Admin*`;
+
+    // Encode the message for URL
+    const encodedMessage = encodeURIComponent(messageTemplate);
+
+    // Create WhatsApp URL with pre-filled message
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+
+    // Open WhatsApp in new tab
+    window.open(whatsappUrl, "_blank");
+  };
+
   return (
     <div className=" space-y-6  min-h-screen">
       {/* Header */}
@@ -421,9 +487,12 @@ const InspectorPage = () => {
                       id="phone"
                       type="tel"
                       placeholder="8123456789"
-                      value={formData.phone}
+                      value={formData.whatsappNumber}
                       onChange={(e) =>
-                        setFormData({ ...formData, phone: e.target.value })
+                        setFormData({
+                          ...formData,
+                          whatsappNumber: e.target.value,
+                        })
                       }
                       className="rounded-l-none"
                       required
@@ -570,7 +639,7 @@ const InspectorPage = () => {
 
           {isEditing ? (
             <form onSubmit={handleUpdateInspector}>
-              <div className="mb-5 space-y-4 px-4">
+              <div className="mb-5 space-y-4 px-4 my-10">
                 <div className="space-y-2">
                   <Label htmlFor="view-name">Nama Lengkap</Label>
                   <Input
@@ -624,6 +693,29 @@ const InspectorPage = () => {
                   />
                 </div>
                 <div className="space-y-2">
+                  <Label htmlFor="view-whatsapp">Nomor WhatsApp</Label>
+                  <div className="flex">
+                    <div className="flex items-center px-3 bg-gray-100 dark:bg-gray-700 border border-r-0 border-gray-300 dark:border-gray-600 rounded-l-md">
+                      <span className="text-sm text-gray-600 dark:text-gray-300 font-medium">
+                        +62
+                      </span>
+                    </div>
+                    <Input
+                      id="view-whatsapp"
+                      type="tel"
+                      value={viewFormData.whatsappNumber}
+                      onChange={(e) =>
+                        setViewFormData({
+                          ...viewFormData,
+                          whatsappNumber: e.target.value,
+                        })
+                      }
+                      className="rounded-l-none"
+                      placeholder="8123456789"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
                   <Label htmlFor="view-status">Status</Label>
                   <Select
                     value={viewFormData.status}
@@ -669,7 +761,7 @@ const InspectorPage = () => {
             </form>
           ) : (
             <>
-              <div className="mb-5 space-y-4 px-4">
+              <div className="mb-5 space-y-4 px-4 my-10">
                 <div className="space-y-2">
                   <Label htmlFor="view-name">Nama Lengkap</Label>
                   <Input
@@ -722,6 +814,22 @@ const InspectorPage = () => {
                   </div>
                 </div>
                 <div className="space-y-2">
+                  <Label htmlFor="view-whatsapp-readonly">Nomor WhatsApp</Label>
+                  <div className="flex">
+                    <div className="flex items-center px-3 bg-gray-100 dark:bg-gray-700 border border-r-0 border-gray-300 dark:border-gray-600 rounded-l-md">
+                      <span className="text-sm text-gray-600 dark:text-gray-300 font-medium">
+                        +62
+                      </span>
+                    </div>
+                    <Input
+                      id="view-whatsapp-readonly"
+                      value={viewFormData.whatsappNumber}
+                      readOnly
+                      className="bg-gray-50 dark:bg-gray-800 rounded-l-none"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
                   <Label htmlFor="view-status">Status</Label>
                   <Input
                     value={viewFormData.status}
@@ -739,7 +847,15 @@ const InspectorPage = () => {
                   />
                 </div>
               </div>
-              <DrawerFooter>
+              <DrawerFooter className="flex flex-col gap-2">
+                <Button
+                  type="button"
+                  className="w-full bg-green-600 hover:bg-green-700 text-white"
+                  onClick={handleSendWhatsApp}
+                >
+                  <FaWhatsapp className="mr-2" />
+                  Kirim Data
+                </Button>
                 <Button
                   type="button"
                   className="w-full bg-blue-600 hover:bg-blue-700"
@@ -778,6 +894,7 @@ const InspectorPage = () => {
             </div>
           </CardContent>
         </Card>
+      </div>
 
       {/* Search Bar */}
       <div className="relative">
@@ -938,7 +1055,8 @@ const InspectorPage = () => {
                       </p>
                       <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mt-4">
                         <p className="text-xs text-blue-800 dark:text-blue-200">
-                          Akun inspektor baru akan muncul di sini setelah dibuat.
+                          Akun inspektor baru akan muncul di sini setelah
+                          dibuat.
                         </p>
                       </div>
                     </div>

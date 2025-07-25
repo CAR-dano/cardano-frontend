@@ -26,6 +26,7 @@ const Header = ({
   id,
   router,
   handleApprove,
+  setShowApprovalConfirmationDialog,
 }: any) => {
   const { isDarkModeEnabled } = useTheme();
 
@@ -47,12 +48,14 @@ const Header = ({
     if (hasChanges > 0) {
       toast({
         title: "Tidak Dapat Menyetujui",
-        description: "Harap simpan semua perubahan sebelum menyetujui inspeksi.",
+        description:
+          "Harap simpan semua perubahan sebelum menyetujui inspeksi.",
         variant: "destructive",
       });
       return;
     }
-    handleApprove();
+    // Show approval confirmation dialog instead of directly approving
+    setShowApprovalConfirmationDialog(true);
   };
 
   return (
@@ -366,6 +369,7 @@ const Edit = () => {
   const isLoading = useAppSelector((state: any) => state.inspection.isLoading);
   const router = useRouter();
   const params = useParams();
+  const user = useAppSelector((state) => state.auth.user);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [dialogData, setDialogData] = useState<any>({
@@ -389,6 +393,9 @@ const Edit = () => {
   } | null>(null);
 
   const [showMintConfirmationDialog, setShowMintConfirmationDialog] =
+    useState(false);
+
+  const [showApprovalConfirmationDialog, setShowApprovalConfirmationDialog] =
     useState(false);
 
   const [data, setData] = useState<any>(null);
@@ -690,11 +697,16 @@ const Edit = () => {
             message:
               "Data inspeksi telah disetujui. Apakah Anda ingin melanjutkan dengan pencetakan ke blockchain?",
             buttonLabel1: "Nanti",
-            buttonLabel2: "Cetak ke Blockchain",
+            buttonLabel2:
+              user?.role === "ADMIN" ? "Cetak Sekarang" : "Lihat di Database",
             action1: () => router.push("/dashboard/database"),
             action2: () => {
               setDialogResultData(null); // Close the current dialog
-              setShowMintConfirmationDialog(true); // Open the confirmation dialog
+              if (user?.role === "ADMIN") {
+                mintingToBlockchainHandler(id);
+              } else {
+                router.push("/dashboard/database");
+              }
             },
           });
         } else {
@@ -745,6 +757,10 @@ const Edit = () => {
         }
 
         if (subFieldName) {
+          if (subFieldName == "namaInspektor") {
+            subFieldName = "inspectorId";
+          }
+
           if (!result[fieldName][subFieldName]) {
             result[fieldName][subFieldName] = {};
           }
@@ -808,6 +824,9 @@ const Edit = () => {
             id={id}
             router={router}
             handleApprove={approveInspection}
+            setShowApprovalConfirmationDialog={
+              setShowApprovalConfirmationDialog
+            }
           />
           <div className="w-full mb-20">
             <EditReviewComponents
@@ -908,6 +927,24 @@ const Edit = () => {
               action1={dialogResultData.action1}
               action2={dialogResultData.action2}
               onClose={() => setDialogResultData(null)}
+            />
+          )}
+
+          {/* Approval Confirmation Dialog */}
+          {showApprovalConfirmationDialog && (
+            <DialogResult
+              isOpen={showApprovalConfirmationDialog}
+              isSuccess={false} // This is a confirmation, not a success/failure
+              title="Konfirmasi Persetujuan Inspeksi"
+              message="Apakah Anda yakin ingin menyetujui data inspeksi ini? Setelah disetujui, data akan siap untuk dicetak ke blockchain."
+              buttonLabel1="Batal"
+              buttonLabel2="Ya, Setujui"
+              action1={() => setShowApprovalConfirmationDialog(false)} // Close dialog on cancel
+              action2={() => {
+                setShowApprovalConfirmationDialog(false); // Close dialog
+                approveInspection(); // Proceed with approval
+              }}
+              onClose={() => setShowApprovalConfirmationDialog(false)}
             />
           )}
 

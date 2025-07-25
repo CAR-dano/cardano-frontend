@@ -54,6 +54,19 @@ const TableData = ({
 
   const formatStatus = (status: string) => {
     const newStatus = status.replace(/_/g, " ").toLowerCase();
+    if (newStatus === "need review") {
+      return "Perlu Tinjauan";
+    }
+    if (newStatus === "approved") {
+      return "Disetujui";
+    }
+    if (newStatus === "rejected") {
+      return "Ditolak";
+    }
+    if (newStatus === "archived") {
+      return "Diarsipkan";
+    }
+
     return newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
   };
 
@@ -111,7 +124,7 @@ const TableData = ({
           <TableHeader>
             <TableRow className="bg-gray-50 dark:bg-gray-900">
               <TableHead className="text-left font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
-                Customer
+                Nama Pelanggan
               </TableHead>
               <TableHead className="text-left font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
                 Kendaraan
@@ -537,7 +550,7 @@ const TableInBlockchain = ({
           <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
           <Input
             type="text"
-            placeholder="Search by customer, plate, or vehicle..."
+            placeholder="Cari berdasarkan nama pelanggan, nomor kendaraan, atau status... "
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all"

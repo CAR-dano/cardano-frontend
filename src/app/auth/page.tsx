@@ -354,7 +354,7 @@ function LoginPage() {
                       </label>
                       <input
                         type="text"
-                        placeholder="Enter your email address or username"
+                        placeholder="Masukkan email atau username"
                         value={formLogin.loginIdentifier}
                         onChange={(e) =>
                           setFormLogin({
@@ -383,7 +383,7 @@ function LoginPage() {
                       <div className="relative">
                         <input
                           type={showPassword ? "text" : "password"}
-                          placeholder="Enter your password"
+                          placeholder="Masukkan kata sandi"
                           value={formLogin.password}
                           onChange={(e) =>
                             setFormLogin({
@@ -415,7 +415,7 @@ function LoginPage() {
                       type="submit"
                       className="gradient-button-2 w-full py-3 rounded-lg text-white font-rubik text-[18px] font-medium "
                     >
-                      Log in
+                      Masuk
                     </button>
                   </motion.form>
 
@@ -480,7 +480,7 @@ function LoginPage() {
                     className="bg-gradient-to-r from-[#FF7D43] to-[#A25DF9] bg-clip-text text-transparent  font-rubik text-[60px] font-bold mb-4 leading-none"
                     variants={childVariants}
                   >
-                    Create a free account
+                    Daftar Akun
                   </motion.h1>
 
                   <motion.form
@@ -500,7 +500,7 @@ function LoginPage() {
                       </label>
                       <input
                         type="text"
-                        placeholder="Enter your username"
+                        placeholder="Masukkan username Anda"
                         value={formRegister.username}
                         onChange={(e) =>
                           setFormRegister({
@@ -528,7 +528,7 @@ function LoginPage() {
                       </label>
                       <input
                         type="email"
-                        placeholder="Enter your email address"
+                        placeholder="Masukkan alamat email Anda"
                         value={formRegister.email}
                         onChange={(e) =>
                           setFormRegister({
@@ -557,7 +557,7 @@ function LoginPage() {
                       <div className="relative">
                         <input
                           type={showRegisterPassword ? "text" : "password"}
-                          placeholder="Enter your password"
+                          placeholder="Masukkan kata sandi Anda"
                           value={formRegister.password}
                           onChange={(e) =>
                             setFormRegister({
@@ -591,7 +591,7 @@ function LoginPage() {
                       type="submit"
                       className="gradient-button-2 w-full py-3 rounded-lg text-white font-rubik text-[18px] font-medium "
                     >
-                      Sign Up
+                      Daftar
                     </button>
                   </motion.form>
 
@@ -599,12 +599,12 @@ function LoginPage() {
                     className="text-black font-rubik text-[16px] font-normal"
                     variants={childVariants}
                   >
-                    Already have an account?{" "}
+                    Sudah punya akun?{" "}
                     <a
                       className="text-[#FF6B6B] font-bold cursor-pointer hover:underline"
                       onClick={toggleSignup}
                     >
-                      Log in
+                      Masuk di sini
                     </a>
                   </motion.p>
 
@@ -612,9 +612,9 @@ function LoginPage() {
                     className="text-gray-500 text-sm mt-6"
                     variants={childVariants}
                   >
-                    By creating an account, you agree to our{" "}
+                    Dengan membuat akun, Anda setuju dengan{" "}
                     <a href="#" className="text-[#FF6B6B] underline">
-                      terms of use
+                      syarat penggunaan
                     </a>
                     .
                   </motion.p>
