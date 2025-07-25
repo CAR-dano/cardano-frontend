@@ -62,7 +62,7 @@ const TableData = ({
     dispatch(mintingToBlockchain(id))
       .then((response) => {
         toast({
-          title: "Success",
+          title: "Sukses",
           description:
             "Data sudah diminting ke blockchain dengan hash " +
             response.payload.pdfFileHash,
@@ -111,7 +111,7 @@ const TableData = ({
           <TableHeader>
             <TableRow className="bg-gray-50 dark:bg-gray-900">
               <TableHead className="text-left font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
-                Customer
+                Kostumer
               </TableHead>
               <TableHead className="text-left font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
                 Kendaraan
@@ -157,7 +157,7 @@ const TableData = ({
                         </div>
                         <div className="text-sm text-gray-500 dark:text-gray-400">
                           Inspektor:{" "}
-                          {item.identityDetails?.namaInspektor || "Unknown"}
+                          {item.identityDetails?.namaInspektor || "Tidak Diketahui"}
                         </div>
                       </div>
                     </div>
@@ -165,10 +165,10 @@ const TableData = ({
                   <TableCell className="py-4 px-6">
                     <div>
                       <div className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-                        {item.vehiclePlateNumber || "Unknown Plate"}
+                        {item.vehiclePlateNumber || "Plat Tidak Diketahui"}
                       </div>
                       <div className="text-sm text-gray-500 dark:text-gray-400">
-                        {item.vehicleData?.merekKendaraan || "Unknown Brand"}{" "}
+                        {item.vehicleData?.merekKendaraan || "Merek Tidak Diketahui"}{" "}
                         {item.vehicleData?.tipeKendaraan || ""}
                       </div>
                     </div>
@@ -451,8 +451,8 @@ const TableInfo: React.FC<TableInfoProps> = ({ data, onPageChange }) => {
     <div className="flex justify-between items-center mt-2 text-xs">
       <p className="text-gray-700 dark:text-gray-300">
         {dataCount === 0
-          ? "No entries"
-          : `Showing ${startIdx} to ${endIdx} of ${dataCount} entries`}
+          ? "Tidak ada entri"
+          : `Menampilkan ${startIdx} hingga ${endIdx} dari ${dataCount} entri`}
       </p>
       {dataCount > 0 &&
         totalPage > 1 && ( // Only show pagination if there's content and more than one page
@@ -467,7 +467,7 @@ const TableInfo: React.FC<TableInfoProps> = ({ data, onPageChange }) => {
               onClick={() => handlePageChange(page - 1)}
               disabled={page <= 1}
             >
-              Previous
+              Sebelumnya
             </SecondaryButton>
             <div className="border-x-[1px] border-primary dark:border-gray-600 border-y-none flex items-center px-3 text-xs text-gray-700 dark:text-gray-300">
               {`${page} / ${totalPage}`}
@@ -482,7 +482,7 @@ const TableInfo: React.FC<TableInfoProps> = ({ data, onPageChange }) => {
                   : "hover:bg-gray-100 dark:hover:bg-gray-700"
               }`}
             >
-              Next
+              Berikutnya
             </SecondaryButton>
           </div>
         )}
@@ -537,7 +537,7 @@ const TableInBlockchain = ({
           <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
           <Input
             type="text"
-            placeholder="Search by customer, plate, or vehicle..."
+            placeholder="Cari berdasarkan kostumer, plat, atau kendaraan..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all"
