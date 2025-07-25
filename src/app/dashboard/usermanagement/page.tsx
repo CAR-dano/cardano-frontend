@@ -40,7 +40,7 @@ const Header = ({
           </div>
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-              User Management
+              Manajemen Pengguna
             </h1>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
               {userCount > 0
@@ -72,7 +72,7 @@ const Header = ({
           <div className="flex items-center px-3 py-2 bg-green-50 dark:bg-green-900 rounded-md">
             <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
             <span className="text-sm font-medium text-green-700 dark:text-green-300">
-              Active
+              Aktif
             </span>
           </div>
         </div>
@@ -104,7 +104,7 @@ const SearchBar = ({ setQuery, setFilter }: any) => {
             type="text"
             id="search-navbar"
             className="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder="Search..."
+            placeholder="Cari..."
             onChange={(e) => setKeyword(e.target.value)}
           />
         </form>
@@ -138,7 +138,7 @@ const Database: React.FC = () => {
         console.log(error);
         toast({
           title: "Error",
-          description: error,
+          description: "Gagal mengambil data",
           variant: "destructive",
         });
       });
