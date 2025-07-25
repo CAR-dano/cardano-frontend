@@ -2,15 +2,16 @@
 import Image from "next/image";
 import React, { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence, Variants } from "framer-motion";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { UserLogin, UserSignUp } from "../../utils/Auth";
 import { useDispatch } from "react-redux";
 import { AppDispatch, useAppSelector } from "../../lib/store";
-import { login, loginGoogle, signup } from "../../lib/features/auth/authSlice";
+import { login, signup } from "../../lib/features/auth/authSlice";
 import LoadingScreen from "../../components/LoadingFullScreen";
 import { FiEye, FiEyeOff, FiArrowLeft } from "react-icons/fi";
 import { toast } from "../../hooks/use-toast";
 import { getAndClearRedirectUrl } from "../../utils/redirectUtils";
+import axios from "axios";
 
 function LoginPage() {
   const [showSignup, setShowSignup] = useState(false);
@@ -20,12 +21,40 @@ function LoginPage() {
   const toggleSignup = useCallback(() => setShowSignup((prev) => !prev), []);
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const isLoading = useAppSelector((state) => state.auth.isLoading);
   const user = useAppSelector((state) => state.auth.user);
   const [registerErrors, setRegisterErrors] = useState<{
     [key: string]: string;
   }>({});
   const [loginErrors, setLoginErrors] = useState<{ [key: string]: string }>({});
+
+  // Check for token parameter in URL
+  useEffect(() => {
+    const token = searchParams.get("token");
+    if (token) {
+      // Call check-token if token parameter exists
+      dispatch(checkToken(token))
+        .unwrap()
+        .then(() => {
+          toast({
+            title: "Success",
+            description:
+              "Token verification successful! You are now logged in.",
+            variant: "default",
+          });
+        })
+        .catch((error) => {
+          toast({
+            title: "Token Verification Failed",
+            description:
+              typeof error === "string" ? error : "Invalid or expired token.",
+            variant: "destructive",
+          });
+        });
+    }
+  }, [searchParams, dispatch]);
+
   useEffect(() => {
     if (user) {
       // Check for saved redirect URL
@@ -217,26 +246,6 @@ function LoginPage() {
     }
   };
 
-  const handleLoginGoogle = async () => {
-    try {
-      await dispatch(loginGoogle()).unwrap();
-      toast({
-        title: "Success",
-        description: "Login with Google successful! Redirecting...",
-        variant: "default",
-      });
-    } catch (err: any) {
-      toast({
-        title: "Authentication Failed",
-        description:
-          typeof err === "string"
-            ? err
-            : "Google login failed. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
-
   return (
     <div className="w-full h-screen overflow-hidden bg-[url('/assets/pattern/bg.png')] bg-cover relative">
       {/* Back Button */}
@@ -423,11 +432,11 @@ function LoginPage() {
                   </motion.div>
 
                   <motion.button
+                    onClick={handleGoogleLogin}
                     className="mt-6 py-3 flex items-center justify-center w-full py-2.5 rounded-lg border border-gray-300 text-black font-rubik text-[16px] font-medium bg-white hover:bg-gray-50 transition-colors duration-300 transform hover:scale-[1.02] active:scale-[0.98]"
                     variants={childVariants}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    onClick={handleLoginGoogle}
                   >
                     <Image
                       src="/assets/google.svg"
