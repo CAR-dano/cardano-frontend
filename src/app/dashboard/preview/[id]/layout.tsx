@@ -2,8 +2,8 @@ import { Metadata } from "next";
 import React from "react";
 
 export const metadata: Metadata = {
-  title: "Preview Dashboard",
-  description: "Preview hasil inspeksi kendaraan dari dashboard admin",
+  title: "Pratinjau Dashboard",
+  description: "Pratinjau hasil inspeksi kendaraan dari dashboard admin",
   robots: "noindex, nofollow",
 };
 

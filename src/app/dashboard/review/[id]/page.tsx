@@ -33,8 +33,8 @@ const Header = ({
     const previewUrl = `https://cardano-pdf.vercel.app/data/${id}`;
     navigator.clipboard.writeText(previewUrl);
     toast({
-      title: "Link Copied!",
-      description: "Preview link has been copied to clipboard.",
+      title: "Tautan Disalin!",
+      description: "Tautan pratinjau telah disalin ke papan klip.",
       variant: "default",
     });
   };
@@ -46,8 +46,8 @@ const Header = ({
   const handleApproveClick = () => {
     if (hasChanges > 0) {
       toast({
-        title: "Cannot Approve",
-        description: "Please save all changes before approving the inspection.",
+        title: "Tidak Dapat Menyetujui",
+        description: "Harap simpan semua perubahan sebelum menyetujui inspeksi.",
         variant: "destructive",
       });
       return;
@@ -95,13 +95,13 @@ const Header = ({
             onClick={handleGetLinkPreview}
             className="bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
           >
-            Get Link Preview
+            Dapatkan Tautan Pratinjau
           </Button>
           <Button
             onClick={handlePreview}
             className="bg-blue-500 text-white hover:bg-blue-600"
           >
-            Preview
+            Pratinjau
           </Button>
           <Button
             onClick={handleApproveClick}
@@ -111,7 +111,7 @@ const Header = ({
                 ? "bg-gray-400 text-gray-600 cursor-not-allowed"
                 : "bg-green-500 text-white hover:bg-green-600"
             } disabled:opacity-50 disabled:cursor-not-allowed transition-colors`}
-            title={hasChanges > 0 ? "Save changes before approving" : ""}
+            title={hasChanges > 0 ? "Simpan perubahan sebelum menyetujui" : ""}
           >
             <svg
               className="w-4 h-4 mr-2"
@@ -419,8 +419,8 @@ const Edit = () => {
         };
       });
       toast({
-        title: "Photo Added",
-        description: "New photo has been successfully added.",
+        title: "Foto Ditambahkan",
+        description: "Foto baru telah berhasil ditambahkan.",
         variant: "default",
       });
     } else {
@@ -451,24 +451,24 @@ const Edit = () => {
       if (response) {
         setData(response);
         toast({
-          title: "Data loaded successfully",
-          description: "Inspection data is ready for review.",
+          title: "Data berhasil dimuat",
+          description: "Data inspeksi siap untuk direview.",
           variant: "default",
         });
       }
     } catch (error) {
       toast({
-        title: "Error loading data",
-        description: "An error occurred while fetching the inspection data.",
+        title: "Gagal memuat data",
+        description: "Terjadi kesalahan saat mengambil data inspeksi.",
         variant: "destructive",
       });
       setDialogResultData({
         isOpen: true,
         isSuccess: false,
-        title: "Data Not Found",
+        title: "Data Tidak Ditemukan",
         message:
-          "Could not fetch the inspection data. It may not exist or an error occurred.",
-        buttonLabel2: "Back to Review List",
+          "Tidak dapat mengambil data inspeksi. Mungkin tidak ada atau terjadi kesalahan.",
+        buttonLabel2: "Kembali ke Daftar Review",
         action2: () => router.push("/dashboard/review"),
       });
     }
@@ -602,17 +602,17 @@ const Edit = () => {
 
       // Show toast notification for confirmation
       toast({
-        title: "Field updated",
+        title: "Isian diperbarui",
         description: `${subsubfieldname ? `` : fieldName}${
           desc ? ` ${desc}` : ``
-        } has been updated.`,
+        } telah diperbarui.`,
         variant: "default",
       });
     } catch (error) {
       console.error("Error updating data:", error);
       toast({
-        title: "Update failed",
-        description: "Could not update the field value.",
+        title: "Pembaruan gagal",
+        description: "Tidak dapat memperbarui nilai isian.",
         variant: "destructive",
       });
     }
@@ -650,10 +650,10 @@ const Edit = () => {
         setDialogResultData({
           isOpen: true,
           isSuccess: true,
-          title: "Successfully Minted to Blockchain",
+          title: "Berhasil Dicetak ke Blockchain",
           message:
-            "The inspection data has been successfully approved and minted to the blockchain. You can view it in the database.",
-          buttonLabel2: "View in Database",
+            "Data inspeksi telah berhasil disetujui dan dicetak ke blockchain. Anda dapat melihatnya di database.",
+          buttonLabel2: "Lihat di Database",
           action2: () => router.push("/dashboard/database"),
         });
       })
@@ -662,11 +662,11 @@ const Edit = () => {
         setDialogResultData({
           isOpen: true,
           isSuccess: false,
-          title: "Minting Failed",
+          title: "Pencetakan Gagal",
           message:
-            "Failed to mint data to the blockchain. Would you like to try again?",
-          buttonLabel1: "Cancel",
-          buttonLabel2: "Try Again",
+            "Gagal mencetak data ke blockchain. Apakah Anda ingin mencoba lagi?",
+          buttonLabel1: "Batal",
+          buttonLabel2: "Coba Lagi",
           action1: () => router.push("/dashboard/database"),
           action2: () => {
             mintingToBlockchainHandler(id);
@@ -686,11 +686,11 @@ const Edit = () => {
           setDialogResultData({
             isOpen: true,
             isSuccess: true,
-            title: "Inspection Approved",
+            title: "Inspeksi Disetujui",
             message:
-              "The inspection data has been approved. Would you like to proceed with minting to the blockchain?",
-            buttonLabel1: "Later",
-            buttonLabel2: "Mint to Blockchain",
+              "Data inspeksi telah disetujui. Apakah Anda ingin melanjutkan dengan pencetakan ke blockchain?",
+            buttonLabel1: "Nanti",
+            buttonLabel2: "Cetak ke Blockchain",
             action1: () => router.push("/dashboard/database"),
             action2: () => {
               setDialogResultData(null); // Close the current dialog
@@ -701,11 +701,11 @@ const Edit = () => {
           setDialogResultData({
             isOpen: true,
             isSuccess: false,
-            title: "Approval Failed",
+            title: "Persetujuan Gagal",
             message:
-              "This data may have been previously approved or there's an issue with the approval process.",
-            buttonLabel1: "Back to Database",
-            buttonLabel2: "Try Again",
+              "Data ini mungkin telah disetujui sebelumnya atau ada masalah dengan proses persetujuan.",
+            buttonLabel1: "Kembali ke Database",
+            buttonLabel2: "Coba Lagi",
             action1: () => router.push("/dashboard/database"),
             action2: () => router.push("/dashboard/review"),
           });
@@ -716,10 +716,10 @@ const Edit = () => {
         setDialogResultData({
           isOpen: true,
           isSuccess: false,
-          title: "Approval Failed",
-          message: "An error occurred while approving the inspection data.",
-          buttonLabel1: "Back to Database",
-          buttonLabel2: "Try Again",
+          title: "Persetujuan Gagal",
+          message: "Terjadi kesalahan saat menyetujui data inspeksi.",
+          buttonLabel1: "Kembali ke Database",
+          buttonLabel2: "Coba Lagi",
           action1: () => router.push("/dashboard/database"),
           action2: () => approveInspection(),
         });
@@ -729,8 +729,8 @@ const Edit = () => {
   const handleSaveChanges = () => {
     if (!unsavedChanges || unsavedChanges.length === 0) {
       toast({
-        title: "No changes to save",
-        description: "You haven't made any changes to the inspection data.",
+        title: "Tidak ada perubahan untuk disimpan",
+        description: "Anda belum membuat perubahan apa pun pada data inspeksi.",
         variant: "default",
       });
       return;
@@ -770,10 +770,10 @@ const Edit = () => {
           setDialogResultData({
             isOpen: true,
             isSuccess: true,
-            title: "Changes Saved Successfully",
-            message: "Your changes to the inspection data have been saved.",
-            buttonLabel1: "Back to Review List",
-            buttonLabel2: "View Updated Data",
+            title: "Perubahan Berhasil Disimpan",
+            message: "Perubahan Anda pada data inspeksi telah disimpan.",
+            buttonLabel1: "Kembali ke Daftar Review",
+            buttonLabel2: "Lihat Data Terbaru",
             action1: () => router.push("/dashboard/review"),
             action2: () => window.location.reload(),
           });
@@ -783,11 +783,11 @@ const Edit = () => {
           setDialogResultData({
             isOpen: true,
             isSuccess: false,
-            title: "Failed to Save Changes",
+            title: "Gagal Menyimpan Perubahan",
             message:
-              "An error occurred while saving your changes. Please try again.",
-            buttonLabel1: "Back to Draft Review",
-            buttonLabel2: "Try Again",
+              "Terjadi kesalahan saat menyimpan perubahan Anda. Silakan coba lagi.",
+            buttonLabel1: "Kembali ke Draf Review",
+            buttonLabel2: "Coba Lagi",
             action1: () => router.push("/dashboard/review"),
             action2: () => handleSaveChanges(),
           });

@@ -134,6 +134,8 @@ const InspectorPage = () => {
 
       // Success notification
       toast({
+        title: "✅ Inspektor Berhasil Ditambahkan",
+        description: "Inspektur ${formData.name} telah dibuat dan sekarang dapat mulai bekerja",
         title: "✅ Inspector Added Successfully",
         description: `Inspector ${formData.name} has been created and can now start working.`,
         duration: 5000,
@@ -267,8 +269,8 @@ const InspectorPage = () => {
       );
 
       toast({
-        title: "Inspector Updated",
-        description: `Inspector data has been updated successfully. ${
+        title: "Inspektor Diperbarui",
+        description: `Data inspektor telah berhasil diperbarui. ${
           Object.keys(changedData).length
         } field(s) changed.`,
       });
@@ -283,8 +285,8 @@ const InspectorPage = () => {
     } catch (error) {
       console.error("Update error:", error);
       toast({
-        title: "Update Failed",
-        description: "Failed to update inspector data.",
+        title: "Pembaruan Gagal",
+        description: "Gagal memperbarui data inspektor.",
         variant: "destructive",
       });
     }
@@ -344,10 +346,10 @@ const InspectorPage = () => {
           </div>
           <div>
             <h1 className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-orange-400 bg-clip-text text-transparent">
-              Inspector Management
+              Manajemen Inspektor
             </h1>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-              Manage and monitor all inspection personnel
+              Kelola dan pantau semua personel inspeksi
             </p>
           </div>
         </div>
@@ -357,15 +359,15 @@ const InspectorPage = () => {
           <DrawerTrigger asChild>
             <Button className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white shadow-lg">
               <FaPlus className="mr-2" />
-              Add Inspector
+              Tambah Inspektor
             </Button>
           </DrawerTrigger>
           <DrawerContent className="sm:max-w-[425px] fixed right-0 top-0 bottom-0 left-auto">
             <form onSubmit={handleSubmit}>
               <DrawerHeader>
-                <DrawerTitle>Add New Inspector</DrawerTitle>
+                <DrawerTitle>Tambah Inspektor Baru</DrawerTitle>
                 <DrawerDescription>
-                  Create a new inspector account with the required details.
+                  Buat akun inspektor baru dengan detail yang diperlukan.
                 </DrawerDescription>
               </DrawerHeader>
               <div className="mb-5  space-y-4">
@@ -373,7 +375,7 @@ const InspectorPage = () => {
                   <Label htmlFor="name">Nama Lengkap</Label>
                   <Input
                     id="name"
-                    placeholder="Masukkan nama lengkap inspector"
+                    placeholder="Masukkan nama inspektor"
                     value={formData.name}
                     onChange={(e) =>
                       setFormData({ ...formData, name: e.target.value })
@@ -385,7 +387,7 @@ const InspectorPage = () => {
                   <Label htmlFor="username">Nama Pengguna</Label>
                   <Input
                     id="username"
-                    placeholder="Masukkan nama pengguna inspector"
+                    placeholder="Masukkan username inspektor"
                     value={formData.username}
                     onChange={(e) =>
                       setFormData({ ...formData, username: e.target.value })
@@ -458,11 +460,11 @@ const InspectorPage = () => {
                   type="submit"
                   className="w-full bg-orange-600 hover:bg-orange-700"
                 >
-                  Create Inspector
+                  Buat Inspektor
                 </Button>
                 <DrawerClose asChild>
                   <Button variant="outline" className="w-full">
-                    Cancel
+                    Batal
                   </Button>
                 </DrawerClose>
               </DrawerFooter>
@@ -557,12 +559,12 @@ const InspectorPage = () => {
         <DrawerContent className="sm:max-w-[425px] fixed right-0 top-0 bottom-0 left-auto">
           <DrawerHeader>
             <DrawerTitle>
-              {isEditing ? "Edit Inspector" : "Inspector Details"}
+              {isEditing ? "Edit Inspektor" : "Detail Inspektor"}
             </DrawerTitle>
             <DrawerDescription>
               {isEditing
-                ? "Update inspector information below."
-                : "View inspector details. Click Edit to modify information."}
+                ? "Perbarui informasi inspektor di bawah."
+                : "Lihat detail inspektor. Klik Edit untuk mengubah informasi."}
             </DrawerDescription>
           </DrawerHeader>
 
@@ -570,7 +572,7 @@ const InspectorPage = () => {
             <form onSubmit={handleUpdateInspector}>
               <div className="mb-5 space-y-4 px-4">
                 <div className="space-y-2">
-                  <Label htmlFor="view-name">Full Name</Label>
+                  <Label htmlFor="view-name">Nama Lengkap</Label>
                   <Input
                     id="view-name"
                     value={viewFormData.name}
@@ -618,7 +620,7 @@ const InspectorPage = () => {
                     onChange={(e) =>
                       setViewFormData({ ...viewFormData, pin: e.target.value })
                     }
-                    placeholder="Enter PIN"
+                    placeholder="Masukkan PIN"
                   />
                 </div>
                 <div className="space-y-2">
@@ -630,16 +632,16 @@ const InspectorPage = () => {
                     }
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select status" />
+                      <SelectValue placeholder="Pilih status" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="active">Active</SelectItem>
-                      <SelectItem value="inactive">Inactive</SelectItem>
+                      <SelectItem value="active">Aktif</SelectItem>
+                      <SelectItem value="inactive">Tidak Aktif</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="view-created">Created At</Label>
+                  <Label htmlFor="view-created">Dibuat Pada</Label>
                   <Input
                     id="view-created"
                     value={viewFormData.createdAt}
@@ -653,7 +655,7 @@ const InspectorPage = () => {
                   type="submit"
                   className="w-full bg-orange-600 hover:bg-orange-700"
                 >
-                  Update Inspector
+                  Perbarui Inspektor
                 </Button>
                 <Button
                   type="button"
@@ -661,7 +663,7 @@ const InspectorPage = () => {
                   className="w-full"
                   onClick={handleCancelEdit}
                 >
-                  Cancel
+                  Batal
                 </Button>
               </DrawerFooter>
             </form>
@@ -669,7 +671,7 @@ const InspectorPage = () => {
             <>
               <div className="mb-5 space-y-4 px-4">
                 <div className="space-y-2">
-                  <Label htmlFor="view-name">Full Name</Label>
+                  <Label htmlFor="view-name">Nama Lengkap</Label>
                   <Input
                     id="view-name"
                     value={viewFormData.name}
@@ -728,7 +730,7 @@ const InspectorPage = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="view-created">Created At</Label>
+                  <Label htmlFor="view-created">Dibuat Pada</Label>
                   <Input
                     id="view-created"
                     value={viewFormData.createdAt}
@@ -744,11 +746,11 @@ const InspectorPage = () => {
                   onClick={handleEditMode}
                 >
                   <FaEdit className="mr-2" />
-                  Edit Inspector
+                  Edit Inspektor
                 </Button>
                 <DrawerClose asChild>
                   <Button variant="outline" className="w-full">
-                    Close
+                    Tutup
                   </Button>
                 </DrawerClose>
               </DrawerFooter>
@@ -764,7 +766,7 @@ const InspectorPage = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-blue-600 dark:text-blue-400">
-                  Total Inspectors
+                  Total Inspektor
                 </p>
                 <p className="text-2xl font-bold text-gray-900 dark:text-white">
                   {inspectorList.length}
@@ -776,14 +778,13 @@ const InspectorPage = () => {
             </div>
           </CardContent>
         </Card>
-      </div>
 
       {/* Search Bar */}
       <div className="relative">
         <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
         <input
           type="text"
-          placeholder="Search by name, email, or branch..."
+          placeholder="Cari berdasarkan nama, email, atau cabang..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full pl-10 pr-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:focus:ring-orange-400 focus:border-transparent transition-all"
@@ -796,7 +797,7 @@ const InspectorPage = () => {
           <TableHeader>
             <TableRow className="bg-gray-50 dark:bg-gray-900">
               <TableHead className="text-left font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
-                Name
+                Nama
               </TableHead>
               <TableHead className="text-left font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
                 Email
@@ -805,10 +806,10 @@ const InspectorPage = () => {
                 Status
               </TableHead>
               <TableHead className="text-left font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
-                Created At
+                Dibuat Pada
               </TableHead>
               <TableHead className="text-center font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
-                Actions
+                Aksi
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -930,15 +931,14 @@ const InspectorPage = () => {
                     </div>
                     <div className="text-center max-w-sm">
                       <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
-                        No inspectors found
+                        Tidak ada inspektor ditemukan
                       </h3>
                       <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                        There are no inspector accounts to display at this time.
+                        Saat ini tidak ada akun inspektor untuk ditampilkan.
                       </p>
                       <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mt-4">
                         <p className="text-xs text-blue-800 dark:text-blue-200">
-                          New inspector accounts will appear here after they are
-                          created.
+                          Akun inspektor baru akan muncul di sini setelah dibuat.
                         </p>
                       </div>
                     </div>
@@ -984,7 +984,7 @@ const InspectorPage = () => {
                         className="inline-flex items-center px-3 py-1.5 border border-blue-300 dark:border-blue-600 shadow-sm text-xs font-medium rounded-md text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-800/20 hover:bg-blue-100 dark:hover:bg-blue-700/30 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
                       >
                         <FaEye className="w-3 h-3 mr-1" />
-                        View
+                        Lihat
                       </button>
                       <button
                         onClick={() => openDeleteDialog(inspector)}
