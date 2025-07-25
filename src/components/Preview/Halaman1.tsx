@@ -290,20 +290,21 @@ const Halaman1: React.FC<Halaman1Props> = ({
             VEHICLE INSPECTION
           </h1>
           <p
-            onClick={() =>
-              editable &&
-              onClick({
-                label: "Lokasi Inspeksi",
-                fieldName: "identityDetails",
-                oldValue: data.identityDetails.cabangInspeksi,
-                subFieldName: "cabangInspeksi",
-                type: "dropdown-lokasi",
-                onClose: () => {},
-              })
-            }
-            className={`ml-[50px] text-black text-[14px] leading-none text-[16px] font-semibold uppercase ${
-              editable ? "cursor-pointer hover:underline" : "cursor-default "
-            }`}
+            // onClick={() =>
+            //   editable &&
+            //   onClick({
+            //     label: "Lokasi Inspeksi",
+            //     fieldName: "identityDetails",
+            //     oldValue: data.identityDetails.cabangInspeksi,
+            //     subFieldName: "cabangInspeksi",
+            //     type: "dropdown-lokasi",
+            //     onClose: () => {},
+            //   })
+            // }
+            // className={`ml-[50px] text-black text-[14px] leading-none text-[16px] font-semibold uppercase ${
+            //   editable ? "cursor-pointer hover:underline" : "cursor-default "
+            // }`}
+            className="ml-[50px] text-black text-[14px] leading-none text-[16px] font-semibold uppercase cursor-default"
           >
             {data.identityDetails.cabangInspeksi}
           </p>
@@ -312,38 +313,40 @@ const Halaman1: React.FC<Halaman1Props> = ({
 
       <div className="w-full bg-[#F4622F] mt-[10px] px-[50px] py-1 text-white rounded-lg font-medium text-[16px]">
         <p
-          onClick={() =>
-            editable &&
-            onClick({
-              label: "Nama Customer",
-              fieldName: "identityDetails",
-              oldValue: data.identityDetails.namaCustomer,
-              subFieldName: "namaCustomer",
-              type: "normal-input",
-              onClose: () => {},
-            })
-          }
-          className={`${
-            editable ? "cursor-pointer hover:underline" : "cursor-default"
-          }`}
+          // onClick={() =>
+          //   editable &&
+          //   onClick({
+          //     label: "Nama Customer",
+          //     fieldName: "identityDetails",
+          //     oldValue: data.identityDetails.namaCustomer,
+          //     subFieldName: "namaCustomer",
+          //     type: "normal-input",
+          //     onClose: () => {},
+          //   })
+          // }
+          // className={`${
+          //   editable ? "cursor-pointer hover:underline" : "cursor-default"
+          // }`}
+          className="cursor-default"
         >
           Nama Customer : {data.identityDetails.namaCustomer}
         </p>
         <p
-          onClick={() =>
-            editable &&
-            onClick({
-              label: "Nama Inspektor",
-              fieldName: "identityDetails",
-              oldValue: data.identityDetails.namaInspektor,
-              subFieldName: "namaInspektor",
-              type: "dropdown-inspektor",
-              onClose: () => {},
-            })
-          }
-          className={`${
-            editable ? "cursor-pointer hover:underline" : "cursor-default"
-          }`}
+          // onClick={() =>
+          //   editable &&
+          //   onClick({
+          //     label: "Nama Inspektor",
+          //     fieldName: "identityDetails",
+          //     oldValue: data.identityDetails.namaInspektor,
+          //     subFieldName: "namaInspektor",
+          //     type: "dropdown-inspektor",
+          //     onClose: () => {},
+          //   })
+          // }
+          // className={`${
+          //   editable ? "cursor-pointer hover:underline" : "cursor-default"
+          // }`}
+          className="cursor-default"
         >
           Nama Inspektor : {data.identityDetails.namaInspektor}
         </p>

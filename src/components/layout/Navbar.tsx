@@ -52,7 +52,7 @@ const Navbar = () => {
   return (
     <nav className=" font-rubik w-full bg-white text-white px-6 md:px-14 py-4 flex justify-between items-center navbar-shadow">
       {/* Logo */}
-      <div onClick={handleToHome} className="flex gap-2">
+      <div onClick={handleToHome} className="flex gap-2 cursor-pointer">
         <Image
           src="/assets/logo/palapa.svg"
           width={52}
@@ -104,7 +104,7 @@ const Navbar = () => {
       <div className="hidden lg:block">
         {user ? (
           <div key="user-logged-in" className="flex items-center gap-3">
-            <Link href={`/dashboard`}>
+            <Link href={user.role === "CUSTOMER" ? "#" : "/dashboard"}>
               <span className="text-orange-700 font-bold">
                 {user.username || user.email}
               </span>
@@ -119,11 +119,11 @@ const Navbar = () => {
               <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogTitle>
-                    Are you sure you want to logout?
+                    Apakah Anda yakin ingin keluar?
                   </AlertDialogTitle>
                   <AlertDialogDescription>
-                    This action will log you out of your account. You will need
-                    to sign in again to access your account.
+                    Tindakan ini akan mengeluarkan Anda dari akun Anda. Anda
+                    perlu masuk lagi untuk mengakses akun Anda.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
