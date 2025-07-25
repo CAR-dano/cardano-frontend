@@ -11,7 +11,7 @@ import { toast } from "../components/ui/use-toast";
 const publicPaths = ["/auth", "/", "/result"];
 
 // Token refresh interval in milliseconds (15 minutes)
-const TOKEN_REFRESH_INTERVAL = 15 * 60 * 1000;
+const TOKEN_REFRESH_INTERVAL = 1 * 60 * 1000;
 
 // Session timeout in milliseconds (120 minutes of inactivity)
 const SESSION_TIMEOUT = 120 * 60 * 1000;
@@ -40,6 +40,7 @@ export default function useAuth() {
   const [timeoutWarningTimestamp, setTimeoutWarningTimestamp] = useState<
     number | null
   >(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   // Check if the current path is public
   const isPublicPath = publicPaths.some(
@@ -61,8 +62,20 @@ export default function useAuth() {
     updateLastActivity();
 
     // Refresh the token to ensure it's still valid
-    if (accessToken) {
-      dispatch(refreshToken());
+    if (accessToken && !isRefreshing) {
+      setIsRefreshing(true);
+      dispatch(refreshToken())
+        .unwrap()
+        .catch((error) => {
+          console.error("Token refresh failed during reset:", error);
+          // Handle refresh failure - potentially logout
+          if (error.includes("401") || error.includes("invalid")) {
+            handleLogout("Session expired. Please log in again.");
+          }
+        })
+        .finally(() => {
+          setIsRefreshing(false);
+        });
     }
   };
 
@@ -113,6 +126,7 @@ export default function useAuth() {
     // Reset activity states
     setIsTimeoutWarningOpen(false);
     setTimeoutWarningTimestamp(null);
+    setIsRefreshing(false);
   }; // Handle logout with optional message
   const handleLogout = async (message?: string) => {
     try {
@@ -180,26 +194,69 @@ export default function useAuth() {
   // Token refresh logic
   useEffect(() => {
     // Skip for public paths or when no token is available
-    if (isPublicPath || !accessToken) return;
+    if (isPublicPath || !accessToken || !isAuthenticated || isRefreshing)
+      return;
 
     const now = Date.now();
 
-    // If last token check was more than the refresh interval ago, refresh the token
+    // Only refresh if enough time has passed since last check
     if (!lastTokenCheck || now - lastTokenCheck > TOKEN_REFRESH_INTERVAL) {
-      dispatch(refreshToken());
+      // Add a small delay to prevent multiple rapid calls
+      const timeoutId = setTimeout(() => {
+        if (isAuthenticated && accessToken && !isRefreshing) {
+          setIsRefreshing(true);
+          dispatch(refreshToken())
+            .unwrap()
+            .catch((error) => {
+              console.error("Automatic token refresh failed:", error);
+              // Handle refresh failure - potentially logout on certain errors
+              if (error.includes("401") || error.includes("invalid")) {
+                handleLogout("Session expired. Please log in again.");
+              }
+            })
+            .finally(() => {
+              setIsRefreshing(false);
+            });
+        }
+      }, 100);
+
+      return () => clearTimeout(timeoutId);
     }
+  }, [isAuthenticated, isPublicPath, dispatch, isRefreshing]);
+
+  // Separate useEffect for periodic token refresh
+  useEffect(() => {
+    // Skip for public paths or when not authenticated
+    if (isPublicPath || !isAuthenticated || !accessToken || isRefreshing)
+      return;
 
     // Set up periodic token refresh
     const refresherId = setInterval(() => {
-      if (isAuthenticated && accessToken) {
-        dispatch(refreshToken());
+      if (isAuthenticated && accessToken && !isRefreshing) {
+        const now = Date.now();
+        // Only refresh if enough time has passed
+        if (!lastTokenCheck || now - lastTokenCheck > TOKEN_REFRESH_INTERVAL) {
+          setIsRefreshing(true);
+          dispatch(refreshToken())
+            .unwrap()
+            .catch((error) => {
+              console.error("Periodic token refresh failed:", error);
+              // Handle refresh failure - potentially logout on certain errors
+              if (error.includes("401") || error.includes("invalid")) {
+                handleLogout("Session expired. Please log in again.");
+              }
+            })
+            .finally(() => {
+              setIsRefreshing(false);
+            });
+        }
       }
     }, TOKEN_REFRESH_INTERVAL);
 
     return () => {
       clearInterval(refresherId);
     };
-  }, [accessToken, isAuthenticated, lastTokenCheck, isPublicPath, dispatch]);
+  }, [isAuthenticated, isPublicPath, dispatch, isRefreshing]);
 
   // Route protection
   useEffect(() => {

@@ -219,7 +219,7 @@ const TableData = ({
                               />
                             )}
                           </svg>
-                          {isDatabase ? "Lihat di Mainnet" : "Review"}
+                          {isDatabase ? "Lihat di Testnet" : "Review"}
                         </button>
                       </Link>
                       {item.status == "APPROVED" && (

@@ -231,6 +231,8 @@ export const authSlice = createSlice({
       .addCase(refreshToken.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message || "Token refresh failed";
+        // Don't logout automatically on refresh failure to prevent loops
+        // Let the component handle this case
       });
   },
 });

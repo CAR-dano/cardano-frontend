@@ -152,9 +152,9 @@ const Dashboard: React.FC = () => {
     isLoadingCombinedDashboardData,
     isLoadingMainStats,
   } = useSelector((state: RootState) => state.dashboard);
-  
+
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
-  
+
   const [hasMounted, setHasMounted] = useState(false);
   const { user } = useAuth();
   const isAdmin = user?.role === "ADMIN";
@@ -208,7 +208,8 @@ const Dashboard: React.FC = () => {
     setSelectedDateLabel(label);
     // Here you would typically dispatch an action to fetch data based on the new date range
     // For now, we'll just update the state
-  };  useEffect(() => {
+  };
+  useEffect(() => {
     setHasMounted(true);
     // Only fetch data if user is authenticated and we have user data
     if (isAuthenticated && user && isAdmin !== undefined) {
@@ -226,7 +227,8 @@ const Dashboard: React.FC = () => {
       if (isAdmin) {
         dispatch(getCombinedDashboardData(selectedDateRange));
       }
-    }  }, [selectedDateRange, isAuthenticated, user, isAdmin, dispatch]);
+    }
+  }, [selectedDateRange, isAuthenticated, user, isAdmin, dispatch]);
 
   // Reset dashboard data when user logs out
   useEffect(() => {
@@ -346,7 +348,7 @@ const Dashboard: React.FC = () => {
           change={mainStats.archived.changePercentage}
           changeType={getChangeType(mainStats.archived.changePercentage)}
           color="bg-purple-100"
-          href="/dashboard/database"
+          href="/dashboard/blockchain"
           icon={
             <svg
               className="w-6 h-6 text-purple-600"

@@ -103,13 +103,13 @@ function BranchDistribution({ data }: any) {
                     <p className="w-[30%] text-left">% Perubahan</p>
                   </div>
                   <div className="flex justify-between">
-                    <p className="w-[30%] text-left text-[36px] font-bold text-gray-900 dark:text-white leading-none">
+                    <p className="w-[30%] text-left text-[28px] font-bold text-gray-900 dark:text-white leading-none">
                       {branch.count}
                     </p>
-                    <p className="w-[40%] text-left text-[36px] font-semibold text-purple-400 dark:text-white leading-none">
+                    <p className="w-[40%] text-left text-[28px] font-semibold text-purple-400 dark:text-white leading-none">
                       {branch.percentage}
                     </p>
-                    <p className="w-[30%] text-left text-[36px] font-light text-green-600 dark:text-white leading-none">
+                    <p className="w-[30%] text-left text-[28px] font-light text-green-600 dark:text-white leading-none">
                       {branch.change}
                     </p>
                   </div>

@@ -112,7 +112,7 @@ const refreshToken = async () => {
 
     try {
       const response = await apiClient.post(
-        "/auth/refresh-token",
+        "/auth/refresh",
         {},
         {
           headers: {
