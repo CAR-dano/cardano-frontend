@@ -371,7 +371,9 @@ const BlockchainConnectionVisualization = ({
                   : "text-purple-600 dark:text-purple-400"
               }`}
             >
-              {isVehicleNotFound ? "KENDARAAN TIDAK DITEMUKAN" : "BLOCKCHAIN HASH"}
+              {isVehicleNotFound
+                ? "KENDARAAN TIDAK DITEMUKAN"
+                : "BLOCKCHAIN HASH"}
             </h3>
             <div
               className={`w-48 p-3 bg-white/80 dark:bg-slate-800/80 rounded-lg backdrop-blur-sm border ${
@@ -696,9 +698,10 @@ export default function CekValiditasPage() {
               <h1 className="text-5xl font-bold bg-gradient-to-r from-orange-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
                 Verifikasi Blockchain
               </h1>
-                <p className="text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-                Verifikasi keaslian dokumen inspeksi kendaraan Anda menggunakan teknologi blockchain Cardano
-                </p>
+              <p className="text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+                Verifikasi keaslian dokumen inspeksi kendaraan Anda menggunakan
+                teknologi blockchain Cardano
+              </p>
 
               {/* Decorative Elements */}
               <div className="flex items-center justify-center mt-8 space-x-4">
@@ -964,7 +967,9 @@ export default function CekValiditasPage() {
                             <li>
                               • Pastikan kendaraan telah diperiksa dan terdaftar
                             </li>
-                            <li>• Hubungi layanan dukungan jika masalah berlanjut</li>
+                            <li>
+                              • Hubungi layanan dukungan jika masalah berlanjut
+                            </li>
                           </ul>
                         </div>
                       </div>
@@ -982,7 +987,6 @@ export default function CekValiditasPage() {
                 </CardContent>
               </Card>
             )}
-          </div
           </div>
         </div>
       </div>
