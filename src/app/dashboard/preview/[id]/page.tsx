@@ -448,7 +448,7 @@ function DataPage() {
     // Dynamically add HalamanGeneralPhoto pages
     ...dataHalamanGeneralPhotos.map((photosChunk, index) => ({
       id: 7 + index, // Adjust ID based on previous pages
-      title: `Foto General - Part ${index + 1}`,
+      title: `Foto General - Bagian ${index + 1}`,
       component: (
         <HalamanGeneralPhoto data={{ photos: photosChunk }} editable={false} />
       ),
@@ -456,7 +456,7 @@ function DataPage() {
     // Dynamically add HalamanExteriorPhoto pages
     ...dataHalamanExteriorPhotos.map((photosChunk, index) => ({
       id: 7 + dataHalamanGeneralPhotos.length + index, // Adjust ID based on previous pages
-      title: `Foto Eksterior - Part ${index + 1}`,
+      title: `Foto Eksterior - Bagian ${index + 1}`,
       component: (
         <HalamanExteriorPhoto data={{ photos: photosChunk }} editable={false} />
       ),
@@ -468,7 +468,7 @@ function DataPage() {
         dataHalamanGeneralPhotos.length +
         dataHalamanExteriorPhotos.length +
         index, // Adjust ID based on previous pages and new exterior photo pages
-      title: `Foto Interior - Part ${index + 1}`,
+      title: `Foto Interior - Bagian ${index + 1}`,
       component: (
         <HalamanInteriorPhoto data={{ photos: photosChunk }} editable={false} />
       ),
@@ -481,7 +481,7 @@ function DataPage() {
         dataHalamanExteriorPhotos.length +
         dataHalamanInteriorPhotos.length +
         index,
-      title: `Foto Mesin - Part ${index + 1}`,
+      title: `Foto Mesin - Bagian ${index + 1}`,
       component: (
         <HalamanMesinPhoto data={{ photos: photosChunk }} editable={false} />
       ),
@@ -495,7 +495,7 @@ function DataPage() {
         dataHalamanInteriorPhotos.length +
         dataHalamanMesinPhotos.length +
         index,
-      title: `Foto Kaki-Kaki - Part ${index + 1}`,
+      title: `Foto Kaki-Kaki - Bagian ${index + 1}`,
       component: (
         <HalamanKakiKakiPhoto data={{ photos: photosChunk }} editable={false} />
       ),
@@ -510,7 +510,7 @@ function DataPage() {
         dataHalamanMesinPhotos.length +
         dataHalamanKakiKakiPhotos.length +
         index,
-      title: `Foto Alat-Alat - Part ${index + 1}`,
+      title: `Foto Alat-Alat - Bagian ${index + 1}`,
       component: (
         <HalamanAlatAlatPhoto data={{ photos: photosChunk }} editable={false} />
       ),
@@ -526,7 +526,7 @@ function DataPage() {
         dataHalamanKakiKakiPhotos.length +
         dataHalamanAlatPhotos.length +
         index,
-      title: `Foto Dokumen - Part ${index + 1}`,
+      title: `Foto Dokumen - Bagian ${index + 1}`,
       component: (
         <HalamanFotoDokumen data={{ photos: photosChunk }} editable={false} />
       ),
@@ -568,7 +568,7 @@ function DataPage() {
         dataHalamanAlatPhotos.length +
         dataHalamanFotoDokumenPhotos.length +
         index,
-      title: `Perlu Perhatian - Part ${index + 1}`,
+      title: `Perlu Perhatian - Bagian ${index + 1}`,
       description: `Dokumentasi foto perlu perhatian bagian ${index + 1}`,
       component: (
         <HalamanPerluPerhatianPhoto
@@ -602,7 +602,7 @@ function DataPage() {
           }}
           className="bg-blue-500 text-white hover:bg-blue-700"
         >
-          <IoArrowBack /> Back
+          <IoArrowBack /> Kembali
         </Button>
       </div>
       <div className="absolute top-5 right-5 no-print">
@@ -612,7 +612,7 @@ function DataPage() {
           }}
           className="bg-orange-600 text-white hover:bg-orange-700"
         >
-          <IoMdDownload /> Download Preview
+          <IoMdDownload /> Unduh Pratinjau
         </Button>
       </div>
       <div className="sheet-outer A4">
