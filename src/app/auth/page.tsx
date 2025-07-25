@@ -6,7 +6,12 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { UserLogin, UserSignUp } from "../../utils/Auth";
 import { useDispatch } from "react-redux";
 import { AppDispatch, useAppSelector } from "../../lib/store";
-import { login, signup, checkToken } from "../../lib/features/auth/authSlice";
+import {
+  login,
+  signup,
+  checkToken,
+  getUserProfile,
+} from "../../lib/features/auth/authSlice";
 import LoadingScreen from "../../components/LoadingFullScreen";
 import { FiEye, FiEyeOff, FiArrowLeft } from "react-icons/fi";
 import { toast } from "../../hooks/use-toast";
@@ -37,10 +42,10 @@ function LoginPage() {
       dispatch(checkToken(token))
         .unwrap()
         .then(() => {
+          dispatch(getUserProfile());
           toast({
-            title: "Success",
-            description:
-              "Token verification successful! You are now logged in.",
+            title: "Token Verified",
+            description: "Your session is valid. Redirecting...",
             variant: "default",
           });
         })
