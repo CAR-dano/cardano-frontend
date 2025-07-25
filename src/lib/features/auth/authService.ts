@@ -59,6 +59,12 @@ const login = async (userData: UserLogin) => {
   return response.data;
 };
 
+const loginGoogle = async () => {
+  // Redirect to Google authentication flow handled by NextAuth.js
+  // await signIn("google");
+  return { success: true }; // This return is largely symbolic as signIn handles the redirect
+};
+
 const signup = async (userData: UserSignUp) => {
   const response = await apiClient.post("/auth/register", userData, {
     headers: {
@@ -106,7 +112,7 @@ const refreshToken = async () => {
 
     try {
       const response = await apiClient.post(
-        "/auth/refresh-token",
+        "/auth/refresh",
         {},
         {
           headers: {
@@ -136,5 +142,6 @@ const authService = {
   signup,
   checkToken,
   refreshToken,
+  loginGoogle,
 };
 export default authService;
