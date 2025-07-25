@@ -293,7 +293,7 @@ function LoginPage() {
     font-rubik text-[60px] font-bold leading-[70px] mb-4 pb-2"
                     variants={childVariants}
                   >
-                    Login
+                    Masuk
                   </motion.h1>
 
                   <motion.form
@@ -309,7 +309,7 @@ function LoginPage() {
                         htmlFor="email"
                         className="text-black font-rubik text-[16px] font-medium"
                       >
-                        Email or Username
+                        Email atau Username
                       </label>
                       <input
                         type="text"
@@ -337,7 +337,7 @@ function LoginPage() {
                         htmlFor="password"
                         className="text-black font-rubik text-[16px] font-medium"
                       >
-                        Password
+                        Kata Sandi
                       </label>
                       <div className="relative">
                         <input
@@ -382,12 +382,12 @@ function LoginPage() {
                     className="text-black font-rubik text-[16px] font-normal"
                     variants={childVariants}
                   >
-                    Don&apos;t have an account?{" "}
+                    Tidak punya akun?{" "}
                     <a
                       className="text-[#FF6B6B] font-bold cursor-pointer hover:underline"
                       onClick={toggleSignup}
                     >
-                      Sign up
+                      Daftar di sini
                     </a>
                   </motion.p>
 
@@ -415,7 +415,7 @@ function LoginPage() {
                       alt="google"
                       className="mr-2"
                     />
-                    <span>Login with Google</span>
+                    <span>Masuk dengan Google</span>
                   </motion.button>
                 </div>
               </div>
