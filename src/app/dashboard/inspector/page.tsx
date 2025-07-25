@@ -2,7 +2,10 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch, useAppSelector } from "../../../lib/store";
-import { getAllInspectors } from "../../../lib/features/admin/adminSlice";
+import {
+  fetchBranches,
+  getAllInspectors,
+} from "../../../lib/features/admin/adminSlice";
 import { LoadingSkeleton } from "../../../components/Loading";
 import {
   Table,
@@ -48,8 +51,8 @@ import {
   FaEyeSlash,
 } from "react-icons/fa";
 import { format } from "date-fns";
-import { useToast } from "../../../components/ui/use-toast";
 import apiClient from "@/lib/services/apiClient";
+import { toast } from "@/hooks/use-toast";
 
 const InspectorPage = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -57,19 +60,21 @@ const InspectorPage = () => {
     (state) => state.admin
   );
   const accessToken = useAppSelector((state) => state.auth.accessToken);
+  const branchs = useAppSelector((state) => state.admin.branches);
   const [searchTerm, setSearchTerm] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isViewDrawerOpen, setIsViewDrawerOpen] = useState(false);
   const [selectedInspector, setSelectedInspector] = useState<any>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [showPin, setShowPin] = useState(false);
-  const { toast } = useToast();
 
   // Form states
   const [formData, setFormData] = useState({
     name: "",
     username: "",
     email: "",
+    phone: "",
+    inspectionBranchCityId: "",
   });
 
   // View/Edit form states
@@ -85,6 +90,7 @@ const InspectorPage = () => {
   useEffect(() => {
     if (accessToken) {
       dispatch(getAllInspectors(accessToken));
+      dispatch(fetchBranches());
     }
   }, [dispatch, accessToken]);
 
@@ -98,18 +104,63 @@ const InspectorPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    apiClient.post("/admin/users/inspector", formData, {}).then((response) => {
-      toast({
-        title: "Inspector Added",
-        description: "New inspector has been added successfully.",
+
+    try {
+      // Show loading state
+      const loadingToast = toast({
+        title: "Creating Inspector...",
+        description: "Please wait while we create the new inspector account.",
       });
+
+      const response = await apiClient.post(
+        "/admin/users/inspector",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      // Success notification
+      toast({
+        title: "✅ Inspector Added Successfully",
+        description: `Inspector ${formData.name} has been created and can now start working.`,
+        duration: 5000,
+      });
+
+      // Close drawer and reset form
       setIsDrawerOpen(false);
       setFormData({
         name: "",
         username: "",
         email: "",
+        phone: "",
+        inspectionBranchCityId: "",
       });
-    });
+
+      // Refresh the inspector list
+      if (accessToken) {
+        dispatch(getAllInspectors(accessToken));
+      }
+    } catch (error: any) {
+      console.error("Error creating inspector:", error);
+
+      // Extract error message
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        "An unexpected error occurred while creating the inspector.";
+
+      // Error notification
+      toast({
+        title: "❌ Failed to Create Inspector",
+        description: errorMessage,
+        variant: "destructive",
+        duration: 7000,
+      });
+    }
   };
 
   const handleViewInspector = (inspector: any) => {
@@ -265,10 +316,10 @@ const InspectorPage = () => {
               </DrawerHeader>
               <div className="mb-5  space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="name">Full Name</Label>
+                  <Label htmlFor="name">Nama Lengkap</Label>
                   <Input
                     id="name"
-                    placeholder="Enter inspector name"
+                    placeholder="Masukkan nama lengkap inspector"
                     value={formData.name}
                     onChange={(e) =>
                       setFormData({ ...formData, name: e.target.value })
@@ -277,10 +328,10 @@ const InspectorPage = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="username">Username</Label>
+                  <Label htmlFor="username">Nama Pengguna</Label>
                   <Input
                     id="username"
-                    placeholder="Enter inspector username"
+                    placeholder="Masukkan nama pengguna inspector"
                     value={formData.username}
                     onChange={(e) =>
                       setFormData({ ...formData, username: e.target.value })
@@ -302,25 +353,51 @@ const InspectorPage = () => {
                   />
                 </div>
 
-                {/* <div className="space-y-2">
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Nomor Whatsapp</Label>
+                  <div className="flex">
+                    <div className="flex items-center px-3 bg-gray-100 dark:bg-gray-700 border border-r-0 border-gray-300 dark:border-gray-600 rounded-l-md">
+                      <span className="text-sm text-gray-600 dark:text-gray-300 font-medium">
+                        +62
+                      </span>
+                    </div>
+                    <Input
+                      id="phone"
+                      type="tel"
+                      placeholder="8123456789"
+                      value={formData.phone}
+                      onChange={(e) =>
+                        setFormData({ ...formData, phone: e.target.value })
+                      }
+                      className="rounded-l-none"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
                   <Label htmlFor="branch">Branch</Label>
                   <Select
-                    value={formData.branch}
+                    value={formData.inspectionBranchCityId}
                     onValueChange={(value) =>
-                      setFormData({ ...formData, branch: value })
+                      setFormData({
+                        ...formData,
+                        inspectionBranchCityId: value,
+                      })
                     }
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select a branch" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="jakarta">Jakarta</SelectItem>
-                      <SelectItem value="surabaya">Surabaya</SelectItem>
-                      <SelectItem value="bandung">Bandung</SelectItem>
-                      <SelectItem value="medan">Medan</SelectItem>
+                      {branchs.map((branch) => (
+                        <SelectItem key={branch.id} value={branch.id}>
+                          {branch.city}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
-                </div> */}
+                </div>
               </div>
               <DrawerFooter>
                 <Button

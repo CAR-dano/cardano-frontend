@@ -49,23 +49,19 @@ import {
 } from "react-icons/fa";
 import { format } from "date-fns";
 import { useToast } from "../../../components/ui/use-toast";
+import apiClient from "@/lib/services/apiClient";
 
 export default function BranchPage() {
   const dispatch = useAppDispatch();
   const { branches, loading, error } = useAppSelector((state) => state.admin);
+  const accessToken = useAppSelector((state) => state.auth.accessToken);
   const [searchTerm, setSearchTerm] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const { toast } = useToast();
 
   // Form states
   const [formData, setFormData] = useState({
-    name: "",
-    code: "",
-    address: "",
     city: "",
-    phone: "",
-    email: "",
-    managerName: "",
   });
 
   useEffect(() => {
@@ -82,21 +78,53 @@ export default function BranchPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement add branch API call
-    toast({
-      title: "Branch Added",
-      description: "New branch has been added successfully.",
-    });
-    setIsDrawerOpen(false);
-    setFormData({
-      name: "",
-      code: "",
-      address: "",
-      city: "",
-      phone: "",
-      email: "",
-      managerName: "",
-    });
+
+    try {
+      // Show loading state
+      const loadingToast = toast({
+        title: "Creating Branch...",
+        description: "Please wait while we create the new branch.",
+      });
+
+      const response = await apiClient.post("/inspection-branch", formData, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      // Success notification
+      toast({
+        title: "✅ Branch Added Successfully",
+        description: `Branch in ${formData.city} has been created and is ready for operations.`,
+        duration: 5000,
+      });
+
+      // Close drawer and reset form
+      setIsDrawerOpen(false);
+      setFormData({
+        city: "",
+      });
+
+      // Refresh the branch list
+      dispatch(fetchBranches());
+    } catch (error: any) {
+      console.error("Error creating branch:", error);
+
+      // Extract error message
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        "An unexpected error occurred while creating the branch.";
+
+      // Error notification
+      toast({
+        title: "❌ Failed to Create Branch",
+        description: errorMessage,
+        variant: "destructive",
+        duration: 7000,
+      });
+    }
   };
 
   if (error) {
@@ -148,117 +176,37 @@ export default function BranchPage() {
               <DrawerHeader>
                 <DrawerTitle>Add New Branch</DrawerTitle>
                 <DrawerDescription>
-                  Create a new branch with the required details.
+                  Create a new inspection branch by selecting a city.
                 </DrawerDescription>
               </DrawerHeader>
-              <div className="px-4 space-y-4 max-h-[calc(100vh-200px)] overflow-y-auto">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Branch Name</Label>
-                  <Input
-                    id="name"
-                    placeholder="Enter branch name"
-                    value={formData.name}
-                    onChange={(e) =>
-                      setFormData({ ...formData, name: e.target.value })
-                    }
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="code">Branch Code</Label>
-                  <Input
-                    id="code"
-                    placeholder="e.g., JKT-001"
-                    value={formData.code}
-                    onChange={(e) =>
-                      setFormData({ ...formData, code: e.target.value })
-                    }
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="address">Address</Label>
-                  <Input
-                    id="address"
-                    placeholder="Enter branch address"
-                    value={formData.address}
-                    onChange={(e) =>
-                      setFormData({ ...formData, address: e.target.value })
-                    }
-                    required
-                  />
-                </div>
+              <div className="px-4 py-5 space-y-4 max-h-[calc(100vh-200px)] overflow-y-auto mb-10 ">
                 <div className="space-y-2">
                   <Label htmlFor="city">City</Label>
-                  <Select
-                    value={formData.city}
-                    onValueChange={(value) =>
-                      setFormData({ ...formData, city: value })
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a city" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Jakarta">Jakarta</SelectItem>
-                      <SelectItem value="Surabaya">Surabaya</SelectItem>
-                      <SelectItem value="Bandung">Bandung</SelectItem>
-                      <SelectItem value="Medan">Medan</SelectItem>
-                      <SelectItem value="Semarang">Semarang</SelectItem>
-                      <SelectItem value="Makassar">Makassar</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Phone Number</Label>
                   <Input
-                    id="phone"
-                    placeholder="+62 xxx xxxx xxxx"
-                    value={formData.phone}
+                    id="city"
+                    placeholder="Enter city name"
+                    value={formData.city}
                     onChange={(e) =>
-                      setFormData({ ...formData, phone: e.target.value })
+                      setFormData({ ...formData, city: e.target.value })
                     }
                     required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="branch@example.com"
-                    value={formData.email}
-                    onChange={(e) =>
-                      setFormData({ ...formData, email: e.target.value })
-                    }
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="managerName">Branch Manager</Label>
-                  <Input
-                    id="managerName"
-                    placeholder="Enter manager name"
-                    value={formData.managerName}
-                    onChange={(e) =>
-                      setFormData({ ...formData, managerName: e.target.value })
-                    }
                   />
                 </div>
               </div>
-              <DrawerFooter>
-                <Button
-                  type="submit"
-                  className="w-full bg-blue-600 hover:bg-blue-700"
-                >
-                  Create Branch
-                </Button>
-                <DrawerClose asChild>
-                  <Button variant="outline" className="w-full">
-                    Cancel
-                  </Button>
-                </DrawerClose>
-              </DrawerFooter>
             </form>
+            <DrawerFooter>
+              <Button
+                type="submit"
+                className="w-full bg-blue-600 hover:bg-blue-700"
+              >
+                Create Branch
+              </Button>
+              <DrawerClose asChild>
+                <Button variant="outline" className="w-full">
+                  Cancel
+                </Button>
+              </DrawerClose>
+            </DrawerFooter>
           </DrawerContent>
         </Drawer>
       </div>

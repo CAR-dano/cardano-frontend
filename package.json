@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
+    "dev:staging": "dotenv -e .env.staging -- next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -44,6 +45,8 @@
     "@types/node": "^20.17.50",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "cross-env": "^7.0.3",
+    "dotenv-cli": "^9.0.0",
     "eslint": "^9.27.0",
     "eslint-config-next": "15.1.7",
     "postcss": "^8.5.3",

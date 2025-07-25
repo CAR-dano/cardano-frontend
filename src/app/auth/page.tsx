@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { UserLogin, UserSignUp } from "../../utils/Auth";
 import { useDispatch } from "react-redux";
 import { AppDispatch, useAppSelector } from "../../lib/store";
-import { login, signup } from "../../lib/features/auth/authSlice";
+import { login, loginGoogle, signup } from "../../lib/features/auth/authSlice";
 import LoadingScreen from "../../components/LoadingFullScreen";
 import { FiEye, FiEyeOff, FiArrowLeft } from "react-icons/fi";
 import { toast } from "../../hooks/use-toast";
@@ -217,6 +217,26 @@ function LoginPage() {
     }
   };
 
+  const handleLoginGoogle = async () => {
+    try {
+      await dispatch(loginGoogle()).unwrap();
+      toast({
+        title: "Success",
+        description: "Login with Google successful! Redirecting...",
+        variant: "default",
+      });
+    } catch (err: any) {
+      toast({
+        title: "Authentication Failed",
+        description:
+          typeof err === "string"
+            ? err
+            : "Google login failed. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="w-full h-screen overflow-hidden bg-[url('/assets/pattern/bg.png')] bg-cover relative">
       {/* Back Button */}
@@ -407,6 +427,7 @@ function LoginPage() {
                     variants={childVariants}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
+                    onClick={handleLoginGoogle}
                   >
                     <Image
                       src="/assets/google.svg"
