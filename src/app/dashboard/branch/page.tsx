@@ -28,6 +28,14 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "../../../components/ui/drawer";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../../../components/ui/dialog";
 import { Input } from "../../../components/ui/input";
 import { Label } from "../../../components/ui/label";
 import {
@@ -57,6 +65,8 @@ export default function BranchPage() {
   const accessToken = useAppSelector((state) => state.auth.accessToken);
   const [searchTerm, setSearchTerm] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [branchToDelete, setBranchToDelete] = useState<any>(null);
   const { toast } = useToast();
 
   // Form states
@@ -86,11 +96,13 @@ export default function BranchPage() {
         description: "Please wait while we create the new branch.",
       });
 
-      const response = await apiClient.post("/inspection-branch", formData, {
+      const response = await apiClient.post("/inspection-branches", formData, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
+
+      console.log("Branch created:", response.data);
 
       // Success notification
       toast({
@@ -125,6 +137,48 @@ export default function BranchPage() {
         duration: 7000,
       });
     }
+  };
+
+  const handleDeleteBranch = async (branchId: string) => {
+    if (!branchId) return;
+
+    try {
+      await apiClient.delete(`/inspection-branches/${branchId}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      toast({
+        title: "Branch Deleted",
+        description: "The branch has been deleted successfully.",
+        variant: "destructive",
+      });
+
+      // Refresh the branch list
+      dispatch(fetchBranches());
+
+      // Close dialog and reset state
+      setIsDeleteDialogOpen(false);
+      setBranchToDelete(null);
+    } catch (error) {
+      console.error("Delete error:", error);
+      toast({
+        title: "Delete Failed",
+        description: "Failed to delete the branch.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const openDeleteDialog = (branch: any) => {
+    setBranchToDelete(branch);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const closeDeleteDialog = () => {
+    setIsDeleteDialogOpen(false);
+    setBranchToDelete(null);
   };
 
   if (error) {
@@ -193,20 +247,20 @@ export default function BranchPage() {
                   />
                 </div>
               </div>
-            </form>
-            <DrawerFooter>
-              <Button
-                type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-700"
-              >
-                Create Branch
-              </Button>
-              <DrawerClose asChild>
-                <Button variant="outline" className="w-full">
-                  Cancel
+              <DrawerFooter>
+                <Button
+                  type="submit"
+                  className="w-full bg-blue-600 hover:bg-blue-700"
+                >
+                  Create Branch
                 </Button>
-              </DrawerClose>
-            </DrawerFooter>
+                <DrawerClose asChild>
+                  <Button variant="outline" className="w-full">
+                    Cancel
+                  </Button>
+                </DrawerClose>
+              </DrawerFooter>
+            </form>
           </DrawerContent>
         </Drawer>
       </div>
@@ -339,21 +393,21 @@ export default function BranchPage() {
                 Status
               </TableHead>
 
-              {/* <TableHead className="text-center font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
+              <TableHead className="text-center font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
                 Actions
-              </TableHead> */}
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {loading ? (
               <TableRow>
-                <TableCell colSpan={8} className="p-6">
+                <TableCell colSpan={4} className="p-6">
                   <LoadingSkeleton rows={5} />
                 </TableCell>
               </TableRow>
             ) : filteredBranches.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={8} className="text-center py-16">
+                <TableCell colSpan={4} className="text-center py-16">
                   <div className="flex flex-col items-center justify-center text-gray-500">
                     <div className="relative mb-6">
                       <div className="w-24 h-24 relative">
@@ -517,25 +571,111 @@ export default function BranchPage() {
                       {branch.status || "Active"}
                     </span>
                   </TableCell>
-                  {/* 
+
                   <TableCell className="py-4 px-6 text-center">
                     <div className="flex items-center justify-center gap-2">
-                      <button className="inline-flex items-center px-3 py-1.5 border border-gray-300 dark:border-gray-600 shadow-sm text-xs font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
-                        <FaEdit className="w-3 h-3 mr-1" />
-                        Edit
-                      </button>
-                      <button className="inline-flex items-center px-3 py-1.5 border border-red-300 shadow-sm text-xs font-medium rounded-md text-red-700 bg-red-50 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200">
+                      <button
+                        onClick={() => openDeleteDialog(branch)}
+                        className="inline-flex items-center px-3 py-1.5 border border-red-300 shadow-sm text-xs font-medium rounded-md text-red-700 bg-red-50 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200"
+                      >
                         <FaTrash className="w-3 h-3 mr-1" />
-                        Delete
+                        Hapus
                       </button>
                     </div>
-                  </TableCell> */}
+                  </TableCell>
                 </TableRow>
               ))
             )}
           </TableBody>
         </Table>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-red-600">
+              <FaTrash className="text-lg" />
+              Hapus Branch
+            </DialogTitle>
+            <DialogDescription className="text-base">
+              Apakah Anda yakin ingin menghapus branch ini? Tindakan ini tidak
+              dapat dibatalkan.
+            </DialogDescription>
+          </DialogHeader>
+
+          {branchToDelete && (
+            <div className="py-4">
+              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-red-100 dark:bg-red-900/40 rounded-lg">
+                    <FaBuilding className="text-red-600 dark:text-red-400" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-red-900 dark:text-red-100">
+                      {branchToDelete.city}
+                    </p>
+                    <p className="text-sm text-red-700 dark:text-red-300">
+                      Kode: {branchToDelete.code || "N/A"}
+                    </p>
+                    <p className="text-xs text-red-600 dark:text-red-400">
+                      Status: {branchToDelete.status || "Aktif"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+                <div className="flex items-start gap-2">
+                  <div className="flex-shrink-0 w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5">
+                    ⚠️
+                  </div>
+                  <div className="text-sm">
+                    <p className="font-medium text-amber-900 dark:text-amber-100 mb-1">
+                      Peringatan
+                    </p>
+                    <ul className="text-amber-800 dark:text-amber-200 space-y-1">
+                      <li>
+                        • Semua inspector yang ditugaskan ke branch ini akan
+                        terpengaruh
+                      </li>
+                      <li>
+                        • Branch ini tidak akan tersedia lagi untuk inspeksi
+                        baru
+                      </li>
+                      <li>
+                        • Data historis akan dipertahankan tetapi branch akan
+                        dihapus
+                      </li>
+                      <li>• Tindakan ini tidak dapat dibatalkan</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={closeDeleteDialog}
+              className="flex-1"
+            >
+              Batal
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() =>
+                branchToDelete && handleDeleteBranch(branchToDelete.id)
+              }
+              className="flex-1 bg-red-600 hover:bg-red-700"
+            >
+              <FaTrash className="mr-2 text-sm" />
+              Hapus Branch
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

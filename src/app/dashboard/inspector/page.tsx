@@ -32,6 +32,14 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "../../../components/ui/drawer";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../../../components/ui/dialog";
 import { Input } from "../../../components/ui/input";
 import { Label } from "../../../components/ui/label";
 import {
@@ -64,6 +72,8 @@ const InspectorPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isViewDrawerOpen, setIsViewDrawerOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [inspectorToDelete, setInspectorToDelete] = useState<any>(null);
   const [selectedInspector, setSelectedInspector] = useState<any>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [showPin, setShowPin] = useState(false);
@@ -280,6 +290,50 @@ const InspectorPage = () => {
     }
   };
 
+  const handleDeleteInspector = async (inspectorId: string) => {
+    if (!inspectorId) return;
+
+    try {
+      await apiClient.delete(`/admin/users/${inspectorId}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      toast({
+        title: "Inspector Deleted",
+        description: "The inspector has been deleted successfully.",
+        variant: "destructive",
+      });
+
+      // Refresh the inspector list
+      if (accessToken) {
+        dispatch(getAllInspectors(accessToken));
+      }
+
+      // Close dialog and reset state
+      setIsDeleteDialogOpen(false);
+      setInspectorToDelete(null);
+    } catch (error) {
+      console.error("Delete error:", error);
+      toast({
+        title: "Delete Failed",
+        description: "Failed to delete the inspector.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const openDeleteDialog = (inspector: any) => {
+    setInspectorToDelete(inspector);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const closeDeleteDialog = () => {
+    setIsDeleteDialogOpen(false);
+    setInspectorToDelete(null);
+  };
+
   return (
     <div className=" space-y-6  min-h-screen">
       {/* Header */}
@@ -416,6 +470,87 @@ const InspectorPage = () => {
           </DrawerContent>
         </Drawer>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-red-600">
+              <FaTrash className="text-lg" />
+              Hapus Inspector
+            </DialogTitle>
+            <DialogDescription className="text-base">
+              Apakah Anda yakin ingin menghapus inspector ini? Tindakan ini
+              tidak dapat dibatalkan.
+            </DialogDescription>
+          </DialogHeader>
+
+          {inspectorToDelete && (
+            <div className="py-4">
+              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-red-100 dark:bg-red-900/40 rounded-lg">
+                    <FaUserTie className="text-red-600 dark:text-red-400" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-red-900 dark:text-red-100">
+                      {inspectorToDelete.name}
+                    </p>
+                    <p className="text-sm text-red-700 dark:text-red-300">
+                      {inspectorToDelete.email}
+                    </p>
+                    {inspectorToDelete.branch && (
+                      <p className="text-xs text-red-600 dark:text-red-400">
+                        Branch: {inspectorToDelete.branch}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+                <div className="flex items-start gap-2">
+                  <div className="flex-shrink-0 w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5">
+                    ⚠️
+                  </div>
+                  <div className="text-sm">
+                    <p className="font-medium text-amber-900 dark:text-amber-100 mb-1">
+                      Peringatan
+                    </p>
+                    <ul className="text-amber-800 dark:text-amber-200 space-y-1">
+                      <li>
+                        • Inspector ini tidak akan dapat mengakses sistem lagi
+                      </li>
+                      <li>• Semua riwayat inspeksi akan dipertahankan</li>
+                      <li>• Tindakan ini tidak dapat dibatalkan</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={closeDeleteDialog}
+              className="flex-1"
+            >
+              Batal
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() =>
+                inspectorToDelete && handleDeleteInspector(inspectorToDelete.id)
+              }
+              className="flex-1 bg-red-600 hover:bg-red-700"
+            >
+              <FaTrash className="mr-2 text-sm" />
+              Hapus Inspector
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* View/Edit Inspector Drawer */}
       <Drawer open={isViewDrawerOpen} onOpenChange={setIsViewDrawerOpen}>
@@ -641,45 +776,6 @@ const InspectorPage = () => {
             </div>
           </CardContent>
         </Card>
-
-        <Card className="border-0 shadow-lg bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-green-600 dark:text-green-400">
-                  Active
-                </p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {inspectorList.filter((i) => i.status === "active").length}
-                </p>
-              </div>
-              <div className="p-3 bg-green-500 rounded-lg">
-                <FaUserTie className="text-xl text-white" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-0 shadow-lg bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-orange-600 dark:text-orange-400">
-                  Branches
-                </p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {
-                    new Set(inspectorList.map((i) => i.branch).filter(Boolean))
-                      .size
-                  }
-                </p>
-              </div>
-              <div className="p-3 bg-orange-500 rounded-lg">
-                <FaUserTie className="text-xl text-white" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
       </div>
 
       {/* Search Bar */}
@@ -890,9 +986,12 @@ const InspectorPage = () => {
                         <FaEye className="w-3 h-3 mr-1" />
                         View
                       </button>
-                      <button className="inline-flex items-center px-3 py-1.5 border border-red-300 shadow-sm text-xs font-medium rounded-md text-red-700 bg-red-50 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200">
+                      <button
+                        onClick={() => openDeleteDialog(inspector)}
+                        className="inline-flex items-center px-3 py-1.5 border border-red-300 shadow-sm text-xs font-medium rounded-md text-red-700 bg-red-50 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200"
+                      >
                         <FaTrash className="w-3 h-3 mr-1" />
-                        Delete
+                        Hapus
                       </button>
                     </div>
                   </TableCell>

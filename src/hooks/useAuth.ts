@@ -10,8 +10,8 @@ import { toast } from "../components/ui/use-toast";
 // Paths that don't require authentication
 const publicPaths = ["/auth", "/", "/result"];
 
-// Token refresh interval in milliseconds (15 minutes)
-const TOKEN_REFRESH_INTERVAL = 1 * 60 * 1000;
+// Token refresh interval in milliseconds (1 hour)
+const TOKEN_REFRESH_INTERVAL = 1 * 60 * 60 * 1000;
 
 // Session timeout in milliseconds (120 minutes of inactivity)
 const SESSION_TIMEOUT = 120 * 60 * 1000;
