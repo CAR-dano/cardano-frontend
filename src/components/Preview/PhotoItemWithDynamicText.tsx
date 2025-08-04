@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Image from "next/image";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import FormEditPhoto from "../Form/FormEditPhoto";
 
@@ -84,11 +85,13 @@ const PhotoItemWithDynamicText: React.FC<PhotoItemWithDynamicTextProps> = ({
           </div>
         )}
 
-        <img
+        <Image
           src={
             item.path ? formatPath(item.path) : "/assets/placeholder-photo.png"
           }
           alt={capitalizedLabel}
+          width={220}
+          height={165}
           className="w-[220px] h-[165px] object-cover "
         />
 

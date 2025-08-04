@@ -1,6 +1,5 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { Inter, Pacifico, Poppins, Rubik } from "next/font/google";
 import { Providers } from "./providers";
 import { Toaster } from "../components/ui/toaster";
 
@@ -41,37 +40,6 @@ export const metadata: Metadata = {
 
 export const viewport = "width=device-width, initial-scale=1";
 
-// Define fonts with fallbacks to avoid build failures
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  fallback: ["system-ui", "sans-serif"],
-  display: "swap",
-});
-
-const rubik = Rubik({
-  variable: "--font-rubik",
-  subsets: ["latin"],
-  fallback: ["system-ui", "sans-serif"],
-  display: "swap",
-});
-
-const pacifico = Pacifico({
-  variable: "--font-pacifico",
-  subsets: ["latin"],
-  weight: "400",
-  fallback: ["cursive"],
-  display: "swap",
-});
-
-const poppins = Poppins({
-  variable: "--font-poppins",
-  subsets: ["latin"],
-  weight: "400",
-  fallback: ["system-ui", "sans-serif"],
-  display: "swap",
-});
-
 export default function RootLayout({
   children,
 }: {
@@ -79,9 +47,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body
-        className={`${inter.variable} ${rubik.variable} ${pacifico.variable} ${poppins.variable}`}
-      >
+      <body className="font-sans">
         <Providers>
           {children}
           <Toaster />

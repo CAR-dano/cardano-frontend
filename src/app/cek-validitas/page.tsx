@@ -19,10 +19,8 @@ import {
   XCircle,
   FileText,
   Car,
-  Link,
   Zap,
   Hash,
-  ArrowRight,
   Database,
   Lock,
   Sparkles,
@@ -602,7 +600,7 @@ export default function CekValiditasPage() {
         return response.data.pdfFileHash;
       }
       return null;
-    } catch (error) {
+    } catch (_error) {
       return null;
     }
   };

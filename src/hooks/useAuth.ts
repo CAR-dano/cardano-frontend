@@ -2,7 +2,7 @@
 
 import { useAppSelector, AppDispatch } from "../lib/store";
 import { refreshToken, logout } from "../lib/features/auth/authSlice";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { usePathname, useRouter } from "next/navigation";
 import { toast } from "../components/ui/use-toast";
@@ -47,27 +47,27 @@ export default function useAuth() {
   );
 
   // Update last activity time on user interactions
-  const updateLastActivity = () => {
+  const updateLastActivity = useCallback(() => {
     setLastActivity(Date.now());
     // Clear timeout warning if it's open
     if (isTimeoutWarningOpen) {
       setIsTimeoutWarningOpen(false);
       setTimeoutWarningTimestamp(null);
     }
-  };
+  }, [isTimeoutWarningOpen]);
 
   // Reset the session timer
-  const resetSession = () => {
+  const resetSession = useCallback(() => {
     updateLastActivity();
 
     // Refresh the token to ensure it's still valid
     if (accessToken) {
       dispatch(refreshToken());
     }
-  };
+  }, [updateLastActivity, accessToken, dispatch]);
 
   // Check for session timeout
-  const checkSessionTimeout = () => {
+  const checkSessionTimeout = useCallback(() => {
     if (!isAuthenticated) return;
 
     const now = Date.now();
@@ -81,10 +81,10 @@ export default function useAuth() {
       setIsTimeoutWarningOpen(true);
       setTimeoutWarningTimestamp(now);
     }
-  };
+  }, [isAuthenticated, lastActivity, isTimeoutWarningOpen]);
 
   // Handle session timeout
-  const handleSessionTimeout = () => {
+  const handleSessionTimeout = useCallback(() => {
     // Only timeout if the warning was shown and not interacted with
     if (isTimeoutWarningOpen && timeoutWarningTimestamp) {
       const now = Date.now();
@@ -100,10 +100,10 @@ export default function useAuth() {
         });
       }
     }
-  };
+  }, [isTimeoutWarningOpen, timeoutWarningTimestamp, handleLogout]);
 
   // Cleanup function to cancel any ongoing requests
-  const cleanupOnLogout = () => {
+  const cleanupOnLogout = useCallback(() => {
     // Clear any timeouts
     if (sessionTimeoutId) {
       clearInterval(sessionTimeoutId);
@@ -113,8 +113,10 @@ export default function useAuth() {
     // Reset activity states
     setIsTimeoutWarningOpen(false);
     setTimeoutWarningTimestamp(null);
-  }; // Handle logout with optional message
-  const handleLogout = async (message?: string) => {
+  }, [sessionTimeoutId]);
+
+  // Handle logout with optional message
+  const handleLogout = useCallback(async (message?: string) => {
     try {
       // Cleanup first
       cleanupOnLogout();
@@ -139,7 +141,7 @@ export default function useAuth() {
       cleanupOnLogout();
       window.location.href = "/auth";
     }
-  };
+  }, [cleanupOnLogout, dispatch]);
 
   // Set up activity tracking
   useEffect(() => {
@@ -166,8 +168,8 @@ export default function useAuth() {
       events.forEach((event) => {
         window.removeEventListener(event, updateLastActivity);
       });
-      if (sessionTimeoutId) {
-        clearInterval(sessionTimeoutId);
+      if (timeoutId) {
+        clearInterval(timeoutId);
       }
     };
   }, [
@@ -175,6 +177,10 @@ export default function useAuth() {
     lastActivity,
     isTimeoutWarningOpen,
     timeoutWarningTimestamp,
+    updateLastActivity,
+    checkSessionTimeout,
+    handleSessionTimeout,
+    sessionTimeoutId,
   ]);
 
   // Token refresh logic

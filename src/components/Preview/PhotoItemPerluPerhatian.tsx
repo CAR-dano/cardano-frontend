@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Image from "next/image";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import FormEditPhoto from "../Form/FormEditPhoto";
 
@@ -84,11 +85,13 @@ const PhotoItemPerluPerhatian: React.FC<PhotoItemPerluPerhatianProps> = ({
           </div>
         )}
 
-        <img
+        <Image
           src={
             item.path ? formatPath(item.path) : "/assets/placeholder-photo.png"
           }
           alt={capitalizedLabel}
+          width={220}
+          height={150}
           className="w-[220px] h-[150px] object-cover "
         />
         <p className="w-[220px] h-[48px] overflow-hidden text-center font-semibold mt-2 text-base break-words">

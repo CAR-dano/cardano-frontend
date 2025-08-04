@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
+import Image from "next/image";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import FormEditPhoto from "../Form/FormEditPhoto";
 
@@ -26,7 +27,7 @@ const PhotoItemGeneral: React.FC<PhotoItemGeneralProps> = ({
   onPhotoUpdate,
 }) => {
   const textRef = useRef<HTMLParagraphElement>(null);
-  const [currentFontSize, setCurrentFontSize] = useState(16); // Initial font size
+  const [_currentFontSize, setCurrentFontSize] = useState(16); // Initial font size
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const capitalizeWords = (str: string) => {
@@ -102,11 +103,13 @@ const PhotoItemGeneral: React.FC<PhotoItemGeneralProps> = ({
           </div>
         )}
 
-        <img
+        <Image
           src={
             item.path ? formatPath(item.path) : "/assets/placeholder-photo.png"
           }
           alt={capitalizedLabel}
+          width={200}
+          height={150}
           className={
             isLandscape
               ? "w-[500px] h-[375px] object-cover"
