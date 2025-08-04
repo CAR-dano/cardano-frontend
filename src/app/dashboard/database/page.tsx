@@ -7,7 +7,7 @@ import { useTheme } from "../../../contexts/ThemeContext";
 import useAuth from "../../../hooks/useAuth";
 
 import { AppDispatch, RootState } from "../../../lib/store";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -18,7 +18,7 @@ const Header = ({
   dataCount: number;
   onRefresh: () => void;
 }) => {
-  const { isDarkModeEnabled } = useTheme();
+  const { isDarkModeEnabled: _isDarkModeEnabled } = useTheme();
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
       <div className="flex justify-between items-center">
@@ -81,7 +81,7 @@ const Header = ({
   );
 };
 
-const SearchBar = ({ setQuery, setFilter }: any) => {
+const _SearchBar = ({ setQuery, _setFilter }: any) => {
   const [keyword, setKeyword] = useState("");
 
   const handleKeyword = (e: any) => {
@@ -122,8 +122,8 @@ const Database: React.FC = () => {
   const { isLoading } = useSelector((state: RootState) => state.inspection);
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
   const { user } = useAuth();
-  const isAdmin = user?.role === "ADMIN";
-  const fetchData = (pageNum = page) => {
+  const _isAdmin = user?.role === "ADMIN";
+  const fetchData = useCallback((pageNum = page) => {
     // Only fetch if user is authenticated
     if (!isAuthenticated || !user) {
       console.log("User not authenticated, skipping data fetch");
@@ -144,14 +144,14 @@ const Database: React.FC = () => {
           setMetapage(response.meta);
         }
       })
-      .catch((error) => {
+      .catch((_error) => {
         toast({
           title: "Error",
           description: "Failed to fetch data",
           variant: "destructive",
         });
       });
-  };
+  }, [dispatch, page, isAuthenticated, user]);
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
@@ -167,7 +167,7 @@ const Database: React.FC = () => {
     if (isAuthenticated && user) {
       fetchData();
     }
-  }, [dispatch, isAuthenticated, user]);
+  }, [dispatch, isAuthenticated, user, fetchData]);
   if (!hasMounted) return null; // Hindari render di server
 
   // If user is not authenticated, show message

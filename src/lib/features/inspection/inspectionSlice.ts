@@ -265,7 +265,7 @@ export const inspectionSlice = createSlice({
     setDataReview: (state, action) => {
       state.review = { ...state.review, ...action.payload };
     },
-    updateData: (state, action) => {},
+    updateData: (_state, _action) => {},
     clearSearchResults: (state) => {
       state.searchResults.data = [];
       state.searchResults.meta = null;
@@ -375,7 +375,7 @@ export const inspectionSlice = createSlice({
       .addCase(approveInspectionData.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(approveInspectionData.fulfilled, (state, action) => {
+      .addCase(approveInspectionData.fulfilled, (state, _action) => {
         state.isLoading = false;
         state.error = null;
       })
