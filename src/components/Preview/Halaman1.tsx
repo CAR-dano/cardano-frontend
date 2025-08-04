@@ -243,16 +243,16 @@ const Halaman1: React.FC<Halaman1Props> = ({
 
   function getGradeLabel(score: number): string {
     const gradingScale: { [key: number]: string } = {
-      0: "E",
-      1: "D-",
-      2: "D",
-      3: "C-",
-      4: "C",
-      5: "B-",
-      6: "B",
-      7: "B+",
-      8: "A-",
-      9: "A",
+      0: "-",
+      1: "E",
+      2: "D-",
+      3: "D",
+      4: "C-",
+      5: "C",
+      6: "B-",
+      7: "B",
+      8: "B+",
+      9: "A-",
       10: "A",
     };
 
