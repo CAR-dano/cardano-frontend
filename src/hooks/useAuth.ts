@@ -83,25 +83,6 @@ export default function useAuth() {
     }
   }, [isAuthenticated, lastActivity, isTimeoutWarningOpen]);
 
-  // Handle session timeout
-  const handleSessionTimeout = useCallback(() => {
-    // Only timeout if the warning was shown and not interacted with
-    if (isTimeoutWarningOpen && timeoutWarningTimestamp) {
-      const now = Date.now();
-      const timeoutWarningTime = now - timeoutWarningTimestamp;
-      if (timeoutWarningTime >= WARNING_BEFORE_TIMEOUT) {
-        handleLogout();
-
-        // Show toast notification for session expiration
-        toast({
-          title: "Session Expired",
-          description: "You have been logged out due to inactivity.",
-          variant: "destructive",
-        });
-      }
-    }
-  }, [isTimeoutWarningOpen, timeoutWarningTimestamp, handleLogout]);
-
   // Cleanup function to cancel any ongoing requests
   const cleanupOnLogout = useCallback(() => {
     // Clear any timeouts
@@ -114,6 +95,44 @@ export default function useAuth() {
     setIsTimeoutWarningOpen(false);
     setTimeoutWarningTimestamp(null);
   }, [sessionTimeoutId]);
+
+  // Handle session timeout
+  const handleSessionTimeout = useCallback(() => {
+    // Only timeout if the warning was shown and not interacted with
+    if (isTimeoutWarningOpen && timeoutWarningTimestamp) {
+      const now = Date.now();
+      const timeoutWarningTime = now - timeoutWarningTimestamp;
+      if (timeoutWarningTime >= WARNING_BEFORE_TIMEOUT) {
+        // Declare handleLogout inline to avoid circular dependency
+        const performLogout = async () => {
+          try {
+            // Cleanup first
+            cleanupOnLogout();
+
+            // Dispatch logout and wait for completion
+            await dispatch(logout()).unwrap();
+
+            // Show toast notification for session expiration
+            toast({
+              title: "Session Expired",
+              description: "You have been logged out due to inactivity.",
+              variant: "destructive",
+            });
+
+            // Force a hard navigation to ensure clean state
+            window.location.href = "/auth";
+          } catch (error) {
+            console.error("Logout error:", error);
+            // Even if logout fails, still cleanup and redirect
+            cleanupOnLogout();
+            window.location.href = "/auth";
+          }
+        };
+
+        performLogout();
+      }
+    }
+  }, [isTimeoutWarningOpen, timeoutWarningTimestamp, dispatch, cleanupOnLogout]);
 
   // Handle logout with optional message
   const handleLogout = useCallback(async (message?: string) => {

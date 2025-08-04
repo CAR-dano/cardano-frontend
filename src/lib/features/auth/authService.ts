@@ -99,7 +99,7 @@ const logout = async () => {
     }
 
     return { success: true, message: "Logged out successfully" };
-  } catch (error) {
+  } catch (_error) {
     // Even if there's an error, ensure cleanup happens
     if (typeof window !== "undefined") {
       localStorage.clear();

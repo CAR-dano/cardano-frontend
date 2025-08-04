@@ -14,8 +14,6 @@ import {
 import {
   Card,
   CardContent,
-  CardHeader,
-  CardTitle,
 } from "../../../components/ui/card";
 import { Button } from "../../../components/ui/button";
 import {
@@ -42,12 +40,8 @@ import {
   FaBuilding,
   FaSearch,
   FaPlus,
-  FaEdit,
-  FaTrash,
   FaMapMarkerAlt,
-  FaPhone,
 } from "react-icons/fa";
-import { format } from "date-fns";
 import { useToast } from "../../../components/ui/use-toast";
 
 export default function BranchPage() {
