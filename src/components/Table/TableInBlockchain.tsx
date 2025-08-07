@@ -191,7 +191,7 @@ const TableData = ({
                     <div className="flex justify-center items-center space-x-2">
                       <Link
                         target="_blank"
-                        href={`https://preview.cardanoscan.io/transaction/${item.blockchainTxHash}`}
+                        href={`https://cardanoscan.io/transaction/${item.blockchainTxHash}`}
                       >
                         <button className="inline-flex items-center px-3 py-1.5 border border-gray-300 dark:border-gray-600 shadow-sm text-xs font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
                           <svg
