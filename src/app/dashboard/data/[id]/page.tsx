@@ -8,15 +8,16 @@ import {
 } from "../../../..//lib/features/inspection/inspectionSlice";
 import { AppDispatch, useAppSelector } from "../../../..//lib/store";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch } from "react-redux";
 
 const Edit = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
   const isLoading = useAppSelector((state: any) => state.inspection.isLoading);
 
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [dialogData, setDialogData] = useState<any>({
+  const [_isDialogOpen, setIsDialogOpen] = useState(false);
+  const [_dialogData, setDialogData] = useState<any>({
     label: "",
     inputFor: "",
     value: "",
@@ -35,16 +36,16 @@ const Edit = () => {
 
   const [data, setData] = useState<any>(null);
 
-  const handleEditReviewClick = (data: any) => {};
+  const handleEditReviewClick = (_data: any) => {};
 
-  const getData = async (id: string) => {
+  const getData = useCallback(async (id: string) => {
     const response = await dispatch(getDataForPreview(id)).unwrap();
     if (response) {
       setData(response);
     } else {
       console.error("Failed to fetch data");
     }
-  };
+  }, [dispatch]);
 
   useEffect(() => {
     const id = window.location.pathname.split("/").pop();
@@ -53,13 +54,11 @@ const Edit = () => {
     } else {
       router.push("/dashboard/review");
     }
-  }, []);
+  }, [getData, router]);
 
-  const router = useRouter();
-
-  const mintingToBlockchainHandler = (id: string) => {
+  const _mintingToBlockchainHandler = (id: string) => {
     dispatch(mintingToBlockchain(id))
-      .then((response) => {
+      .then((_response) => {
         setDialogResultData({
           isOpen: true,
           isSuccess: true,
@@ -70,7 +69,7 @@ const Edit = () => {
           action2: () => router.push("/dashboard/database"),
         });
       })
-      .catch((err) => {
+      .catch((_err) => {
         setDialogResultData({
           isOpen: true,
           isSuccess: false,
@@ -80,13 +79,13 @@ const Edit = () => {
           buttonLabel2: "Coba Lagi",
           action1: () => router.push("/dashboard/database"),
           action2: () => {
-            mintingToBlockchainHandler(id);
+            _mintingToBlockchainHandler(id);
           },
         });
       });
   };
 
-  const id = window.location.pathname.split("/").pop();
+  const _id = window.location.pathname.split("/").pop();
 
   return (
     <>

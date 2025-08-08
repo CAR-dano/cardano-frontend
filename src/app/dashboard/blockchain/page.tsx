@@ -1,12 +1,11 @@
 "use client";
 import Loading, { LoadingSkeleton } from "../../../components/Loading";
-import TableInspectionReviewer from "../../../components/Table/TableInspectionReviewer";
 import { toast } from "../../../components/ui/use-toast";
 import { getDataForReviewer } from "../../../lib/features/inspection/inspectionSlice";
 import { useTheme } from "../../../contexts/ThemeContext";
 
 import { AppDispatch, RootState } from "../../../lib/store";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 import TableInBlockchain from "@/components/Table/TableInBlockchain";
@@ -18,7 +17,7 @@ const Header = ({
   dataCount: number;
   onRefresh: () => void;
 }) => {
-  const { isDarkModeEnabled } = useTheme();
+  const { isDarkModeEnabled: _isDarkModeEnabled } = useTheme();
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
       <div className="flex justify-between items-center">
@@ -81,7 +80,7 @@ const Header = ({
   );
 };
 
-const SearchBar = ({ setQuery, setFilter }: any) => {
+const _SearchBar = ({ setQuery, _setFilter }: any) => {
   const [keyword, setKeyword] = useState("");
 
   const handleKeyword = (e: any) => {
@@ -121,7 +120,7 @@ const Database: React.FC = () => {
   const [hasMounted, setHasMounted] = useState(false);
   const { isLoading } = useSelector((state: RootState) => state.inspection);
 
-  const fetchData = (pageNum = page) => {
+  const fetchData = useCallback((pageNum = page) => {
     dispatch(
       getDataForReviewer({
         status: "ARCHIVED",
@@ -136,14 +135,14 @@ const Database: React.FC = () => {
           setMetapage(response.meta);
         }
       })
-      .catch((error) => {
+      .catch((_error) => {
         toast({
           title: "Error",
           description: "Failed to fetch data",
           variant: "destructive",
         });
       });
-  };
+  }, [dispatch, page]);
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
@@ -157,7 +156,7 @@ const Database: React.FC = () => {
   useEffect(() => {
     setHasMounted(true);
     fetchData();
-  }, [dispatch]);
+  }, [dispatch, fetchData]);
 
   if (!hasMounted) return null; // Hindari render di server
 

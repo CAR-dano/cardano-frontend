@@ -33,10 +33,16 @@ const checkToken = async (token: string) => {
 
 const getUserProfile = async () => {
   try {
+    // Get token safely
+    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    if (!token) {
+      throw new Error("No authentication token found");
+    }
+
     const response = await apiClient.get("/auth/profile", {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${token}`,
       },
     });
 
@@ -93,7 +99,7 @@ const logout = async () => {
     }
 
     return { success: true, message: "Logged out successfully" };
-  } catch (error) {
+  } catch (_error) {
     // Even if there's an error, ensure cleanup happens
     if (typeof window !== "undefined") {
       localStorage.clear();

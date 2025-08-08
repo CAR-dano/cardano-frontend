@@ -16,7 +16,6 @@ import LoadingScreen from "../../components/LoadingFullScreen";
 import { FiEye, FiEyeOff, FiArrowLeft } from "react-icons/fi";
 import { toast } from "../../hooks/use-toast";
 import { getAndClearRedirectUrl } from "../../utils/redirectUtils";
-import axios from "axios";
 
 function LoginPage() {
   const [showSignup, setShowSignup] = useState(false);

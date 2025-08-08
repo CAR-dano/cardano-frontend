@@ -179,7 +179,7 @@ export const authSlice = createSlice({
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(checkToken.fulfilled, (state, action) => {
+      .addCase(checkToken.fulfilled, (state, _action) => {
         state.isLoading = false;
         state.isAuthenticated = true;
         state.error = null;
