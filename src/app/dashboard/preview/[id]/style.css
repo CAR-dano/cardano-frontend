@@ -38,7 +38,8 @@ body {
 @media print {
   .sheet-outer.A4,
   .sheet-outer.A5.landscape {
-    width: 210mm;
+    width: auto !important;
+    max-width: 100% !important;
   }
 
   .no-print {
