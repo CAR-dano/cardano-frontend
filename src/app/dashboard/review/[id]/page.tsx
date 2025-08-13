@@ -756,6 +756,20 @@ const Edit = () => {
         } else {
           result[fieldName] = newValue;
         }
+
+        if (subFieldName == "estimasiPerbaikan") {
+          // Handle special case for estimasiPerbaikan
+          if (typeof newValue === "string") {
+            try {
+              const parsedValue = JSON.parse(newValue);
+              if (Array.isArray(parsedValue)) {
+                result[fieldName][subFieldName] = parsedValue;
+              }
+            } catch (error) {
+              // Not JSON or not an array, keep as string
+            }
+          }
+        }
       }
     );
 

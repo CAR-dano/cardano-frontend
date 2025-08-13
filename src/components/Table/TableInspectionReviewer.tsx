@@ -491,6 +491,7 @@ interface TableInfoProps {
 
 const TableInfo: React.FC<TableInfoProps> = ({ data, onPageChange }) => {
   const [page, setPage] = useState(data.page || 1);
+  const [inputPage, setInputPage] = useState("");
   const MAX = data.pageSize || 10;
   const dataCount = data.total || 0;
   const totalPage = data.totalPages || 1;
@@ -508,6 +509,28 @@ const TableInfo: React.FC<TableInfoProps> = ({ data, onPageChange }) => {
     if (onPageChange) onPageChange(newPage);
   };
 
+  const handleInputPageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Only allow numbers
+    if (value === "" || /^\d+$/.test(value)) {
+      setInputPage(value);
+    }
+  };
+
+  const handleGoToPage = () => {
+    const pageNum = parseInt(inputPage);
+    if (pageNum && pageNum >= 1 && pageNum <= totalPage) {
+      handlePageChange(pageNum);
+      setInputPage(""); // Clear input after successful navigation
+    }
+  };
+
+  const handleInputKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleGoToPage();
+    }
+  };
+
   return (
     <div className="flex justify-between items-center mt-2 text-xs">
       <p className="text-gray-700 dark:text-gray-300">
@@ -517,10 +540,35 @@ const TableInfo: React.FC<TableInfoProps> = ({ data, onPageChange }) => {
       </p>
       {dataCount > 0 &&
         totalPage > 1 && ( // Only show pagination if there's content and more than one page
-          <div className="flex border-[1px] rounded-lg border-primary dark:border-gray-600 overflow-hidden">
+          <div className="flex items-center space-x-2">
+            {/* First Page Button */}
             <SecondaryButton
-              className={`border-none rounded-none px-3 py-1.5 text-xs ${
-                // Adjusted padding and text size
+              className={`px-2 py-1.5 text-xs rounded-md border border-gray-300 dark:border-gray-600 ${
+                page <= 1
+                  ? " opacity-50 pointer-events-none"
+                  : "hover:bg-gray-100 dark:hover:bg-gray-700"
+              }`}
+              onClick={() => handlePageChange(1)}
+              disabled={page <= 1}
+            >
+              <svg
+                className="w-3 h-3"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
+                />
+              </svg>
+            </SecondaryButton>
+
+            {/* Previous Page Button */}
+            <SecondaryButton
+              className={`px-3 py-1.5 text-xs rounded-md border border-gray-300 dark:border-gray-600 ${
                 page <= 1
                   ? " opacity-50 pointer-events-none"
                   : "hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -530,20 +578,68 @@ const TableInfo: React.FC<TableInfoProps> = ({ data, onPageChange }) => {
             >
               Previous
             </SecondaryButton>
-            <div className="border-x-[1px] border-primary dark:border-gray-600 border-y-none flex items-center px-3 text-xs text-gray-700 dark:text-gray-300">
-              {`${page} / ${totalPage}`}
+
+            {/* Page Info with Input */}
+            <div className="flex items-center space-x-2">
+              <div className="flex items-center px-2 py-1.5 text-xs text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700 rounded-md border border-gray-300 dark:border-gray-600">
+                <input
+                  type="text"
+                  value={inputPage}
+                  onChange={handleInputPageChange}
+                  onKeyPress={handleInputKeyPress}
+                  placeholder={page.toString()}
+                  className="w-8 text-center bg-transparent border-none outline-none text-xs text-gray-700 dark:text-gray-300 placeholder-gray-500 dark:placeholder-gray-400"
+                  maxLength={totalPage.toString().length}
+                />
+                <span className="mx-1">/</span>
+                <span>{totalPage}</span>
+              </div>
+              {inputPage && (
+                <SecondaryButton
+                  onClick={handleGoToPage}
+                  className="px-2 py-1.5 text-xs rounded-md border border-blue-300 dark:border-blue-600 bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-800"
+                >
+                  Go
+                </SecondaryButton>
+              )}
             </div>
+
+            {/* Next Page Button */}
             <SecondaryButton
               onClick={() => handlePageChange(page + 1)}
               disabled={page >= totalPage}
-              className={`border-none rounded-none px-3 py-1.5 text-xs ${
-                // Adjusted padding and text size
+              className={`px-3 py-1.5 text-xs rounded-md border border-gray-300 dark:border-gray-600 ${
                 page >= totalPage
                   ? " opacity-50 pointer-events-none"
                   : "hover:bg-gray-100 dark:hover:bg-gray-700"
               }`}
             >
               Next
+            </SecondaryButton>
+
+            {/* Last Page Button */}
+            <SecondaryButton
+              onClick={() => handlePageChange(totalPage)}
+              disabled={page >= totalPage}
+              className={`px-2 py-1.5 text-xs rounded-md border border-gray-300 dark:border-gray-600 ${
+                page >= totalPage
+                  ? " opacity-50 pointer-events-none"
+                  : "hover:bg-gray-100 dark:hover:bg-gray-700"
+              }`}
+            >
+              <svg
+                className="w-3 h-3"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="m13 5 7 7-7 7M5 5l7 7-7 7"
+                />
+              </svg>
             </SecondaryButton>
           </div>
         )}
