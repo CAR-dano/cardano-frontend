@@ -14,6 +14,7 @@ import { FaUserGroup } from "react-icons/fa6";
 import { FaUserTie } from "react-icons/fa";
 import { FaCodeBranch } from "react-icons/fa";
 import { SiHiveBlockchain } from "react-icons/si";
+import SidebarBulkStatus from "../SidebarBulkStatus";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -248,6 +249,11 @@ const Sidebar: React.FC = () => {
               })}
             </ul>
           </nav>
+        </div>
+
+        {/* Bulk Process Status Section */}
+        <div className="px-4 py-2">
+          <SidebarBulkStatus />
         </div>
 
         {/* Logout Section */}

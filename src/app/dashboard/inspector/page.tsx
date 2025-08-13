@@ -134,7 +134,6 @@ const InspectorPage = () => {
   };
 
   const handleEditMode = () => {
-    console.log("Edit mode clicked"); // Debug log
     setIsEditing(true);
   };
 

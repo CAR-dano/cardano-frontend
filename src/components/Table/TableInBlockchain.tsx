@@ -509,10 +509,6 @@ const TableInBlockchain = ({
     action2: () => void;
   } | null>(null);
 
-  useEffect(() => {
-    console.log("dialogResultData updated:", dialogResultData);
-  }, [dialogResultData]);
-
   const filteredData = data.filter(
     (item: any) =>
       item.identityDetails?.namaCustomer

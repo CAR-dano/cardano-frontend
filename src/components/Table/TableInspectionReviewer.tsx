@@ -17,6 +17,10 @@ import {
   searchByKeyword,
   clearSearchResults,
 } from "../../lib/features/inspection/inspectionSlice";
+import {
+  bulkApproveInspections,
+  clearBulkProcess,
+} from "../../lib/features/bulk/bulkSlice";
 import DialogResult from "../Dialog/DialogResult"; // Your existing dialog
 import { useRouter } from "next/navigation";
 import { Input } from "../../components/ui/input"; // Assuming Input component exists
@@ -32,6 +36,9 @@ const TableData = ({
   userRole,
 }: any) => {
   const [fetchStatus, setFetchStatus] = useState(false);
+  const [isBulkMode, setIsBulkMode] = useState(false);
+  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
+  const [lastRefreshTime, setLastRefreshTime] = useState(0);
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
 
@@ -41,11 +48,118 @@ const TableData = ({
     itemId: string | null;
   }>({ isOpen: false, itemId: null });
 
+  // Get bulk state
+  const bulkState = useAppSelector((state) => state.bulk);
+
   useEffect(() => {
     if (!fetchStatus) {
       setFetchStatus(true);
     }
   }, [fetchStatus]);
+
+  // Monitor bulk process completion - only refresh if there were errors
+  useEffect(() => {
+    // Check if bulk process just finished (was processing but now isn't)
+    if (
+      bulkState.processId &&
+      !bulkState.isProcessing &&
+      bulkState.finishedAt
+    ) {
+      // Only refresh if there were errors, because successful items already refreshed via throttledRefresh
+      if (bulkState.errorItems > 0 && handleRefresh) {
+        handleRefresh();
+      } else {
+        console.log(
+          "Bulk process completed successfully, no additional refresh needed"
+        );
+      }
+    }
+  }, [
+    bulkState.isProcessing,
+    bulkState.finishedAt,
+    bulkState.errorItems,
+    handleRefresh,
+  ]);
+
+  // Throttled refresh to prevent too many API calls
+  const throttledRefresh = useCallback(() => {
+    const now = Date.now();
+
+    // Only refresh if at least 2 seconds have passed since last refresh
+    if (now - lastRefreshTime > 2000) {
+      if (handleRefresh) {
+        handleRefresh();
+        setLastRefreshTime(now);
+      }
+    } else {
+      console.log("Refresh throttled, skipping...");
+    }
+  }, [lastRefreshTime, handleRefresh]);
+
+  const handleBulkModeToggle = () => {
+    setIsBulkMode(!isBulkMode);
+    setSelectedItems(new Set());
+  };
+
+  const handleItemSelect = (itemId: string, checked: boolean) => {
+    const newSelected = new Set(selectedItems);
+    if (checked) {
+      newSelected.add(itemId);
+    } else {
+      newSelected.delete(itemId);
+    }
+    setSelectedItems(newSelected);
+  };
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      // Select only NEED_REVIEW items
+      const reviewItems =
+        data?.filter((item: any) => item.status === "NEED_REVIEW") || [];
+      const reviewIds = new Set<string>(
+        reviewItems.map((item: any) => item.id as string)
+      );
+      setSelectedItems(reviewIds);
+    } else {
+      setSelectedItems(new Set());
+    }
+  };
+
+  const handleBulkApprove = () => {
+    if (selectedItems.size === 0) return;
+
+    const itemsToApprove = data
+      ?.filter(
+        (item: any) =>
+          selectedItems.has(item.id) && item.status === "NEED_REVIEW"
+      )
+      .map((item: any) => ({
+        id: item.id,
+        customerName: item.identityDetails?.namaCustomer || "Unknown Customer",
+        vehiclePlate: item.vehiclePlateNumber || "Unknown Plate",
+      }));
+
+    if (itemsToApprove && itemsToApprove.length > 0) {
+      dispatch(
+        bulkApproveInspections({
+          inspectionData: itemsToApprove,
+          onItemSuccess: throttledRefresh, // Use throttled refresh after each successful item
+        })
+      );
+      setIsBulkMode(false);
+      setSelectedItems(new Set());
+    }
+  };
+
+  // Filter data to only show NEED_REVIEW items for bulk selection
+  const reviewItems =
+    data?.filter((item: any) => item.status === "NEED_REVIEW") || [];
+  const selectedReviewItems = Array.from(selectedItems).filter((id) =>
+    reviewItems.some((item: any) => item.id === id)
+  );
+
+  const isAllSelected =
+    reviewItems.length > 0 && selectedReviewItems.length === reviewItems.length;
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -110,12 +224,109 @@ const TableData = ({
 
   return (
     <>
-      {" "}
+      {/* Bulk Actions Bar */}
+      {!isDatabase && (
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 mb-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={handleBulkModeToggle}
+                className={`inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium ${
+                  isBulkMode
+                    ? "bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-600"
+                    : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                } transition-colors duration-200`}
+              >
+                <svg
+                  className="w-4 h-4 mr-2"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                {isBulkMode ? "Cancel Bulk Mode" : "Bulk Approve"}
+              </button>
+
+              {isBulkMode && reviewItems.length > 0 && (
+                <>
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={isAllSelected}
+                      onChange={(e) => handleSelectAll(e.target.checked)}
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                    />
+                    <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                      Select All Review Items ({reviewItems.length})
+                    </span>
+                  </label>
+
+                  {selectedItems.size > 0 && (
+                    <button
+                      onClick={handleBulkApprove}
+                      disabled={bulkState.isProcessing}
+                      className="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white rounded-md text-sm font-medium transition-colors duration-200"
+                    >
+                      {bulkState.isProcessing ? (
+                        <>
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                          Processing...
+                        </>
+                      ) : (
+                        <>
+                          <svg
+                            className="w-4 h-4 mr-2"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                          Approve Selected ({selectedItems.size})
+                        </>
+                      )}
+                    </button>
+                  )}
+                </>
+              )}
+            </div>
+
+            {bulkState.processId && (
+              <div className="text-sm text-gray-600 dark:text-gray-400">
+                {bulkState.isProcessing
+                  ? `Processing ${bulkState.processedItems}/${bulkState.totalItems}...`
+                  : `Last process: ${bulkState.successItems} success, ${bulkState.errorItems} errors`}
+              </div>
+            )}
+          </div>
+        </div>
+      )}{" "}
       {/* Use Fragment to return multiple top-level elements if DialogResult is outside the div */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow className="bg-gray-50 dark:bg-gray-900">
+              {isBulkMode && !isDatabase && (
+                <TableHead className="text-left font-semibold text-gray-900 dark:text-gray-100 py-4 px-6 w-12">
+                  <input
+                    type="checkbox"
+                    checked={isAllSelected}
+                    onChange={(e) => handleSelectAll(e.target.checked)}
+                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                  />
+                </TableHead>
+              )}
               <TableHead className="text-left font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
                 Customer
               </TableHead>
@@ -147,6 +358,22 @@ const TableData = ({
                       : ""
                   }`}
                 >
+                  {isBulkMode && !isDatabase && (
+                    <TableCell className="py-4 px-6">
+                      {item.status === "NEED_REVIEW" ? (
+                        <input
+                          type="checkbox"
+                          checked={selectedItems.has(item.id)}
+                          onChange={(e) =>
+                            handleItemSelect(item.id, e.target.checked)
+                          }
+                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                        />
+                      ) : (
+                        <div className="w-4 h-4"></div> // Empty space for alignment
+                      )}
+                    </TableCell>
+                  )}
                   <TableCell className="py-4 px-6">
                     <div className="flex items-center space-x-3">
                       <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-medium text-sm">
@@ -310,7 +537,10 @@ const TableData = ({
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={6} className="text-center py-16">
+                <TableCell
+                  colSpan={isBulkMode && !isDatabase ? 7 : 6}
+                  className="text-center py-16"
+                >
                   {/* ... your empty table placeholder ... */}
                   <div className="flex flex-col items-center justify-center text-gray-500">
                     {/* Custom Empty Table Illustration */}
