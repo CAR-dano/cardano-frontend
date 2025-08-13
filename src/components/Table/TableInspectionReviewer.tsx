@@ -39,6 +39,7 @@ const TableData = ({
   const [isBulkMode, setIsBulkMode] = useState(false);
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
   const [lastRefreshTime, setLastRefreshTime] = useState(0);
+  const [showBulkConfirm, setShowBulkConfirm] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
 
@@ -127,7 +128,10 @@ const TableData = ({
 
   const handleBulkApprove = () => {
     if (selectedItems.size === 0) return;
+    setShowBulkConfirm(true);
+  };
 
+  const confirmBulkApprove = () => {
     const itemsToApprove = data
       ?.filter(
         (item: any) =>
@@ -148,6 +152,7 @@ const TableData = ({
       );
       setIsBulkMode(false);
       setSelectedItems(new Set());
+      setShowBulkConfirm(false);
     }
   };
 
@@ -255,33 +260,24 @@ const TableData = ({
 
               {isBulkMode && reviewItems.length > 0 && (
                 <>
-                  <label className="flex items-center">
-                    <input
-                      type="checkbox"
-                      checked={isAllSelected}
-                      onChange={(e) => handleSelectAll(e.target.checked)}
-                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                    />
-                    <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                      Select All Review Items ({reviewItems.length})
-                    </span>
-                  </label>
-
-                  {selectedItems.size > 0 && (
-                    <button
-                      onClick={handleBulkApprove}
-                      disabled={bulkState.isProcessing}
-                      className="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white rounded-md text-sm font-medium transition-colors duration-200"
-                    >
-                      {bulkState.isProcessing ? (
-                        <>
-                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                          Processing...
-                        </>
-                      ) : (
-                        <>
+                  <label className="flex items-center cursor-pointer group">
+                    <div className="relative">
+                      <input
+                        type="checkbox"
+                        checked={isAllSelected}
+                        onChange={(e) => handleSelectAll(e.target.checked)}
+                        className="sr-only"
+                      />
+                      <div
+                        className={`w-5 h-5 rounded-md border-2 transition-all duration-200 ease-in-out flex items-center justify-center ${
+                          isAllSelected
+                            ? "bg-gradient-to-br from-blue-500 to-blue-600 border-blue-500 shadow-lg shadow-blue-500/25"
+                            : "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 group-hover:border-blue-400 dark:group-hover:border-blue-500"
+                        }`}
+                      >
+                        {isAllSelected && (
                           <svg
-                            className="w-4 h-4 mr-2"
+                            className="w-3 h-3 text-white"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -289,14 +285,62 @@ const TableData = ({
                             <path
                               strokeLinecap="round"
                               strokeLinejoin="round"
-                              strokeWidth={2}
+                              strokeWidth={3}
                               d="M5 13l4 4L19 7"
                             />
                           </svg>
-                          Approve Selected ({selectedItems.size})
-                        </>
-                      )}
-                    </button>
+                        )}
+                      </div>
+                    </div>
+                    <span className="ml-3 text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-200">
+                      Select All Review Items ({reviewItems.length})
+                    </span>
+                  </label>
+
+                  {selectedItems.size > 0 && (
+                    <div className="relative">
+                      <button
+                        onClick={handleBulkApprove}
+                        disabled={bulkState.isProcessing}
+                        className="inline-flex items-center px-4 py-2 bg-orange-500 hover:bg-orange-600 disabled:bg-gray-400 text-white rounded-md text-sm font-medium transition-all duration-200 relative overflow-hidden group"
+                      >
+                        <div className="absolute inset-0 bg-gradient-to-r from-orange-600 to-red-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
+                        <div className="relative z-10 flex items-center">
+                          {bulkState.isProcessing ? (
+                            <>
+                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                              Processing...
+                            </>
+                          ) : (
+                            <>
+                              <svg
+                                className="w-4 h-4 mr-2"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                                />
+                              </svg>
+                              Bulk Approve ({selectedItems.size})
+                              <span className="ml-2 text-xs bg-white/20 px-2 py-0.5 rounded-full">
+                                CONFIRM
+                              </span>
+                            </>
+                          )}
+                        </div>
+                      </button>
+
+                      {/* Hover warning tooltip */}
+                      <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-red-600 text-white text-xs px-3 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap">
+                        ⚠️ This will approve all selected items
+                        <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-red-600"></div>
+                      </div>
+                    </div>
                   )}
                 </>
               )}
@@ -319,12 +363,42 @@ const TableData = ({
             <TableRow className="bg-gray-50 dark:bg-gray-900">
               {isBulkMode && !isDatabase && (
                 <TableHead className="text-left font-semibold text-gray-900 dark:text-gray-100 py-4 px-6 w-12">
-                  <input
-                    type="checkbox"
-                    checked={isAllSelected}
-                    onChange={(e) => handleSelectAll(e.target.checked)}
-                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                  />
+                  <div className="relative">
+                    <input
+                      type="checkbox"
+                      checked={isAllSelected}
+                      onChange={(e) => handleSelectAll(e.target.checked)}
+                      className="sr-only"
+                    />
+                    <div
+                      className={`w-5 h-5 rounded-md border-2 transition-all duration-200 ease-in-out cursor-pointer flex items-center justify-center ${
+                        isAllSelected
+                          ? "bg-gradient-to-br from-blue-500 to-blue-600 border-blue-500 shadow-lg shadow-blue-500/25"
+                          : "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500"
+                      }`}
+                      onClick={(e) => {
+                        const checkbox = e.currentTarget
+                          .previousElementSibling as HTMLInputElement;
+                        checkbox.click();
+                      }}
+                    >
+                      {isAllSelected && (
+                        <svg
+                          className="w-3 h-3 text-white"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={3}
+                            d="M5 13l4 4L19 7"
+                          />
+                        </svg>
+                      )}
+                    </div>
+                  </div>
                 </TableHead>
               )}
               <TableHead className="text-left font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
@@ -361,16 +435,46 @@ const TableData = ({
                   {isBulkMode && !isDatabase && (
                     <TableCell className="py-4 px-6">
                       {item.status === "NEED_REVIEW" ? (
-                        <input
-                          type="checkbox"
-                          checked={selectedItems.has(item.id)}
-                          onChange={(e) =>
-                            handleItemSelect(item.id, e.target.checked)
-                          }
-                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                        />
+                        <div className="relative">
+                          <input
+                            type="checkbox"
+                            checked={selectedItems.has(item.id)}
+                            onChange={(e) =>
+                              handleItemSelect(item.id, e.target.checked)
+                            }
+                            className="sr-only"
+                          />
+                          <div
+                            className={`w-5 h-5 rounded-md border-2 transition-all duration-200 ease-in-out cursor-pointer ${
+                              selectedItems.has(item.id)
+                                ? "bg-gradient-to-br from-green-500 to-green-600 border-green-500 shadow-lg shadow-green-500/25 scale-105"
+                                : "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 hover:border-green-400 dark:hover:border-green-500 hover:scale-105"
+                            }`}
+                            onClick={(e) => {
+                              const checkbox = e.currentTarget
+                                .previousElementSibling as HTMLInputElement;
+                              checkbox.click();
+                            }}
+                          >
+                            {selectedItems.has(item.id) && (
+                              <svg
+                                className="w-3 h-3 text-white absolute top-0.5 left-0.5 animate-in fade-in-50 zoom-in-75 duration-200"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={3}
+                                  d="M5 13l4 4L19 7"
+                                />
+                              </svg>
+                            )}
+                          </div>
+                        </div>
                       ) : (
-                        <div className="w-4 h-4"></div> // Empty space for alignment
+                        <div className="w-5 h-5 bg-gray-100 dark:bg-gray-700 rounded-md border-2 border-gray-200 dark:border-gray-600 opacity-50"></div>
                       )}
                     </TableCell>
                   )}
@@ -704,6 +808,20 @@ const TableData = ({
             setConfirmMintDialog({ isOpen: false, itemId: null });
           }}
           onClose={() => setConfirmMintDialog({ isOpen: false, itemId: null })}
+        />
+      )}
+      {/* Confirmation Dialog for Bulk Approve */}
+      {showBulkConfirm && (
+        <DialogResult
+          isOpen={showBulkConfirm}
+          isSuccess={false}
+          title="⚠️ Konfirmasi Bulk Approve"
+          message={`Anda akan meng-approve ${selectedItems.size} item sekaligus. Tindakan ini tidak dapat dibatalkan dan akan memproses semua item yang dipilih. Pastikan Anda sudah memeriksa semua data dengan teliti.`}
+          buttonLabel1="Batal"
+          action1={() => setShowBulkConfirm(false)}
+          buttonLabel2="Ya, Lanjutkan Bulk Approve"
+          action2={confirmBulkApprove}
+          onClose={() => setShowBulkConfirm(false)}
         />
       )}
     </>
