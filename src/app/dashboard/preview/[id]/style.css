@@ -1,12 +1,21 @@
 body {
   margin: 0;
+  overflow-y: auto; /* Enable vertical scrolling */
+  overflow-x: auto; /* Enable horizontal scrolling if needed */
 }
+
+html {
+  scroll-behavior: smooth; /* Smooth scrolling */
+}
+
 .sheet-outer {
   margin: 0;
+  overflow: visible; /* Allow content to be scrollable */
+  padding-top: 0; /* Remove any top padding */
 }
 .sheet {
   margin: 0;
-  overflow: hidden;
+  overflow: visible; /* Changed from hidden to visible to allow scrolling */
   position: relative;
   box-sizing: border-box;
 }
@@ -15,25 +24,121 @@ body {
   width: 210mm;
   height: 296mm;
 }
+
+/* First sheet should have minimal top margin */
+.sheet-outer .sheet:first-child {
+  margin-top: 1mm;
+}
 .sheet.padding-5mm {
   padding: 5mm;
 }
 
+::-webkit-scrollbar {
+  width: 8px;
+  display: block !important;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
 @media screen {
   body {
-    background: #e0e0e0;
+    background: white !important; /* Changed from gray to white */
+    min-height: 100vh; /* Ensure full viewport height */
+    padding: 0;
+    margin: 0; /* Ensure no default margin */
   }
 
   .sheet {
-    background: white;
-    box-shadow: 0 0.5mm 2mm rgba(0, 0, 0, 0.3);
-    margin: 5mm auto;
+    background: white !important; /* Ensure sheet is always white */
+    box-shadow: 0 0.5mm 2mm rgba(0, 0, 0, 0.1); /* Lighter shadow for cleaner look */
+    margin: 0 auto; /* Reduced from 5mm to 2mm */
+    border: 1px solid #e5e7eb; /* Light border to define sheet edges */
+  }
+
+  /* Remove dark mode styling - keep everything white */
+  .dark .sheet {
+    background: white !important; /* Keep sheet white always */
+    box-shadow: 0 0.5mm 2mm rgba(0, 0, 0, 0.1); /* Lighter shadow */
+    border: 1px solid #e5e7eb; /* Light border */
+  }
+
+  /* Keep body white even in dark mode for this page */
+  .dark body {
+    background: white !important; /* Changed from dark to white */
+  }
+
+  /* Custom scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+
+  /* Ensure smooth scrolling for all elements */
+  * {
+    scroll-behavior: smooth;
+  }
+
+  /* Main content margin when sidebar is visible */
+  .main-content-with-sidebar {
+    margin-left: 256px; /* 256px = w-64 (16rem) */
+    transition: margin-left 0.3s ease;
+    padding-top: 0; /* Remove any top padding */
+  }
+
+  /* Ensure no extra spacing at the top of content area */
+  .sheet-outer {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
   }
 }
 
 @page {
   size: A4;
   margin: 0;
+  /* Hide page numbers and headers/footers */
+  @top-left {
+    content: none;
+  }
+  @top-center {
+    content: none;
+  }
+  @top-right {
+    content: none;
+  }
+  @bottom-left {
+    content: none;
+  }
+  @bottom-center {
+    content: none;
+  }
+  @bottom-right {
+    content: none;
+  }
 }
 @media print {
   .sheet-outer.A4,
@@ -46,7 +151,650 @@ body {
   }
 
   body {
+    background: white !important; /* Pure white background for printing */
+    overflow: visible !important; /* Ensure content is visible when printing */
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .sheet {
+    background: white !important; /* Pure white sheet background */
+    box-shadow: none !important; /* Remove shadows for clean print */
+    border: none !important; /* Remove borders for seamless print */
+    margin: 0 !important;
+    padding: 5mm !important; /* Standard print padding */
+  }
+
+  .sheet-outer {
+    background: white !important; /* Pure white outer container */
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Force white background for main content area */
+  .main-content-with-sidebar {
+    background: white !important;
+    margin-left: 0 !important;
+  }
+
+  /* Ensure page content area is white */
+  [class*="bg-gray"] {
+    background: white !important; /* Override any gray backgrounds with white */
+  }
+
+  /* Keep text and content colors but ensure white backgrounds */
+  * {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+  }
+
+  /* Specifically maintain content colors while keeping backgrounds white */
+  .bg-orange-500,
+  .bg-orange-400,
+  .bg-red-500,
+  .bg-red-400,
+  .bg-blue-500,
+  .bg-blue-400,
+  .bg-green-500,
+  .bg-green-400 {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Force text colors to remain visible */
+  .text-white,
+  .text-black,
+  .text-gray-500,
+  .text-gray-600,
+  .text-gray-700,
+  .text-gray-800,
+  .text-gray-900,
+  [class*="text-"] {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Ensure borders remain visible */
+  [class*="border-"] {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Images should maintain their colors */
+  img {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Force exact color reproduction for all elements */
+  *,
+  *::before,
+  *::after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Specifically ensure orange colors print correctly */
+  .bg-orange-500,
+  .bg-orange-600,
+  .bg-red-500,
+  [style*="background-color: rgb(249, 115, 22)"],
+  [style*="background-color: #f97316"],
+  [style*="background-color: rgb(234, 88, 12)"],
+  [style*="background-color: #ea580c"] {
+    background-color: #f97316 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Specifically force background colors to print */
+  .bg-orange-500,
+  .bg-orange-400,
+  .bg-red-500,
+  .bg-red-400,
+  .bg-blue-500,
+  .bg-blue-400,
+  .bg-green-500,
+  .bg-green-400,
+  .bg-gray-100,
+  .bg-gray-200,
+  .bg-gray-300,
+  [class*="bg-orange"],
+  [class*="bg-red"],
+  [class*="bg-blue"],
+  [class*="bg-green"],
+  [class*="bg-gray"] {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Force text colors to print */
+  .text-white,
+  .text-black,
+  .text-gray-500,
+  .text-gray-600,
+  .text-gray-700,
+  .text-gray-800,
+  .text-gray-900,
+  [class*="text-"] {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Force border colors */
+  [class*="border-"] {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Specific color fixes for common elements */
+  /* Orange header backgrounds */
+  .bg-orange-500 {
+    background-color: #f97316 !important;
+  }
+
+  .bg-orange-400 {
+    background-color: #fb923c !important;
+  }
+
+  /* White text on colored backgrounds */
+  .text-white {
+    color: #ffffff !important;
+  }
+
+  /* Gray backgrounds */
+  .bg-gray-100 {
+    background-color: #f3f4f6 !important;
+  }
+
+  .bg-gray-200 {
+    background-color: #e5e7eb !important;
+  }
+
+  /* Dark text */
+  .text-gray-900 {
+    color: #111827 !important;
+  }
+
+  .text-black {
+    color: #000000 !important;
+  }
+
+  /* Table borders */
+  table,
+  th,
+  td {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Images should maintain their colors */
+  img {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Force all elements to maintain colors when printing class is active */
+  .printing * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Ensure white background when printing class is active */
+  .printing body,
+  .printing .sheet,
+  .printing .sheet-outer,
+  .printing [class*="bg-gray"] {
+    background: white !important;
+  }
+
+  /* Remove shadows and borders when printing */
+  .printing .sheet {
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  /* Ensure no page numbering elements are shown */
+  .page-number,
+  .header,
+  .footer {
+    display: none !important;
+  }
+
+  /* Reset scroll behavior for print */
+  html,
+  * {
+    scroll-behavior: auto !important;
+  }
+
+  /* Remove sidebar margin when printing */
+  .main-content-with-sidebar {
+    margin-left: 0 !important;
+  }
+}
+
+/* General white background enforcement */
+.printing {
+  background: white !important;
+}
+
+.printing body {
+  background: white !important;
+}
+
+.printing .sheet {
+  background: white !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.printing .sheet-outer {
+  background: white !important;
+}
+
+/* Navigation sidebar styles */
+.sidebar-navigation {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: transform 0.3s ease;
+}
+
+/* Sidebar toggle button styles - Simplified */
+.sidebar-navigation button[class*="absolute"] {
+  border-left: none !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.sidebar-navigation button[class*="absolute"]:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateX(1px);
+}
+
+.sidebar-navigation button[class*="absolute"]:active {
+  transform: translateX(0px);
+}
+
+/* Standalone toggle button styles - Simplified */
+button[class*="fixed"][class*="left-3"] {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+button[class*="fixed"][class*="left-3"]:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+button[class*="fixed"][class*="left-3"]:active {
+  transform: scale(1);
+}
+
+/* Sidebar action buttons */
+.sidebar-navigation .space-y-2 button {
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.sidebar-navigation .space-y-2 button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Custom scrollbar for navigation sidebar */
+.sidebar-navigation::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar-navigation::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 2px;
+}
+
+.sidebar-navigation::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 2px;
+}
+
+.sidebar-navigation::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+/* Navigation button animations */
+.nav-button {
+  transition: all 0.2s ease;
+}
+
+.nav-button:hover {
+  transform: translateX(2px);
+}
+
+.nav-button.active {
+  position: relative;
+}
+
+.nav-button.active::before {
+  content: "";
+  position: absolute;
+  left: -12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 100%;
+  background-color: #3b82f6;
+  border-radius: 0 2px 2px 0;
+}
+
+/* Focus styles for better accessibility */
+.nav-button:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Animation for section highlighting when navigating */
+@keyframes sectionHighlight {
+  0% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.4);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+  }
+}
+
+.section-highlight {
+  animation: sectionHighlight 1s ease-out;
+}
+
+/* Loading screen animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes bounce {
+  0%,
+  20%,
+  53%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40%,
+  43% {
+    transform: translateY(-20px);
+  }
+  70% {
+    transform: translateY(-10px);
+  }
+  90% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+/* Loading skeleton animation */
+.loading-skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, transparent 50%, #f0f0f0 75%);
+  background-size: 200px 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Enhanced navigation tooltip */
+.nav-tooltip {
+  animation: fadeIn 0.3s ease-out;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.nav-tooltip::before {
+  content: "";
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 8px solid transparent;
+  border-right-color: rgba(0, 0, 0, 0.9);
+}
+
+/* FadeIn animation class */
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Section cards enhancement - No hover effects */
+.sheet {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.sheet::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(
+    45deg,
+    rgba(59, 130, 246, 0.1),
+    rgba(147, 197, 253, 0.1)
+  );
+  border-radius: 8px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+/* Removed hover effect for sheet */
+/* .sheet:hover::before {
+  opacity: 1;
+} */
+
+/* Progress bar animation */
+@keyframes progressFill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.progress-fill {
+  transform-origin: left center;
+  animation: progressFill 0.5s ease-out;
+}
+
+/* Enhanced hover effects */
+.nav-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.nav-button:hover::before {
+  left: 100%;
+}
+
+/* Section number badge animation - No hover effects */
+.section-badge {
+  transform: scale(1); /* Always at normal size */
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Removed hover effect for section badge */
+/* .sheet:hover .section-badge {
+  transform: scale(1);
+} */
+
+/* Loading dots animation */
+@keyframes loadingDots {
+  0%,
+  80%,
+  100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.loading-dot:nth-child(1) {
+  animation: loadingDots 1.4s infinite ease-in-out;
+  animation-delay: -0.32s;
+}
+
+.loading-dot:nth-child(2) {
+  animation: loadingDots 1.4s infinite ease-in-out;
+  animation-delay: -0.16s;
+}
+
+.loading-dot:nth-child(3) {
+  animation: loadingDots 1.4s infinite ease-in-out;
+}
+
+/* Smooth transitions for all interactive elements */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+.nav-button,
+.sheet {
+  will-change: transform;
+}
+
+/* Scroll indicator animation */
+@keyframes scrollIndicator {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
+.scroll-indicator {
+  animation: scrollIndicator 2s infinite;
+}
+
+/* Responsive design for smaller screens */
+@media screen and (max-width: 1024px) {
+  .sidebar-navigation {
+    width: 280px; /* Slightly wider on mobile */
+    transform: translateX(-100%);
+  }
+
+  .sidebar-navigation.mobile-open {
+    transform: translateX(0);
+  }
+
+  .main-content-with-sidebar {
+    margin-left: 0;
+  }
+
+  /* Hide attached toggle button on mobile */
+  .sidebar-navigation button[class*="absolute"] {
+    display: none;
+  }
+
+  /* Adjust standalone toggle button for mobile */
+  button[class*="fixed"][class*="left-5"] {
+    width: 3rem;
+    height: 3rem;
+    left: 1rem;
+    top: 1rem;
+  }
+
+  /* Overlay for mobile */
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 35;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .sidebar-navigation {
+    width: 100vw;
+    max-width: 320px;
+  }
+}
+
+/* Print optimizations */
+@media print {
+  .sidebar-navigation,
+  .fixed {
+    display: none !important;
+  }
+
+  .main-content-with-sidebar {
+    margin-left: 0 !important;
   }
 }
