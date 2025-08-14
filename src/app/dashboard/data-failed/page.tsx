@@ -4,12 +4,13 @@ import TableInspectionReviewer from "../../../components/Table/TableFailed";
 import { toast } from "../../../components/ui/use-toast";
 import { getDataForReviewer } from "../../../lib/features/inspection/inspectionSlice";
 import { useTheme } from "../../../contexts/ThemeContext";
+import useAuth from "../../../hooks/useAuth";
 
 import { AppDispatch, RootState } from "../../../lib/store";
 import { useEffect, useState } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
-import TableInBlockchain from "@/components/Table/TableInBlockchain";
+import TableFailed from "../../../components/Table/TableFailed";
 
 const Header = ({
   dataCount,
@@ -23,9 +24,9 @@ const Header = ({
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
       <div className="flex justify-between items-center">
         <div className="flex items-center space-x-4">
-          <div className="flex items-center justify-center w-12 h-12 bg-green-100 dark:bg-green-900 rounded-lg">
+          <div className="flex items-center justify-center w-12 h-12 bg-red-100 dark:bg-red-900 rounded-lg">
             <svg
-              className="w-6 h-6 text-green-600 dark:text-green-300"
+              className="w-6 h-6 text-red-600 dark:text-red-300"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -40,12 +41,12 @@ const Header = ({
           </div>
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-              Blockchain
+              Data Gagal
             </h1>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
               {dataCount > 0
-                ? `${dataCount} inspeksi telah disetujui`
-                : "Belum ada data yang disetujui"}
+                ? `${dataCount} inspeksi telah gagal`
+                : "Belum ada data yang gagal"}
             </p>
           </div>
         </div>
@@ -69,10 +70,10 @@ const Header = ({
             </svg>
             Refresh
           </button>
-          <div className="flex items-center px-3 py-2 bg-green-50 dark:bg-green-900 rounded-md">
-            <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-            <span className="text-sm font-medium text-green-700 dark:text-green-300">
-              In Blockchain
+          <div className="flex items-center px-3 py-2 bg-red-50 dark:bg-red-900 rounded-md">
+            <div className="w-2 h-2 bg-red-500 rounded-full mr-2"></div>
+            <span className="text-sm font-medium text-red-700 dark:text-red-300">
+              Failed
             </span>
           </div>
         </div>
@@ -120,11 +121,19 @@ const Database: React.FC = () => {
   const [metapage, setMetapage] = useState({});
   const [hasMounted, setHasMounted] = useState(false);
   const { isLoading } = useSelector((state: RootState) => state.inspection);
-
+  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const { user } = useAuth();
+  const isAdmin = user?.role === "ADMIN";
   const fetchData = (pageNum = page) => {
+    // Only fetch if user is authenticated
+    if (!isAuthenticated || !user) {
+      console.log("User not authenticated, skipping data fetch");
+      return;
+    }
+
     dispatch(
       getDataForReviewer({
-        status: "ARCHIVED",
+        status: "FAIL_ARCHIVE",
         page: pageNum,
         pageSize: 10,
       })
@@ -153,13 +162,30 @@ const Database: React.FC = () => {
   const handleRefresh = () => {
     fetchData();
   };
-
   useEffect(() => {
     setHasMounted(true);
-    fetchData();
-  }, [dispatch]);
-
+    // Only fetch data if user is authenticated
+    if (isAuthenticated && user) {
+      fetchData();
+    }
+  }, [dispatch, isAuthenticated, user]);
   if (!hasMounted) return null; // Hindari render di server
+
+  // If user is not authenticated, show message
+  if (!isAuthenticated) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+            Access Denied
+          </h2>
+          <p className="text-gray-600 dark:text-gray-400">
+            Please log in to access the database.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -172,12 +198,13 @@ const Database: React.FC = () => {
           <LoadingSkeleton rows={5} />
         </div>
       ) : data && data.length > 0 ? (
-        <TableInBlockchain
+        <TableFailed
           isDatabase={true}
           data={data}
           meta={metapage}
           onPageChange={handlePageChange}
           handleRefresh={handleRefresh}
+          userRole={user?.role}
         />
       ) : (
         <div className="flex flex-col items-center justify-center py-16 px-4">

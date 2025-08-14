@@ -210,6 +210,10 @@ const TableData = ({
     setConfirmMintDialog({ isOpen: true, itemId: id });
   };
 
+  const getNameFile = (pathPdf: string) => {
+    return pathPdf.split("/").pop();
+  };
+
   const PDF_URL = process.env.NEXT_PUBLIC_PDF_URL;
 
   const getStatusBadge = (status: string) => {
@@ -558,7 +562,11 @@ const TableData = ({
                     ) : (
                       <a
                         href={PDF_URL + item.urlPdf}
-                        download
+                        download={
+                          item.urlPdf ? getNameFile(item.urlPdf) : undefined
+                        }
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-green-600 hover:text-green-800 transition-colors duration-200"
                       >
                         <svg
@@ -835,18 +843,67 @@ const TableData = ({
 interface TableInfoProps {
   data: any;
   onPageChange?: (page: number) => void;
+  storageKey?: string; // Optional key for localStorage
 }
 
-const TableInfo: React.FC<TableInfoProps> = ({ data, onPageChange }) => {
-  const [page, setPage] = useState(data.page || 1);
+const TableInfo: React.FC<TableInfoProps> = ({
+  data,
+  onPageChange,
+  storageKey,
+}) => {
+  // Generate a default storage key based on current pathname if not provided
+  const getStorageKey = () => {
+    if (storageKey) return storageKey;
+    if (typeof window !== "undefined") {
+      return `table-page-${window.location.pathname.replace(/\//g, "-")}`;
+    }
+    return "table-page-default";
+  };
+
+  // Load saved page from localStorage on component mount
+  const getSavedPage = () => {
+    if (typeof window !== "undefined") {
+      const key = getStorageKey();
+      const savedPage = localStorage.getItem(key);
+      if (savedPage) {
+        const pageNum = parseInt(savedPage, 10);
+        const totalPage = data.totalPages || 1;
+        // Ensure saved page is within valid range
+        if (pageNum >= 1 && pageNum <= totalPage) {
+          return pageNum;
+        }
+      }
+    }
+    return data.page || 1;
+  };
+
+  const [page, setPage] = useState(getSavedPage);
   const [inputPage, setInputPage] = useState("");
   const MAX = data.pageSize || 10;
   const dataCount = data.total || 0;
   const totalPage = data.totalPages || 1;
 
   React.useEffect(() => {
-    setPage(data.page || 1);
+    const newPage = data.page || 1;
+    setPage(newPage);
   }, [data.page]);
+
+  // Save page to localStorage whenever page changes
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      const key = getStorageKey();
+      localStorage.setItem(key, page.toString());
+    }
+  }, [page]);
+
+  // Initialize page from localStorage on first load
+  React.useEffect(() => {
+    const savedPage = getSavedPage();
+    if (savedPage !== page && savedPage !== (data.page || 1)) {
+      // Trigger page change if saved page is different from current
+      handlePageChange(savedPage);
+    }
+  }, []); // Only run on mount
 
   const startIdx = dataCount === 0 ? 0 : (page - 1) * MAX + 1;
   const endIdx = Math.min(page * MAX, dataCount);
@@ -1106,6 +1163,11 @@ const TableInspectionReviewer = ({
                 <TableInfo
                   data={displayMeta}
                   onPageChange={searchTerm.trim() ? undefined : onPageChange}
+                  storageKey={
+                    isDatabase
+                      ? "table-database-page"
+                      : "table-inspection-reviewer-page"
+                  }
                 />
               </div>
             )}

@@ -139,6 +139,20 @@ const updatePhoto = async (
   return response.data;
 };
 
+const returnToReview = async (id: string) => {
+  const response = await apiClient.patch(
+    `${LOCAL_API_URL}/inspections/${id}/return-to-review`
+  );
+  return response.data;
+};
+
+const markAsApproved = async (id: string) => {
+  const response = await apiClient.patch(
+    `${LOCAL_API_URL}/inspections/${id}/approve`
+  );
+  return response.data;
+};
+
 const inspectionService = {
   getDataForReview,
   getDataForPreview,
@@ -150,5 +164,7 @@ const inspectionService = {
   searchByVehiclePlat,
   searchByKeyword,
   updatePhoto,
+  returnToReview,
+  markAsApproved,
 };
 export default inspectionService;
