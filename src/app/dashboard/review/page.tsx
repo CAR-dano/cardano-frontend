@@ -81,7 +81,24 @@ const Header = ({
 
 const Review: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const [page, setPage] = useState(1);
+
+  // Function to get saved page from localStorage
+  const getSavedPage = () => {
+    if (typeof window !== "undefined") {
+      const key = "table-inspection-reviewer-page";
+      const savedPage = localStorage.getItem(key);
+      if (savedPage) {
+        const pageNum = parseInt(savedPage, 10);
+        // Ensure saved page is within valid range (basic validation)
+        if (pageNum >= 1) {
+          return pageNum;
+        }
+      }
+    }
+    return 1;
+  };
+
+  const [page, setPage] = useState(getSavedPage);
   const [metapage, setMetapage] = useState({});
   const { data, isLoading, meta } = useSelector(
     (state: RootState) => state.inspection
@@ -111,6 +128,13 @@ const Review: React.FC = () => {
   const handlePageChange = (newPage: number) => {
     if (!accessToken) return;
     setPage(newPage);
+
+    // Save to localStorage
+    if (typeof window !== "undefined") {
+      const key = "table-inspection-reviewer-page";
+      localStorage.setItem(key, newPage.toString());
+    }
+
     dispatch(
       getDataForReviewer({
         status: "NEED_REVIEW",

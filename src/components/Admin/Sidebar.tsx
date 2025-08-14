@@ -26,6 +26,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
+import { MdSmsFailed } from "react-icons/md";
 
 interface MenuItemProps {
   title: string;
@@ -121,43 +122,49 @@ const menu = [
     title: "Dashboard",
     link: "/dashboard",
     children: <LuLayoutDashboard size={20} />,
-    access: ["ADMIN", "REVIEWER"],
+    access: ["SUPERADMIN", "ADMIN", "REVIEWER"],
   },
   {
     title: "Draft Reviewer",
     link: "/dashboard/review",
     children: <LuClipboardList size={20} />,
-    access: ["ADMIN", "REVIEWER"],
+    access: ["SUPERADMIN", "ADMIN", "REVIEWER"],
   },
   {
     title: "Data Approved",
     link: "/dashboard/database",
     children: <AiFillDatabase size={20} />,
-    access: ["ADMIN", "REVIEWER"],
+    access: ["SUPERADMIN", "ADMIN", "REVIEWER"],
   },
   {
     title: "Blockchain",
     link: "/dashboard/blockchain",
     children: <SiHiveBlockchain size={20} />,
-    access: ["ADMIN"],
+    access: ["SUPERADMIN", "ADMIN"],
   },
   {
     title: "User Management",
     link: "/dashboard/usermanagement",
     children: <FaUserGroup size={20} />,
-    access: ["ADMIN"],
+    access: ["SUPERADMIN", "ADMIN"],
   },
   {
     title: "Inspector",
     link: "/dashboard/inspector",
     children: <FaUserTie size={20} />,
-    access: ["ADMIN"],
+    access: ["SUPERADMIN", "ADMIN"],
   },
   {
     title: "Branch",
     link: "/dashboard/branch",
     children: <FaCodeBranch size={20} />,
-    access: ["ADMIN"],
+    access: ["SUPERADMIN", "ADMIN"],
+  },
+  {
+    title: "Data Failed",
+    link: "/dashboard/data-failed",
+    children: <MdSmsFailed size={20} />,
+    access: ["SUPERADMIN"],
   },
 ];
 

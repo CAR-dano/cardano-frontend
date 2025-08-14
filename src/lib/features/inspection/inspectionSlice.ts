@@ -190,6 +190,32 @@ export const searchByKeyword = createAsyncThunk(
   }
 );
 
+export const returnToReview = createAsyncThunk(
+  "inspection/returnToReview",
+  async (id: string, thunkAPI) => {
+    try {
+      const payload = await inspectionService.returnToReview(id);
+      return payload;
+    } catch (error: any) {
+      const message = error?.response?.data?.message;
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const markAsApproved = createAsyncThunk(
+  "inspection/markAsApproved",
+  async (id: string, thunkAPI) => {
+    try {
+      const payload = await inspectionService.markAsApproved(id);
+      return payload;
+    } catch (error: any) {
+      const message = error?.response?.data?.message;
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const updatePhoto = createAsyncThunk(
   "inspection/updatePhoto",
   async (
@@ -469,6 +495,28 @@ export const inspectionSlice = createSlice({
         state.searchResults.data = [];
         state.searchResults.meta = null;
         state.searchResults.error = action.payload as string;
+      })
+      .addCase(returnToReview.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(returnToReview.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(returnToReview.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(markAsApproved.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(markAsApproved.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(markAsApproved.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
       });
   },
 });

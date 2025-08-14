@@ -116,7 +116,24 @@ const SearchBar = ({ setQuery, setFilter }: any) => {
 const Database: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [data, setData] = useState<any>(null);
-  const [page, setPage] = useState(1);
+
+  // Function to get saved page from localStorage
+  const getSavedPage = () => {
+    if (typeof window !== "undefined") {
+      const key = "table-database-page";
+      const savedPage = localStorage.getItem(key);
+      if (savedPage) {
+        const pageNum = parseInt(savedPage, 10);
+        // Ensure saved page is within valid range (basic validation)
+        if (pageNum >= 1) {
+          return pageNum;
+        }
+      }
+    }
+    return 1;
+  };
+
+  const [page, setPage] = useState(getSavedPage);
   const [metapage, setMetapage] = useState({});
   const [hasMounted, setHasMounted] = useState(false);
   const { isLoading } = useSelector((state: RootState) => state.inspection);
@@ -155,6 +172,13 @@ const Database: React.FC = () => {
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
+
+    // Save to localStorage
+    if (typeof window !== "undefined") {
+      const key = "table-database-page";
+      localStorage.setItem(key, newPage.toString());
+    }
+
     fetchData(newPage);
   };
 
