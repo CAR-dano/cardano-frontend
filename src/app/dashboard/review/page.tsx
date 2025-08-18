@@ -125,6 +125,18 @@ const Review: React.FC = () => {
       );
     }
   }, [dispatch, hasMounted, page, accessToken]);
+
+  // Reset page to 1 if data is empty after fetching
+  useEffect(() => {
+    if (!isLoading && data && data.length === 0 && page !== 1) {
+      setPage(1);
+      if (typeof window !== "undefined") {
+        const key = "table-inspection-reviewer-page";
+        localStorage.setItem(key, "1");
+      }
+    }
+  }, [isLoading, data, page]);
+
   const handlePageChange = (newPage: number) => {
     if (!accessToken) return;
     setPage(newPage);
