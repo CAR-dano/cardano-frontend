@@ -13,11 +13,11 @@ const publicPaths = ["/auth", "/", "/result"];
 // Token refresh interval in milliseconds (15 minutes)
 const TOKEN_REFRESH_INTERVAL = 30 * 60 * 1000;
 
-// Session timeout in milliseconds (120 minutes of inactivity)
-const SESSION_TIMEOUT = 120 * 60 * 1000;
+// Session timeout in milliseconds (effectively disabled by setting a very large value)
+const SESSION_TIMEOUT = 9999 * 24 * 60 * 60 * 1000; // Approximately 9999 days
 
-// Warning before session timeout in milliseconds (1 minute before timeout)
-const WARNING_BEFORE_TIMEOUT = 60 * 1000;
+// Warning before session timeout in milliseconds (set to a value larger than SESSION_TIMEOUT to prevent warning)
+const WARNING_BEFORE_TIMEOUT = SESSION_TIMEOUT + 1000;
 
 export default function useAuth() {
   const dispatch = useDispatch<AppDispatch>();
@@ -66,40 +66,13 @@ export default function useAuth() {
     }
   };
 
-  // Check for session timeout
+  // Disable session timeout checks
   const checkSessionTimeout = () => {
-    if (!isAuthenticated) return;
-
-    const now = Date.now();
-    const inactiveTime = now - lastActivity;
-
-    // If the warning is already showing, don't show it again
-    if (isTimeoutWarningOpen) return;
-
-    // If approaching timeout, show warning
-    if (inactiveTime >= SESSION_TIMEOUT - WARNING_BEFORE_TIMEOUT) {
-      setIsTimeoutWarningOpen(true);
-      setTimeoutWarningTimestamp(now);
-    }
+    // No action needed as session timeout is effectively disabled
   };
 
-  // Handle session timeout
   const handleSessionTimeout = () => {
-    // Only timeout if the warning was shown and not interacted with
-    if (isTimeoutWarningOpen && timeoutWarningTimestamp) {
-      const now = Date.now();
-      const timeoutWarningTime = now - timeoutWarningTimestamp;
-      if (timeoutWarningTime >= WARNING_BEFORE_TIMEOUT) {
-        handleLogout();
-
-        // Show toast notification for session expiration
-        toast({
-          title: "Session Expired",
-          description: "You have been logged out due to inactivity.",
-          variant: "destructive",
-        });
-      }
-    }
+    // No action needed as session timeout is effectively disabled
   };
 
   // Cleanup function to cancel any ongoing requests
@@ -151,24 +124,24 @@ export default function useAuth() {
       window.addEventListener(event, updateLastActivity);
     });
 
-    // Set up session timeout checker
-    const timeoutId = setInterval(() => {
-      checkSessionTimeout();
-      // Also handle the actual timeout
-      if (isTimeoutWarningOpen) {
-        handleSessionTimeout();
-      }
-    }, 15000); // Check every 15 seconds
+    // Disable session timeout checker
+    // const timeoutId = setInterval(() => {
+    //   checkSessionTimeout();
+    //   // Also handle the actual timeout
+    //   if (isTimeoutWarningOpen) {
+    //     handleSessionTimeout();
+    //   }
+    // }, 15000); // Check every 15 seconds
 
-    setSessionTimeoutId(timeoutId);
+    // setSessionTimeoutId(timeoutId);
 
     return () => {
       events.forEach((event) => {
         window.removeEventListener(event, updateLastActivity);
       });
-      if (sessionTimeoutId) {
-        clearInterval(sessionTimeoutId);
-      }
+      // if (sessionTimeoutId) {
+      //   clearInterval(sessionTimeoutId);
+      // }
     };
   }, [
     isAuthenticated,
