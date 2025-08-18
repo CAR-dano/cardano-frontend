@@ -605,8 +605,8 @@ export default function CekValiditasPage() {
         }
       );
 
-      if (response.data && response.data.pdfFileHash) {
-        return response.data.pdfFileHash;
+      if (response.data && response.data.pdfFileHashNoDocs) {
+        return response.data.pdfFileHashNoDocs;
       }
       return null;
     } catch (error) {
