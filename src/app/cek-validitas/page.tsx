@@ -581,6 +581,7 @@ export default function CekValiditasPage() {
   const [numberPlate, setNumberPlate] = useState("");
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [blockchainUrl, setBlockchainUrl] = useState<string | null>(null);
   const [verificationResult, setVerificationResult] =
     useState<VerificationResult | null>(null);
 
@@ -605,8 +606,9 @@ export default function CekValiditasPage() {
         }
       );
 
-      if (response.data && response.data.pdfFileHash) {
-        return response.data.pdfFileHash;
+      if (response.data && response.data.pdfFileHashNoDocs) {
+        setBlockchainUrl(response.data.blockchainTxHash);
+        return response.data.pdfFileHashNoDocs;
       }
       return null;
     } catch (error) {
@@ -625,7 +627,7 @@ export default function CekValiditasPage() {
       const result: VerificationResult = {
         numberPlate,
         uploadedHash,
-        blockchainHash,
+        blockchainHash: blockchainHash,
         isVerified: blockchainHash !== null && uploadedHash === blockchainHash,
         timestamp: new Date().toISOString(),
         isVehicleFound: blockchainHash !== null,
@@ -944,9 +946,7 @@ export default function CekValiditasPage() {
                       {verificationResult.isVerified && (
                         <div className="flex justify-center pt-4 border-t border-slate-200 dark:border-slate-700">
                           <CardanoScanViewButton
-                            hash={
-                              verificationResult.blockchainHash || undefined
-                            }
+                            hash={blockchainUrl || undefined}
                             type="tx"
                             prominent={true}
                             size="lg"
