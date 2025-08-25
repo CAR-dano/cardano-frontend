@@ -741,7 +741,7 @@ const Halaman1: React.FC<Halaman1Props> = ({
                         onClose: () => {},
                       })
                     }
-                    src="/assets/icon/odometerreset.png"
+                    src="/assets/icon/indikasiodometerreset.png"
                     alt="ok"
                     className={` w-18 h-16 -ml-1
                       ${
@@ -772,7 +772,7 @@ const Halaman1: React.FC<Halaman1Props> = ({
                         onClose: () => {},
                       })
                     }
-                    src="/assets/icon/tidakodometer.png"
+                    src="/assets/icon/tidakodometerreset.png"
                     alt="ok"
                     className={`w-18 h-16 -ml-1
                       ${
