@@ -78,7 +78,7 @@ const Navbar = () => {
             <a href="https://inspeksimobil.id/services/">Services</a>
           </li>
           <li className="text-base font-semibold group cursor-pointer hover:text-orange-400">
-            <a href="https://inspeksimobil.id/price-list/">Services</a>
+            <a href="https://inspeksimobil.id/price-list/">Price List</a>
           </li>
           <li className="text-base font-semibold group cursor-pointer hover:text-orange-400">
             <a href="https://inspeksimobil.id/booking/">Booking</a>
