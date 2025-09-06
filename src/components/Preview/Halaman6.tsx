@@ -2,6 +2,7 @@ import React from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import PenilaianHasil from "./PenilaianHasil";
+import Image from "next/image";
 
 interface Halaman6Props {
   data: any;
@@ -24,7 +25,7 @@ const Halaman6: React.FC<Halaman6Props> = ({
     }
   };
 
-  const PHOTO_URL = process.env.NEXT_PUBLIC_PDF_URL;
+  const PHOTO_URL = process.env.NEXT_PUBLIC_API_URL;
 
   const formatPath = (path: string) => {
     if (!path) return "/assets/placeholder-photo.png";
@@ -150,13 +151,15 @@ const Halaman6: React.FC<Halaman6Props> = ({
                 key={index}
                 className=" flex items-center justify-center flex-col"
               >
-                <img
+                <Image
                   src={
                     photo.path
                       ? formatPath(photo.path)
                       : "/assets/placeholder-photo.png"
                   }
                   alt={photo.label}
+                  width={220}
+                  height={150}
                   className="w-[220px] h-[150px] object-cover"
                 />
                 <p className="text-center text-[16px] font-semibold mt-2">

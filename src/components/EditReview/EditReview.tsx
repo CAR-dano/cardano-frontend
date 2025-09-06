@@ -180,8 +180,17 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
     const fotoGeneralTambahan = data?.photos?.filter(
       (photo: any) => photo.category === "General Tambahan"
     );
+    const fotoGeneralNewPath = data?.photos?.filter(
+      (photo: any) => photo.category === "general"
+    );
 
     fotoGeneralWajib?.sort((a: any, b: any) => {
+      const indexA = SortingGeneralData.indexOf(a.label);
+      const indexB = SortingGeneralData.indexOf(b.label);
+      return indexA - indexB;
+    });
+
+    fotoGeneralNewPath?.sort((a: any, b: any) => {
       const indexA = SortingGeneralData.indexOf(a.label);
       const indexB = SortingGeneralData.indexOf(b.label);
       return indexA - indexB;
@@ -190,6 +199,7 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
     const sortedFotoGeneral = [
       ...(fotoGeneralWajib || []),
       ...(fotoGeneralTambahan || []),
+      ...(fotoGeneralNewPath || []),
     ];
 
     const fotoGeneralHalaman6 = sortedFotoGeneral.slice(0, 6);
@@ -215,8 +225,17 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
     const exteriorTambahanPhotos = data?.photos?.filter(
       (photo: any) => photo.category === "Eksterior Tambahan"
     );
+    const exteriorNewPathPhotos = data?.photos?.filter(
+      (photo: any) => photo.category === "exterior"
+    );
 
     exteriorWajibPhotos?.sort((a: any, b: any) => {
+      const indexA = SortingExteriorData.indexOf(a.label);
+      const indexB = SortingExteriorData.indexOf(b.label);
+      return indexA - indexB;
+    });
+
+    exteriorNewPathPhotos?.sort((a: any, b: any) => {
       const indexA = SortingExteriorData.indexOf(a.label);
       const indexB = SortingExteriorData.indexOf(b.label);
       return indexA - indexB;
@@ -225,6 +244,7 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
     const sortedExteriorPhotos = [
       ...(exteriorWajibPhotos || []),
       ...(exteriorTambahanPhotos || []),
+      ...(exteriorNewPathPhotos || []),
     ];
 
     const paginatedExteriorPhotos = [];
@@ -240,8 +260,17 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
     const interiorTambahanPhotos = data?.photos?.filter(
       (photo: any) => photo.category === "Interior Tambahan"
     );
+    const interiorNewPathPhotos = data?.photos?.filter(
+      (photo: any) => photo.category === "interior"
+    );
 
     interiorWajibPhotos?.sort((a: any, b: any) => {
+      const indexA = SortingInteriorData.indexOf(a.label);
+      const indexB = SortingInteriorData.indexOf(b.label);
+      return indexA - indexB;
+    });
+
+    interiorNewPathPhotos?.sort((a: any, b: any) => {
       const indexA = SortingInteriorData.indexOf(a.label);
       const indexB = SortingInteriorData.indexOf(b.label);
       return indexA - indexB;
@@ -250,6 +279,7 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
     const sortedInteriorPhotos = [
       ...(interiorWajibPhotos || []),
       ...(interiorTambahanPhotos || []),
+      ...(interiorNewPathPhotos || []),
     ];
 
     const paginatedInteriorPhotos = [];
@@ -265,6 +295,15 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
     const mesinTambahanPhotos = data?.photos?.filter(
       (photo: any) => photo.category === "Mesin Tambahan"
     );
+    const mesinNewPathPhotos = data?.photos?.filter(
+      (photo: any) => photo.category === "engine"
+    );
+
+    mesinNewPathPhotos?.sort((a: any, b: any) => {
+      const indexA = SortingMesinData.indexOf(a.label);
+      const indexB = SortingMesinData.indexOf(b.label);
+      return indexA - indexB;
+    });
 
     mesinWajibPhotos?.sort((a: any, b: any) => {
       const indexA = SortingMesinData.indexOf(a.label);
@@ -275,6 +314,7 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
     const sortedMesinPhotos = [
       ...(mesinWajibPhotos || []),
       ...(mesinTambahanPhotos || []),
+      ...(mesinNewPathPhotos || []),
     ];
 
     const paginatedMesinPhotos = [];
@@ -290,8 +330,17 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
     const kakiKakiTambahanPhotos = data?.photos?.filter(
       (photo: any) => photo.category === "KakiKaki Tambahan"
     );
+    const kakiKakiNewPathPhotos = data?.photos?.filter(
+      (photo: any) => photo.category === "chassis"
+    );
 
     kakiKakiWajibPhotos?.sort((a: any, b: any) => {
+      const indexA = SortingKakiKakiData.indexOf(a.label);
+      const indexB = SortingKakiKakiData.indexOf(b.label);
+      return indexA - indexB;
+    });
+
+    kakiKakiNewPathPhotos?.sort((a: any, b: any) => {
       const indexA = SortingKakiKakiData.indexOf(a.label);
       const indexB = SortingKakiKakiData.indexOf(b.label);
       return indexA - indexB;
@@ -300,6 +349,7 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
     const sortedKakiKakiPhotos = [
       ...(kakiKakiWajibPhotos || []),
       ...(kakiKakiTambahanPhotos || []),
+      ...(kakiKakiNewPathPhotos || []),
     ];
 
     const paginatedKakiKakiPhotos = [];
@@ -315,8 +365,17 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
     const alatAlatTambahanPhotos = data?.photos?.filter(
       (photo: any) => photo.category === "Alat-alat Tambahan"
     );
+    const alatAlatNewPathPhotos = data?.photos?.filter(
+      (photo: any) => photo.category === "tools"
+    );
 
     alatAlatWajibPhotos?.sort((a: any, b: any) => {
+      const indexA = SortingAlatAlatData.indexOf(a.label);
+      const indexB = SortingAlatAlatData.indexOf(b.label);
+      return indexA - indexB;
+    });
+
+    alatAlatNewPathPhotos?.sort((a: any, b: any) => {
       const indexA = SortingAlatAlatData.indexOf(a.label);
       const indexB = SortingAlatAlatData.indexOf(b.label);
       return indexA - indexB;
@@ -325,6 +384,7 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
     const sortedAlatAlatPhotos = [
       ...(alatAlatWajibPhotos || []),
       ...(alatAlatTambahanPhotos || []),
+      ...(alatAlatNewPathPhotos || []),
     ];
 
     const paginatedAlatAlatPhotos = [];
@@ -344,10 +404,20 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
     const fotoDokumenPhotos = data?.photos?.filter(
       (photo: any) => photo.category === "Foto Dokumen"
     );
+    const newPathFotoDokumenPhotos = data?.photos?.filter(
+      (photo: any) => photo.category === "document"
+    );
+
+    const combinedFotoDokumenPhotos = [
+      ...(fotoDokumenPhotos || []),
+      ...(newPathFotoDokumenPhotos || []),
+    ];
 
     const paginatedFotoDokumenPhotos = [];
-    for (let i = 0; i < (fotoDokumenPhotos || []).length; i += 2) {
-      paginatedFotoDokumenPhotos.push(fotoDokumenPhotos.slice(i, i + 2));
+    for (let i = 0; i < (combinedFotoDokumenPhotos || []).length; i += 2) {
+      paginatedFotoDokumenPhotos.push(
+        combinedFotoDokumenPhotos.slice(i, i + 2)
+      );
     }
     setDataHalamanFotoDokumenPhotos(paginatedFotoDokumenPhotos);
 

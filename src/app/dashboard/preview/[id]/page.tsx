@@ -257,9 +257,8 @@ Print sekarang?
   }, []);
 
   const getImageTampakDepan = (data: any) => {
-    // find in data.photos with displayInPdf filter
     const photo = data?.photos?.find(
-      (item: any) => item.label === "Tampak Depan" && item.displayInPdf === true
+      (item: any) => item.label === "Tampak Depan"
     );
     return photo ? photo.path : "";
   };
@@ -306,8 +305,18 @@ Print sekarang?
       (photo: any) =>
         photo.category === "General Tambahan" && photo.displayInPdf === true
     );
+    const fotoGeneralNewPath = data?.photos?.filter(
+      (photo: any) =>
+        photo.category === "general" && photo.displayInPdf === true
+    );
 
     fotoGeneralWajib?.sort((a: any, b: any) => {
+      const indexA = SortingGeneralData.indexOf(a.label);
+      const indexB = SortingGeneralData.indexOf(b.label);
+      return indexA - indexB;
+    });
+
+    fotoGeneralNewPath?.sort((a: any, b: any) => {
       const indexA = SortingGeneralData.indexOf(a.label);
       const indexB = SortingGeneralData.indexOf(b.label);
       return indexA - indexB;
@@ -316,6 +325,7 @@ Print sekarang?
     const sortedFotoGeneral = [
       ...(fotoGeneralWajib || []),
       ...(fotoGeneralTambahan || []),
+      ...(fotoGeneralNewPath || []),
     ];
 
     const fotoGeneralHalaman6 = sortedFotoGeneral.slice(0, 6);
@@ -343,8 +353,18 @@ Print sekarang?
       (photo: any) =>
         photo.category === "Eksterior Tambahan" && photo.displayInPdf === true
     );
+    const exteriorNewPathPhotos = data?.photos?.filter(
+      (photo: any) =>
+        photo.category === "exterior" && photo.displayInPdf === true
+    );
 
     exteriorWajibPhotos?.sort((a: any, b: any) => {
+      const indexA = SortingExteriorData.indexOf(a.label);
+      const indexB = SortingExteriorData.indexOf(b.label);
+      return indexA - indexB;
+    });
+
+    exteriorNewPathPhotos?.sort((a: any, b: any) => {
       const indexA = SortingExteriorData.indexOf(a.label);
       const indexB = SortingExteriorData.indexOf(b.label);
       return indexA - indexB;
@@ -353,6 +373,7 @@ Print sekarang?
     const sortedExteriorPhotos = [
       ...(exteriorWajibPhotos || []),
       ...(exteriorTambahanPhotos || []),
+      ...(exteriorNewPathPhotos || []),
     ];
 
     const paginatedExteriorPhotos = [];
@@ -370,8 +391,18 @@ Print sekarang?
       (photo: any) =>
         photo.category === "Interior Tambahan" && photo.displayInPdf === true
     );
+    const interiorNewPathPhotos = data?.photos?.filter(
+      (photo: any) =>
+        photo.category === "interior" && photo.displayInPdf === true
+    );
 
     interiorWajibPhotos?.sort((a: any, b: any) => {
+      const indexA = SortingInteriorData.indexOf(a.label);
+      const indexB = SortingInteriorData.indexOf(b.label);
+      return indexA - indexB;
+    });
+
+    interiorNewPathPhotos?.sort((a: any, b: any) => {
       const indexA = SortingInteriorData.indexOf(a.label);
       const indexB = SortingInteriorData.indexOf(b.label);
       return indexA - indexB;
@@ -380,6 +411,7 @@ Print sekarang?
     const sortedInteriorPhotos = [
       ...(interiorWajibPhotos || []),
       ...(interiorTambahanPhotos || []),
+      ...(interiorNewPathPhotos || []),
     ];
 
     const paginatedInteriorPhotos = [];
@@ -397,6 +429,15 @@ Print sekarang?
       (photo: any) =>
         photo.category === "Mesin Tambahan" && photo.displayInPdf === true
     );
+    const mesinNewPathPhotos = data?.photos?.filter(
+      (photo: any) => photo.category === "engine" && photo.displayInPdf === true
+    );
+
+    mesinNewPathPhotos?.sort((a: any, b: any) => {
+      const indexA = SortingMesinData.indexOf(a.label);
+      const indexB = SortingMesinData.indexOf(b.label);
+      return indexA - indexB;
+    });
 
     mesinWajibPhotos?.sort((a: any, b: any) => {
       const indexA = SortingMesinData.indexOf(a.label);
@@ -407,6 +448,7 @@ Print sekarang?
     const sortedMesinPhotos = [
       ...(mesinWajibPhotos || []),
       ...(mesinTambahanPhotos || []),
+      ...(mesinNewPathPhotos || []),
     ];
 
     const paginatedMesinPhotos = [];
@@ -424,8 +466,18 @@ Print sekarang?
       (photo: any) =>
         photo.category === "KakiKaki Tambahan" && photo.displayInPdf === true
     );
+    const kakiKakiNewPathPhotos = data?.photos?.filter(
+      (photo: any) =>
+        photo.category === "chassis" && photo.displayInPdf === true
+    );
 
     kakiKakiWajibPhotos?.sort((a: any, b: any) => {
+      const indexA = SortingKakiKakiData.indexOf(a.label);
+      const indexB = SortingKakiKakiData.indexOf(b.label);
+      return indexA - indexB;
+    });
+
+    kakiKakiNewPathPhotos?.sort((a: any, b: any) => {
       const indexA = SortingKakiKakiData.indexOf(a.label);
       const indexB = SortingKakiKakiData.indexOf(b.label);
       return indexA - indexB;
@@ -434,6 +486,7 @@ Print sekarang?
     const sortedKakiKakiPhotos = [
       ...(kakiKakiWajibPhotos || []),
       ...(kakiKakiTambahanPhotos || []),
+      ...(kakiKakiNewPathPhotos || []),
     ];
 
     const paginatedKakiKakiPhotos = [];
@@ -451,8 +504,17 @@ Print sekarang?
       (photo: any) =>
         photo.category === "Alat-alat Tambahan" && photo.displayInPdf === true
     );
+    const alatAlatNewPathPhotos = data?.photos?.filter(
+      (photo: any) => photo.category === "tools" && photo.displayInPdf === true
+    );
 
     alatAlatWajibPhotos?.sort((a: any, b: any) => {
+      const indexA = SortingAlatAlatData.indexOf(a.label);
+      const indexB = SortingAlatAlatData.indexOf(b.label);
+      return indexA - indexB;
+    });
+
+    alatAlatNewPathPhotos?.sort((a: any, b: any) => {
       const indexA = SortingAlatAlatData.indexOf(a.label);
       const indexB = SortingAlatAlatData.indexOf(b.label);
       return indexA - indexB;
@@ -461,6 +523,7 @@ Print sekarang?
     const sortedAlatAlatPhotos = [
       ...(alatAlatWajibPhotos || []),
       ...(alatAlatTambahanPhotos || []),
+      ...(alatAlatNewPathPhotos || []),
     ];
 
     const paginatedAlatAlatPhotos = [];
@@ -481,10 +544,21 @@ Print sekarang?
       (photo: any) =>
         photo.category === "Foto Dokumen" && photo.displayInPdf === true
     );
+    const newPathFotoDokumenPhotos = data?.photos?.filter(
+      (photo: any) =>
+        photo.category === "document" && photo.displayInPdf === true
+    );
+
+    const combinedFotoDokumenPhotos = [
+      ...(fotoDokumenPhotos || []),
+      ...(newPathFotoDokumenPhotos || []),
+    ];
 
     const paginatedFotoDokumenPhotos = [];
-    for (let i = 0; i < (fotoDokumenPhotos || []).length; i += 2) {
-      paginatedFotoDokumenPhotos.push(fotoDokumenPhotos.slice(i, i + 2));
+    for (let i = 0; i < (combinedFotoDokumenPhotos || []).length; i += 2) {
+      paginatedFotoDokumenPhotos.push(
+        combinedFotoDokumenPhotos.slice(i, i + 2)
+      );
     }
     setDataHalamanFotoDokumenPhotos(paginatedFotoDokumenPhotos);
 
