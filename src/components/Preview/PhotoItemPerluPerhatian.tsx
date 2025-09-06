@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import FormEditPhoto from "../Form/FormEditPhoto";
+import Image from "next/image";
 
 interface PhotoItemPerluPerhatianProps {
   item: {
@@ -96,13 +97,15 @@ const PhotoItemPerluPerhatian: React.FC<PhotoItemPerluPerhatianProps> = ({
           </div>
         )}
 
-        <img
+        <Image
           src={
             currentPhotoPath
               ? formatPath(currentPhotoPath)
               : "/assets/placeholder-photo.png"
           }
           alt={capitalizedLabel}
+          width={220}
+          height={150}
           className="w-[220px] h-[150px] object-cover "
           key={currentPhotoPath} // Force re-render when path changes
         />
