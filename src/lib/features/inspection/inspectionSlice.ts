@@ -240,6 +240,41 @@ export const updatePhoto = createAsyncThunk(
   }
 );
 
+// Action baru untuk update foto dengan file
+// Digunakan ketika user ingin mengganti foto lama dengan foto baru
+export const updatePhotoWithFile = createAsyncThunk(
+  "inspection/updatePhotoWithFile",
+  async (
+    {
+      id,
+      photosId,
+      data,
+    }: {
+      id: string;
+      photosId: string;
+      data: {
+        needAttention?: boolean;
+        label?: string;
+        displayInPdf?: boolean;
+        file?: File;
+      };
+    },
+    thunkAPI
+  ) => {
+    try {
+      const payload = await inspectionService.updatePhotoWithFile(
+        id,
+        photosId,
+        data
+      );
+      return payload;
+    } catch (error: any) {
+      const message = error?.response?.data?.message;
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export interface EditedItem {
   inspectionId: string;
   fieldName: string;

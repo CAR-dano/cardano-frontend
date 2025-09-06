@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import FormEditPhoto from "../Form/FormEditPhoto";
 
@@ -24,6 +24,13 @@ const PhotoItemWithDynamicText: React.FC<PhotoItemWithDynamicTextProps> = ({
   onPhotoUpdate,
 }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  // State untuk menyimpan path foto terbaru setelah update
+  const [currentPhotoPath, setCurrentPhotoPath] = useState(item.path);
+
+  // Update currentPhotoPath ketika item.path berubah (dari props)
+  useEffect(() => {
+    setCurrentPhotoPath(item.path);
+  }, [item.path]);
 
   const capitalizeWords = (str: string) => {
     if (!str) return "";
@@ -42,6 +49,11 @@ const PhotoItemWithDynamicText: React.FC<PhotoItemWithDynamicTextProps> = ({
   };
 
   const handlePhotoChange = (data: any) => {
+    // Update path foto lokal jika ada path baru dari response API
+    // Ini memungkinkan tampilan foto diupdate langsung tanpa refresh halaman
+    if (data.newPath) {
+      setCurrentPhotoPath(data.newPath);
+    }
     onPhotoUpdate?.(item.id, data);
   };
 
@@ -86,10 +98,11 @@ const PhotoItemWithDynamicText: React.FC<PhotoItemWithDynamicTextProps> = ({
 
         <img
           src={
-            item.path ? formatPath(item.path) : "/assets/placeholder-photo.png"
+            currentPhotoPath ? formatPath(currentPhotoPath) : "/assets/placeholder-photo.png"
           }
           alt={capitalizedLabel}
           className="w-[220px] h-[165px] object-cover "
+          key={currentPhotoPath} // Force re-render when path changes
         />
 
         {/* Status Indicators */}
@@ -112,6 +125,12 @@ const PhotoItemWithDynamicText: React.FC<PhotoItemWithDynamicTextProps> = ({
                 Tidak Tampil PDF
               </span>
             )}
+            {/* Indicator jika foto telah diupdate */}
+            {currentPhotoPath !== item.path && (
+              <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
+                ✓ Foto Diperbarui
+              </span>
+            )}
           </div>
         )}
       </div>
@@ -128,7 +147,7 @@ const PhotoItemWithDynamicText: React.FC<PhotoItemWithDynamicTextProps> = ({
               inputFor={`edit-photo-${item.id}`}
               photo={{
                 id: item.id,
-                path: item.path,
+                path: currentPhotoPath, // Gunakan path terbaru
                 label: item.label,
                 needAttention: item.needAttention || false,
                 displayInPdf: item.displayInPdf || false,
