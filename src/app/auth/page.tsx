@@ -326,9 +326,6 @@ function LoginPage() {
                     bekas, blockchain digunakan untuk mencatat hasil pemeriksaan
                     secara transparan.
                   </p>
-                  <p className="w-full text-right text-white font-rubik text-[16px] font-normal leading-[27px] mt-4">
-                    Pelajari lebih lanjut -&gt;
-                  </p>
                 </motion.div>
               </div>
 
