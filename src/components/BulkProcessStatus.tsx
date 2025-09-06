@@ -13,7 +13,7 @@ import {
   FiAlertCircle,
 } from "react-icons/fi";
 import { clearBulkProcess } from "../lib/features/bulk/bulkSlice";
-
+//test
 const BulkProcessStatus = () => {
   const bulkState = useAppSelector((state) => state.bulk);
   const dispatch = useAppDispatch();
