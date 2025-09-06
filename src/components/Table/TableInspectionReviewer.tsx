@@ -177,8 +177,34 @@ const TableData = ({
     return formatted;
   };
 
+  const changeStatusToIndonesai = (status: string) => {
+    switch (status) {
+      case "NEED_REVIEW":
+        return "Perlu Tinjauan";
+      case "APPROVED":
+        return "Disetujui";
+      case "REJECTED":
+        return "Ditolak";
+      case "ARCHIVED":
+        return "Diarsipkan";
+      default:
+        return status;
+    }
+  };
+
   const formatStatus = (status: string) => {
     const newStatus = status.replace(/_/g, " ").toLowerCase();
+    if (newStatus === "need review") {
+      return "Perlu Tinjauan";
+    } else if (newStatus === "approved") {
+      return "Disetujui";
+    } else if (newStatus === "rejected") {
+      return "Ditolak";
+    } else if (newStatus === "archived") {
+      return "Diarsipkan";
+    }
+    // Default case for any other status
+    // This will capitalize the first letter and return the rest as is
     return newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
   };
 
@@ -406,7 +432,7 @@ const TableData = ({
                 </TableHead>
               )}
               <TableHead className="text-left font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
-                Customer
+                Nama Pelanggan
               </TableHead>
               <TableHead className="text-left font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
                 Kendaraan
@@ -421,7 +447,7 @@ const TableData = ({
                 Dokumen
               </TableHead>
               <TableHead className="text-center font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
-                Actions
+                Aksi
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -557,7 +583,7 @@ const TableData = ({
                             d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
                           />
                         </svg>
-                        Preview
+                        Pratinjau
                       </Link>
                     ) : (
                       <a
@@ -582,7 +608,7 @@ const TableData = ({
                             d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                           />
                         </svg>
-                        Download
+                        Unduh PDF
                       </a>
                     )}
                   </TableCell>
@@ -640,7 +666,7 @@ const TableData = ({
                               d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
                             />
                           </svg>
-                          Mint to Blockchain
+                          Simpan di Blockchain
                         </button>
                       )}
                     </div>
@@ -940,8 +966,8 @@ const TableInfo: React.FC<TableInfoProps> = ({
     <div className="flex justify-between items-center mt-2 text-xs">
       <p className="text-gray-700 dark:text-gray-300">
         {dataCount === 0
-          ? "No entries"
-          : `Showing ${startIdx} to ${endIdx} of ${dataCount} entries`}
+          ? "Tidak ada entri"
+          : `Menampilkan ${startIdx} - ${endIdx} dari ${dataCount} entri`}
       </p>
       {dataCount > 0 &&
         totalPage > 1 && ( // Only show pagination if there's content and more than one page
@@ -1121,7 +1147,7 @@ const TableInspectionReviewer = ({
           <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
           <Input
             type="text"
-            placeholder="Search by customer, plate, or vehicle..."
+            placeholder="Cari berdasarkan nama pelanggan, nomor kendaraan, atau status..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all"
@@ -1134,7 +1160,7 @@ const TableInspectionReviewer = ({
         </div>
         {searchResults.error && (
           <div className="mt-2 text-sm text-red-600 dark:text-red-400">
-            Search error: {searchResults.error}
+            Kesalahan pencarian: {searchResults.error}
           </div>
         )}
       </div>

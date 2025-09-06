@@ -36,6 +36,19 @@ export const login = createAsyncThunk(
   }
 );
 
+export const loginGoogle = createAsyncThunk(
+  "auth/login-google",
+  async (_, thunkAPI) => {
+    try {
+      const payload = await authService.loginGoogle();
+      return payload;
+    } catch (error: any) {
+      const message = error?.response?.data?.message;
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const signup = createAsyncThunk(
   "auth/signup",
   async (user: UserSignUp, thunkAPI) => {
@@ -161,6 +174,24 @@ export const authSlice = createSlice({
         state.accessToken = "";
         state.error = action.error.message || "Login failed";
       })
+      .addCase(loginGoogle.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(loginGoogle.fulfilled, (state, action) => {
+        state.isAuthenticated = true;
+        state.isLoading = false;
+        state.error = null;
+        state.lastTokenCheck = Date.now();
+        state.isAuthInitialized = true;
+      })
+      .addCase(loginGoogle.rejected, (state, action) => {
+        state.isAuthenticated = false;
+        state.isLoading = false;
+        state.user = null;
+        state.accessToken = "";
+        state.error = action.error.message || "Google login failed";
+      })
 
       .addCase(signup.pending, (state) => {
         state.isLoading = true;
@@ -227,6 +258,8 @@ export const authSlice = createSlice({
       .addCase(refreshToken.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message || "Token refresh failed";
+        // Don't logout automatically on refresh failure to prevent loops
+        // Let the component handle this case
       });
   },
 });

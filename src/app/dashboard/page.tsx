@@ -55,7 +55,7 @@ const DashboardHeader = ({
         <div className="flex items-center space-x-3">
           <div className="flex items-center px-3 py-2 bg-green-50 rounded-md">
             <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-            <span className="text-sm font-medium text-green-700">Live</span>
+            <span className="text-sm font-medium text-green-700">Aktif</span>
           </div>
         </div>
       </div>
@@ -152,9 +152,9 @@ const Dashboard: React.FC = () => {
     isLoadingCombinedDashboardData,
     isLoadingMainStats,
   } = useSelector((state: RootState) => state.dashboard);
-  
+
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
-  
+
   const [hasMounted, setHasMounted] = useState(false);
   const { user } = useAuth();
   const isAdmin = user?.role === "ADMIN";
@@ -208,7 +208,8 @@ const Dashboard: React.FC = () => {
     setSelectedDateLabel(label);
     // Here you would typically dispatch an action to fetch data based on the new date range
     // For now, we'll just update the state
-  };  useEffect(() => {
+  };
+  useEffect(() => {
     setHasMounted(true);
     // Only fetch data if user is authenticated and we have user data
     if (isAuthenticated && user && isAdmin !== undefined) {
@@ -226,7 +227,8 @@ const Dashboard: React.FC = () => {
       if (isAdmin) {
         dispatch(getCombinedDashboardData(selectedDateRange));
       }
-    }  }, [selectedDateRange, isAuthenticated, user, isAdmin, dispatch]);
+    }
+  }, [selectedDateRange, isAuthenticated, user, isAdmin, dispatch]);
 
   // Reset dashboard data when user logs out
   useEffect(() => {
@@ -244,10 +246,10 @@ const Dashboard: React.FC = () => {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-            Access Denied
+            Akses Ditolak
           </h2>
           <p className="text-gray-600 dark:text-gray-400">
-            Please log in to access the dashboard.
+            Silakan masuk untuk mengakses dashboard.
           </p>
         </div>
       </div>
@@ -346,7 +348,7 @@ const Dashboard: React.FC = () => {
           change={mainStats.archived.changePercentage}
           changeType={getChangeType(mainStats.archived.changePercentage)}
           color="bg-purple-100"
-          href="/dashboard/database"
+          href="/dashboard/blockchain"
           icon={
             <svg
               className="w-6 h-6 text-purple-600"

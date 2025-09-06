@@ -132,7 +132,7 @@ const menu = [
     access: ["SUPERADMIN", "ADMIN", "REVIEWER"],
   },
   {
-    title: "Data Approved",
+    title: "Data Disetujui",
     link: "/dashboard/database",
     children: <AiFillDatabase size={20} />,
     access: ["SUPERADMIN", "ADMIN", "REVIEWER"],
@@ -144,19 +144,19 @@ const menu = [
     access: ["SUPERADMIN", "ADMIN"],
   },
   {
-    title: "User Management",
+    title: "Manajemen Pengguna",
     link: "/dashboard/usermanagement",
     children: <FaUserGroup size={20} />,
     access: ["SUPERADMIN", "ADMIN"],
   },
   {
-    title: "Inspector",
+    title: "Inspektur",
     link: "/dashboard/inspector",
     children: <FaUserTie size={20} />,
     access: ["SUPERADMIN", "ADMIN"],
   },
   {
-    title: "Branch",
+    title: "Cabang",
     link: "/dashboard/branch",
     children: <FaCodeBranch size={20} />,
     access: ["SUPERADMIN", "ADMIN"],

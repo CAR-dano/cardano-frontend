@@ -74,7 +74,7 @@ const Navbar = ({ isNavbarVisible }: NavbarProps) => {
       </div>
 
       {/* Menu Desktop */}
-      <div className="hidden md:flex">
+      <div className="hidden lg:flex">
         <ul className="flex gap-8 text-shade font-rubik">
           <li className="text-base font-semibold cursor-pointer hover:text-orange-400">
             <a href="https://inspeksimobil.id/">Home</a>
@@ -109,7 +109,7 @@ const Navbar = ({ isNavbarVisible }: NavbarProps) => {
       </div>
 
       {/* Contact Us Button / User Info */}
-      <div className="hidden md:block">
+      <div className="hidden lg:block">
         {user ? (
           <div key="user-logged-in" className="flex items-center gap-3">
             <Link href={user.role === "CUSTOMER" ? "#" : "/dashboard"}>
@@ -159,7 +159,7 @@ const Navbar = ({ isNavbarVisible }: NavbarProps) => {
 
       {/* Mobile Menu Toggle */}
       <button
-        className="md:hidden text-orange-700 text-3xl"
+        className="lg:hidden text-orange-700 text-3xl"
         onClick={() => setIsOpen(true)}
       >
         <IoMenu />
@@ -193,10 +193,24 @@ const Navbar = ({ isNavbarVisible }: NavbarProps) => {
           <li className="cursor-pointer">Services</li>
           <li className="cursor-pointer">Pricelist</li>
           <li className="cursor-pointer">Booking</li>
-          <li className="font-bold text-orange-400  cursor-pointer">
+          {/* <li className="font-bold text-orange-400  cursor-pointer">
             <p className="inline-block border-b-2 border-orange-500">
               Cari Data
             </p>
+          </li> */}
+          <li
+            className={`pb-2 text-base font-bold cursor-pointer ${
+              isActiveLink("/") ? activeLinkStyle : ""
+            }`}
+          >
+            <Link href="/">Cari Data</Link>
+          </li>
+          <li
+            className={`pb-2 text-base font-bold cursor-pointer ${
+              isActiveLink("/cek-validitas") ? activeLinkStyle : ""
+            }`}
+          >
+            <Link href="/cek-validitas/">Cek Validitas PDF</Link>
           </li>
         </ul>
         <div className="mt-6 px-6">

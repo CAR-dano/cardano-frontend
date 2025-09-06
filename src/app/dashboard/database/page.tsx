@@ -72,7 +72,7 @@ const Header = ({
           <div className="flex items-center px-3 py-2 bg-green-50 dark:bg-green-900 rounded-md">
             <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
             <span className="text-sm font-medium text-green-700 dark:text-green-300">
-              Approved
+              Disetujui
             </span>
           </div>
         </div>
@@ -104,7 +104,7 @@ const SearchBar = ({ setQuery, setFilter }: any) => {
             type="text"
             id="search-navbar"
             className="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder="Search..."
+            placeholder="Cari..."
             onChange={(e) => setKeyword(e.target.value)}
           />
         </form>
@@ -163,8 +163,8 @@ const Database: React.FC = () => {
       })
       .catch((error) => {
         toast({
-          title: "Error",
-          description: "Failed to fetch data",
+          title: "Kesalahan",
+          description: "Gagal mengambil data",
           variant: "destructive",
         });
       });
@@ -200,10 +200,10 @@ const Database: React.FC = () => {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-            Access Denied
+            Akses Ditolak
           </h2>
           <p className="text-gray-600 dark:text-gray-400">
-            Please log in to access the database.
+            Silakan masuk untuk mengakses database.
           </p>
         </div>
       </div>
