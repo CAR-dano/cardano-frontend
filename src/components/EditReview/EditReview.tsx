@@ -433,6 +433,36 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
     setDataHalamanPerluPerhatianPhotos(paginatedPerluPerhatianPhotos);
   };
 
+  // Handler untuk update foto general di halaman 6
+  const handlePhotoUpdate = (photoId: string, updateData: any) => {
+    // Update foto di dataHalaman6
+    setDataHalaman6((prev: any) => {
+      if (!prev || !prev.fotoGeneral) return prev;
+
+      const updatedFotoGeneral = prev.fotoGeneral.map((photo: any) => {
+        if (photo.id === photoId) {
+          return {
+            ...photo,
+            label: updateData.label,
+            needAttention: updateData.needAttention,
+            displayInPdf: updateData.displayInPdf,
+            path: updateData.newPath || photo.path,
+          };
+        }
+        return photo;
+      });
+
+      return {
+        ...prev,
+        fotoGeneral: updatedFotoGeneral,
+      };
+    });
+
+    // Juga update data global jika diperlukan untuk sinkronisasi
+    // dengan halaman lain yang menggunakan foto yang sama
+    console.log("Photo updated:", photoId, updateData);
+  };
+
   const pages = [
     {
       id: 1,
@@ -479,7 +509,13 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
       title: "Tools Test & Foto",
       description: "Hasil tes tools dan dokumentasi foto",
       component: (
-        <Halaman6 data={dataHalaman6} editable={true} onClick={onClick} />
+        <Halaman6
+          data={dataHalaman6}
+          editable={true}
+          onClick={onClick}
+          inspectionId={inspectionId}
+          onPhotoUpdate={handlePhotoUpdate}
+        />
       ),
     },
     // Dynamically add HalamanGeneralPhoto pages

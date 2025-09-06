@@ -2,18 +2,23 @@ import React from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import PenilaianHasil from "./PenilaianHasil";
+import PhotoGeneralItem from "./PhotoGeneralItem";
 import Image from "next/image";
 
 interface Halaman6Props {
   data: any;
   editable: boolean;
   onClick?: (data: any) => void;
+  inspectionId?: string;
+  onPhotoUpdate?: (photoId: string, data: any) => void;
 }
 
 const Halaman6: React.FC<Halaman6Props> = ({
   data,
   editable,
   onClick = () => {},
+  inspectionId = "",
+  onPhotoUpdate,
 }) => {
   if (data == undefined || data == null) {
     return <div>Loading...</div>; // atau bisa return null
@@ -147,25 +152,20 @@ const Halaman6: React.FC<Halaman6Props> = ({
         <div className="flex flex-wrap gap-1 gap-y-10 px-1 pb-4 justify-around mb-10">
           {data.fotoGeneral &&
             data.fotoGeneral.map((photo: any, index: number) => (
-              <div
+              <PhotoGeneralItem
                 key={index}
-                className=" flex items-center justify-center flex-col"
-              >
-                <Image
-                  src={
-                    photo.path
-                      ? formatPath(photo.path)
-                      : "/assets/placeholder-photo.png"
-                  }
-                  alt={photo.label}
-                  width={220}
-                  height={150}
-                  className="w-[220px] h-[150px] object-cover"
-                />
-                <p className="text-center text-[16px] font-semibold mt-2">
-                  {photo.label}
-                </p>
-              </div>
+                item={{
+                  id: photo.id || `general-photo-${index}`,
+                  path: photo.path,
+                  label: photo.label,
+                  needAttention: photo.needAttention || false,
+                  displayInPdf: photo.displayInPdf || false,
+                }}
+                formatPath={formatPath}
+                editable={editable}
+                inspectionId={inspectionId}
+                onPhotoUpdate={onPhotoUpdate}
+              />
             ))}
         </div>
       </div>
