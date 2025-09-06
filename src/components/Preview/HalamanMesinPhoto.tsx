@@ -23,7 +23,7 @@ const HalamanMesinPhoto: React.FC<HalamanMesinPhotoProps> = ({
     return <div>Loading...</div>;
   }
 
-  const PHOTO_URL = process.env.NEXT_PUBLIC_API_URL;
+  const PHOTO_URL = process.env.NEXT_PUBLIC_PDF_URL;
 
   const formatPath = (path: string) => {
     if (!path) return "/assets/placeholder-photo.png";

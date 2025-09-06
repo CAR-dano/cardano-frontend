@@ -50,7 +50,7 @@ const Halaman1: React.FC<Halaman1Props> = ({
     return <div>Loading...</div>;
   }
 
-  const PHOTO_URL = process.env.NEXT_PUBLIC_API_URL;
+  const PHOTO_URL = process.env.NEXT_PUBLIC_PDF_URL;
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
