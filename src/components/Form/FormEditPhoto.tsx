@@ -9,6 +9,7 @@ import {
 } from "../../lib/features/inspection/inspectionSlice";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import Image from "next/image";
 
 interface FormEditPhotoProps {
   label: string;
@@ -52,7 +53,7 @@ function FormEditPhoto({
   const { isDarkModeEnabled } = useTheme();
   const dispatch = useDispatch<AppDispatch>();
 
-  const PHOTO_URL = process.env.NEXT_PUBLIC_PDF_URL;
+  const PHOTO_URL = process.env.NEXT_PUBLIC_API_URL;
 
   const formatPath = (path: string) => {
     if (!path) return "/assets/placeholder-photo.png";
@@ -263,11 +264,13 @@ function FormEditPhoto({
               Foto Saat Ini
             </h3>
             <div className="relative w-full max-w-md">
-              <img
+              <Image
                 src={formatPath(currentPhotoPath)}
                 alt={photoLabel || "Foto inspeksi saat ini"}
                 className="w-full h-64 object-cover rounded-lg border-2 border-gray-300 dark:border-gray-600"
                 key={currentPhotoPath} // Force re-render when path changes
+                width={500}
+                height={300}
               />
               <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-sm">
                 {photoLabel || "No label"}
@@ -291,10 +294,12 @@ function FormEditPhoto({
                 </Button>
               </div>
               <div className="relative w-full max-w-md">
-                <img
+                <Image
                   src={newPhotoPreview}
                   alt="Foto baru"
                   className="w-full h-64 object-cover rounded-lg border-2 border-green-500 dark:border-green-400"
+                  width={500}
+                  height={300}
                 />
                 <div className="absolute bottom-2 left-2 bg-green-600 bg-opacity-75 text-white px-2 py-1 rounded text-sm">
                   Foto Baru
