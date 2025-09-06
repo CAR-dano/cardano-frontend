@@ -19,7 +19,11 @@ import {
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
 
-const Navbar = () => {
+interface NavbarProps {
+  isNavbarVisible: boolean;
+}
+
+const Navbar = ({ isNavbarVisible }: NavbarProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const user = useAppSelector((state) => state.auth.user);
@@ -50,7 +54,11 @@ const Navbar = () => {
   }
 
   return (
-    <nav className=" font-rubik w-full bg-white text-white px-6 md:px-14 py-4 flex justify-between items-center navbar-shadow">
+    <nav
+      className={`font-rubik w-full bg-white text-white px-6 md:px-14 py-4 flex justify-between items-center navbar-shadow sticky top-0 z-50 transition-transform duration-300 ${
+        isNavbarVisible ? "translate-y-0" : "-translate-y-full"
+      }`}
+    >
       {/* Logo */}
       <div onClick={handleToHome} className="flex gap-2 cursor-pointer">
         <Image
