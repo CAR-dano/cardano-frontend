@@ -31,6 +31,29 @@ const checkToken = async (token: string) => {
   }
 };
 
+const getUserProfile = async () => {
+  try {
+    const response = await apiClient.get("/auth/profile", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+
+    if (response.data) {
+      // Update localStorage with user data
+      if (typeof window !== "undefined") {
+        localStorage.setItem("user", JSON.stringify(response.data));
+      }
+      return response.data;
+    }
+    return null;
+  } catch (error) {
+    console.error("Failed to fetch user profile:", error);
+    throw error;
+  }
+};
+
 const login = async (userData: UserLogin) => {
   const response = await apiClient.post("/auth/login", userData, {
     headers: {
@@ -134,6 +157,7 @@ const authService = {
   logout,
   signup,
   checkToken,
+  getUserProfile,
   refreshToken,
   loginGoogle,
 };

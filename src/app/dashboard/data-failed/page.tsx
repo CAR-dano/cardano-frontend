@@ -1,6 +1,6 @@
 "use client";
 import Loading, { LoadingSkeleton } from "../../../components/Loading";
-import TableInspectionReviewer from "../../../components/Table/TableInspectionReviewer";
+import TableInspectionReviewer from "../../../components/Table/TableFailed";
 import { toast } from "../../../components/ui/use-toast";
 import { getDataForReviewer } from "../../../lib/features/inspection/inspectionSlice";
 import { useTheme } from "../../../contexts/ThemeContext";
@@ -10,6 +10,7 @@ import { AppDispatch, RootState } from "../../../lib/store";
 import { useEffect, useState } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
+import TableFailed from "../../../components/Table/TableFailed";
 
 const Header = ({
   dataCount,
@@ -23,9 +24,9 @@ const Header = ({
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
       <div className="flex justify-between items-center">
         <div className="flex items-center space-x-4">
-          <div className="flex items-center justify-center w-12 h-12 bg-green-100 dark:bg-green-900 rounded-lg">
+          <div className="flex items-center justify-center w-12 h-12 bg-red-100 dark:bg-red-900 rounded-lg">
             <svg
-              className="w-6 h-6 text-green-600 dark:text-green-300"
+              className="w-6 h-6 text-red-600 dark:text-red-300"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -40,12 +41,12 @@ const Header = ({
           </div>
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-              Data Tersimpan
+              Data Gagal
             </h1>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
               {dataCount > 0
-                ? `${dataCount} inspeksi telah disetujui`
-                : "Belum ada data yang disetujui"}
+                ? `${dataCount} inspeksi telah gagal`
+                : "Belum ada data yang gagal"}
             </p>
           </div>
         </div>
@@ -69,10 +70,10 @@ const Header = ({
             </svg>
             Refresh
           </button>
-          <div className="flex items-center px-3 py-2 bg-green-50 dark:bg-green-900 rounded-md">
-            <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-            <span className="text-sm font-medium text-green-700 dark:text-green-300">
-              Disetujui
+          <div className="flex items-center px-3 py-2 bg-red-50 dark:bg-red-900 rounded-md">
+            <div className="w-2 h-2 bg-red-500 rounded-full mr-2"></div>
+            <span className="text-sm font-medium text-red-700 dark:text-red-300">
+              Failed
             </span>
           </div>
         </div>
@@ -104,7 +105,7 @@ const SearchBar = ({ setQuery, setFilter }: any) => {
             type="text"
             id="search-navbar"
             className="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder="Cari..."
+            placeholder="Search..."
             onChange={(e) => setKeyword(e.target.value)}
           />
         </form>
@@ -116,24 +117,7 @@ const SearchBar = ({ setQuery, setFilter }: any) => {
 const Database: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [data, setData] = useState<any>(null);
-
-  // Function to get saved page from localStorage
-  const getSavedPage = () => {
-    if (typeof window !== "undefined") {
-      const key = "table-database-page";
-      const savedPage = localStorage.getItem(key);
-      if (savedPage) {
-        const pageNum = parseInt(savedPage, 10);
-        // Ensure saved page is within valid range (basic validation)
-        if (pageNum >= 1) {
-          return pageNum;
-        }
-      }
-    }
-    return 1;
-  };
-
-  const [page, setPage] = useState(getSavedPage);
+  const [page, setPage] = useState(1);
   const [metapage, setMetapage] = useState({});
   const [hasMounted, setHasMounted] = useState(false);
   const { isLoading } = useSelector((state: RootState) => state.inspection);
@@ -149,7 +133,7 @@ const Database: React.FC = () => {
 
     dispatch(
       getDataForReviewer({
-        status: "APPROVED",
+        status: "FAIL_ARCHIVE",
         page: pageNum,
         pageSize: 10,
       })
@@ -163,8 +147,8 @@ const Database: React.FC = () => {
       })
       .catch((error) => {
         toast({
-          title: "Kesalahan",
-          description: "Gagal mengambil data",
+          title: "Error",
+          description: "Failed to fetch data",
           variant: "destructive",
         });
       });
@@ -172,13 +156,6 @@ const Database: React.FC = () => {
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
-
-    // Save to localStorage
-    if (typeof window !== "undefined") {
-      const key = "table-database-page";
-      localStorage.setItem(key, newPage.toString());
-    }
-
     fetchData(newPage);
   };
 
@@ -200,10 +177,10 @@ const Database: React.FC = () => {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-            Akses Ditolak
+            Access Denied
           </h2>
           <p className="text-gray-600 dark:text-gray-400">
-            Silakan masuk untuk mengakses database.
+            Please log in to access the database.
           </p>
         </div>
       </div>
@@ -221,7 +198,7 @@ const Database: React.FC = () => {
           <LoadingSkeleton rows={5} />
         </div>
       ) : data && data.length > 0 ? (
-        <TableInspectionReviewer
+        <TableFailed
           isDatabase={true}
           data={data}
           meta={metapage}

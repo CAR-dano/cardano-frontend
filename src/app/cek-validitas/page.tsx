@@ -28,6 +28,8 @@ import {
   Sparkles,
 } from "lucide-react";
 import apiClient from "@/lib/services/apiClient";
+import CardanoScanButton from "../../components/Button/CardanoScanButton";
+import CardanoScanViewButton from "../../components/Button/CardanoScanViewButton";
 
 interface VerificationResult {
   numberPlate: string;
@@ -570,10 +572,16 @@ export default function CekValiditasPage() {
         transform: scale(1.05); 
       }
     }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-200%) skewX(12deg); }
+      100% { transform: translateX(200%) skewX(12deg); }
+    }
   `;
   const [numberPlate, setNumberPlate] = useState("");
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [blockchainUrl, setBlockchainUrl] = useState<string | null>(null);
   const [verificationResult, setVerificationResult] =
     useState<VerificationResult | null>(null);
 
@@ -598,8 +606,9 @@ export default function CekValiditasPage() {
         }
       );
 
-      if (response.data && response.data.pdfFileHash) {
-        return response.data.pdfFileHash;
+      if (response.data && response.data.pdfFileHashNoDocs) {
+        setBlockchainUrl(response.data.blockchainTxHash);
+        return response.data.pdfFileHashNoDocs;
       }
       return null;
     } catch (error) {
@@ -618,7 +627,7 @@ export default function CekValiditasPage() {
       const result: VerificationResult = {
         numberPlate,
         uploadedHash,
-        blockchainHash,
+        blockchainHash: blockchainHash,
         isVerified: blockchainHash !== null && uploadedHash === blockchainHash,
         timestamp: new Date().toISOString(),
         isVehicleFound: blockchainHash !== null,
@@ -914,7 +923,7 @@ export default function CekValiditasPage() {
                       <h4 className="text-lg font-bold mb-4">
                         Perbandingan Hash
                       </h4>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                         <div>
                           <p className="text-sm font-semibold text-blue-600 mb-2">
                             Hash Dokumen yang Diunggah:
@@ -932,6 +941,19 @@ export default function CekValiditasPage() {
                           </p>
                         </div>
                       </div>
+
+                      {/* Cardano Scan Button - Only show if verification is successful */}
+                      {verificationResult.isVerified && (
+                        <div className="flex justify-center pt-4 border-t border-slate-200 dark:border-slate-700">
+                          <CardanoScanViewButton
+                            hash={blockchainUrl || undefined}
+                            type="tx"
+                            prominent={true}
+                            size="lg"
+                            className="min-w-[250px]"
+                          />
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <div className="p-6 bg-white/70 dark:bg-slate-800/70 rounded-xl backdrop-blur-sm border border-white/20">

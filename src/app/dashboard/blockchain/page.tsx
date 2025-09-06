@@ -1,6 +1,6 @@
 "use client";
 import Loading, { LoadingSkeleton } from "../../../components/Loading";
-import TableInspectionReviewer from "../../../components/Table/TableInspectionReviewer";
+import TableInspectionReviewer from "../../../components/Table/TableFailed";
 import { toast } from "../../../components/ui/use-toast";
 import { getDataForReviewer } from "../../../lib/features/inspection/inspectionSlice";
 import { useTheme } from "../../../contexts/ThemeContext";

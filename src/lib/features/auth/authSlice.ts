@@ -79,6 +79,19 @@ export const checkToken = createAsyncThunk(
   }
 );
 
+export const getUserProfile = createAsyncThunk(
+  "auth/get-user-profile",
+  async (_, thunkAPI) => {
+    try {
+      const payload = await authService.getUserProfile();
+      return payload;
+    } catch (error: any) {
+      const message = error?.response?.data?.message;
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const refreshToken = createAsyncThunk(
   "auth/refresh-token",
   async (_, thunkAPI) => {
@@ -211,6 +224,20 @@ export const authSlice = createSlice({
         state.accessToken = "";
         state.error = action.error.message || "Token validation failed";
         state.isAuthInitialized = true;
+      })
+
+      .addCase(getUserProfile.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(getUserProfile.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.user = action.payload;
+        state.error = null;
+      })
+      .addCase(getUserProfile.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message || "Failed to fetch user profile";
       })
 
       .addCase(refreshToken.pending, (state) => {

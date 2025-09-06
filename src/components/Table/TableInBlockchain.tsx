@@ -204,7 +204,7 @@ const TableData = ({
                     <div className="flex justify-center items-center space-x-2">
                       <Link
                         target="_blank"
-                        href={`https://preview.cardanoscan.io/transaction/${item.blockchainTxHash}`}
+                        href={`https://cardanoscan.io/transaction/${item.blockchainTxHash}`}
                       >
                         <button className="inline-flex items-center px-3 py-1.5 border border-gray-300 dark:border-gray-600 shadow-sm text-xs font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
                           <svg
@@ -235,6 +235,29 @@ const TableData = ({
                           {isDatabase ? "Lihat di Testnet" : "Review"}
                         </button>
                       </Link>
+                      {item.urlPdfNoDocs && (
+                        <Link
+                          target="_blank"
+                          href={PDF_URL + item.urlPdfNoDocs}
+                        >
+                          <button className="inline-flex items-center px-3 py-1.5 border border-red-300 shadow-sm text-xs font-medium rounded-md text-red-700 bg-red-50 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200">
+                            <svg
+                              className="w-3 h-3 mr-1"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                              />
+                            </svg>
+                            Lihat PDF
+                          </button>
+                        </Link>
+                      )}
                       {item.status == "APPROVED" && (
                         <button
                           onClick={() => mintingToBlockchainHandler(item.id)} // Calls the handler that opens confirmation
@@ -521,10 +544,6 @@ const TableInBlockchain = ({
     action1?: () => void;
     action2: () => void;
   } | null>(null);
-
-  useEffect(() => {
-    console.log("dialogResultData updated:", dialogResultData);
-  }, [dialogResultData]);
 
   const filteredData = data.filter(
     (item: any) =>

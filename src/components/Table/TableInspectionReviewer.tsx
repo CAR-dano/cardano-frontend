@@ -17,6 +17,10 @@ import {
   searchByKeyword,
   clearSearchResults,
 } from "../../lib/features/inspection/inspectionSlice";
+import {
+  bulkApproveInspections,
+  clearBulkProcess,
+} from "../../lib/features/bulk/bulkSlice";
 import DialogResult from "../Dialog/DialogResult"; // Your existing dialog
 import { useRouter } from "next/navigation";
 import { Input } from "../../components/ui/input"; // Assuming Input component exists
@@ -32,6 +36,10 @@ const TableData = ({
   userRole,
 }: any) => {
   const [fetchStatus, setFetchStatus] = useState(false);
+  const [isBulkMode, setIsBulkMode] = useState(false);
+  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
+  const [lastRefreshTime, setLastRefreshTime] = useState(0);
+  const [showBulkConfirm, setShowBulkConfirm] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
 
@@ -41,11 +49,122 @@ const TableData = ({
     itemId: string | null;
   }>({ isOpen: false, itemId: null });
 
+  // Get bulk state
+  const bulkState = useAppSelector((state) => state.bulk);
+
   useEffect(() => {
     if (!fetchStatus) {
       setFetchStatus(true);
     }
   }, [fetchStatus]);
+
+  // Monitor bulk process completion - only refresh if there were errors
+  useEffect(() => {
+    // Check if bulk process just finished (was processing but now isn't)
+    if (
+      bulkState.processId &&
+      !bulkState.isProcessing &&
+      bulkState.finishedAt
+    ) {
+      // Only refresh if there were errors, because successful items already refreshed via throttledRefresh
+      if (bulkState.errorItems > 0 && handleRefresh) {
+        handleRefresh();
+      } else {
+        console.log(
+          "Bulk process completed successfully, no additional refresh needed"
+        );
+      }
+    }
+  }, [
+    bulkState.isProcessing,
+    bulkState.finishedAt,
+    bulkState.errorItems,
+    handleRefresh,
+  ]);
+
+  // Throttled refresh to prevent too many API calls
+  const throttledRefresh = useCallback(() => {
+    const now = Date.now();
+
+    // Only refresh if at least 2 seconds have passed since last refresh
+    if (now - lastRefreshTime > 2000) {
+      if (handleRefresh) {
+        handleRefresh();
+        setLastRefreshTime(now);
+      }
+    } else {
+      console.log("Refresh throttled, skipping...");
+    }
+  }, [lastRefreshTime, handleRefresh]);
+
+  const handleBulkModeToggle = () => {
+    setIsBulkMode(!isBulkMode);
+    setSelectedItems(new Set());
+  };
+
+  const handleItemSelect = (itemId: string, checked: boolean) => {
+    const newSelected = new Set(selectedItems);
+    if (checked) {
+      newSelected.add(itemId);
+    } else {
+      newSelected.delete(itemId);
+    }
+    setSelectedItems(newSelected);
+  };
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      // Select only NEED_REVIEW items
+      const reviewItems =
+        data?.filter((item: any) => item.status === "NEED_REVIEW") || [];
+      const reviewIds = new Set<string>(
+        reviewItems.map((item: any) => item.id as string)
+      );
+      setSelectedItems(reviewIds);
+    } else {
+      setSelectedItems(new Set());
+    }
+  };
+
+  const handleBulkApprove = () => {
+    if (selectedItems.size === 0) return;
+    setShowBulkConfirm(true);
+  };
+
+  const confirmBulkApprove = () => {
+    const itemsToApprove = data
+      ?.filter(
+        (item: any) =>
+          selectedItems.has(item.id) && item.status === "NEED_REVIEW"
+      )
+      .map((item: any) => ({
+        id: item.id,
+        customerName: item.identityDetails?.namaCustomer || "Unknown Customer",
+        vehiclePlate: item.vehiclePlateNumber || "Unknown Plate",
+      }));
+
+    if (itemsToApprove && itemsToApprove.length > 0) {
+      dispatch(
+        bulkApproveInspections({
+          inspectionData: itemsToApprove,
+          onItemSuccess: throttledRefresh, // Use throttled refresh after each successful item
+        })
+      );
+      setIsBulkMode(false);
+      setSelectedItems(new Set());
+      setShowBulkConfirm(false);
+    }
+  };
+
+  // Filter data to only show NEED_REVIEW items for bulk selection
+  const reviewItems =
+    data?.filter((item: any) => item.status === "NEED_REVIEW") || [];
+  const selectedReviewItems = Array.from(selectedItems).filter((id) =>
+    reviewItems.some((item: any) => item.id === id)
+  );
+
+  const isAllSelected =
+    reviewItems.length > 0 && selectedReviewItems.length === reviewItems.length;
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -117,6 +236,10 @@ const TableData = ({
     setConfirmMintDialog({ isOpen: true, itemId: id });
   };
 
+  const getNameFile = (pathPdf: string) => {
+    return pathPdf.split("/").pop();
+  };
+
   const PDF_URL = process.env.NEXT_PUBLIC_PDF_URL;
 
   const getStatusBadge = (status: string) => {
@@ -136,12 +259,178 @@ const TableData = ({
 
   return (
     <>
-      {" "}
+      {/* Bulk Actions Bar */}
+      {!isDatabase && (
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 mb-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={handleBulkModeToggle}
+                className={`inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium ${
+                  isBulkMode
+                    ? "bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-600"
+                    : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                } transition-colors duration-200`}
+              >
+                <svg
+                  className="w-4 h-4 mr-2"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                {isBulkMode ? "Cancel Bulk Mode" : "Bulk Approve"}
+              </button>
+
+              {isBulkMode && reviewItems.length > 0 && (
+                <>
+                  <label className="flex items-center cursor-pointer group">
+                    <div className="relative">
+                      <input
+                        type="checkbox"
+                        checked={isAllSelected}
+                        onChange={(e) => handleSelectAll(e.target.checked)}
+                        className="sr-only"
+                      />
+                      <div
+                        className={`w-5 h-5 rounded-md border-2 transition-all duration-200 ease-in-out flex items-center justify-center ${
+                          isAllSelected
+                            ? "bg-gradient-to-br from-blue-500 to-blue-600 border-blue-500 shadow-lg shadow-blue-500/25"
+                            : "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 group-hover:border-blue-400 dark:group-hover:border-blue-500"
+                        }`}
+                      >
+                        {isAllSelected && (
+                          <svg
+                            className="w-3 h-3 text-white"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={3}
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                        )}
+                      </div>
+                    </div>
+                    <span className="ml-3 text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-200">
+                      Select All Review Items ({reviewItems.length})
+                    </span>
+                  </label>
+
+                  {selectedItems.size > 0 && (
+                    <div className="relative">
+                      <button
+                        onClick={handleBulkApprove}
+                        disabled={bulkState.isProcessing}
+                        className="inline-flex items-center px-4 py-2 bg-orange-500 hover:bg-orange-600 disabled:bg-gray-400 text-white rounded-md text-sm font-medium transition-all duration-200 relative overflow-hidden group"
+                      >
+                        <div className="absolute inset-0 bg-gradient-to-r from-orange-600 to-red-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
+                        <div className="relative z-10 flex items-center">
+                          {bulkState.isProcessing ? (
+                            <>
+                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                              Processing...
+                            </>
+                          ) : (
+                            <>
+                              <svg
+                                className="w-4 h-4 mr-2"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                                />
+                              </svg>
+                              Bulk Approve ({selectedItems.size})
+                              <span className="ml-2 text-xs bg-white/20 px-2 py-0.5 rounded-full">
+                                CONFIRM
+                              </span>
+                            </>
+                          )}
+                        </div>
+                      </button>
+
+                      {/* Hover warning tooltip */}
+                      <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-red-600 text-white text-xs px-3 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap">
+                        ⚠️ This will approve all selected items
+                        <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-red-600"></div>
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+
+            {bulkState.processId && (
+              <div className="text-sm text-gray-600 dark:text-gray-400">
+                {bulkState.isProcessing
+                  ? `Processing ${bulkState.processedItems}/${bulkState.totalItems}...`
+                  : `Last process: ${bulkState.successItems} success, ${bulkState.errorItems} errors`}
+              </div>
+            )}
+          </div>
+        </div>
+      )}{" "}
       {/* Use Fragment to return multiple top-level elements if DialogResult is outside the div */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow className="bg-gray-50 dark:bg-gray-900">
+              {isBulkMode && !isDatabase && (
+                <TableHead className="text-left font-semibold text-gray-900 dark:text-gray-100 py-4 px-6 w-12">
+                  <div className="relative">
+                    <input
+                      type="checkbox"
+                      checked={isAllSelected}
+                      onChange={(e) => handleSelectAll(e.target.checked)}
+                      className="sr-only"
+                    />
+                    <div
+                      className={`w-5 h-5 rounded-md border-2 transition-all duration-200 ease-in-out cursor-pointer flex items-center justify-center ${
+                        isAllSelected
+                          ? "bg-gradient-to-br from-blue-500 to-blue-600 border-blue-500 shadow-lg shadow-blue-500/25"
+                          : "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500"
+                      }`}
+                      onClick={(e) => {
+                        const checkbox = e.currentTarget
+                          .previousElementSibling as HTMLInputElement;
+                        checkbox.click();
+                      }}
+                    >
+                      {isAllSelected && (
+                        <svg
+                          className="w-3 h-3 text-white"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={3}
+                            d="M5 13l4 4L19 7"
+                          />
+                        </svg>
+                      )}
+                    </div>
+                  </div>
+                </TableHead>
+              )}
               <TableHead className="text-left font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
                 Nama Pelanggan
               </TableHead>
@@ -173,6 +462,52 @@ const TableData = ({
                       : ""
                   }`}
                 >
+                  {isBulkMode && !isDatabase && (
+                    <TableCell className="py-4 px-6">
+                      {item.status === "NEED_REVIEW" ? (
+                        <div className="relative">
+                          <input
+                            type="checkbox"
+                            checked={selectedItems.has(item.id)}
+                            onChange={(e) =>
+                              handleItemSelect(item.id, e.target.checked)
+                            }
+                            className="sr-only"
+                          />
+                          <div
+                            className={`w-5 h-5 rounded-md border-2 transition-all duration-200 ease-in-out cursor-pointer ${
+                              selectedItems.has(item.id)
+                                ? "bg-gradient-to-br from-green-500 to-green-600 border-green-500 shadow-lg shadow-green-500/25 scale-105"
+                                : "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 hover:border-green-400 dark:hover:border-green-500 hover:scale-105"
+                            }`}
+                            onClick={(e) => {
+                              const checkbox = e.currentTarget
+                                .previousElementSibling as HTMLInputElement;
+                              checkbox.click();
+                            }}
+                          >
+                            {selectedItems.has(item.id) && (
+                              <svg
+                                className="w-3 h-3 text-white absolute top-0.5 left-0.5 animate-in fade-in-50 zoom-in-75 duration-200"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={3}
+                                  d="M5 13l4 4L19 7"
+                                />
+                              </svg>
+                            )}
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="w-5 h-5 bg-gray-100 dark:bg-gray-700 rounded-md border-2 border-gray-200 dark:border-gray-600 opacity-50"></div>
+                      )}
+                    </TableCell>
+                  )}
                   <TableCell className="py-4 px-6">
                     <div className="flex items-center space-x-3">
                       <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-medium text-sm">
@@ -253,7 +588,11 @@ const TableData = ({
                     ) : (
                       <a
                         href={PDF_URL + item.urlPdf}
-                        download
+                        download={
+                          item.urlPdf ? getNameFile(item.urlPdf) : undefined
+                        }
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-green-600 hover:text-green-800 transition-colors duration-200"
                       >
                         <svg
@@ -336,7 +675,10 @@ const TableData = ({
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={6} className="text-center py-16">
+                <TableCell
+                  colSpan={isBulkMode && !isDatabase ? 7 : 6}
+                  className="text-center py-16"
+                >
                   {/* ... your empty table placeholder ... */}
                   <div className="flex flex-col items-center justify-center text-gray-500">
                     {/* Custom Empty Table Illustration */}
@@ -502,6 +844,20 @@ const TableData = ({
           onClose={() => setConfirmMintDialog({ isOpen: false, itemId: null })}
         />
       )}
+      {/* Confirmation Dialog for Bulk Approve */}
+      {showBulkConfirm && (
+        <DialogResult
+          isOpen={showBulkConfirm}
+          isSuccess={false}
+          title="⚠️ Konfirmasi Bulk Approve"
+          message={`Anda akan meng-approve ${selectedItems.size} item sekaligus. Tindakan ini tidak dapat dibatalkan dan akan memproses semua item yang dipilih. Pastikan Anda sudah memeriksa semua data dengan teliti.`}
+          buttonLabel1="Batal"
+          action1={() => setShowBulkConfirm(false)}
+          buttonLabel2="Ya, Lanjutkan Bulk Approve"
+          action2={confirmBulkApprove}
+          onClose={() => setShowBulkConfirm(false)}
+        />
+      )}
     </>
   );
 };
@@ -513,17 +869,67 @@ const TableData = ({
 interface TableInfoProps {
   data: any;
   onPageChange?: (page: number) => void;
+  storageKey?: string; // Optional key for localStorage
 }
 
-const TableInfo: React.FC<TableInfoProps> = ({ data, onPageChange }) => {
-  const [page, setPage] = useState(data.page || 1);
+const TableInfo: React.FC<TableInfoProps> = ({
+  data,
+  onPageChange,
+  storageKey,
+}) => {
+  // Generate a default storage key based on current pathname if not provided
+  const getStorageKey = () => {
+    if (storageKey) return storageKey;
+    if (typeof window !== "undefined") {
+      return `table-page-${window.location.pathname.replace(/\//g, "-")}`;
+    }
+    return "table-page-default";
+  };
+
+  // Load saved page from localStorage on component mount
+  const getSavedPage = () => {
+    if (typeof window !== "undefined") {
+      const key = getStorageKey();
+      const savedPage = localStorage.getItem(key);
+      if (savedPage) {
+        const pageNum = parseInt(savedPage, 10);
+        const totalPage = data.totalPages || 1;
+        // Ensure saved page is within valid range
+        if (pageNum >= 1 && pageNum <= totalPage) {
+          return pageNum;
+        }
+      }
+    }
+    return data.page || 1;
+  };
+
+  const [page, setPage] = useState(getSavedPage);
+  const [inputPage, setInputPage] = useState("");
   const MAX = data.pageSize || 10;
   const dataCount = data.total || 0;
   const totalPage = data.totalPages || 1;
 
   React.useEffect(() => {
-    setPage(data.page || 1);
+    const newPage = data.page || 1;
+    setPage(newPage);
   }, [data.page]);
+
+  // Save page to localStorage whenever page changes
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      const key = getStorageKey();
+      localStorage.setItem(key, page.toString());
+    }
+  }, [page]);
+
+  // Initialize page from localStorage on first load
+  React.useEffect(() => {
+    const savedPage = getSavedPage();
+    if (savedPage !== page && savedPage !== (data.page || 1)) {
+      // Trigger page change if saved page is different from current
+      handlePageChange(savedPage);
+    }
+  }, []); // Only run on mount
 
   const startIdx = dataCount === 0 ? 0 : (page - 1) * MAX + 1;
   const endIdx = Math.min(page * MAX, dataCount);
@@ -532,6 +938,28 @@ const TableInfo: React.FC<TableInfoProps> = ({ data, onPageChange }) => {
     if (newPage < 1 || newPage > totalPage) return;
     setPage(newPage);
     if (onPageChange) onPageChange(newPage);
+  };
+
+  const handleInputPageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Only allow numbers
+    if (value === "" || /^\d+$/.test(value)) {
+      setInputPage(value);
+    }
+  };
+
+  const handleGoToPage = () => {
+    const pageNum = parseInt(inputPage);
+    if (pageNum && pageNum >= 1 && pageNum <= totalPage) {
+      handlePageChange(pageNum);
+      setInputPage(""); // Clear input after successful navigation
+    }
+  };
+
+  const handleInputKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleGoToPage();
+    }
   };
 
   return (
@@ -543,10 +971,35 @@ const TableInfo: React.FC<TableInfoProps> = ({ data, onPageChange }) => {
       </p>
       {dataCount > 0 &&
         totalPage > 1 && ( // Only show pagination if there's content and more than one page
-          <div className="flex border-[1px] rounded-lg border-primary dark:border-gray-600 overflow-hidden">
+          <div className="flex items-center space-x-2">
+            {/* First Page Button */}
             <SecondaryButton
-              className={`border-none rounded-none px-3 py-1.5 text-xs ${
-                // Adjusted padding and text size
+              className={`px-2 py-1.5 text-xs rounded-md border border-gray-300 dark:border-gray-600 ${
+                page <= 1
+                  ? " opacity-50 pointer-events-none"
+                  : "hover:bg-gray-100 dark:hover:bg-gray-700"
+              }`}
+              onClick={() => handlePageChange(1)}
+              disabled={page <= 1}
+            >
+              <svg
+                className="w-3 h-3"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
+                />
+              </svg>
+            </SecondaryButton>
+
+            {/* Previous Page Button */}
+            <SecondaryButton
+              className={`px-3 py-1.5 text-xs rounded-md border border-gray-300 dark:border-gray-600 ${
                 page <= 1
                   ? " opacity-50 pointer-events-none"
                   : "hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -556,20 +1009,68 @@ const TableInfo: React.FC<TableInfoProps> = ({ data, onPageChange }) => {
             >
               Previous
             </SecondaryButton>
-            <div className="border-x-[1px] border-primary dark:border-gray-600 border-y-none flex items-center px-3 text-xs text-gray-700 dark:text-gray-300">
-              {`${page} / ${totalPage}`}
+
+            {/* Page Info with Input */}
+            <div className="flex items-center space-x-2">
+              <div className="flex items-center px-2 py-1.5 text-xs text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700 rounded-md border border-gray-300 dark:border-gray-600">
+                <input
+                  type="text"
+                  value={inputPage}
+                  onChange={handleInputPageChange}
+                  onKeyPress={handleInputKeyPress}
+                  placeholder={page.toString()}
+                  className="w-8 text-center bg-transparent border-none outline-none text-xs text-gray-700 dark:text-gray-300 placeholder-gray-500 dark:placeholder-gray-400"
+                  maxLength={totalPage.toString().length}
+                />
+                <span className="mx-1">/</span>
+                <span>{totalPage}</span>
+              </div>
+              {inputPage && (
+                <SecondaryButton
+                  onClick={handleGoToPage}
+                  className="px-2 py-1.5 text-xs rounded-md border border-blue-300 dark:border-blue-600 bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-800"
+                >
+                  Go
+                </SecondaryButton>
+              )}
             </div>
+
+            {/* Next Page Button */}
             <SecondaryButton
               onClick={() => handlePageChange(page + 1)}
               disabled={page >= totalPage}
-              className={`border-none rounded-none px-3 py-1.5 text-xs ${
-                // Adjusted padding and text size
+              className={`px-3 py-1.5 text-xs rounded-md border border-gray-300 dark:border-gray-600 ${
                 page >= totalPage
                   ? " opacity-50 pointer-events-none"
                   : "hover:bg-gray-100 dark:hover:bg-gray-700"
               }`}
             >
               Next
+            </SecondaryButton>
+
+            {/* Last Page Button */}
+            <SecondaryButton
+              onClick={() => handlePageChange(totalPage)}
+              disabled={page >= totalPage}
+              className={`px-2 py-1.5 text-xs rounded-md border border-gray-300 dark:border-gray-600 ${
+                page >= totalPage
+                  ? " opacity-50 pointer-events-none"
+                  : "hover:bg-gray-100 dark:hover:bg-gray-700"
+              }`}
+            >
+              <svg
+                className="w-3 h-3"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="m13 5 7 7-7 7M5 5l7 7-7 7"
+                />
+              </svg>
             </SecondaryButton>
           </div>
         )}
@@ -688,6 +1189,11 @@ const TableInspectionReviewer = ({
                 <TableInfo
                   data={displayMeta}
                   onPageChange={searchTerm.trim() ? undefined : onPageChange}
+                  storageKey={
+                    isDatabase
+                      ? "table-database-page"
+                      : "table-inspection-reviewer-page"
+                  }
                 />
               </div>
             )}

@@ -331,8 +331,8 @@ function ResultPageContent() {
                   className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 object-contain"
                 />
                 <CustomButton className="text-[clamp(16px,3vw,28px)] font-white font-light rounded-full gradient-details text-white">
-                  <a href={`${PDF_URL}${review.urlPdf}`} download>
-                    Unduh Detail (PDF)
+                  <a href={`${PDF_URL}${review.urlPdfNoDocs}`} download>
+                    Download Detail (PDF)
                   </a>
                 </CustomButton>
               </div>
@@ -508,7 +508,7 @@ function ResultPageContent() {
 
 export default function ResultPage() {
   return (
-    <Suspense fallback={<div>Memuat...</div>}>
+    <Suspense fallback={<div>Loading...</div>}>
       <ResultPageContent />
     </Suspense>
   );

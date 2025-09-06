@@ -108,6 +108,10 @@ interface EditPartPhoto {
   displayInPdf?: boolean;
 }
 
+interface EditPartPhotoWithFile extends EditPartPhoto {
+  file?: File;
+}
+
 const updatePhoto = async (
   id: string,
   photosId: string,
@@ -139,6 +143,58 @@ const updatePhoto = async (
   return response.data;
 };
 
+// Fungsi baru untuk update foto dengan file baru
+// Mendukung upload foto baru beserta update metadata (label, needAttention, displayInPdf)
+const updatePhotoWithFile = async (
+  id: string,
+  photosId: string,
+  data: EditPartPhotoWithFile
+) => {
+  const formData = new FormData();
+
+  // Tambahkan file foto jika ada (foto baru yang akan menggantikan foto lama)
+  if (data.file) {
+    formData.append("photo", data.file);
+  }
+
+  if (data.needAttention !== undefined) {
+    formData.append("needAttention", data.needAttention.toString());
+  }
+
+  if (data.label !== undefined) {
+    formData.append("label", data.label);
+  }
+
+  if (data.displayInPdf !== undefined) {
+    formData.append("displayInPdf", data.displayInPdf.toString());
+  }
+
+  const response = await apiClient.put(
+    `${LOCAL_API_URL}/inspections/${id}/photos/${photosId}`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+  return response.data;
+};
+
+const returnToReview = async (id: string) => {
+  const response = await apiClient.patch(
+    `${LOCAL_API_URL}/inspections/${id}/return-to-review`
+  );
+  return response.data;
+};
+
+const markAsApproved = async (id: string) => {
+  const response = await apiClient.patch(
+    `${LOCAL_API_URL}/inspections/${id}/approve`
+  );
+  return response.data;
+};
+
 const inspectionService = {
   getDataForReview,
   getDataForPreview,
@@ -150,5 +206,8 @@ const inspectionService = {
   searchByVehiclePlat,
   searchByKeyword,
   updatePhoto,
+  updatePhotoWithFile, // Tambahkan fungsi baru
+  returnToReview,
+  markAsApproved,
 };
 export default inspectionService;
