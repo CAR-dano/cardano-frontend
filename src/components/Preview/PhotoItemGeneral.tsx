@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import FormEditPhoto from "../Form/FormEditPhoto";
+import Image from "next/image";
 
 interface PhotoItemGeneralProps {
   item: {
@@ -102,11 +103,13 @@ const PhotoItemGeneral: React.FC<PhotoItemGeneralProps> = ({
           </div>
         )}
 
-        <img
+        <Image
           src={
             item.path ? formatPath(item.path) : "/assets/placeholder-photo.png"
           }
           alt={capitalizedLabel}
+          width={isLandscape ? 500 : 220}
+          height={isLandscape ? 375 : 150}
           className={
             isLandscape
               ? "w-[500px] h-[375px] object-cover"
