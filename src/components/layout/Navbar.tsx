@@ -73,7 +73,7 @@ const Navbar = ({ isNavbarVisible }: NavbarProps) => {
         </div>
       </div>
 
-      {/* Menu Desktop */}
+      {/* Menu Desktop New*/}
       <div className="hidden md:flex">
         <ul className="flex gap-8 text-shade font-rubik">
           <li className="text-base font-semibold cursor-pointer hover:text-orange-400">
