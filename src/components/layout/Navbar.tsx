@@ -78,6 +78,7 @@ const Navbar = ({ isNavbarVisible }: NavbarProps) => {
         <ul className="flex gap-8 text-shade font-rubik">
           <li className="text-base font-semibold cursor-pointer hover:text-orange-400">
             <a href="https://inspeksimobil.id/">Home</a>
+            {/* Test Aman */}
           </li>
           <li className="text-base font-semibold group cursor-pointer hover:text-orange-400">
             <a href="https://inspeksimobil.id/profile/">Profile</a>
