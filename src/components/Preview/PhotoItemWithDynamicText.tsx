@@ -98,7 +98,9 @@ const PhotoItemWithDynamicText: React.FC<PhotoItemWithDynamicTextProps> = ({
 
         <img
           src={
-            currentPhotoPath ? formatPath(currentPhotoPath) : "/assets/placeholder-photo.png"
+            currentPhotoPath
+              ? formatPath(currentPhotoPath)
+              : "/assets/placeholder-photo.png"
           }
           alt={capitalizedLabel}
           className="w-[220px] h-[165px] object-cover "

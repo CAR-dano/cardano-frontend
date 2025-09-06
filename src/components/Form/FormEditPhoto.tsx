@@ -39,13 +39,13 @@ function FormEditPhoto({
   );
   const [displayInPdf, setDisplayInPdf] = useState(photo.displayInPdf || false);
   const [isLoading, setIsLoading] = useState(false);
-  
+
   // State untuk foto baru
   const [newPhotoFile, setNewPhotoFile] = useState<File | null>(null);
   const [newPhotoPreview, setNewPhotoPreview] = useState<string | null>(null);
   const [showPhotoReplaceDialog, setShowPhotoReplaceDialog] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  
+
   // State untuk menyimpan path foto terbaru dari response API
   const [currentPhotoPath, setCurrentPhotoPath] = useState(photo.path);
 
@@ -155,7 +155,7 @@ function FormEditPhoto({
     setIsLoading(true);
     try {
       let apiResponse;
-      
+
       // Jika ada foto baru, gunakan updatePhotoWithFile
       if (newPhotoFile) {
         apiResponse = await dispatch(
@@ -170,7 +170,7 @@ function FormEditPhoto({
             },
           })
         ).unwrap();
-        
+
         // Update path foto dari response API dan refresh tampilan
         // Response API biasanya berisi path foto baru setelah upload berhasil
         if (apiResponse?.path) {
