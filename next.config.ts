@@ -12,6 +12,7 @@ const nextConfig: NextConfig = {
       "69.62.80.7",
       "staging-api.inspeksimobil.id",
       "api.inspeksimobil.id",
+      "staging-api.inspeksimobil.id",
     ],
   },
   output: "standalone",

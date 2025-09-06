@@ -190,6 +190,32 @@ export const searchByKeyword = createAsyncThunk(
   }
 );
 
+export const returnToReview = createAsyncThunk(
+  "inspection/returnToReview",
+  async (id: string, thunkAPI) => {
+    try {
+      const payload = await inspectionService.returnToReview(id);
+      return payload;
+    } catch (error: any) {
+      const message = error?.response?.data?.message;
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const markAsApproved = createAsyncThunk(
+  "inspection/markAsApproved",
+  async (id: string, thunkAPI) => {
+    try {
+      const payload = await inspectionService.markAsApproved(id);
+      return payload;
+    } catch (error: any) {
+      const message = error?.response?.data?.message;
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const updatePhoto = createAsyncThunk(
   "inspection/updatePhoto",
   async (
@@ -206,6 +232,41 @@ export const updatePhoto = createAsyncThunk(
   ) => {
     try {
       const payload = await inspectionService.updatePhoto(id, photosId, data);
+      return payload;
+    } catch (error: any) {
+      const message = error?.response?.data?.message;
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+// Action baru untuk update foto dengan file
+// Digunakan ketika user ingin mengganti foto lama dengan foto baru
+export const updatePhotoWithFile = createAsyncThunk(
+  "inspection/updatePhotoWithFile",
+  async (
+    {
+      id,
+      photosId,
+      data,
+    }: {
+      id: string;
+      photosId: string;
+      data: {
+        needAttention?: boolean;
+        label?: string;
+        displayInPdf?: boolean;
+        file?: File;
+      };
+    },
+    thunkAPI
+  ) => {
+    try {
+      const payload = await inspectionService.updatePhotoWithFile(
+        id,
+        photosId,
+        data
+      );
       return payload;
     } catch (error: any) {
       const message = error?.response?.data?.message;
@@ -469,6 +530,28 @@ export const inspectionSlice = createSlice({
         state.searchResults.data = [];
         state.searchResults.meta = null;
         state.searchResults.error = action.payload as string;
+      })
+      .addCase(returnToReview.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(returnToReview.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(returnToReview.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(markAsApproved.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(markAsApproved.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(markAsApproved.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
       });
   },
 });

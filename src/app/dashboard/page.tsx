@@ -394,10 +394,7 @@ const Dashboard: React.FC = () => {
             </div>
             <div className="lg:col-span-2 border-none h-full">
               <InspectorPerfomance
-                data={combinedDashboardData.inspectorPerformance.data.slice(
-                  0,
-                  10
-                )}
+                data={combinedDashboardData.inspectorPerformance.data}
               />
             </div>
           </div>

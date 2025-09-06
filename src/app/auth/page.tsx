@@ -6,11 +6,17 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { UserLogin, UserSignUp } from "../../utils/Auth";
 import { useDispatch } from "react-redux";
 import { AppDispatch, useAppSelector } from "../../lib/store";
-import { checkToken, login, signup } from "../../lib/features/auth/authSlice";
+import {
+  login,
+  signup,
+  checkToken,
+  getUserProfile,
+} from "../../lib/features/auth/authSlice";
 import LoadingScreen from "../../components/LoadingFullScreen";
 import { FiEye, FiEyeOff, FiArrowLeft } from "react-icons/fi";
 import { toast } from "../../hooks/use-toast";
 import { getAndClearRedirectUrl } from "../../utils/redirectUtils";
+import axios from "axios";
 
 function LoginPage() {
   const [showSignup, setShowSignup] = useState(false);
@@ -36,10 +42,10 @@ function LoginPage() {
       dispatch(checkToken(token))
         .unwrap()
         .then(() => {
+          dispatch(getUserProfile());
           toast({
-            title: "Success",
-            description:
-              "Token verification successful! You are now logged in.",
+            title: "Token Verified",
+            description: "Your session is valid. Redirecting...",
             variant: "default",
           });
         })
@@ -354,7 +360,7 @@ function LoginPage() {
                       </label>
                       <input
                         type="text"
-                        placeholder="Masukkan email atau username"
+                        placeholder="Enter your email address or username"
                         value={formLogin.loginIdentifier}
                         onChange={(e) =>
                           setFormLogin({
@@ -383,7 +389,7 @@ function LoginPage() {
                       <div className="relative">
                         <input
                           type={showPassword ? "text" : "password"}
-                          placeholder="Masukkan kata sandi"
+                          placeholder="Enter your password"
                           value={formLogin.password}
                           onChange={(e) =>
                             setFormLogin({
@@ -415,7 +421,7 @@ function LoginPage() {
                       type="submit"
                       className="gradient-button-2 w-full py-3 rounded-lg text-white font-rubik text-[18px] font-medium "
                     >
-                      Masuk
+                      Log in
                     </button>
                   </motion.form>
 
@@ -480,7 +486,7 @@ function LoginPage() {
                     className="bg-gradient-to-r from-[#FF7D43] to-[#A25DF9] bg-clip-text text-transparent  font-rubik text-[60px] font-bold mb-4 leading-none"
                     variants={childVariants}
                   >
-                    Daftar Akun
+                    Create a free account
                   </motion.h1>
 
                   <motion.form
@@ -500,7 +506,7 @@ function LoginPage() {
                       </label>
                       <input
                         type="text"
-                        placeholder="Masukkan username Anda"
+                        placeholder="Enter your username"
                         value={formRegister.username}
                         onChange={(e) =>
                           setFormRegister({
@@ -528,7 +534,7 @@ function LoginPage() {
                       </label>
                       <input
                         type="email"
-                        placeholder="Masukkan alamat email Anda"
+                        placeholder="Enter your email address"
                         value={formRegister.email}
                         onChange={(e) =>
                           setFormRegister({
@@ -557,7 +563,7 @@ function LoginPage() {
                       <div className="relative">
                         <input
                           type={showRegisterPassword ? "text" : "password"}
-                          placeholder="Masukkan kata sandi Anda"
+                          placeholder="Enter your password"
                           value={formRegister.password}
                           onChange={(e) =>
                             setFormRegister({
@@ -591,7 +597,7 @@ function LoginPage() {
                       type="submit"
                       className="gradient-button-2 w-full py-3 rounded-lg text-white font-rubik text-[18px] font-medium "
                     >
-                      Daftar
+                      Sign Up
                     </button>
                   </motion.form>
 
@@ -599,12 +605,12 @@ function LoginPage() {
                     className="text-black font-rubik text-[16px] font-normal"
                     variants={childVariants}
                   >
-                    Sudah punya akun?{" "}
+                    Already have an account?{" "}
                     <a
                       className="text-[#FF6B6B] font-bold cursor-pointer hover:underline"
                       onClick={toggleSignup}
                     >
-                      Masuk di sini
+                      Log in
                     </a>
                   </motion.p>
 
@@ -612,9 +618,9 @@ function LoginPage() {
                     className="text-gray-500 text-sm mt-6"
                     variants={childVariants}
                   >
-                    Dengan membuat akun, Anda setuju dengan{" "}
+                    By creating an account, you agree to our{" "}
                     <a href="#" className="text-[#FF6B6B] underline">
-                      syarat penggunaan
+                      terms of use
                     </a>
                     .
                   </motion.p>

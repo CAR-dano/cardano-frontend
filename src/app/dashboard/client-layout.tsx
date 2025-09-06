@@ -31,12 +31,14 @@ export default function DashboardClientLayout({
   if (isPreviewPage) {
     // Render children with AuthGuard but without dashboard layout for preview pages
     return (
-      <AuthGuard requiredRoles={["ADMIN", "REVIEWER"]}>{children}</AuthGuard>
+      <AuthGuard requiredRoles={["SUPERADMIN", "ADMIN", "REVIEWER"]}>
+        {children}
+      </AuthGuard>
     );
   }
 
   return (
-    <AuthGuard requiredRoles={["ADMIN", "REVIEWER"]}>
+    <AuthGuard requiredRoles={["SUPERADMIN", "ADMIN", "REVIEWER"]}>
       {isLoading ? (
         <LoadingScreen message="Loading dashboard..." />
       ) : (
