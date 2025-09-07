@@ -114,7 +114,7 @@ const Navbar = ({ isNavbarVisible }: NavbarProps) => {
       <div className="hidden md:flex">
         <ul className="flex gap-8 text-shade font-rubik">
           <li className="text-base font-semibold cursor-pointer hover:text-orange-400">
-            <a href="/">Home</a>
+            <Link href="/">Home</Link>
             {/* Test Aman */}
           </li>
           <li className="text-base font-semibold group cursor-pointer hover:text-orange-400">
@@ -187,11 +187,11 @@ const Navbar = ({ isNavbarVisible }: NavbarProps) => {
             </AlertDialog>
           </div>
         ) : (
-          <a key="user-not-logged-in" href="/auth">
+          <Link key="user-not-logged-in" href="/auth">
             <button className="gradient-button-2 text-white px-5 py-2 rounded-lg font-bold contact-shadow">
               Sign In
             </button>
-          </a>
+          </Link>
         )}
       </div>
 
@@ -251,7 +251,7 @@ const Navbar = ({ isNavbarVisible }: NavbarProps) => {
             style={{ backgroundColor: "#ffffff" }}
           >
             <li className="cursor-pointer hover:text-orange-400">
-              <a href="/">Home</a>
+              <Link href="/">Home</Link>
             </li>
             <li className="cursor-pointer hover:text-orange-400">
               <a href="https://inspeksimobil.id/profile/">Profile</a>
@@ -322,11 +322,11 @@ const Navbar = ({ isNavbarVisible }: NavbarProps) => {
                 </button>
               </div>
             ) : (
-              <a key="sidebar-user-not-logged-in" href="/auth">
+              <Link key="sidebar-user-not-logged-in" href="/auth">
                 <button className="gradient-button-2 bg-orange-400 text-white px-4 py-2 rounded-lg font-bold w-full">
                   Sign In
                 </button>
-              </a>
+              </Link>
             )}
           </div>
         </div>
