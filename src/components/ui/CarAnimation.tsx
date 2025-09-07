@@ -22,9 +22,8 @@ const CarComponent = () => {
     }
   };
 
-  // Increased circle size from 50 to 100 (radius)
+  // Circle size and blur settings
   const circleRadius = 100;
-  // Consistent blur amount
   const blurAmount = 6;
 
   return (
@@ -41,6 +40,7 @@ const CarComponent = () => {
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
       >
+        {/* Blurred background layer */}
         <Image
           src="/assets/car-illustration.svg"
           width={640}
@@ -49,64 +49,29 @@ const CarComponent = () => {
           priority
           className="w-auto mx-auto max-w-[90%] md:max-w-[640px]"
           style={{
-            filter: isHovering ? `url('#blur-mask')` : `blur(${blurAmount}px)`,
-            transition: "filter 0.3s ease-out",
+            filter: `blur(${blurAmount}px)`,
           }}
         />
 
+        {/* Clear overlay layer that reveals on hover */}
         {isHovering && (
-          <svg
-            className="absolute top-0 left-0 w-full h-full pointer-events-none"
+          <div
+            className="absolute top-0 left-0 w-full h-full"
             style={{
-              zIndex: 1,
-              opacity: isHovering ? 1 : 0,
+              maskImage: `radial-gradient(circle ${circleRadius}px at ${mousePosition.x}px ${mousePosition.y}px, white 0%, white 60%, transparent 80%, transparent 100%)`,
+              WebkitMaskImage: `radial-gradient(circle ${circleRadius}px at ${mousePosition.x}px ${mousePosition.y}px, white 0%, white 60%, transparent 80%, transparent 100%)`,
+              transition: "mask-image 0.1s ease-out, -webkit-mask-image 0.1s ease-out",
             }}
           >
-            <defs>
-              <filter id="blur-mask">
-                <feGaussianBlur stdDeviation={blurAmount + 1} result="blur" />
-                <feComponentTransfer>
-                  <feFuncA type="linear" slope="1" />
-                </feComponentTransfer>
-                <feImage
-                  href="#circle-mask"
-                  x={mousePosition.x - circleRadius}
-                  y={mousePosition.y - circleRadius}
-                  width={circleRadius * 2}
-                  height={circleRadius * 2}
-                  result="mask"
-                />
-                <feComposite
-                  operator="in"
-                  in="SourceGraphic"
-                  in2="mask"
-                  result="masked-source"
-                />
-                <feComposite operator="over" in="masked-source" in2="blur" />
-              </filter>
-
-              {/* Blurred circle mask definition */}
-              <radialGradient
-                id="blurred-circle-gradient"
-                cx="50%"
-                cy="50%"
-                r="50%"
-                fx="50%"
-                fy="50%"
-              >
-                <stop offset="0%" stopColor="white" stopOpacity="1" />
-                <stop offset="70%" stopColor="white" stopOpacity="0.8" />
-                <stop offset="100%" stopColor="white" stopOpacity="0" />
-              </radialGradient>
-              <circle
-                id="circle-mask"
-                cx={circleRadius}
-                cy={circleRadius}
-                r={circleRadius}
-                fill="url(#blurred-circle-gradient)"
-              />
-            </defs>
-          </svg>
+            <Image
+              src="/assets/car-illustration.svg"
+              width={640}
+              height={500}
+              alt="Illustration of a car"
+              priority
+              className="w-auto mx-auto max-w-[90%] md:max-w-[640px]"
+            />
+          </div>
         )}
       </div>
     </motion.div>

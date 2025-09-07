@@ -10,6 +10,7 @@ import {
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import Image from "next/image";
+import { toast } from "@/hooks/use-toast";
 
 interface FormEditPhotoProps {
   label: string;
@@ -185,6 +186,7 @@ function FormEditPhoto({
         }
       } else {
         // Jika tidak ada foto baru, gunakan updatePhoto biasa
+        console.log("Updating photo without new file");
         apiResponse = await dispatch(
           updatePhoto({
             id: inspectionId,
@@ -211,8 +213,11 @@ function FormEditPhoto({
         success: true,
       });
     } catch (error) {
-      console.error("Error updating photo:", error);
-      alert("Gagal menyimpan perubahan foto. Silakan coba lagi.");
+      toast({
+        title: "Error",
+        description: "Gagal menyimpan perubahan. Silakan coba lagi.",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }

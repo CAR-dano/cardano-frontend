@@ -7,7 +7,10 @@ import CustomButton from "../ui/CustomButton";
 
 export default function HowTo() {
   return (
-    <div className="relative flex flex-col gap-6 px-10 lg:px-20 font-rubik mb-24">
+    <div
+      id="how-to"
+      className="relative flex flex-col gap-6 px-10 lg:px-20 font-rubik mb-24"
+    >
       {/* Decoration */}
       <div className="overflow-hidden">
         <Image

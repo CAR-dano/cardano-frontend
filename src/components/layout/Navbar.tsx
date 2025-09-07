@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { IoMenu, IoClose } from "react-icons/io5";
 import { usePathname, useRouter } from "next/navigation";
@@ -30,7 +30,44 @@ const Navbar = ({ isNavbarVisible }: NavbarProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const pathName = usePathname();
 
+  // Close sidebar when window is resized to desktop view
+  const handleResize = () => {
+    if (window.innerWidth >= 768 && isOpen) {
+      setIsOpen(false);
+    }
+  };
+
+  // Prevent body scroll when sidebar is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+      document.body.style.position = "fixed";
+      document.body.style.width = "100%";
+      document.documentElement.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+      document.body.style.position = "unset";
+      document.body.style.width = "unset";
+      document.documentElement.style.overflow = "unset";
+    }
+
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = "unset";
+      document.body.style.position = "unset";
+      document.body.style.width = "unset";
+      document.documentElement.style.overflow = "unset";
+    };
+  }, [isOpen]);
+
+  // Add resize listener
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [isOpen]);
+
   const handleToHome = () => {
+    setIsOpen(false); // Close mobile menu if open
     router.push("/");
   };
   const handleLogout = async () => {
@@ -77,7 +114,7 @@ const Navbar = ({ isNavbarVisible }: NavbarProps) => {
       <div className="hidden md:flex">
         <ul className="flex gap-8 text-shade font-rubik">
           <li className="text-base font-semibold cursor-pointer hover:text-orange-400">
-            <a href="https://inspeksimobil.id/">Home</a>
+            <a href="/">Home</a>
             {/* Test Aman */}
           </li>
           <li className="text-base font-semibold group cursor-pointer hover:text-orange-400">
@@ -169,60 +206,129 @@ const Navbar = ({ isNavbarVisible }: NavbarProps) => {
       {/* Sidebar Overlay (Klik untuk Menutup) */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-50"
+          className="mobile-overlay fixed inset-0 bg-black bg-opacity-50 z-[9998] md:hidden"
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            zIndex: 9998,
+          }}
           onClick={() => setIsOpen(false)}
         />
       )}
 
       {/* Sidebar (Dari Kanan) */}
       <div
-        className={`fixed top-0 right-0 h-full w-64 bg-white z-50 shadow-lg transform transition-transform duration-300 ${
+        className={`mobile-sidebar fixed top-0 right-0 h-screen w-64 bg-white z-[9999] shadow-2xl transform transition-transform duration-300 md:hidden border-l border-gray-200 ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
+        style={{
+          backgroundColor: "#ffffff",
+          height: "100vh",
+          maxHeight: "100vh",
+          overflow: "hidden",
+          boxShadow: "-10px 0 30px rgba(0, 0, 0, 0.3)",
+          zIndex: 9999,
+        }}
       >
-        <div className="flex justify-end p-4">
+        <div className="flex justify-end p-4 bg-white border-b border-gray-100">
           <button
-            className="text-3xl text-orange-700"
+            className="text-3xl text-orange-700 hover:text-orange-800"
             onClick={() => setIsOpen(false)}
           >
             <IoClose />
           </button>
         </div>
-        <ul className="mt-4 space-y-6 text-lg text-orange-700 font-semibold px-6">
-          <li className="cursor-pointer">Home</li>
-          <li className="cursor-pointer">Profile</li>
-          <li className="cursor-pointer">Services</li>
-          <li className="cursor-pointer">Pricelist</li>
-          <li className="cursor-pointer">Booking</li>
-          <li className="font-bold text-orange-400  cursor-pointer">
-            <p className="inline-block border-b-2 border-orange-500">
-              Cari Data
-            </p>
-          </li>
-        </ul>
-        <div className="mt-6 px-6">
-          {user ? (
-            <div key="sidebar-user-logged-in" className="flex flex-col gap-2">
-              <span className="text-orange-700 font-bold">
-                {user.username || user.email}
-              </span>
-              <button
-                onClick={() => {
-                  setIsOpen(false);
-                  handleLogout();
-                }}
-                className="bg-orange-100 text-orange-700 px-4 py-2 rounded-lg font-bold border border-orange-300 hover:bg-orange-200 transition"
-              >
-                Logout
-              </button>
-            </div>
-          ) : (
-            <a key="sidebar-user-not-logged-in" href="/auth">
-              <button className="gradient-button-2 bg-orange-400 text-white px-4 py-2 rounded-lg font-bold w-full">
-                Sign In
-              </button>
-            </a>
-          )}
+        <div
+          className="flex-1 bg-white overflow-y-auto h-full"
+          style={{ backgroundColor: "#ffffff" }}
+        >
+          <ul
+            className="mt-4 space-y-6 text-lg text-orange-700 font-semibold px-6 bg-white py-4"
+            style={{ backgroundColor: "#ffffff" }}
+          >
+            <li className="cursor-pointer hover:text-orange-400">
+              <a href="/">Home</a>
+            </li>
+            <li className="cursor-pointer hover:text-orange-400">
+              <a href="https://inspeksimobil.id/profile/">Profile</a>
+            </li>
+            <li className="cursor-pointer hover:text-orange-400">
+              <a href="https://inspeksimobil.id/services/">Services</a>
+            </li>
+            <li className="cursor-pointer hover:text-orange-400">
+              <a href="https://inspeksimobil.id/price-list/">Price List</a>
+            </li>
+            <li className="cursor-pointer hover:text-orange-400">
+              <a href="https://inspeksimobil.id/booking/">Booking</a>
+            </li>
+            <li
+              className={`font-bold cursor-pointer ${
+                isActiveLink("/") ? "text-orange-400" : "text-orange-700"
+              }`}
+              onClick={() => setIsOpen(false)}
+            >
+              <Link href="/">
+                <p
+                  className={`inline-block ${
+                    isActiveLink("/") ? "border-b-2 border-orange-500" : ""
+                  }`}
+                >
+                  Cari Data
+                </p>
+              </Link>
+            </li>
+            <li
+              className={`font-bold cursor-pointer ${
+                isActiveLink("/cek-validitas")
+                  ? "text-orange-400"
+                  : "text-orange-700"
+              }`}
+              onClick={() => setIsOpen(false)}
+            >
+              <Link href="/cek-validitas">
+                <p
+                  className={`inline-block ${
+                    isActiveLink("/cek-validitas")
+                      ? "border-b-2 border-orange-500"
+                      : ""
+                  }`}
+                >
+                  Cek Validitas PDF
+                </p>
+              </Link>
+            </li>
+          </ul>
+          <div
+            className="mt-6 px-6 bg-white py-4 flex-1"
+            style={{ backgroundColor: "#ffffff" }}
+          >
+            {user ? (
+              <div key="sidebar-user-logged-in" className="flex flex-col gap-2">
+                <span className="text-orange-700 font-bold">
+                  {user.username || user.email}
+                </span>
+                <button
+                  onClick={() => {
+                    setIsOpen(false);
+                    handleLogout();
+                  }}
+                  className="bg-orange-100 text-orange-700 px-4 py-2 rounded-lg font-bold border border-orange-300 hover:bg-orange-200 transition"
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <a key="sidebar-user-not-logged-in" href="/auth">
+                <button className="gradient-button-2 bg-orange-400 text-white px-4 py-2 rounded-lg font-bold w-full">
+                  Sign In
+                </button>
+              </a>
+            )}
+          </div>
         </div>
       </div>
     </nav>

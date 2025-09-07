@@ -123,7 +123,15 @@ function About() {
         transition={{ duration: 0.6, ease: "easeOut", delay: 0.5 }}
         viewport={{ once: true }}
       >
-        <CustomButton className="w-full md:w-auto z-10 text-white text-xl font-bold rounded-lg px-6 py-2 gradient-button-2">
+        <CustomButton
+          onClick={() => {
+            const element = document.getElementById("how-to");
+            if (element) {
+              element.scrollIntoView({ behavior: "smooth" });
+            }
+          }}
+          className="w-full md:w-auto z-10 text-white text-xl font-bold rounded-lg px-6 py-2 gradient-button-2"
+        >
           Take a Ride!
         </CustomButton>
       </motion.div>

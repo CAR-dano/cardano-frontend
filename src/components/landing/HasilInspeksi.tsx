@@ -32,10 +32,6 @@ function HasilInspeksi() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 50 }} // Awal animasi: opacity 0 & turun ke bawah
-      whileInView={{ opacity: 1, y: 0 }} // Saat masuk viewport: opacity 1 & naik ke posisi normal
-      transition={{ duration: 0.8, ease: "easeOut" }} // Durasi animasi smooth
-      viewport={{ once: true }} // Animasi hanya berjalan sekali
       className="w-full min-h-[70vh] lg:min-h-screen bg-cover bg-center flex flex-col items-center justify-center py-0 lg:py-10 px-0"
       style={{ backgroundImage: bgImage }}
     >
@@ -49,15 +45,9 @@ function HasilInspeksi() {
         Cek Hasil Inspeksi Kami!
       </motion.h1>
 
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
-        viewport={{ once: true }}
-        className="w-full"
-      >
+      <div className="w-full">
         <EmblaCarousel slides={data} options={OPTIONS} />
-      </motion.div>
+      </div>
     </motion.div>
   );
 }
