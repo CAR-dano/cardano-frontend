@@ -137,7 +137,7 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
     const photo = data?.photos?.find(
       (item: any) => item.label === "Tampak Depan"
     );
-    return photo ? photo.path : "";
+    return photo ? photo : "";
   };
 
   const preProcessData = (data: any) => {
@@ -150,6 +150,7 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
       vehiclePlateNumber: data?.vehiclePlateNumber,
       inspectionDate: data?.inspectionDate,
       photos: getImageTampakDepan(data),
+      id: data?.id,
     });
 
     setDataHalaman2({

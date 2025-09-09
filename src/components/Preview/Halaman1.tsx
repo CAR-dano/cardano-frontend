@@ -3,6 +3,7 @@ import React, { useRef, useEffect, useState } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import Image from "next/image";
+import PhotoTampakDepan from "./PhotoTampakDepan";
 
 interface Halaman1Props {
   data: any;
@@ -259,6 +260,10 @@ const Halaman1: React.FC<Halaman1Props> = ({
     return gradingScale[score] ?? "Skor tidak valid";
   }
 
+  const handlePhotoUpdate = (photoId: string, updatedData: any) => {
+    onClick?.({ type: "photo_update", photoId, data: updatedData });
+  };
+
   return (
     <div className="px-[30px] font-poppins">
       <Header />
@@ -458,7 +463,7 @@ const Halaman1: React.FC<Halaman1Props> = ({
         </div>
 
         <div className="w-full flex border-t-2 border-black">
-          <div className="w-1/2 bg-[#B2BEB5] border-r-2 border-black h-48">
+          {/* <div className="w-1/2 bg-[#B2BEB5] border-r-2 border-black h-48">
             <Image
               src={`${PHOTO_URL}/uploads/inspection-photos/${data.photos}`}
               alt="Tampak Depan"
@@ -466,7 +471,17 @@ const Halaman1: React.FC<Halaman1Props> = ({
               height={200}
               className="mx-auto w-[90%] h-full object-cover"
             />
-          </div>
+          </div> */}
+          <PhotoTampakDepan
+            item={{
+              id: data.photos.id,
+              path: data.photos.path,
+              label: "Tampak Depan",
+            }}
+            editable={editable}
+            onPhotoUpdate={handlePhotoUpdate}
+            inspectionId={data.id}
+          />
           <div
             onClick={() =>
               editable &&
