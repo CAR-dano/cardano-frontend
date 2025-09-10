@@ -4,8 +4,7 @@ import {
   getDataEdited,
 } from "../../lib/features/inspection/inspectionSlice";
 import { AppDispatch, useAppSelector } from "../../lib/store";
-import React, { use, useEffect } from "react";
-import { format } from "date-fns"; // Import format
+import React, { useEffect } from "react";
 
 import { useDispatch } from "react-redux";
 import { useTheme } from "../../contexts/ThemeContext";
@@ -18,7 +17,6 @@ interface EditedDataProps {
 
 function EditedData({ updateData, cancelEdit, id }: EditedDataProps) {
   const [status, setStatus] = React.useState(true);
-  const { isDarkModeEnabled } = useTheme();
 
   // Ambil semua item dengan id yang sama, hasilnya array (atau kosong jika tidak ada)
   const editedItems = useAppSelector((state) => state.inspection.edited).filter(

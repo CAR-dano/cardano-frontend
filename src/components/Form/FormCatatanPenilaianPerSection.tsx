@@ -12,13 +12,11 @@ interface FormPenilaianSummaryProps {
 }
 
 function FormPenilaianSummmary({
-  label,
   inputFor,
   value,
   onChange,
   section,
 }: FormPenilaianSummaryProps) {
-  const { isDarkModeEnabled } = useTheme();
   return (
     <div>
       <Label htmlFor={inputFor} className="dark:text-gray-200">

@@ -180,11 +180,11 @@ const bulkSlice = createSlice({
       state.finishedAt = new Date().toISOString();
     },
 
-    clearBulkProcess: (state) => {
+    clearBulkProcess: (_state) => {
       return initialState;
     },
 
-    resetBulkState: (state) => {
+    resetBulkState: (_state) => {
       return initialState;
     },
   },

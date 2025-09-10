@@ -1,6 +1,6 @@
 "use client";
 import { useState, useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import Image from "next/image";
 
 const CarComponent = () => {
@@ -8,9 +8,8 @@ const CarComponent = () => {
   const [isHovering, setIsHovering] = useState(false);
   const imageRef = useRef<HTMLDivElement>(null);
   // Animasi paralaks untuk mobil
-  const { scrollYProgress } = useScroll();
 
-  const xPos = useTransform(scrollYProgress, [0, 1], ["0%", "500%"]);
+  // const xPos = useTransform(scrollYProgress, [0, 1], ["0%", "500%"]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLImageElement>) => {
     if (imageRef.current) {

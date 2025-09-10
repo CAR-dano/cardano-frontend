@@ -15,10 +15,8 @@ function FormNormalInput({
   inputFor,
   value = "", // fallback untuk mencegah undefined
   onChange,
-  section,
 }: FormNormalInputProps) {
   const [newValue, setNewValue] = React.useState(value);
-  const { isDarkModeEnabled } = useTheme();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewValue(e.target.value);

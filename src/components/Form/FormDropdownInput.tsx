@@ -28,11 +28,9 @@ function FormDropdownInput({
   value,
   onChange,
   type,
-  section,
 }: FormDropdownInputProps) {
   const [options, setOptions] = React.useState<any[]>([]);
   const [option, setOption] = React.useState<any>("");
-  const { isDarkModeEnabled } = useTheme();
 
   const getData = async (type: string) => {
     const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -104,7 +102,6 @@ export function SelectDemo(props: {
   const [selectedValue, setSelectedValue] = React.useState<string | undefined>(
     props.value
   );
-  const { isDarkModeEnabled } = useTheme();
 
   return (
     <Select

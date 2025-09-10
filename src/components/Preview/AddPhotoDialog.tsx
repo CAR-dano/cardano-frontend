@@ -7,6 +7,7 @@ import {
   DialogFooter,
 } from "../ui/dialog";
 import { Button } from "../ui/button";
+import Image from "next/image";
 
 interface AddPhotoDialogProps {
   isOpen: boolean;
@@ -19,8 +20,6 @@ interface AddPhotoDialogProps {
 const AddPhotoDialog: React.FC<AddPhotoDialogProps> = ({
   isOpen,
   onClose,
-  inspectionId,
-  category,
   onSave,
 }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -58,8 +57,6 @@ const AddPhotoDialog: React.FC<AddPhotoDialogProps> = ({
       setPreviewUrl(null);
     }
   };
-
-  const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   const handleSave = () => {
     if (selectedFile) {
@@ -109,9 +106,11 @@ const AddPhotoDialog: React.FC<AddPhotoDialogProps> = ({
             )}
             {previewUrl && (
               <div className="mt-4 flex justify-center">
-                <img
+                <Image
                   src={previewUrl}
                   alt="Photo Preview"
+                  width={300}
+                  height={200}
                   className="max-w-full h-auto max-h-60 rounded-md shadow-md"
                 />
               </div>

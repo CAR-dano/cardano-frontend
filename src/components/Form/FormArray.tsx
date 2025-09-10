@@ -20,7 +20,6 @@ function FormArray({
   section,
 }: FormPenilaianSummaryProps) {
   const [data, setData] = React.useState<string[]>(value);
-  const { isDarkModeEnabled } = useTheme();
 
   const handleChange = (index: number, newValue: string) => {
     const updated = [...data];

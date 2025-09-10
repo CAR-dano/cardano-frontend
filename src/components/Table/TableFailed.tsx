@@ -10,7 +10,6 @@ import {
 } from "../ui/table";
 import Link from "next/link";
 import SecondaryButton from "../Button/SecondaryButton";
-import PrimaryButton from "../Button/PrimaryButton";
 import { useDispatch } from "react-redux";
 import { AppDispatch, useAppSelector } from "../../lib/store";
 import {
@@ -20,22 +19,15 @@ import {
   markAsApproved,
 } from "../../lib/features/inspection/inspectionSlice";
 import DialogResult from "../Dialog/DialogResult";
-import { useRouter } from "next/navigation";
 import { Input } from "../ui/input";
 import { FaSearch, FaUndo, FaCheck } from "react-icons/fa";
 import { toast } from "../../hooks/use-toast";
 import { LoadingSkeleton } from "../Loading";
 
-const TableDataFailed = ({
-  data,
-  setDialogData,
-  handleRefresh,
-  userRole,
-}: any) => {
+const TableDataFailed = ({ data, handleRefresh }: any) => {
   const [fetchStatus, setFetchStatus] = useState(false);
   const [processingId, setProcessingId] = useState<string | null>(null);
   const dispatch = useDispatch<AppDispatch>();
-  const router = useRouter();
 
   // State for the confirmation dialogs
   const [confirmDialog, setConfirmDialog] = useState<{
@@ -73,12 +65,6 @@ const TableDataFailed = ({
     const newStatus = status.replace(/_/g, " ").toLowerCase();
     return newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
   };
-
-  const getNameFile = (pathPdf: string) => {
-    return pathPdf.split("/").pop();
-  };
-
-  const PDF_URL = process.env.NEXT_PUBLIC_PDF_URL;
 
   const getStatusBadge = (status: string) => {
     switch (status) {

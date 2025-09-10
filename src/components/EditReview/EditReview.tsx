@@ -125,7 +125,6 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
   const [dataHalamanPerluPerhatianPhotos, setDataHalamanPerluPerhatianPhotos] =
     useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const { isDarkModeEnabled } = useTheme();
 
   useEffect(() => {
     if (data) {
@@ -768,7 +767,7 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
         {/* Navigation Tabs */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 mb-6 overflow-hidden">
           <div className="flex overflow-x-auto">
-            {pages.map((page, index) => (
+            {pages.map((page) => (
               <button
                 key={page.id}
                 onClick={() => goToPage(page.id)}

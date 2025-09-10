@@ -19,16 +19,13 @@ import {
   XCircle,
   FileText,
   Car,
-  Link,
   Zap,
   Hash,
-  ArrowRight,
   Database,
   Lock,
   Sparkles,
 } from "lucide-react";
 import apiClient from "@/lib/services/apiClient";
-import CardanoScanButton from "../../components/Button/CardanoScanButton";
 import CardanoScanViewButton from "../../components/Button/CardanoScanViewButton";
 
 interface VerificationResult {
@@ -612,6 +609,7 @@ export default function CekValiditasPage() {
       }
       return null;
     } catch (error) {
+      console.error("Error fetching blockchain hash:", error);
       return null;
     }
   };

@@ -3,11 +3,6 @@ import dashboardService from "./dashboardService";
 import { DateRange } from "react-day-picker";
 
 // Get user from localStorage
-const user =
-  typeof window !== "undefined"
-    ? JSON.parse(localStorage.getItem("user") || "null")
-    : null;
-
 interface DashboardState {
   mainStats: any | null;
   combinedDashboardData: any | null;

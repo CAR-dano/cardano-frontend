@@ -12,12 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "../../../components/ui/table";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "../../../components/ui/card";
+import { Card, CardContent } from "../../../components/ui/card";
 import { Button } from "../../../components/ui/button";
 import {
   Drawer,
@@ -53,9 +48,7 @@ import apiClient from "@/lib/services/apiClient";
 
 const InspectorPage = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { inspectorList, isLoading, branches } = useAppSelector(
-    (state) => state.admin
-  );
+  const { inspectorList, isLoading } = useAppSelector((state) => state.admin);
   const accessToken = useAppSelector((state) => state.auth.accessToken);
   const [searchTerm, setSearchTerm] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -98,7 +91,7 @@ const InspectorPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    apiClient.post("/admin/users/inspector", formData, {}).then((response) => {
+    apiClient.post("/admin/users/inspector", formData, {}).then(() => {
       toast({
         title: "Inspector Added",
         description: "New inspector has been added successfully.",

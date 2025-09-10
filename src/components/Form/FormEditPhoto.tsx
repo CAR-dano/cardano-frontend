@@ -51,7 +51,6 @@ function FormEditPhoto({
   // State untuk menyimpan path foto terbaru dari response API
   const [currentPhotoPath, setCurrentPhotoPath] = useState(photo.path);
 
-  const { isDarkModeEnabled } = useTheme();
   const dispatch = useDispatch<AppDispatch>();
 
   const PHOTO_URL = process.env.NEXT_PUBLIC_PDF_URL;
@@ -213,6 +212,7 @@ function FormEditPhoto({
         success: true,
       });
     } catch (error) {
+      console.error("Error saving photo changes:", error);
       toast({
         title: "Error",
         description: "Gagal menyimpan perubahan. Silakan coba lagi.",

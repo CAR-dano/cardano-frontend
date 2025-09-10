@@ -1,13 +1,10 @@
 "use client";
 import Loading, { LoadingSkeleton } from "../../../components/Loading";
-import TableInspectionReviewer from "../../../components/Table/TableFailed";
 import { toast } from "../../../components/ui/use-toast";
 import { getDataForReviewer } from "../../../lib/features/inspection/inspectionSlice";
-import { useTheme } from "../../../contexts/ThemeContext";
 
 import { AppDispatch, RootState } from "../../../lib/store";
-import { useEffect, useState } from "react";
-import { IoIosSearch } from "react-icons/io";
+import { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import TableInBlockchain from "@/components/Table/TableInBlockchain";
 
@@ -18,7 +15,6 @@ const Header = ({
   dataCount: number;
   onRefresh: () => void;
 }) => {
-  const { isDarkModeEnabled } = useTheme();
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
       <div className="flex justify-between items-center">
@@ -81,37 +77,37 @@ const Header = ({
   );
 };
 
-const SearchBar = ({ setQuery, setFilter }: any) => {
-  const [keyword, setKeyword] = useState("");
+// const SearchBar = ({ setQuery, setFilter }: any) => {
+//   const [keyword, setKeyword] = useState("");
 
-  const handleKeyword = (e: any) => {
-    e.preventDefault();
-    setQuery({ keyword, page: 1 });
-  };
+//   const handleKeyword = (e: any) => {
+//     e.preventDefault();
+//     setQuery({ keyword, page: 1 });
+//   };
 
-  return (
-    <div className="mt-2">
-      <p className="text-sm mb-2">Cari UMKM</p>
-      <div className="flex gap-2">
-        <form
-          className="flex-grow relative hidden md:block"
-          onSubmit={handleKeyword}
-        >
-          <div className="absolute inset-y-0 text-gray-500 start-0 flex items-center ps-3 pointer-events-none">
-            <IoIosSearch />
-          </div>
-          <input
-            type="text"
-            id="search-navbar"
-            className="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder="Search..."
-            onChange={(e) => setKeyword(e.target.value)}
-          />
-        </form>
-      </div>
-    </div>
-  );
-};
+//   return (
+//     <div className="mt-2">
+//       <p className="text-sm mb-2">Cari UMKM</p>
+//       <div className="flex gap-2">
+//         <form
+//           className="flex-grow relative hidden md:block"
+//           onSubmit={handleKeyword}
+//         >
+//           <div className="absolute inset-y-0 text-gray-500 start-0 flex items-center ps-3 pointer-events-none">
+//             <IoIosSearch />
+//           </div>
+//           <input
+//             type="text"
+//             id="search-navbar"
+//             className="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+//             placeholder="Search..."
+//             onChange={(e) => setKeyword(e.target.value)}
+//           />
+//         </form>
+//       </div>
+//     </div>
+//   );
+// };
 
 const Database: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -121,29 +117,33 @@ const Database: React.FC = () => {
   const [hasMounted, setHasMounted] = useState(false);
   const { isLoading } = useSelector((state: RootState) => state.inspection);
 
-  const fetchData = (pageNum = page) => {
-    dispatch(
-      getDataForReviewer({
-        status: "ARCHIVED",
-        page: pageNum,
-        pageSize: 10,
-      })
-    )
-      .unwrap()
-      .then((response) => {
-        if (response) {
-          setData(response.data);
-          setMetapage(response.meta);
-        }
-      })
-      .catch((error) => {
-        toast({
-          title: "Error",
-          description: "Failed to fetch data",
-          variant: "destructive",
+  const fetchData = useCallback(
+    (pageNum = page) => {
+      dispatch(
+        getDataForReviewer({
+          status: "ARCHIVED",
+          page: pageNum,
+          pageSize: 10,
+        })
+      )
+        .unwrap()
+        .then((response) => {
+          if (response) {
+            setData(response.data);
+            setMetapage(response.meta);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+          toast({
+            title: "Error",
+            description: "Failed to fetch data",
+            variant: "destructive",
+          });
         });
-      });
-  };
+    },
+    [dispatch, page]
+  );
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
@@ -157,7 +157,7 @@ const Database: React.FC = () => {
   useEffect(() => {
     setHasMounted(true);
     fetchData();
-  }, [dispatch]);
+  }, [fetchData]);
 
   if (!hasMounted) return null; // Hindari render di server
 

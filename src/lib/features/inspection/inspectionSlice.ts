@@ -326,7 +326,7 @@ export const inspectionSlice = createSlice({
     setDataReview: (state, action) => {
       state.review = { ...state.review, ...action.payload };
     },
-    updateData: (state, action) => {},
+    updateData: (_state, _action) => {},
     clearSearchResults: (state) => {
       state.searchResults.data = [];
       state.searchResults.meta = null;
@@ -436,7 +436,7 @@ export const inspectionSlice = createSlice({
       .addCase(approveInspectionData.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(approveInspectionData.fulfilled, (state, action) => {
+      .addCase(approveInspectionData.fulfilled, (state, _action) => {
         state.isLoading = false;
         state.error = null;
       })
@@ -459,7 +459,7 @@ export const inspectionSlice = createSlice({
       .addCase(saveDataEdited.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(saveDataEdited.fulfilled, (state, action) => {
+      .addCase(saveDataEdited.fulfilled, (state, _action) => {
         state.isLoading = false;
         state.error = null;
       })
@@ -470,7 +470,7 @@ export const inspectionSlice = createSlice({
       .addCase(mintingToBlockchain.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(mintingToBlockchain.fulfilled, (state, action) => {
+      .addCase(mintingToBlockchain.fulfilled, (state, _action) => {
         state.isLoading = false;
         state.error = null;
       })
@@ -534,7 +534,7 @@ export const inspectionSlice = createSlice({
       .addCase(returnToReview.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(returnToReview.fulfilled, (state, action) => {
+      .addCase(returnToReview.fulfilled, (state, _action) => {
         state.isLoading = false;
         state.error = null;
       })
@@ -545,7 +545,7 @@ export const inspectionSlice = createSlice({
       .addCase(markAsApproved.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(markAsApproved.fulfilled, (state, action) => {
+      .addCase(markAsApproved.fulfilled, (state, _action) => {
         state.isLoading = false;
         state.error = null;
       })

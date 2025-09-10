@@ -39,7 +39,6 @@ const DialogEditRole = ({
   subFieldName,
 }: DialogEditRoleProps) => {
   const [selectedRole, setSelectedRole] = useState<string>(value || "");
-  const { isDarkModeEnabled } = useTheme();
 
   const options = Object.values(Role)
     .filter((role) => typeof role === "string")

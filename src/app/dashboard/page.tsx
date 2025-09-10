@@ -1,6 +1,6 @@
 "use client";
 import * as React from "react";
-import Loading, { LoadingOverlay } from "../../components/Loading";
+import { LoadingOverlay } from "../../components/Loading";
 import { AppDispatch, RootState } from "../../lib/store";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,11 +19,7 @@ import { DatePickerWithRange } from "../../components/Dashboard/DatePicker";
 import { DateRange } from "react-day-picker";
 import { format, subDays } from "date-fns";
 
-const DashboardHeader = ({
-  totalInspections,
-}: {
-  totalInspections: number;
-}) => {
+const DashboardHeader = () => {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
       <div className="flex justify-between items-center">
@@ -152,9 +148,9 @@ const Dashboard: React.FC = () => {
     isLoadingCombinedDashboardData,
     isLoadingMainStats,
   } = useSelector((state: RootState) => state.dashboard);
-  
+
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
-  
+
   const [hasMounted, setHasMounted] = useState(false);
   const { user } = useAuth();
   const isAdmin = user?.role === "ADMIN";
@@ -208,7 +204,8 @@ const Dashboard: React.FC = () => {
     setSelectedDateLabel(label);
     // Here you would typically dispatch an action to fetch data based on the new date range
     // For now, we'll just update the state
-  };  useEffect(() => {
+  };
+  useEffect(() => {
     setHasMounted(true);
     // Only fetch data if user is authenticated and we have user data
     if (isAuthenticated && user && isAdmin !== undefined) {
@@ -226,7 +223,8 @@ const Dashboard: React.FC = () => {
       if (isAdmin) {
         dispatch(getCombinedDashboardData(selectedDateRange));
       }
-    }  }, [selectedDateRange, isAuthenticated, user, isAdmin, dispatch]);
+    }
+  }, [selectedDateRange, isAuthenticated, user, isAdmin, dispatch]);
 
   // Reset dashboard data when user logs out
   useEffect(() => {
@@ -259,7 +257,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <DashboardHeader totalInspections={mainStats.totalOrders} />
+      <DashboardHeader />
 
       <div className="flex justify-between items-center mb-6">
         <p className="text-xl font-semibold">Data dari {textDateRange}</p>

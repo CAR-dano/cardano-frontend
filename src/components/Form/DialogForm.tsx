@@ -41,7 +41,6 @@ export function DialogForm({
   fieldName,
 }: DialogFormProps) {
   const [newValue, setNewValue] = useState(oldValue);
-  const { isDarkModeEnabled } = useTheme();
 
   const handleChange = (value: any) => {
     if (typeof value === "boolean") {

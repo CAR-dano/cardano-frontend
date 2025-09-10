@@ -25,7 +25,6 @@ function FormDropdownInput({
   value,
   onChange,
 }: FormDropdownInputProps) {
-  const { isDarkModeEnabled } = useTheme();
   const options = Object.values(Role).map((role) => ({
     value: String(role),
     label: String(role),

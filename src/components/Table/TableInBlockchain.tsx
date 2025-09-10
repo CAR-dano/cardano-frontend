@@ -11,23 +11,16 @@ import {
 import Link from "next/link";
 import SecondaryButton from "../Button/SecondaryButton"; // Assuming this exists
 import { useDispatch } from "react-redux";
-import { AppDispatch, useAppSelector } from "../../lib/store";
+import { AppDispatch } from "../../lib/store";
 import { mintingToBlockchain } from "../../lib/features/inspection/inspectionSlice";
 import DialogResult from "../Dialog/DialogResult"; // Your existing dialog
-import { useRouter } from "next/navigation";
 import { Input } from "../ui/input"; // Assuming Input component exists
 import { FaSearch } from "react-icons/fa"; // Assuming FaSearch icon exists
 import { toast } from "../../hooks/use-toast";
 
-const TableData = ({
-  data,
-  isDatabase = false,
-  setDialogData,
-  handleRefresh,
-}: any) => {
+const TableData = ({ data, isDatabase = false, handleRefresh }: any) => {
   const [fetchStatus, setFetchStatus] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
-  const router = useRouter();
 
   // State for the confirmation dialog
   const [confirmMintDialog, setConfirmMintDialog] = useState<{
