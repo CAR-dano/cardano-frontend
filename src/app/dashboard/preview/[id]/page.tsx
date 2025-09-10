@@ -260,7 +260,7 @@ Print sekarang?
     const photo = data?.photos?.find(
       (item: any) => item.label === "Tampak Depan"
     );
-    return photo ? photo.path : "";
+    return photo ? photo : "";
   };
 
   const preProcessData = (data: any) => {
