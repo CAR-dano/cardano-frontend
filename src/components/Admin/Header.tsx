@@ -12,7 +12,6 @@ import { useAppSelector } from "../../lib/store";
 import { ThemeToggle } from "../../components/ui/ThemeToggle";
 
 const Header = () => {
-  const user = useAppSelector((state) => state.auth.user);
   const currentTime = new Date().toLocaleTimeString("id-ID", {
     hour: "2-digit",
     minute: "2-digit",

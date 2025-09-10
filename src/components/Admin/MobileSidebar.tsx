@@ -5,7 +5,7 @@ import { LuLayoutDashboard, LuMenu, LuX } from "react-icons/lu";
 import { LuClipboardList } from "react-icons/lu";
 import { FiLogOut } from "react-icons/fi";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { AppDispatch, useAppSelector } from "../../lib/store";
 import { logout } from "../../lib/features/auth/authSlice";
@@ -174,7 +174,6 @@ const MobileSidebar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const dispatch = useDispatch<AppDispatch>();
-  const router = useRouter();
   const user = useAppSelector((state) => state.auth.user);
 
   const logOut = async () => {
@@ -182,6 +181,7 @@ const MobileSidebar: React.FC = () => {
       await dispatch(logout()).unwrap();
       window.location.href = "/auth";
     } catch (error) {
+      console.error("Logout failed:", error);
       window.location.href = "/auth";
     }
   };

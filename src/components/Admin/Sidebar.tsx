@@ -1,11 +1,11 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { LuLayoutDashboard } from "react-icons/lu";
 import { LuClipboardList } from "react-icons/lu";
 import { FiLogOut } from "react-icons/fi";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { AppDispatch, useAppSelector } from "../../lib/store";
 import { logout } from "../../lib/features/auth/authSlice";
@@ -170,10 +170,8 @@ const menu = [
 ];
 
 const Sidebar: React.FC = () => {
-  const [drop, setDrop] = useState(false);
   const pathname = usePathname();
   const dispatch = useDispatch<AppDispatch>();
-  const router = useRouter();
   const user = useAppSelector((state) => state.auth.user);
   const logOut = async () => {
     try {

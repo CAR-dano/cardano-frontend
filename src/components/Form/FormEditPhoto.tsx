@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Label } from "../ui/label";
-import { useTheme } from "../../contexts/ThemeContext";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../lib/store";
 import {

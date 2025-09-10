@@ -10,7 +10,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../components/ui/select";
-import { useTheme } from "../../contexts/ThemeContext";
 
 interface FormDropdownInputProps {
   label: string;

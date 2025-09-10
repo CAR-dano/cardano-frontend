@@ -1,5 +1,4 @@
 "use client";
-import { useTheme } from "../../contexts/ThemeContext";
 
 interface RatingProps {
   label?: string;

@@ -19,7 +19,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../components/ui/select";
-import { useTheme } from "../../contexts/ThemeContext";
 
 interface DialogEditRoleProps {
   isOpen: boolean;
