@@ -22,7 +22,7 @@ const AuthInitializer: React.FC<AuthInitializerProps> = ({ children }) => {
   const dispatch = useDispatch<AppDispatch>();
   const [isInitializing, setIsInitializing] = useState(true);
 
-  const { _isAuthenticated, isAuthInitialized, accessToken } = useAppSelector(
+  const { isAuthInitialized, accessToken } = useAppSelector(
     (state) => state.auth
   );
   useEffect(() => {
