@@ -58,8 +58,8 @@ function CardHasil({ inspectionSummary, overallRating, urlPdf }: any) {
                 description: inspectionSummary.indikasiBanjir,
               },
               {
-                iconYes: "/assets/icon/odometerreset.png",
-                iconNo: "/assets/icon/tidakodometer.png",
+                iconYes: "/assets/icon/indikasiodometerreset.png",
+                iconNo: "/assets/icon/tidakodometerreset.png",
                 title: "Odometer Reset",
                 description: inspectionSummary.indikasiOdometerReset,
               },
