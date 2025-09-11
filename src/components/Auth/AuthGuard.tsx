@@ -7,7 +7,9 @@ import { toast } from "../../hooks/use-toast";
 
 interface AuthGuardProps {
   children: React.ReactNode;
-  requiredRoles?: Array<"SUPERADMIN" | "ADMIN" | "REVIEWER" | "USER">;
+  requiredRoles?: Array<
+    "SUPERADMIN" | "ADMIN" | "REVIEWER" | "USER" | "CUSTOMER"
+  >;
 }
 
 const AuthGuard: React.FC<AuthGuardProps> = ({

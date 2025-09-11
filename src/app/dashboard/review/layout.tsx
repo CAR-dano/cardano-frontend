@@ -2,9 +2,9 @@ import React from "react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Draft Review",
+  title: "Draf Review",
   description:
-    "Review dan kelola draft inspeksi kendaraan yang memerlukan persetujuan",
+    "Review dan kelola draf inspeksi kendaraan yang memerlukan persetujuan",
   robots: "noindex, nofollow",
 };
 

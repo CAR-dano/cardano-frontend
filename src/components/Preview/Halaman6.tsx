@@ -30,7 +30,7 @@ const Halaman6: React.FC<Halaman6Props> = ({
     }
   };
 
-  const PHOTO_URL = process.env.NEXT_PUBLIC_PDF_URL;
+  const PHOTO_URL = process.env.NEXT_PUBLIC_API_URL;
 
   const formatPath = (path: string) => {
     if (!path) return "/assets/placeholder-photo.png";

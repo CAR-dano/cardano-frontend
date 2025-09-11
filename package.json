@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
+    "dev:staging": "dotenv -e .env.staging -- next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -14,7 +15,7 @@
     "@radix-ui/react-label": "^2.1.6",
     "@radix-ui/react-popover": "^1.1.13",
     "@radix-ui/react-select": "^2.2.4",
-    "@radix-ui/react-slot": "^1.2.2",
+    "@radix-ui/react-slot": "^1.2.3",
     "@radix-ui/react-toast": "^1.2.11",
     "@reduxjs/toolkit": "^2.6.0",
     "@tailwindcss/postcss": "^4.0.9",
@@ -44,6 +45,8 @@
     "@types/node": "^20.17.50",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "cross-env": "^7.0.3",
+    "dotenv-cli": "^9.0.0",
     "eslint": "^9.27.0",
     "eslint-config-next": "15.1.7",
     "postcss": "^8.5.3",

@@ -10,8 +10,8 @@ import { useDispatch } from "react-redux";
 import { AppDispatch, useAppSelector } from "../../lib/store";
 import { logout } from "../../lib/features/auth/authSlice";
 import { AiFillDatabase } from "react-icons/ai";
-import { FaUserGroup } from "react-icons/fa6";
-import { FaUserTie } from "react-icons/fa";
+import { FaFileCircleCheck, FaUserGroup } from "react-icons/fa6";
+import { FaCar, FaCreditCard, FaSearch, FaUserTie } from "react-icons/fa";
 import { FaCodeBranch } from "react-icons/fa";
 import { SiHiveBlockchain } from "react-icons/si";
 import SidebarBulkStatus from "../SidebarBulkStatus";
@@ -132,7 +132,7 @@ const menu = [
     access: ["SUPERADMIN", "ADMIN", "REVIEWER"],
   },
   {
-    title: "Data Approved",
+    title: "Data Disetujui",
     link: "/dashboard/database",
     children: <AiFillDatabase size={20} />,
     access: ["SUPERADMIN", "ADMIN", "REVIEWER"],
@@ -144,19 +144,19 @@ const menu = [
     access: ["SUPERADMIN", "ADMIN"],
   },
   {
-    title: "User Management",
+    title: "Manajemen Pengguna",
     link: "/dashboard/usermanagement",
     children: <FaUserGroup size={20} />,
     access: ["SUPERADMIN", "ADMIN"],
   },
   {
-    title: "Inspector",
+    title: "Inspektur",
     link: "/dashboard/inspector",
     children: <FaUserTie size={20} />,
     access: ["SUPERADMIN", "ADMIN"],
   },
   {
-    title: "Branch",
+    title: "Cabang",
     link: "/dashboard/branch",
     children: <FaCodeBranch size={20} />,
     access: ["SUPERADMIN", "ADMIN"],
@@ -166,6 +166,36 @@ const menu = [
     link: "/dashboard/data-failed",
     children: <MdSmsFailed size={20} />,
     access: ["SUPERADMIN"],
+  },
+  {
+    title: "Profile",
+    link: "/account",
+    children: <FaUserTie size={20} />,
+    access: ["SUPERADMIN", "ADMIN", "REVIEWER", "CUSTOMER"],
+  },
+  {
+    title: "Mobil Anda",
+    link: "/account/mobil",
+    children: <FaCar size={20} />,
+    access: ["CUSTOMER"],
+  },
+  {
+    title: "Inspeksi",
+    link: "/account/inspeksi",
+    children: <FaFileCircleCheck size={20} />,
+    access: ["CUSTOMER"],
+  },
+  {
+    title: "Credits",
+    link: "/account/credits",
+    children: <FaCreditCard size={20} />,
+    access: ["CUSTOMER"],
+  },
+  {
+    title: "Cari Mobil",
+    link: "/",
+    children: <FaSearch size={20} />,
+    access: ["CUSTOMER"],
   },
 ];
 
