@@ -17,12 +17,8 @@ import {
   searchByKeyword,
   clearSearchResults,
 } from "../../lib/features/inspection/inspectionSlice";
-import {
-  bulkApproveInspections,
-  clearBulkProcess,
-} from "../../lib/features/bulk/bulkSlice";
+import { bulkApproveInspections } from "../../lib/features/bulk/bulkSlice";
 import DialogResult from "../Dialog/DialogResult"; // Your existing dialog
-import { useRouter } from "next/navigation";
 import { Input } from "../../components/ui/input"; // Assuming Input component exists
 import { FaSearch } from "react-icons/fa"; // Assuming FaSearch icon exists
 import { toast } from "../../hooks/use-toast";
@@ -31,7 +27,6 @@ import { LoadingSkeleton } from "../Loading";
 const TableData = ({
   data,
   isDatabase = false,
-  setDialogData,
   handleRefresh,
   userRole,
 }: any) => {
@@ -41,7 +36,6 @@ const TableData = ({
   const [lastRefreshTime, setLastRefreshTime] = useState(0);
   const [showBulkConfirm, setShowBulkConfirm] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
-  const router = useRouter();
 
   // State for the confirmation dialog
   const [confirmMintDialog, setConfirmMintDialog] = useState<{

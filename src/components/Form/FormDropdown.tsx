@@ -10,7 +10,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../components/ui/select";
-import { useTheme } from "../../contexts/ThemeContext";
 
 interface FormDropdownInputProps {
   label: string;
@@ -25,7 +24,6 @@ function FormDropdownInput({
   value,
   onChange,
 }: FormDropdownInputProps) {
-  const { isDarkModeEnabled } = useTheme();
   const options = Object.values(Role).map((role) => ({
     value: String(role),
     label: String(role),

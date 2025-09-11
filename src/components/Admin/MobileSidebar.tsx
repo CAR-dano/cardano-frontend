@@ -5,13 +5,13 @@ import { LuLayoutDashboard, LuMenu, LuX } from "react-icons/lu";
 import { LuClipboardList } from "react-icons/lu";
 import { FiLogOut } from "react-icons/fi";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { AppDispatch, useAppSelector } from "../../lib/store";
 import { logout } from "../../lib/features/auth/authSlice";
 import { AiFillDatabase } from "react-icons/ai";
-import { FaUserGroup } from "react-icons/fa6";
-import { FaUserTie } from "react-icons/fa";
+import { FaFileCircleCheck, FaUserGroup } from "react-icons/fa6";
+import { FaCar, FaCreditCard, FaSearch, FaUserTie } from "react-icons/fa";
 import { FaCodeBranch } from "react-icons/fa";
 import { SiHiveBlockchain } from "react-icons/si";
 import SidebarBulkStatus from "../SidebarBulkStatus";
@@ -168,13 +168,42 @@ const menu = [
     children: <MdSmsFailed size={20} />,
     access: ["SUPERADMIN"],
   },
+  {
+    title: "Profile",
+    link: "/account",
+    children: <FaUserTie size={20} />,
+    access: ["SUPERADMIN", "ADMIN", "REVIEWER", "CUSTOMER"],
+  },
+  {
+    title: "Mobil Anda",
+    link: "/account/mobil",
+    children: <FaCar size={20} />,
+    access: ["CUSTOMER"],
+  },
+  {
+    title: "Inspeksi",
+    link: "/account/inspeksi",
+    children: <FaFileCircleCheck size={20} />,
+    access: ["CUSTOMER"],
+  },
+  {
+    title: "Credits",
+    link: "/account/credits",
+    children: <FaCreditCard size={20} />,
+    access: ["CUSTOMER"],
+  },
+  {
+    title: "Cari Mobil",
+    link: "/",
+    children: <FaSearch size={20} />,
+    access: ["CUSTOMER"],
+  },
 ];
 
 const MobileSidebar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const dispatch = useDispatch<AppDispatch>();
-  const router = useRouter();
   const user = useAppSelector((state) => state.auth.user);
 
   const logOut = async () => {
@@ -182,6 +211,7 @@ const MobileSidebar: React.FC = () => {
       await dispatch(logout()).unwrap();
       window.location.href = "/auth";
     } catch (error) {
+      console.error("Logout failed:", error);
       window.location.href = "/auth";
     }
   };

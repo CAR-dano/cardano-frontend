@@ -1,5 +1,4 @@
 "use client";
-import { useTheme } from "../../contexts/ThemeContext";
 
 interface RatingProps {
   label?: string;
@@ -9,12 +8,10 @@ interface RatingProps {
 }
 
 export default function Rating({
-  label,
   selected,
   setSelected,
   onChange,
 }: RatingProps) {
-  const { isDarkModeEnabled } = useTheme();
   const handleSelect = (num: number) => {
     if (setSelected) setSelected(num);
     if (onChange) onChange(num);

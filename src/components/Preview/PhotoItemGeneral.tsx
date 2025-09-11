@@ -27,7 +27,7 @@ const PhotoItemGeneral: React.FC<PhotoItemGeneralProps> = ({
   onPhotoUpdate,
 }) => {
   const textRef = useRef<HTMLParagraphElement>(null);
-  const [currentFontSize, setCurrentFontSize] = useState(16); // Initial font size
+  const [_currentFontSize, setCurrentFontSize] = useState(16); // Initial font size
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const capitalizeWords = (str: string) => {

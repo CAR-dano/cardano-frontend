@@ -46,7 +46,6 @@ const chartConfig = {
 
 export function CustomBarChart({
   data,
-  total,
   setActiveChartType,
   activeChartType,
 }: CustomBarChartProps) {

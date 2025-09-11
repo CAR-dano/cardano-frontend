@@ -13,12 +13,6 @@ const publicPaths = ["/auth", "/", "/result"];
 // Token refresh interval in milliseconds (15 minutes)
 const TOKEN_REFRESH_INTERVAL = 30 * 60 * 1000;
 
-// Session timeout in milliseconds (effectively disabled by setting a very large value)
-const SESSION_TIMEOUT = 9999 * 24 * 60 * 60 * 1000; // Approximately 9999 days
-
-// Warning before session timeout in milliseconds (set to a value larger than SESSION_TIMEOUT to prevent warning)
-const WARNING_BEFORE_TIMEOUT = SESSION_TIMEOUT + 1000;
-
 export default function useAuth() {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
@@ -64,15 +58,6 @@ export default function useAuth() {
     if (accessToken) {
       dispatch(refreshToken());
     }
-  };
-
-  // Disable session timeout checks
-  const checkSessionTimeout = () => {
-    // No action needed as session timeout is effectively disabled
-  };
-
-  const handleSessionTimeout = () => {
-    // No action needed as session timeout is effectively disabled
   };
 
   // Cleanup function to cancel any ongoing requests

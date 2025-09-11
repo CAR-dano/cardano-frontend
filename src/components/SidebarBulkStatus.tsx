@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useAppSelector, useAppDispatch } from "../lib/store";
-import { FiCheck, FiX, FiLoader } from "react-icons/fi";
+import { FiCheck, FiLoader } from "react-icons/fi";
 import { clearBulkProcess } from "../lib/features/bulk/bulkSlice";
 
 const SidebarBulkStatus = ({

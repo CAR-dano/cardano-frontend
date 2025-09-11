@@ -158,7 +158,7 @@ export const adminSlice = createSlice({
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(updateRole.fulfilled, (state, action) => {
+      .addCase(updateRole.fulfilled, (state, _action) => {
         state.isLoading = false;
         state.error = null;
         // Optionally, update userList here if needed

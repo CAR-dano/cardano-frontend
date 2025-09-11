@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 
-import { format, formatISO, parseISO } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 
 import { cn } from "../../lib/utils";
@@ -30,7 +30,6 @@ function FormDateInput({
   onChange,
   section,
 }: FormDateInputProps) {
-  const { isDarkModeEnabled } = useTheme();
   return (
     <div className="flex flex-col gap-2 font-rubik z-10">
       <Label htmlFor={inputFor} className="dark:text-gray-200">

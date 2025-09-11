@@ -1,8 +1,6 @@
 import React from "react";
 import { Label } from "../ui/label";
-import { Textarea } from "../ui/textarea";
 import Rating from "./Rating";
-import { useTheme } from "../../contexts/ThemeContext";
 
 interface FormPenilaianSummaryProps {
   label: string;
@@ -16,10 +14,7 @@ function FormPenilaianSummmary({
   label,
   inputFor,
   value,
-  section,
-  onChange,
 }: FormPenilaianSummaryProps) {
-  const { isDarkModeEnabled } = useTheme();
   return (
     <div>
       <Label htmlFor={inputFor} className="dark:text-gray-200">

@@ -1,6 +1,5 @@
 import React from "react";
 import { Label } from "../ui/label";
-import { useTheme } from "../../contexts/ThemeContext";
 
 interface FormEstimasiPerbaikanProps {
   value: {
@@ -17,7 +16,6 @@ function FormEstimasiPerbaikan({
   label,
 }: FormEstimasiPerbaikanProps) {
   const [data, setData] = React.useState(value);
-  const { isDarkModeEnabled } = useTheme();
 
   const handleNameChange = (index: number, newName: string) => {
     const updated = data.map((item, i) =>

@@ -1,12 +1,11 @@
 "use client";
 import CardData from "../../components/ui/Card/CardData";
 import SearchBar from "../../components/ui/SearchBar";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import React, { Suspense, useState, useEffect } from "react";
 import CardHasil from "../../components/ui/Card/CardHasil";
 import Image from "next/image";
 import CustomButton from "../../components/ui/CustomButton";
-import MadeByCardano from "../../components/ui/MadeByCardano";
 import { useDispatch, useSelector } from "react-redux";
 import {
   searchByVehiclePlat,
@@ -25,7 +24,6 @@ function ResultPageContent() {
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
 
   const searchParams = useSearchParams();
-  const router = useRouter();
   const initialPlatNomor = searchParams.get("platNomor");
   const [platNomorInput, setPlatNomorInput] = useState("");
   const [hasSearched, setHasSearched] = useState(false);

@@ -29,7 +29,6 @@ function DataPage() {
   const [dataHalaman6, setDataHalaman6] = useState<any>(null);
   const [dataHalaman7, setDataHalaman7] = useState<any>(null);
   const [dataHalaman8, setDataHalaman8] = useState<any>(null);
-  const [dataHalaman9, setDataHalaman9] = useState<any>(null);
   const [dataHalamanExteriorPhotos, setDataHalamanExteriorPhotos] = useState<
     any[]
   >([]);

@@ -7,6 +7,7 @@ import { authReducer } from "../features/auth/authSlice";
 import { adminReducer } from "../features/admin/adminSlice";
 import dashboardReducer from "../features/dashboard/dashboardSlice";
 import { bulkReducer } from "../features/bulk/bulkSlice";
+import { userReducer } from "../features/user/userSlice";
 
 const inspectionPersistConfig = {
   key: "inspection",
@@ -38,12 +39,19 @@ const bulkPersistConfig = {
   whitelist: [],
 };
 
+const userPersistConfig = {
+  key: "user",
+  storage: storage,
+  whitelist: ["user"],
+};
+
 const appReducer = combineReducers({
   inspection: persistReducer(inspectionPersistConfig, inspectionReducer),
   auth: persistReducer(authPersistConfig, authReducer),
   admin: persistReducer(adminPersistConfig, adminReducer),
   dashboard: persistReducer(dashboardPersistConfig, dashboardReducer),
   bulk: persistReducer(bulkPersistConfig, bulkReducer),
+  user: persistReducer(userPersistConfig, userReducer),
 });
 
 const rootReducer = (state: any, action: any) => {
@@ -54,6 +62,7 @@ const rootReducer = (state: any, action: any) => {
     storage.removeItem("persist:admin");
     storage.removeItem("persist:dashboard");
     storage.removeItem("persist:bulk");
+    storage.removeItem("persist:user");
     storage.removeItem("persist:root");
     return appReducer(undefined, action);
   }

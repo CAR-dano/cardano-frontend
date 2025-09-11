@@ -49,7 +49,6 @@ function DataPage() {
   const [hoveredSection, setHoveredSection] = useState<number | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [zoomLevel, setZoomLevel] = useState(100);
-  const [showSearch, setShowSearch] = useState(false);
 
   const [dataHalaman1, setDataHalaman1] = useState<any>(null);
   const [dataHalaman2, setDataHalaman2] = useState<any>(null);
@@ -59,7 +58,6 @@ function DataPage() {
   const [dataHalaman6, setDataHalaman6] = useState<any>(null);
   const [dataHalaman7, setDataHalaman7] = useState<any>(null);
   const [dataHalaman8, setDataHalaman8] = useState<any>(null);
-  const [dataHalaman9, setDataHalaman9] = useState<any>(null);
   const [dataHalamanExteriorPhotos, setDataHalamanExteriorPhotos] = useState<
     any[]
   >([]);
@@ -80,8 +78,8 @@ function DataPage() {
     useState<any[]>([]);
   const [dataHalamanPerluPerhatianPhotos, setDataHalamanPerluPerhatianPhotos] =
     useState<any[]>([]);
-  const [rawInspectionData, setRawInspectionData] = useState<any>(null);
-  const [status, setStatus] = React.useState(true);
+  const [_rawInspectionData, setRawInspectionData] = useState<any>(null);
+  const [_status, setStatus] = React.useState(true);
 
   // Enhanced print function with white background
   const handlePrint = () => {
@@ -260,7 +258,7 @@ Print sekarang?
     const photo = data?.photos?.find(
       (item: any) => item.label === "Tampak Depan"
     );
-    return photo ? photo.path : "";
+    return photo ? photo : "";
   };
 
   const preProcessData = (data: any) => {
@@ -600,13 +598,7 @@ Print sekarang?
       let updatedData = { ...prevRawData };
 
       editedItems.forEach((item: any) => {
-        const {
-          inspectionId,
-          fieldName,
-          subFieldName,
-          subsubfieldname,
-          oldValue,
-        } = item;
+        const { fieldName, subFieldName, subsubfieldname } = item;
         let { newValue } = item;
 
         if (subsubfieldname) {
@@ -630,6 +622,7 @@ Print sekarang?
                   newValue = parsedValue;
                 }
               } catch (error) {
+                console.error("Failed to parse estimasiPerbaikan:", error);
                 // Not JSON or not an array, keep as string
               }
             }
@@ -1173,7 +1166,7 @@ Print sekarang?
               </div>
             ) : (
               // Normal Navigation
-              navigationItems.map((section, sectionIndex) => (
+              navigationItems.map((section) => (
                 <div key={section.sectionName} className="mb-4">
                   <div className="font-semibold text-gray-800 text-sm mb-2 px-2 py-1 bg-gray-50 rounded-md flex items-center justify-between">
                     <span>{section.sectionName}</span>
@@ -1182,7 +1175,7 @@ Print sekarang?
                     </span>
                   </div>
                   <div className="space-y-1 ml-2">
-                    {section.pages.map((pageItem, pageIndex) => {
+                    {section.pages.map((pageItem) => {
                       const globalIndex = page.findIndex(
                         (p) => p.id === pageItem.id
                       );

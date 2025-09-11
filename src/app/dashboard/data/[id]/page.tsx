@@ -15,13 +15,6 @@ const Edit = () => {
   const dispatch = useDispatch<AppDispatch>();
   const isLoading = useAppSelector((state: any) => state.inspection.isLoading);
 
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [dialogData, setDialogData] = useState<any>({
-    label: "",
-    inputFor: "",
-    value: "",
-    type: "normal-input",
-  });
   const [dialogResultData, setDialogResultData] = useState<{
     isOpen: boolean;
     isSuccess: boolean;
@@ -35,7 +28,7 @@ const Edit = () => {
 
   const [data, setData] = useState<any>(null);
 
-  const handleEditReviewClick = (data: any) => {};
+  const handleEditReviewClick = () => {};
 
   const getData = async (id: string) => {
     const response = await dispatch(getDataForPreview(id)).unwrap();
@@ -59,7 +52,7 @@ const Edit = () => {
 
   const mintingToBlockchainHandler = (id: string) => {
     dispatch(mintingToBlockchain(id))
-      .then((response) => {
+      .then(() => {
         setDialogResultData({
           isOpen: true,
           isSuccess: true,
@@ -71,6 +64,7 @@ const Edit = () => {
         });
       })
       .catch((err) => {
+        console.error("Minting failed:", err);
         setDialogResultData({
           isOpen: true,
           isSuccess: false,
@@ -85,8 +79,6 @@ const Edit = () => {
         });
       });
   };
-
-  const id = window.location.pathname.split("/").pop();
 
   return (
     <>

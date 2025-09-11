@@ -1,7 +1,6 @@
 import React from "react";
 import Header from "./Header";
 import Footer from "./Footer";
-import PhotoItemWithDynamicText from "./PhotoItemWithDynamicText";
 import PhotoItemGeneral from "./PhotoItemGeneral";
 
 interface HalamanFotoDokumenProps {

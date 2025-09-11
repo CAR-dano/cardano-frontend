@@ -19,7 +19,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../components/ui/select";
-import { useTheme } from "../../contexts/ThemeContext";
 
 interface DialogEditRoleProps {
   isOpen: boolean;
@@ -39,7 +38,6 @@ const DialogEditRole = ({
   subFieldName,
 }: DialogEditRoleProps) => {
   const [selectedRole, setSelectedRole] = useState<string>(value || "");
-  const { isDarkModeEnabled } = useTheme();
 
   const options = Object.values(Role)
     .filter((role) => typeof role === "string")

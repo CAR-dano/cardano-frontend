@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { AlertCircle, Clock } from "lucide-react";
+import { Clock } from "lucide-react";
 import {
   Dialog,
   DialogContent,

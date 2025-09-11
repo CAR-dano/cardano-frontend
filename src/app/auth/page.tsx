@@ -16,7 +16,6 @@ import LoadingScreen from "../../components/LoadingFullScreen";
 import { FiEye, FiEyeOff, FiArrowLeft } from "react-icons/fi";
 import { toast } from "../../hooks/use-toast";
 import { getAndClearRedirectUrl } from "../../utils/redirectUtils";
-import axios from "axios";
 
 function LoginPage() {
   const [showSignup, setShowSignup] = useState(false);
@@ -325,9 +324,6 @@ function LoginPage() {
                     yang bisa memalsukan atau menghapusnya. Dalam inspeksi mobil
                     bekas, blockchain digunakan untuk mencatat hasil pemeriksaan
                     secara transparan.
-                  </p>
-                  <p className="w-full text-right text-white font-rubik text-[16px] font-normal leading-[27px] mt-4">
-                    Pelajari lebih lanjut -&gt;
                   </p>
                 </motion.div>
               </div>

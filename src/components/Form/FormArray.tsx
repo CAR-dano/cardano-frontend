@@ -2,7 +2,6 @@ import React from "react";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
-import { useTheme } from "../../contexts/ThemeContext";
 
 interface FormPenilaianSummaryProps {
   label: string;
@@ -20,7 +19,6 @@ function FormArray({
   section,
 }: FormPenilaianSummaryProps) {
   const [data, setData] = React.useState<string[]>(value);
-  const { isDarkModeEnabled } = useTheme();
 
   const handleChange = (index: number, newValue: string) => {
     const updated = [...data];

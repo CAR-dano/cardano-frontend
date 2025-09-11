@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Label } from "../ui/label";
-import { useTheme } from "../../contexts/ThemeContext";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../lib/store";
 import {
@@ -10,6 +9,7 @@ import {
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import Image from "next/image";
+import { toast } from "@/hooks/use-toast";
 
 interface FormEditPhotoProps {
   label: string;
@@ -50,10 +50,9 @@ function FormEditPhoto({
   // State untuk menyimpan path foto terbaru dari response API
   const [currentPhotoPath, setCurrentPhotoPath] = useState(photo.path);
 
-  const { isDarkModeEnabled } = useTheme();
   const dispatch = useDispatch<AppDispatch>();
 
-  const PHOTO_URL = process.env.NEXT_PUBLIC_API_URL;
+  const PHOTO_URL = process.env.NEXT_PUBLIC_PDF_URL;
 
   const formatPath = (path: string) => {
     if (!path) return "/assets/placeholder-photo.png";
@@ -185,6 +184,7 @@ function FormEditPhoto({
         }
       } else {
         // Jika tidak ada foto baru, gunakan updatePhoto biasa
+        console.log("Updating photo without new file");
         apiResponse = await dispatch(
           updatePhoto({
             id: inspectionId,
@@ -211,8 +211,12 @@ function FormEditPhoto({
         success: true,
       });
     } catch (error) {
-      console.error("Error updating photo:", error);
-      alert("Gagal menyimpan perubahan foto. Silakan coba lagi.");
+      console.error("Error saving photo changes:", error);
+      toast({
+        title: "Error",
+        description: "Gagal menyimpan perubahan. Silakan coba lagi.",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }

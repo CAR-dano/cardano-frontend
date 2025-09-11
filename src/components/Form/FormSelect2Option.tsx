@@ -1,8 +1,6 @@
 import React, { useEffect } from "react";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../lib/store";
 import { useTheme } from "../../contexts/ThemeContext";
 
 interface FormSelect2OptionProps {
@@ -17,7 +15,6 @@ interface FormSelect2OptionProps {
 function FormSelect2Option({
   label,
   inputFor,
-  section,
   value = false,
   onChange,
   type,
@@ -25,8 +22,6 @@ function FormSelect2Option({
   const { isDarkModeEnabled } = useTheme();
   const active = "bg-blue-500 text-white";
   const inactive = "bg-white text-blue-500";
-
-  const dispatch = useDispatch<AppDispatch>();
 
   const [isLengkap, setIsLengkap] = React.useState(value);
 

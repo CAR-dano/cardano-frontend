@@ -11,7 +11,6 @@ import {
 import SecondaryButton from "../Button/SecondaryButton";
 import { useDispatch } from "react-redux";
 import { AppDispatch, useAppSelector } from "../../lib/store";
-import { useRouter } from "next/navigation";
 import DialogEditRole from "../Form/DialogEditRole";
 import LoadingScreen from "../../components/LoadingFullScreen";
 import { updateRole } from "../../lib/features/admin/adminSlice";
@@ -19,9 +18,8 @@ import { updateRole } from "../../lib/features/admin/adminSlice";
 const TableData = ({ data, handleRefresh }: any) => {
   const [fetchStatus, setFetchStatus] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
-  const router = useRouter();
   const [editDialogOpen, setEditDialogOpen] = useState<string | null>(null);
-  const [editRoleValue, setEditRoleValue] = useState<string>("");
+  const [_editRoleValue, setEditRoleValue] = useState<string>("");
   const accessToken = useAppSelector((state) => state.auth.accessToken);
 
   // Handler untuk simpan perubahan role
@@ -201,11 +199,9 @@ interface TableInfoProps {
 }
 
 const TableInfo: React.FC<TableInfoProps> = ({ data }) => {
-  const meta = useAppSelector((state) => state.inspection.meta);
   const [page, setPage] = useState(1);
   const MAX = 10;
   const dataCount = data.length;
-  const totalPage = Math.ceil(dataCount / MAX);
 
   return (
     <div className="flex justify-between items-center mt-2 text-xs">

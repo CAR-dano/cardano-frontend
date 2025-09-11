@@ -1,8 +1,6 @@
 import React from "react";
 import { Label } from "../ui/label";
-import { Textarea } from "../ui/textarea";
 import Rating from "./Rating";
-import { useTheme } from "../../contexts/ThemeContext";
 
 interface FormPenilaianSummaryProps {
   label: string;
@@ -16,11 +14,9 @@ function FormPenilaianSummmary({
   label,
   inputFor,
   value,
-  catatan,
   onChange,
 }: FormPenilaianSummaryProps) {
   const [nilai, setNilai] = React.useState<string>(value || "0");
-  const { isDarkModeEnabled } = useTheme();
 
   const handleChange = (newValue: number | null) => {
     if (onChange) onChange((newValue ?? 0).toString());

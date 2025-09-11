@@ -1,5 +1,5 @@
 import apiClient from "../../services/apiClient";
-import { UserLogin, UserSignUp } from "../../../utils/Auth";
+import { User, UserLogin, UserSignUp } from "../../../utils/Auth";
 
 const checkToken = async (token: string) => {
   try {
@@ -100,6 +100,7 @@ const logout = async () => {
 
     return { success: true, message: "Logged out successfully" };
   } catch (error) {
+    console.error("Error during logout:", error);
     // Even if there's an error, ensure cleanup happens
     if (typeof window !== "undefined") {
       localStorage.clear();

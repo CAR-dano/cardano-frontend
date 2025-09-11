@@ -12,7 +12,6 @@ type PenilaianHasilProps = {
 };
 
 const PenilaianHasil: React.FC<PenilaianHasilProps> = ({
-  warna,
   nilai,
   namaPart,
   beban,

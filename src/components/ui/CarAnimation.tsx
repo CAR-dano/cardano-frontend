@@ -1,6 +1,6 @@
 "use client";
 import { useState, useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import Image from "next/image";
 
 const CarComponent = () => {
@@ -8,9 +8,8 @@ const CarComponent = () => {
   const [isHovering, setIsHovering] = useState(false);
   const imageRef = useRef<HTMLDivElement>(null);
   // Animasi paralaks untuk mobil
-  const { scrollYProgress } = useScroll();
 
-  const xPos = useTransform(scrollYProgress, [0, 1], ["0%", "500%"]);
+  // const xPos = useTransform(scrollYProgress, [0, 1], ["0%", "500%"]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLImageElement>) => {
     if (imageRef.current) {
@@ -22,9 +21,8 @@ const CarComponent = () => {
     }
   };
 
-  // Increased circle size from 50 to 100 (radius)
-  const circleRadius = 100;
-  // Consistent blur amount
+  // Circle size and blur settings for interior reveal effect
+  const circleRadius = 100; // Larger for smoother experience
   const blurAmount = 6;
 
   return (
@@ -40,7 +38,13 @@ const CarComponent = () => {
         onMouseMove={handleMouseMove}
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
+        style={{
+          cursor: isHovering
+            ? "none"
+            : "url(\"data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3ccircle cx='11' cy='11' r='8'/%3e%3cpath d='m21 21-4.35-4.35'/%3e%3c/svg%3e\") 12 12, auto",
+        }}
       >
+        {/* Blurred background layer */}
         <Image
           src="/assets/car-illustration.svg"
           width={640}
@@ -49,64 +53,32 @@ const CarComponent = () => {
           priority
           className="w-auto mx-auto max-w-[90%] md:max-w-[640px]"
           style={{
-            filter: isHovering ? `url('#blur-mask')` : `blur(${blurAmount}px)`,
-            transition: "filter 0.3s ease-out",
+            filter: `blur(${blurAmount}px)`,
           }}
         />
 
+        {/* Clear overlay layer that reveals interior on hover */}
         {isHovering && (
-          <svg
-            className="absolute top-0 left-0 w-full h-full pointer-events-none"
-            style={{
-              zIndex: 1,
-              opacity: isHovering ? 1 : 0,
-            }}
-          >
-            <defs>
-              <filter id="blur-mask">
-                <feGaussianBlur stdDeviation={blurAmount + 1} result="blur" />
-                <feComponentTransfer>
-                  <feFuncA type="linear" slope="1" />
-                </feComponentTransfer>
-                <feImage
-                  href="#circle-mask"
-                  x={mousePosition.x - circleRadius}
-                  y={mousePosition.y - circleRadius}
-                  width={circleRadius * 2}
-                  height={circleRadius * 2}
-                  result="mask"
-                />
-                <feComposite
-                  operator="in"
-                  in="SourceGraphic"
-                  in2="mask"
-                  result="masked-source"
-                />
-                <feComposite operator="over" in="masked-source" in2="blur" />
-              </filter>
-
-              {/* Blurred circle mask definition */}
-              <radialGradient
-                id="blurred-circle-gradient"
-                cx="50%"
-                cy="50%"
-                r="50%"
-                fx="50%"
-                fy="50%"
-              >
-                <stop offset="0%" stopColor="white" stopOpacity="1" />
-                <stop offset="70%" stopColor="white" stopOpacity="0.8" />
-                <stop offset="100%" stopColor="white" stopOpacity="0" />
-              </radialGradient>
-              <circle
-                id="circle-mask"
-                cx={circleRadius}
-                cy={circleRadius}
-                r={circleRadius}
-                fill="url(#blurred-circle-gradient)"
+          <>
+            {/* Interior reveal layer */}
+            <div
+              className="absolute top-0 left-0 w-full h-full"
+              style={{
+                maskImage: `radial-gradient(circle ${circleRadius}px at ${mousePosition.x}px ${mousePosition.y}px, white 0%, white 70%, rgba(255,255,255,0.3) 85%, transparent 100%)`,
+                WebkitMaskImage: `radial-gradient(circle ${circleRadius}px at ${mousePosition.x}px ${mousePosition.y}px, white 0%, white 70%, rgba(255,255,255,0.3) 85%, transparent 100%)`,
+                transition: "none", // Remove transition for instant responsiveness
+              }}
+            >
+              <Image
+                src="/assets/interior-car.svg"
+                width={640}
+                height={500}
+                alt="Interior of a car"
+                priority
+                className="w-auto mx-auto max-w-[90%] md:max-w-[640px]"
               />
-            </defs>
-          </svg>
+            </div>
+          </>
         )}
       </div>
     </motion.div>

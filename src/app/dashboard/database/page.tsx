@@ -3,12 +3,10 @@ import Loading, { LoadingSkeleton } from "../../../components/Loading";
 import TableInspectionReviewer from "../../../components/Table/TableInspectionReviewer";
 import { toast } from "../../../components/ui/use-toast";
 import { getDataForReviewer } from "../../../lib/features/inspection/inspectionSlice";
-import { useTheme } from "../../../contexts/ThemeContext";
 import useAuth from "../../../hooks/useAuth";
 
 import { AppDispatch, RootState } from "../../../lib/store";
 import { useEffect, useState } from "react";
-import { IoIosSearch } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 
 const Header = ({
@@ -18,7 +16,6 @@ const Header = ({
   dataCount: number;
   onRefresh: () => void;
 }) => {
-  const { isDarkModeEnabled } = useTheme();
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
       <div className="flex justify-between items-center">
@@ -72,42 +69,10 @@ const Header = ({
           <div className="flex items-center px-3 py-2 bg-green-50 dark:bg-green-900 rounded-md">
             <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
             <span className="text-sm font-medium text-green-700 dark:text-green-300">
-              Disetujui
+              Approved
             </span>
           </div>
         </div>
-      </div>
-    </div>
-  );
-};
-
-const SearchBar = ({ setQuery, setFilter }: any) => {
-  const [keyword, setKeyword] = useState("");
-
-  const handleKeyword = (e: any) => {
-    e.preventDefault();
-    setQuery({ keyword, page: 1 });
-  };
-
-  return (
-    <div className="mt-2">
-      <p className="text-sm mb-2">Cari UMKM</p>
-      <div className="flex gap-2">
-        <form
-          className="flex-grow relative hidden md:block"
-          onSubmit={handleKeyword}
-        >
-          <div className="absolute inset-y-0 text-gray-500 start-0 flex items-center ps-3 pointer-events-none">
-            <IoIosSearch />
-          </div>
-          <input
-            type="text"
-            id="search-navbar"
-            className="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder="Cari..."
-            onChange={(e) => setKeyword(e.target.value)}
-          />
-        </form>
       </div>
     </div>
   );
@@ -139,7 +104,6 @@ const Database: React.FC = () => {
   const { isLoading } = useSelector((state: RootState) => state.inspection);
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
   const { user } = useAuth();
-  const isAdmin = user?.role === "ADMIN";
   const fetchData = (pageNum = page) => {
     // Only fetch if user is authenticated
     if (!isAuthenticated || !user) {
@@ -162,9 +126,10 @@ const Database: React.FC = () => {
         }
       })
       .catch((error) => {
+        console.error("Failed to fetch data:", error);
         toast({
-          title: "Kesalahan",
-          description: "Gagal mengambil data",
+          title: "Error",
+          description: "Failed to fetch data",
           variant: "destructive",
         });
       });
@@ -200,10 +165,10 @@ const Database: React.FC = () => {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-            Akses Ditolak
+            Access Denied
           </h2>
           <p className="text-gray-600 dark:text-gray-400">
-            Silakan masuk untuk mengakses database.
+            Please log in to access the database.
           </p>
         </div>
       </div>

@@ -2,10 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch, useAppSelector } from "../../../lib/store";
-import {
-  fetchBranches,
-  getAllInspectors,
-} from "../../../lib/features/admin/adminSlice";
+import { getAllInspectors } from "../../../lib/features/admin/adminSlice";
 import { LoadingSkeleton } from "../../../components/Loading";
 import {
   Table,
@@ -15,12 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "../../../components/ui/table";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "../../../components/ui/card";
+import { Card, CardContent } from "../../../components/ui/card";
 import { Button } from "../../../components/ui/button";
 import {
   Drawer,
@@ -32,14 +24,6 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "../../../components/ui/drawer";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "../../../components/ui/dialog";
 import { Input } from "../../../components/ui/input";
 import { Label } from "../../../components/ui/label";
 import {
@@ -57,35 +41,28 @@ import {
   FaTrash,
   FaEye,
   FaEyeSlash,
-  FaWhatsapp,
 } from "react-icons/fa";
 import { format } from "date-fns";
+import { useToast } from "../../../components/ui/use-toast";
 import apiClient from "@/lib/services/apiClient";
-import { toast } from "@/hooks/use-toast";
 
 const InspectorPage = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { inspectorList, isLoading, branches } = useAppSelector(
-    (state) => state.admin
-  );
+  const { inspectorList, isLoading } = useAppSelector((state) => state.admin);
   const accessToken = useAppSelector((state) => state.auth.accessToken);
-  const branchs = useAppSelector((state) => state.admin.branches);
   const [searchTerm, setSearchTerm] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isViewDrawerOpen, setIsViewDrawerOpen] = useState(false);
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [inspectorToDelete, setInspectorToDelete] = useState<any>(null);
   const [selectedInspector, setSelectedInspector] = useState<any>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [showPin, setShowPin] = useState(false);
+  const { toast } = useToast();
 
   // Form states
   const [formData, setFormData] = useState({
     name: "",
     username: "",
     email: "",
-    whatsappNumber: "",
-    inspectionBranchCityId: "",
   });
 
   // View/Edit form states
@@ -96,13 +73,11 @@ const InspectorPage = () => {
     pin: "",
     status: "",
     createdAt: "",
-    whatsappNumber: "",
   });
 
   useEffect(() => {
     if (accessToken) {
       dispatch(getAllInspectors(accessToken));
-      dispatch(fetchBranches());
     }
   }, [dispatch, accessToken]);
 
@@ -116,71 +91,18 @@ const InspectorPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    try {
-      // Show loading state
-      const loadingToast = toast({
-        title: "Creating Inspector...",
-        description: "Please wait while we create the new inspector account.",
-      });
-
-      // Format WhatsApp number to start with 62
-      const formattedData = {
-        ...formData,
-        whatsappNumber: formData.whatsappNumber.startsWith("+62")
-          ? formData.whatsappNumber
-          : `+62${formData.whatsappNumber.replace(/^0+/, "")}`,
-      };
-
-      const response = await apiClient.post(
-        "/admin/users/inspector",
-        formattedData,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
-
-      // Success notification
+    apiClient.post("/admin/users/inspector", formData, {}).then(() => {
       toast({
-        title: "✅ Inspektor Berhasil Ditambahkan",
-        description: `Inspektur ${formData.name} telah dibuat dan sekarang dapat mulai bekerja`,
-        duration: 5000,
+        title: "Inspector Added",
+        description: "New inspector has been added successfully.",
       });
-
-      // Close drawer and reset form
       setIsDrawerOpen(false);
       setFormData({
         name: "",
         username: "",
         email: "",
-        whatsappNumber: "",
-        inspectionBranchCityId: "",
       });
-
-      // Refresh the inspector list
-      if (accessToken) {
-        dispatch(getAllInspectors(accessToken));
-      }
-    } catch (error: any) {
-      console.error("Error creating inspector:", error);
-
-      // Extract error message
-      const errorMessage =
-        error.response?.data?.message ||
-        error.response?.data?.error ||
-        error.message ||
-        "An unexpected error occurred while creating the inspector.";
-
-      // Error notification
-      toast({
-        title: "❌ Failed to Create Inspector",
-        description: errorMessage,
-        variant: "destructive",
-        duration: 7000,
-      });
-    }
+    });
   };
 
   const handleViewInspector = (inspector: any) => {
@@ -191,7 +113,6 @@ const InspectorPage = () => {
       email: inspector.email || "",
       pin: inspector.pin || "****",
       status: inspector.status || "active",
-      whatsappNumber: inspector.whatsappNumber || "",
       createdAt: inspector.createdAt
         ? format(new Date(inspector.createdAt), "dd MMM yyyy")
         : "-",
@@ -220,7 +141,6 @@ const InspectorPage = () => {
         email: selectedInspector.email || "",
         pin: selectedInspector.pin || "****",
         status: selectedInspector.status || "active",
-        whatsappNumber: selectedInspector.whatsappNumber || "",
         createdAt: selectedInspector.createdAt
           ? format(new Date(selectedInspector.createdAt), "dd MMM yyyy")
           : "-",
@@ -256,18 +176,6 @@ const InspectorPage = () => {
         changedData.status = viewFormData.status;
       }
 
-      if (
-        viewFormData.whatsappNumber !== (selectedInspector.whatsappNumber || "")
-      ) {
-        // Format WhatsApp number to start with 62
-        const formattedWhatsappNumber = viewFormData.whatsappNumber.startsWith(
-          "+62"
-        )
-          ? viewFormData.whatsappNumber
-          : `62${viewFormData.whatsappNumber.replace(/^0+/, "")}`;
-        changedData.whatsappNumber = formattedWhatsappNumber;
-      }
-
       // Only proceed if there are changes
       if (Object.keys(changedData).length === 0) {
         toast({
@@ -290,8 +198,8 @@ const InspectorPage = () => {
       );
 
       toast({
-        title: "Inspektor Diperbarui",
-        description: `Data inspektor telah berhasil diperbarui. ${
+        title: "Inspector Updated",
+        description: `Inspector data has been updated successfully. ${
           Object.keys(changedData).length
         } field(s) changed.`,
       });
@@ -306,99 +214,11 @@ const InspectorPage = () => {
     } catch (error) {
       console.error("Update error:", error);
       toast({
-        title: "Pembaruan Gagal",
-        description: "Gagal memperbarui data inspektor.",
+        title: "Update Failed",
+        description: "Failed to update inspector data.",
         variant: "destructive",
       });
     }
-  };
-
-  const handleDeleteInspector = async (inspectorId: string) => {
-    if (!inspectorId) return;
-
-    try {
-      await apiClient.delete(`/admin/users/${inspectorId}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-
-      toast({
-        title: "Inspector Deleted",
-        description: "The inspector has been deleted successfully.",
-        variant: "destructive",
-      });
-
-      // Refresh the inspector list
-      if (accessToken) {
-        dispatch(getAllInspectors(accessToken));
-      }
-
-      // Close dialog and reset state
-      setIsDeleteDialogOpen(false);
-      setInspectorToDelete(null);
-    } catch (error) {
-      console.error("Delete error:", error);
-      toast({
-        title: "Delete Failed",
-        description: "Failed to delete the inspector.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const openDeleteDialog = (inspector: any) => {
-    setInspectorToDelete(inspector);
-    setIsDeleteDialogOpen(true);
-  };
-
-  const closeDeleteDialog = () => {
-    setIsDeleteDialogOpen(false);
-    setInspectorToDelete(null);
-  };
-
-  const handleSendWhatsApp = () => {
-    if (!selectedInspector || !selectedInspector.whatsappNumber) {
-      toast({
-        title: "Nomor WhatsApp Tidak Tersedia",
-        description:
-          "Inspector ini tidak memiliki nomor WhatsApp yang terdaftar.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Format WhatsApp number - remove +62 if exists and ensure it starts with 62
-    let phoneNumber = selectedInspector.whatsappNumber.toString();
-    if (phoneNumber.startsWith("+62")) {
-      phoneNumber = phoneNumber.substring(1); // Remove the + sign
-    } else if (!phoneNumber.startsWith("62")) {
-      phoneNumber = `62${phoneNumber.replace(/^0+/, "")}`;
-    }
-
-    // Create message template with inspector data
-    const messageTemplate = `Halo ${selectedInspector.name || "Inspector"},
-
-Berikut adalah data akun Inspector Anda:
-
-📧 *Email:* ${selectedInspector.email || "-"}
-🔐 *PIN:* ${selectedInspector.pin || "-"}
-
-Silakan gunakan data di atas untuk login ke sistem Car-Dano Inspector.
-
-Terima kasih.
-
----
-*Pesan ini dikirim otomatis dari sistem Car-Dano Admin*`;
-
-    // Encode the message for URL
-    const encodedMessage = encodeURIComponent(messageTemplate);
-
-    // Create WhatsApp URL with pre-filled message
-    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
-
-    // Open WhatsApp in new tab
-    window.open(whatsappUrl, "_blank");
   };
 
   return (
@@ -411,10 +231,10 @@ Terima kasih.
           </div>
           <div>
             <h1 className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-orange-400 bg-clip-text text-transparent">
-              Manajemen Inspektor
+              Inspector Management
             </h1>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-              Kelola dan pantau semua personel inspeksi
+              Manage and monitor all inspection personnel
             </p>
           </div>
         </div>
@@ -424,23 +244,23 @@ Terima kasih.
           <DrawerTrigger asChild>
             <Button className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white shadow-lg">
               <FaPlus className="mr-2" />
-              Tambah Inspektor
+              Add Inspector
             </Button>
           </DrawerTrigger>
           <DrawerContent className="sm:max-w-[425px] fixed right-0 top-0 bottom-0 left-auto">
             <form onSubmit={handleSubmit}>
               <DrawerHeader>
-                <DrawerTitle>Tambah Inspektor Baru</DrawerTitle>
+                <DrawerTitle>Add New Inspector</DrawerTitle>
                 <DrawerDescription>
-                  Buat akun inspektor baru dengan detail yang diperlukan.
+                  Create a new inspector account with the required details.
                 </DrawerDescription>
               </DrawerHeader>
               <div className="mb-5  space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="name">Nama Lengkap</Label>
+                  <Label htmlFor="name">Full Name</Label>
                   <Input
                     id="name"
-                    placeholder="Masukkan nama inspektor"
+                    placeholder="Enter inspector name"
                     value={formData.name}
                     onChange={(e) =>
                       setFormData({ ...formData, name: e.target.value })
@@ -449,10 +269,10 @@ Terima kasih.
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="username">Nama Pengguna</Label>
+                  <Label htmlFor="username">Username</Label>
                   <Input
                     id="username"
-                    placeholder="Masukkan username inspektor"
+                    placeholder="Enter inspector username"
                     value={formData.username}
                     onChange={(e) =>
                       setFormData({ ...formData, username: e.target.value })
@@ -474,65 +294,36 @@ Terima kasih.
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Nomor Whatsapp</Label>
-                  <div className="flex">
-                    <div className="flex items-center px-3 bg-gray-100 dark:bg-gray-700 border border-r-0 border-gray-300 dark:border-gray-600 rounded-l-md">
-                      <span className="text-sm text-gray-600 dark:text-gray-300 font-medium">
-                        +62
-                      </span>
-                    </div>
-                    <Input
-                      id="phone"
-                      type="tel"
-                      placeholder="8123456789"
-                      value={formData.whatsappNumber}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          whatsappNumber: e.target.value,
-                        })
-                      }
-                      className="rounded-l-none"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
+                {/* <div className="space-y-2">
                   <Label htmlFor="branch">Branch</Label>
                   <Select
-                    value={formData.inspectionBranchCityId}
+                    value={formData.branch}
                     onValueChange={(value) =>
-                      setFormData({
-                        ...formData,
-                        inspectionBranchCityId: value,
-                      })
+                      setFormData({ ...formData, branch: value })
                     }
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select a branch" />
                     </SelectTrigger>
                     <SelectContent>
-                      {branchs.map((branch) => (
-                        <SelectItem key={branch.id} value={branch.id}>
-                          {branch.city}
-                        </SelectItem>
-                      ))}
+                      <SelectItem value="jakarta">Jakarta</SelectItem>
+                      <SelectItem value="surabaya">Surabaya</SelectItem>
+                      <SelectItem value="bandung">Bandung</SelectItem>
+                      <SelectItem value="medan">Medan</SelectItem>
                     </SelectContent>
                   </Select>
-                </div>
+                </div> */}
               </div>
               <DrawerFooter>
                 <Button
                   type="submit"
                   className="w-full bg-orange-600 hover:bg-orange-700"
                 >
-                  Buat Inspektor
+                  Create Inspector
                 </Button>
                 <DrawerClose asChild>
                   <Button variant="outline" className="w-full">
-                    Batal
+                    Cancel
                   </Button>
                 </DrawerClose>
               </DrawerFooter>
@@ -541,106 +332,25 @@ Terima kasih.
         </Drawer>
       </div>
 
-      {/* Delete Confirmation Dialog */}
-      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-red-600">
-              <FaTrash className="text-lg" />
-              Hapus Inspector
-            </DialogTitle>
-            <DialogDescription className="text-base">
-              Apakah Anda yakin ingin menghapus inspector ini? Tindakan ini
-              tidak dapat dibatalkan.
-            </DialogDescription>
-          </DialogHeader>
-
-          {inspectorToDelete && (
-            <div className="py-4">
-              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-red-100 dark:bg-red-900/40 rounded-lg">
-                    <FaUserTie className="text-red-600 dark:text-red-400" />
-                  </div>
-                  <div>
-                    <p className="font-medium text-red-900 dark:text-red-100">
-                      {inspectorToDelete.name}
-                    </p>
-                    <p className="text-sm text-red-700 dark:text-red-300">
-                      {inspectorToDelete.email}
-                    </p>
-                    {inspectorToDelete.branch && (
-                      <p className="text-xs text-red-600 dark:text-red-400">
-                        Branch: {inspectorToDelete.branch}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
-                <div className="flex items-start gap-2">
-                  <div className="flex-shrink-0 w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5">
-                    ⚠️
-                  </div>
-                  <div className="text-sm">
-                    <p className="font-medium text-amber-900 dark:text-amber-100 mb-1">
-                      Peringatan
-                    </p>
-                    <ul className="text-amber-800 dark:text-amber-200 space-y-1">
-                      <li>
-                        • Inspector ini tidak akan dapat mengakses sistem lagi
-                      </li>
-                      <li>• Semua riwayat inspeksi akan dipertahankan</li>
-                      <li>• Tindakan ini tidak dapat dibatalkan</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <DialogFooter className="gap-2">
-            <Button
-              variant="outline"
-              onClick={closeDeleteDialog}
-              className="flex-1"
-            >
-              Batal
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={() =>
-                inspectorToDelete && handleDeleteInspector(inspectorToDelete.id)
-              }
-              className="flex-1 bg-red-600 hover:bg-red-700"
-            >
-              <FaTrash className="mr-2 text-sm" />
-              Hapus Inspector
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
       {/* View/Edit Inspector Drawer */}
       <Drawer open={isViewDrawerOpen} onOpenChange={setIsViewDrawerOpen}>
         <DrawerContent className="sm:max-w-[425px] fixed right-0 top-0 bottom-0 left-auto">
           <DrawerHeader>
             <DrawerTitle>
-              {isEditing ? "Edit Inspektor" : "Detail Inspektor"}
+              {isEditing ? "Edit Inspector" : "Inspector Details"}
             </DrawerTitle>
             <DrawerDescription>
               {isEditing
-                ? "Perbarui informasi inspektor di bawah."
-                : "Lihat detail inspektor. Klik Edit untuk mengubah informasi."}
+                ? "Update inspector information below."
+                : "View inspector details. Click Edit to modify information."}
             </DrawerDescription>
           </DrawerHeader>
 
           {isEditing ? (
             <form onSubmit={handleUpdateInspector}>
-              <div className="mb-5 space-y-4 px-4 my-10">
+              <div className="mb-5 space-y-4 px-4">
                 <div className="space-y-2">
-                  <Label htmlFor="view-name">Nama Lengkap</Label>
+                  <Label htmlFor="view-name">Full Name</Label>
                   <Input
                     id="view-name"
                     value={viewFormData.name}
@@ -688,31 +398,8 @@ Terima kasih.
                     onChange={(e) =>
                       setViewFormData({ ...viewFormData, pin: e.target.value })
                     }
-                    placeholder="Masukkan PIN"
+                    placeholder="Enter PIN"
                   />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="view-whatsapp">Nomor WhatsApp</Label>
-                  <div className="flex">
-                    <div className="flex items-center px-3 bg-gray-100 dark:bg-gray-700 border border-r-0 border-gray-300 dark:border-gray-600 rounded-l-md">
-                      <span className="text-sm text-gray-600 dark:text-gray-300 font-medium">
-                        +62
-                      </span>
-                    </div>
-                    <Input
-                      id="view-whatsapp"
-                      type="tel"
-                      value={viewFormData.whatsappNumber}
-                      onChange={(e) =>
-                        setViewFormData({
-                          ...viewFormData,
-                          whatsappNumber: e.target.value,
-                        })
-                      }
-                      className="rounded-l-none"
-                      placeholder="8123456789"
-                    />
-                  </div>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="view-status">Status</Label>
@@ -723,16 +410,16 @@ Terima kasih.
                     }
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Pilih status" />
+                      <SelectValue placeholder="Select status" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="active">Aktif</SelectItem>
-                      <SelectItem value="inactive">Tidak Aktif</SelectItem>
+                      <SelectItem value="active">Active</SelectItem>
+                      <SelectItem value="inactive">Inactive</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="view-created">Dibuat Pada</Label>
+                  <Label htmlFor="view-created">Created At</Label>
                   <Input
                     id="view-created"
                     value={viewFormData.createdAt}
@@ -746,7 +433,7 @@ Terima kasih.
                   type="submit"
                   className="w-full bg-orange-600 hover:bg-orange-700"
                 >
-                  Perbarui Inspektor
+                  Update Inspector
                 </Button>
                 <Button
                   type="button"
@@ -754,15 +441,15 @@ Terima kasih.
                   className="w-full"
                   onClick={handleCancelEdit}
                 >
-                  Batal
+                  Cancel
                 </Button>
               </DrawerFooter>
             </form>
           ) : (
             <>
-              <div className="mb-5 space-y-4 px-4 my-10">
+              <div className="mb-5 space-y-4 px-4">
                 <div className="space-y-2">
-                  <Label htmlFor="view-name">Nama Lengkap</Label>
+                  <Label htmlFor="view-name">Full Name</Label>
                   <Input
                     id="view-name"
                     value={viewFormData.name}
@@ -813,22 +500,6 @@ Terima kasih.
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="view-whatsapp-readonly">Nomor WhatsApp</Label>
-                  <div className="flex">
-                    <div className="flex items-center px-3 bg-gray-100 dark:bg-gray-700 border border-r-0 border-gray-300 dark:border-gray-600 rounded-l-md">
-                      <span className="text-sm text-gray-600 dark:text-gray-300 font-medium">
-                        +62
-                      </span>
-                    </div>
-                    <Input
-                      id="view-whatsapp-readonly"
-                      value={viewFormData.whatsappNumber}
-                      readOnly
-                      className="bg-gray-50 dark:bg-gray-800 rounded-l-none"
-                    />
-                  </div>
-                </div>
-                <div className="space-y-2">
                   <Label htmlFor="view-status">Status</Label>
                   <Input
                     value={viewFormData.status}
@@ -837,7 +508,7 @@ Terima kasih.
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="view-created">Dibuat Pada</Label>
+                  <Label htmlFor="view-created">Created At</Label>
                   <Input
                     id="view-created"
                     value={viewFormData.createdAt}
@@ -846,26 +517,18 @@ Terima kasih.
                   />
                 </div>
               </div>
-              <DrawerFooter className="flex flex-col gap-2">
-                <Button
-                  type="button"
-                  className="w-full bg-green-600 hover:bg-green-700 text-white"
-                  onClick={handleSendWhatsApp}
-                >
-                  <FaWhatsapp className="mr-2" />
-                  Kirim Data
-                </Button>
+              <DrawerFooter>
                 <Button
                   type="button"
                   className="w-full bg-blue-600 hover:bg-blue-700"
                   onClick={handleEditMode}
                 >
                   <FaEdit className="mr-2" />
-                  Edit Inspektor
+                  Edit Inspector
                 </Button>
                 <DrawerClose asChild>
                   <Button variant="outline" className="w-full">
-                    Tutup
+                    Close
                   </Button>
                 </DrawerClose>
               </DrawerFooter>
@@ -881,13 +544,52 @@ Terima kasih.
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-blue-600 dark:text-blue-400">
-                  Total Inspektor
+                  Total Inspectors
                 </p>
                 <p className="text-2xl font-bold text-gray-900 dark:text-white">
                   {inspectorList.length}
                 </p>
               </div>
               <div className="p-3 bg-blue-500 rounded-lg">
+                <FaUserTie className="text-xl text-white" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-0 shadow-lg bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-green-600 dark:text-green-400">
+                  Active
+                </p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                  {inspectorList.filter((i) => i.status === "active").length}
+                </p>
+              </div>
+              <div className="p-3 bg-green-500 rounded-lg">
+                <FaUserTie className="text-xl text-white" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-0 shadow-lg bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-orange-600 dark:text-orange-400">
+                  Branches
+                </p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                  {
+                    new Set(inspectorList.map((i) => i.branch).filter(Boolean))
+                      .size
+                  }
+                </p>
+              </div>
+              <div className="p-3 bg-orange-500 rounded-lg">
                 <FaUserTie className="text-xl text-white" />
               </div>
             </div>
@@ -900,7 +602,7 @@ Terima kasih.
         <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
         <input
           type="text"
-          placeholder="Cari berdasarkan nama, email, atau cabang..."
+          placeholder="Search by name, email, or branch..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full pl-10 pr-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:focus:ring-orange-400 focus:border-transparent transition-all"
@@ -913,7 +615,7 @@ Terima kasih.
           <TableHeader>
             <TableRow className="bg-gray-50 dark:bg-gray-900">
               <TableHead className="text-left font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
-                Nama
+                Name
               </TableHead>
               <TableHead className="text-left font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
                 Email
@@ -922,10 +624,10 @@ Terima kasih.
                 Status
               </TableHead>
               <TableHead className="text-left font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
-                Dibuat Pada
+                Created At
               </TableHead>
               <TableHead className="text-center font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
-                Aksi
+                Actions
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -1047,15 +749,15 @@ Terima kasih.
                     </div>
                     <div className="text-center max-w-sm">
                       <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
-                        Tidak ada inspektor ditemukan
+                        No inspectors found
                       </h3>
                       <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                        Saat ini tidak ada akun inspektor untuk ditampilkan.
+                        There are no inspector accounts to display at this time.
                       </p>
                       <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mt-4">
                         <p className="text-xs text-blue-800 dark:text-blue-200">
-                          Akun inspektor baru akan muncul di sini setelah
-                          dibuat.
+                          New inspector accounts will appear here after they are
+                          created.
                         </p>
                       </div>
                     </div>
@@ -1101,14 +803,11 @@ Terima kasih.
                         className="inline-flex items-center px-3 py-1.5 border border-blue-300 dark:border-blue-600 shadow-sm text-xs font-medium rounded-md text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-800/20 hover:bg-blue-100 dark:hover:bg-blue-700/30 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
                       >
                         <FaEye className="w-3 h-3 mr-1" />
-                        Lihat
+                        View
                       </button>
-                      <button
-                        onClick={() => openDeleteDialog(inspector)}
-                        className="inline-flex items-center px-3 py-1.5 border border-red-300 shadow-sm text-xs font-medium rounded-md text-red-700 bg-red-50 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200"
-                      >
+                      <button className="inline-flex items-center px-3 py-1.5 border border-red-300 shadow-sm text-xs font-medium rounded-md text-red-700 bg-red-50 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200">
                         <FaTrash className="w-3 h-3 mr-1" />
-                        Hapus
+                        Delete
                       </button>
                     </div>
                   </TableCell>

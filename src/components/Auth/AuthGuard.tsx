@@ -1,14 +1,15 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import useAuth from "../../hooks/useAuth";
 import LoadingScreen from "../../components/LoadingFullScreen";
 import { toast } from "../../hooks/use-toast";
 
 interface AuthGuardProps {
   children: React.ReactNode;
-  requiredRoles?: Array<"SUPERADMIN" | "ADMIN" | "REVIEWER" | "USER">;
+  requiredRoles?: Array<
+    "SUPERADMIN" | "ADMIN" | "REVIEWER" | "USER" | "CUSTOMER"
+  >;
 }
 
 const AuthGuard: React.FC<AuthGuardProps> = ({
@@ -16,7 +17,6 @@ const AuthGuard: React.FC<AuthGuardProps> = ({
   requiredRoles = [],
 }) => {
   const { isAuthenticated, isLoading, user, isAuthInitialized } = useAuth();
-  const router = useRouter();
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [isAuthChecked, setIsAuthChecked] = useState(false);
   useEffect(() => {

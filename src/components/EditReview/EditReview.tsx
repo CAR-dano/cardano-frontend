@@ -125,7 +125,6 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
   const [dataHalamanPerluPerhatianPhotos, setDataHalamanPerluPerhatianPhotos] =
     useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const { isDarkModeEnabled } = useTheme();
 
   useEffect(() => {
     if (data) {
@@ -137,7 +136,7 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
     const photo = data?.photos?.find(
       (item: any) => item.label === "Tampak Depan"
     );
-    return photo ? photo.path : "";
+    return photo ? photo : "";
   };
 
   const preProcessData = (data: any) => {
@@ -150,6 +149,7 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
       vehiclePlateNumber: data?.vehiclePlateNumber,
       inspectionDate: data?.inspectionDate,
       photos: getImageTampakDepan(data),
+      id: data?.id,
     });
 
     setDataHalaman2({
@@ -767,7 +767,7 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
         {/* Navigation Tabs */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 mb-6 overflow-hidden">
           <div className="flex overflow-x-auto">
-            {pages.map((page, index) => (
+            {pages.map((page) => (
               <button
                 key={page.id}
                 onClick={() => goToPage(page.id)}

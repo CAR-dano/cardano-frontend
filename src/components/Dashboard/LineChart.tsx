@@ -7,8 +7,6 @@ import {
   CartesianGrid,
   XAxis,
   YAxis,
-  Tooltip,
-  ResponsiveContainer,
 } from "recharts";
 
 import {
@@ -49,7 +47,6 @@ const chartConfig = {
 
 export function LineChart({
   data,
-  total,
   setActiveChartType,
   activeChartType,
 }: LineChartProps) {
