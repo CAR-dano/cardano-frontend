@@ -42,17 +42,18 @@ function FormDropdownInput({
 
     try {
       const response = await axios.get(URL);
+      console.log("Response data:", response.data);
       const data = response.data;
       if (type == "inspektor") {
         const formattedData = data.map((item: any) => ({
-          value: item.name,
+          value: item.id,
           label: item.name,
         }));
         setOptions(formattedData);
         setOption("inspektor");
       } else if (type == "lokasi") {
         const formattedData = data.map((item: any) => ({
-          value: item.city,
+          value: item.id,
           label: item.city,
         }));
         setOptions(formattedData);
