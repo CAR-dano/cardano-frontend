@@ -1,5 +1,5 @@
 import apiClient from "../../services/apiClient";
-import { UserLogin, UserSignUp } from "../../../utils/Auth";
+import { User, UserLogin, UserSignUp } from "../../../utils/Auth";
 
 const checkToken = async (token: string) => {
   try {

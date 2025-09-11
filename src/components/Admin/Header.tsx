@@ -71,6 +71,7 @@ const Header = () => {
 const BreadcrumbComponent = () => {
   const pathName = usePathname();
   const path = pathName.split("/").filter((item) => item);
+  const user = useAppSelector((state) => state.auth.user);
 
   // Create breadcrumb items with proper labels
   const getBreadcrumbLabel = (item: string) => {
@@ -109,7 +110,7 @@ const BreadcrumbComponent = () => {
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink
-              href="/dashboard"
+              href={user?.role === "CUSTOMER" ? "/account" : "/dashboard"}
               className="text-gray-600 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 font-medium transition-colors"
             >
               Home

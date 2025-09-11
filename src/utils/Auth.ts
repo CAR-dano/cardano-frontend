@@ -14,6 +14,7 @@ export interface User {
   username: string | null;
   name: string | null;
   walletAddress: string | null;
+  whatsappNumber: string | null;
   role: "ADMIN" | "USER" | string; // tambahkan role lain jika perlu
   createdAt: string; // bisa juga pakai Date tergantung parsing
   updatedAt: string;
