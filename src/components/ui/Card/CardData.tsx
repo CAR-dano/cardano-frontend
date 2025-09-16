@@ -12,7 +12,7 @@ interface VehicleInspectionProps {
 const PHOTO_URL = process.env.NEXT_PUBLIC_PDF_URL;
 
 function CardData({ platNomor, data }: VehicleInspectionProps) {
-  const images = data.photos.slice(0, 5) || [];
+  const images = data.photos.slice(0, 4) || [];
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
