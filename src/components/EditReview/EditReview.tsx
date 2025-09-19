@@ -27,6 +27,7 @@ import {
 } from "../Preview/SortingReference";
 import { useTheme } from "../../contexts/ThemeContext";
 import { useToast } from "../../hooks/use-toast";
+import apiClient from "@/lib/services/apiClient";
 
 interface EditReviewComponentsProps {
   onClick: (data: any) => void;
@@ -60,23 +61,27 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
       formData.append("photos", file); // 'photos' is the field name for the file
 
       try {
-        const response = await fetch(
+        const response = await apiClient.post(
           `${process.env.NEXT_PUBLIC_API_URL}/inspections/${inspectionId}/photos/multiple`,
+          formData,
           {
-            method: "POST",
             headers: {
-              // Add authorization header if needed
-              // 'Authorization': `Bearer ${yourAuthToken}`,
+              "Content-Type": "multipart/form-data",
             },
-            body: formData,
           }
         );
 
-        if (!response.ok) {
+        if (!response) {
           throw new Error("Failed to upload photo");
         }
+        //       // Add authorization header if needed
+        //       // 'Authorization': `Bearer ${yourAuthToken}`,
+        //     },
+        //     body: formData,
+        //   }
+        // );
 
-        const result = await response.json();
+        const result = await response.data;
         toast({
           title: "Success",
           description: "Photo uploaded successfully.",

@@ -410,12 +410,13 @@ const Edit = () => {
     if (actionData.type === "photo_update") {
       updateFoto(actionData.photoId, actionData.data);
     } else if (actionData.type === "photo_added") {
+      const newPhoto = actionData.newPhotoData[0];
       // Handle new photo added from AddPhotoDialog
       setData((prevData: any) => {
         if (!prevData) return prevData;
         return {
           ...prevData,
-          photos: [...(prevData.photos || []), actionData.newPhotoData],
+          photos: [...prevData.photos, newPhoto],
         };
       });
       toast({
@@ -537,6 +538,10 @@ const Edit = () => {
       }
     });
   };
+
+  useEffect(() => {
+    console.log("Data updated:", data);
+  }, [data]);
 
   useEffect(() => {
     if (id) {
