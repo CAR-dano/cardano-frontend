@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch, useAppSelector } from "../../../lib/store";
-import { getAllInspectors } from "../../../lib/features/admin/adminSlice";
+import { getAllInspectors, getAllBranches } from "../../../lib/features/admin/adminSlice";
 import { LoadingSkeleton } from "../../../components/Loading";
 import {
   Table,
@@ -34,6 +34,14 @@ import {
   SelectValue,
 } from "../../../components/ui/select";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../../../components/ui/dialog";
+import {
   FaUserTie,
   FaSearch,
   FaPlus,
@@ -48,7 +56,7 @@ import apiClient from "@/lib/services/apiClient";
 
 const InspectorPage = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { inspectorList, isLoading } = useAppSelector((state) => state.admin);
+  const { inspectorList, isLoading, branchList } = useAppSelector((state) => state.admin);
   const accessToken = useAppSelector((state) => state.auth.accessToken);
   const [searchTerm, setSearchTerm] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -57,12 +65,16 @@ const InspectorPage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [showPin, setShowPin] = useState(false);
   const { toast } = useToast();
+  const [showPinDialog, setShowPinDialog] = useState(false);
+  const [newInspectorPin, setNewInspectorPin] = useState("");
+  const [newInspectorData, setNewInspectorData] = useState<any>(null);
 
   // Form states
   const [formData, setFormData] = useState({
     name: "",
     username: "",
     email: "",
+    inspectionBranchCityId: "",
   });
 
   // View/Edit form states
@@ -78,8 +90,16 @@ const InspectorPage = () => {
   useEffect(() => {
     if (accessToken) {
       dispatch(getAllInspectors(accessToken));
+      dispatch(getAllBranches(accessToken));
     }
   }, [dispatch, accessToken]);
+
+  // Fetch branches when drawer opens if not already loaded
+  useEffect(() => {
+    if (isDrawerOpen && branchList.length === 0 && accessToken) {
+      dispatch(getAllBranches(accessToken));
+    }
+  }, [isDrawerOpen, branchList.length, accessToken, dispatch]);
 
   const filteredInspectors = inspectorList.filter(
     (inspector) =>
@@ -91,18 +111,43 @@ const InspectorPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    apiClient.post("/admin/users/inspector", formData, {}).then(() => {
-      toast({
-        title: "Inspector Added",
-        description: "New inspector has been added successfully.",
+    try {
+      const response = await apiClient.post("/admin/users/inspector", formData, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
       });
+      
+      // Store the response data
+      setNewInspectorData(response.data);
+      setNewInspectorPin(response.data.pin);
+      
+      // Close the form drawer
       setIsDrawerOpen(false);
+      
+      // Reset form
       setFormData({
         name: "",
         username: "",
         email: "",
+        inspectionBranchCityId: "",
       });
-    });
+      
+      // Show PIN dialog
+      setShowPinDialog(true);
+      
+      // Refresh the inspector list
+      if (accessToken) {
+        dispatch(getAllInspectors(accessToken));
+      }
+    } catch (error) {
+      console.error("Error creating inspector:", error);
+      toast({
+        title: "Error",
+        description: "Failed to create inspector.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleViewInspector = (inspector: any) => {
@@ -223,6 +268,134 @@ const InspectorPage = () => {
 
   return (
     <div className=" space-y-6  min-h-screen">
+      {/* PIN Display Dialog */}
+      <Dialog open={showPinDialog} onOpenChange={setShowPinDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-green-600">
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              Inspector Created Successfully!
+            </DialogTitle>
+            <DialogDescription className="space-y-4 pt-4">
+              <div className="bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-400 p-4 rounded">
+                <div className="flex">
+                  <div className="flex-shrink-0">
+                    <svg
+                      className="h-5 w-5 text-yellow-400"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                  <div className="ml-3">
+                    <p className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
+                      Important: This PIN will only be shown once!
+                    </p>
+                    <p className="mt-1 text-sm text-yellow-700 dark:text-yellow-300">
+                      Please save this PIN securely. The inspector will need it to log in.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                    Inspector Name:
+                  </p>
+                  <p className="text-base font-semibold text-gray-900 dark:text-white">
+                    {newInspectorData?.name}
+                  </p>
+                </div>
+
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                    Username:
+                  </p>
+                  <p className="text-base font-semibold text-gray-900 dark:text-white">
+                    {newInspectorData?.username}
+                  </p>
+                </div>
+
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                    Email:
+                  </p>
+                  <p className="text-base font-semibold text-gray-900 dark:text-white">
+                    {newInspectorData?.email}
+                  </p>
+                </div>
+
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                    Branch:
+                  </p>
+                  <p className="text-base font-semibold text-gray-900 dark:text-white">
+                    {newInspectorData?.inspectionBranchCity?.city} ({newInspectorData?.inspectionBranchCity?.code})
+                  </p>
+                </div>
+
+                <div className="space-y-1 bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg border-2 border-orange-200 dark:border-orange-800">
+                  <p className="text-sm font-medium text-orange-600 dark:text-orange-400">
+                    Inspector PIN:
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <p className="text-3xl font-bold text-orange-600 dark:text-orange-400 tracking-wider font-mono">
+                      {newInspectorPin}
+                    </p>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        navigator.clipboard.writeText(newInspectorPin);
+                        toast({
+                          title: "Copied!",
+                          description: "PIN copied to clipboard.",
+                        });
+                      }}
+                      className="ml-2"
+                    >
+                      Copy
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              type="button"
+              onClick={() => {
+                setShowPinDialog(false);
+                setNewInspectorPin("");
+                setNewInspectorData(null);
+              }}
+              className="w-full bg-orange-600 hover:bg-orange-700"
+            >
+              I've Saved the PIN
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -292,6 +465,39 @@ const InspectorPage = () => {
                     }
                     required
                   />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="branch">Branch City</Label>
+                  <Select
+                    value={formData.inspectionBranchCityId}
+                    onValueChange={(value) =>
+                      setFormData({ ...formData, inspectionBranchCityId: value })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a branch" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {isLoading ? (
+                        <SelectItem value="loading" disabled>
+                          Loading branches...
+                        </SelectItem>
+                      ) : branchList.length > 0 ? (
+                        branchList
+                          .filter((branch) => branch.status === "active" || !branch.status)
+                          .map((branch) => (
+                            <SelectItem key={branch.id} value={branch.id}>
+                              {branch.city || branch.name} {branch.code && `(${branch.code})`}
+                            </SelectItem>
+                          ))
+                      ) : (
+                        <SelectItem value="no-branches" disabled>
+                          No branches available
+                        </SelectItem>
+                      )}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 {/* <div className="space-y-2">
