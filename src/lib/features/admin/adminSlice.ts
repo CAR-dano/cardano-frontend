@@ -28,9 +28,6 @@ export interface IAdminState {
   userList: User[];
   inspectorList: Inspector[];
   branchList: Branch[];
-  inspectors: Inspector[];
-  branches: Branch[];
-  loading: boolean;
   isLoading: boolean;
   error: string | null;
 }
@@ -39,9 +36,6 @@ const initialState: IAdminState = {
   userList: [],
   inspectorList: [],
   branchList: [],
-  inspectors: [],
-  branches: [],
-  loading: false,
   isLoading: false,
   error: null,
 };
@@ -101,14 +95,12 @@ export const getAllBranches = createAsyncThunk(
   }
 );
 
-export const fetchInspectors = createAsyncThunk(
-  "admin/fetchInspectors",
-  async (_, thunkAPI) => {
+export const deleteInspector = createAsyncThunk(
+  "admin/deleteInspector",
+  async ({ id, token }: { id: string; token: string }, thunkAPI) => {
     try {
-      const state: any = thunkAPI.getState();
-      const token = state.auth.accessToken;
-      const payload = await adminService.getAllInspectors(token);
-      return payload;
+      const status = await adminService.deleteInspector(id, token);
+      return { id, status }; // Return ID and status
     } catch (error: any) {
       const message = error?.response?.data?.message;
       return thunkAPI.rejectWithValue(message);
@@ -116,13 +108,11 @@ export const fetchInspectors = createAsyncThunk(
   }
 );
 
-export const fetchBranches = createAsyncThunk(
-  "admin/fetchBranches",
-  async (_, thunkAPI) => {
+export const generateInspectorPin = createAsyncThunk(
+  "admin/generateInspectorPin",
+  async ({ id, token }: { id: string; token: string }, thunkAPI) => {
     try {
-      const state: any = thunkAPI.getState();
-      const token = state.auth.accessToken;
-      const payload = await adminService.getAllBranches(token);
+      const payload = await adminService.generateInspectorPin(id, token);
       return payload;
     } catch (error: any) {
       const message = error?.response?.data?.message;
@@ -203,40 +193,32 @@ export const adminSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload as string;
       })
-      .addCase(fetchInspectors.pending, (state) => {
-        state.inspectors = [];
-        state.loading = true;
+      .addCase(deleteInspector.pending, (state) => {
+        state.isLoading = true;
         state.error = null;
       })
-      .addCase(
-        fetchInspectors.fulfilled,
-        (state, action: PayloadAction<Inspector[]>) => {
-          state.inspectors = action.payload;
-          state.loading = false;
-          state.error = null;
-        }
-      )
-      .addCase(fetchInspectors.rejected, (state, action) => {
-        state.inspectors = [];
-        state.loading = false;
+      .addCase(deleteInspector.fulfilled, (state, action) => {
+        // Remove the deleted inspector from the list
+        state.inspectorList = state.inspectorList.filter(
+          (inspector) => inspector.id !== action.payload.id
+        );
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(deleteInspector.rejected, (state, action) => {
+        state.isLoading = false;
         state.error = action.payload as string;
       })
-      .addCase(fetchBranches.pending, (state) => {
-        state.branches = [];
-        state.loading = true;
+      .addCase(generateInspectorPin.pending, (state) => {
+        state.isLoading = true;
         state.error = null;
       })
-      .addCase(
-        fetchBranches.fulfilled,
-        (state, action: PayloadAction<Branch[]>) => {
-          state.branches = action.payload;
-          state.loading = false;
-          state.error = null;
-        }
-      )
-      .addCase(fetchBranches.rejected, (state, action) => {
-        state.branches = [];
-        state.loading = false;
+      .addCase(generateInspectorPin.fulfilled, (state) => {
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(generateInspectorPin.rejected, (state, action) => {
+        state.isLoading = false;
         state.error = action.payload as string;
       });
   },

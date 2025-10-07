@@ -1,8 +1,8 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch, useAppSelector } from "../../../lib/store";
-import { getAllInspectors } from "../../../lib/features/admin/adminSlice";
+import { getAllInspectors, getAllBranches, deleteInspector, generateInspectorPin } from "../../../lib/features/admin/adminSlice";
 import { LoadingSkeleton } from "../../../components/Loading";
 import {
   Table,
@@ -45,24 +45,31 @@ import {
 import { format } from "date-fns";
 import { useToast } from "../../../components/ui/use-toast";
 import apiClient from "@/lib/services/apiClient";
+import { InspectorPinDialog } from "../../../components/Dialog/InspectorPinDialog";
+import { DeleteConfirmationDialog } from "../../../components/Dialog/DeleteConfirmationDialog";
 
 const InspectorPage = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { inspectorList, isLoading } = useAppSelector((state) => state.admin);
+  const { inspectorList, isLoading, branchList } = useAppSelector((state) => state.admin);
   const accessToken = useAppSelector((state) => state.auth.accessToken);
   const [searchTerm, setSearchTerm] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isViewDrawerOpen, setIsViewDrawerOpen] = useState(false);
   const [selectedInspector, setSelectedInspector] = useState<any>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [showPin, setShowPin] = useState(false);
   const { toast } = useToast();
+  const [showPinDialog, setShowPinDialog] = useState(false);
+  const [newInspectorData, setNewInspectorData] = useState<any>(null);
+  const [isPinRegenerate, setIsPinRegenerate] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [inspectorToDelete, setInspectorToDelete] = useState<any>(null);
 
   // Form states
   const [formData, setFormData] = useState({
     name: "",
     username: "",
     email: "",
+    inspectionBranchCityId: "",
   });
 
   // View/Edit form states
@@ -78,8 +85,16 @@ const InspectorPage = () => {
   useEffect(() => {
     if (accessToken) {
       dispatch(getAllInspectors(accessToken));
+      dispatch(getAllBranches(accessToken));
     }
   }, [dispatch, accessToken]);
+
+  // Fetch branches when drawer opens if not already loaded
+  useEffect(() => {
+    if (isDrawerOpen && branchList.length === 0 && accessToken) {
+      dispatch(getAllBranches(accessToken));
+    }
+  }, [isDrawerOpen, branchList.length, accessToken, dispatch]);
 
   const filteredInspectors = inspectorList.filter(
     (inspector) =>
@@ -89,20 +104,52 @@ const InspectorPage = () => {
         inspector.branch.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
+  const activeInspectorCount = useMemo(() => {
+    return inspectorList.filter((inspector) => {
+      const status = inspector.status?.toLowerCase?.() || inspector.status || 'active';
+      return status === 'active';
+    }).length;
+  }, [inspectorList]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    apiClient.post("/admin/users/inspector", formData, {}).then(() => {
-      toast({
-        title: "Inspector Added",
-        description: "New inspector has been added successfully.",
+    try {
+      const response = await apiClient.post("/admin/users/inspector", formData, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
       });
+      
+      // Store the response data
+      setNewInspectorData(response.data);
+      
+      // Close the form drawer
       setIsDrawerOpen(false);
+      
+      // Reset form
       setFormData({
         name: "",
         username: "",
         email: "",
+        inspectionBranchCityId: "",
       });
-    });
+      
+      // Show PIN dialog for new inspector
+      setIsPinRegenerate(false);
+      setShowPinDialog(true);
+      
+      // Refresh the inspector list
+      if (accessToken) {
+        dispatch(getAllInspectors(accessToken));
+      }
+    } catch (error) {
+      console.error("Error creating inspector:", error);
+      toast({
+        title: "Error",
+        description: "Failed to create inspector.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleViewInspector = (inspector: any) => {
@@ -118,12 +165,7 @@ const InspectorPage = () => {
         : "-",
     });
     setIsEditing(false);
-    setShowPin(false); // Reset PIN visibility when opening drawer
     setIsViewDrawerOpen(true);
-  };
-
-  const togglePinVisibility = () => {
-    setShowPin(!showPin);
   };
 
   const handleEditMode = () => {
@@ -132,7 +174,6 @@ const InspectorPage = () => {
 
   const handleCancelEdit = () => {
     setIsEditing(false);
-    setShowPin(false); // Reset PIN visibility when canceling edit
     // Reset form data to original values
     if (selectedInspector) {
       setViewFormData({
@@ -221,8 +262,105 @@ const InspectorPage = () => {
     }
   };
 
+  const handleDeleteClick = (inspector: any) => {
+    setInspectorToDelete(inspector);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!inspectorToDelete || !accessToken) return;
+
+    try {
+      const result = await dispatch(deleteInspector({ 
+        id: inspectorToDelete.id, 
+        token: accessToken 
+      })).unwrap();
+
+      // Check if the response status is 204 (No Content)
+      if (result.status === 204) {
+        toast({
+          title: "Inspector Deleted",
+          description: `${inspectorToDelete.name} has been deleted successfully.`,
+        });
+      } else {
+        toast({
+          title: "Inspector Deleted",
+          description: `${inspectorToDelete.name} has been deleted.`,
+        });
+      }
+
+      setDeleteDialogOpen(false);
+      setInspectorToDelete(null);
+    } catch (error) {
+      console.error("Delete error:", error);
+      toast({
+        title: "Delete Failed",
+        description: "Failed to delete inspector.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleGeneratePin = async () => {
+    if (!selectedInspector || !accessToken) return;
+
+    try {
+      const result = await dispatch(generateInspectorPin({
+        id: selectedInspector.id,
+        token: accessToken
+      })).unwrap();
+
+      // Store the response data with the new PIN
+      setNewInspectorData(result);
+      
+      // Close the view drawer
+      setIsViewDrawerOpen(false);
+      
+      // Show PIN dialog for regenerated PIN
+      setIsPinRegenerate(true);
+      setShowPinDialog(true);
+      
+      toast({
+        title: "PIN Generated",
+        description: "A new PIN has been generated successfully.",
+      });
+    } catch (error) {
+      console.error("Generate PIN error:", error);
+      toast({
+        title: "Generation Failed",
+        description: "Failed to generate new PIN.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className=" space-y-6  min-h-screen">
+      {/* PIN Display Dialog */}
+      <InspectorPinDialog
+        isOpen={showPinDialog}
+        onClose={() => {
+          setShowPinDialog(false);
+          setNewInspectorData(null);
+          setIsPinRegenerate(false);
+        }}
+        inspectorData={newInspectorData}
+        isRegenerate={isPinRegenerate}
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <DeleteConfirmationDialog
+        isOpen={deleteDialogOpen}
+        onClose={() => {
+          setDeleteDialogOpen(false);
+          setInspectorToDelete(null);
+        }}
+        onConfirm={handleDeleteConfirm}
+        itemName={inspectorToDelete?.name}
+        itemType="inspector account"
+        isLoading={isLoading}
+      />
+
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -285,13 +423,46 @@ const InspectorPage = () => {
                   <Input
                     id="email"
                     type="email"
-                    placeholder="inspector@example.com"
+                    placeholder="inspector@inspeksimobil.id"
                     value={formData.email}
                     onChange={(e) =>
                       setFormData({ ...formData, email: e.target.value })
                     }
                     required
                   />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="branch">Branch City</Label>
+                  <Select
+                    value={formData.inspectionBranchCityId}
+                    onValueChange={(value) =>
+                      setFormData({ ...formData, inspectionBranchCityId: value })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a branch" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {isLoading ? (
+                        <SelectItem value="loading" disabled>
+                          Loading branches...
+                        </SelectItem>
+                      ) : branchList.length > 0 ? (
+                        branchList
+                          .filter((branch) => branch.status === "active" || !branch.status)
+                          .map((branch) => (
+                            <SelectItem key={branch.id} value={branch.id}>
+                              {branch.city || branch.name} {branch.code && `(${branch.code})`}
+                            </SelectItem>
+                          ))
+                      ) : (
+                        <SelectItem value="no-branches" disabled>
+                          No branches available
+                        </SelectItem>
+                      )}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 {/* <div className="space-y-2">
@@ -390,18 +561,6 @@ const InspectorPage = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="view-pin">PIN</Label>
-                  <Input
-                    id="view-pin"
-                    type="text"
-                    value={viewFormData.pin}
-                    onChange={(e) =>
-                      setViewFormData({ ...viewFormData, pin: e.target.value })
-                    }
-                    placeholder="Enter PIN"
-                  />
-                </div>
-                <div className="space-y-2">
                   <Label htmlFor="view-status">Status</Label>
                   <Select
                     value={viewFormData.status}
@@ -477,26 +636,19 @@ const InspectorPage = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="view-pin">PIN</Label>
-                  <div className="relative">
-                    <Input
-                      id="view-pin"
-                      type={showPin ? "text" : "password"}
-                      value={viewFormData.pin}
-                      readOnly
-                      className="bg-gray-50 dark:bg-gray-800 pr-10"
-                    />
-                    <button
+                  <Label>Inspector PIN</Label>
+                  <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                    <p className="text-sm text-blue-800 dark:text-blue-200 mb-3">
+                      For security reasons, PINs are not stored or displayed. Click the button below to generate a new PIN for this inspector.
+                    </p>
+                    <Button
                       type="button"
-                      onClick={togglePinVisibility}
-                      className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+                      onClick={handleGeneratePin}
+                      className="w-full bg-orange-600 hover:bg-orange-700"
+                      disabled={isLoading}
                     >
-                      {showPin ? (
-                        <FaEyeSlash className="w-4 h-4" />
-                      ) : (
-                        <FaEye className="w-4 h-4" />
-                      )}
-                    </button>
+                      {isLoading ? "Generating..." : "Generate New PIN"}
+                    </Button>
                   </div>
                 </div>
                 <div className="space-y-2">
@@ -565,7 +717,7 @@ const InspectorPage = () => {
                   Active
                 </p>
                 <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {inspectorList.filter((i) => i.status === "active").length}
+                  {activeInspectorCount}
                 </p>
               </div>
               <div className="p-3 bg-green-500 rounded-lg">
@@ -805,7 +957,10 @@ const InspectorPage = () => {
                         <FaEye className="w-3 h-3 mr-1" />
                         View
                       </button>
-                      <button className="inline-flex items-center px-3 py-1.5 border border-red-300 shadow-sm text-xs font-medium rounded-md text-red-700 bg-red-50 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200">
+                      <button
+                        onClick={() => handleDeleteClick(inspector)}
+                        className="inline-flex items-center px-3 py-1.5 border border-red-300 shadow-sm text-xs font-medium rounded-md text-red-700 bg-red-50 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200"
+                      >
                         <FaTrash className="w-3 h-3 mr-1" />
                         Delete
                       </button>
