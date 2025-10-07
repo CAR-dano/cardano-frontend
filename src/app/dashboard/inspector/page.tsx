@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch, useAppSelector } from "../../../lib/store";
 import { getAllInspectors, getAllBranches, deleteInspector, generateInspectorPin } from "../../../lib/features/admin/adminSlice";
@@ -103,6 +103,13 @@ const InspectorPage = () => {
       (inspector.branch &&
         inspector.branch.toLowerCase().includes(searchTerm.toLowerCase()))
   );
+
+  const activeInspectorCount = useMemo(() => {
+    return inspectorList.filter((inspector) => {
+      const status = inspector.status?.toLowerCase?.() || inspector.status || 'active';
+      return status === 'active';
+    }).length;
+  }, [inspectorList]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -710,13 +717,7 @@ const InspectorPage = () => {
                   Active
                 </p>
                 <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {(() => {
-                    const activeCount = inspectorList.filter((i) => {
-                      const status = i.status?.toLowerCase?.() || i.status || 'active';
-                      return status === 'active';
-                    }).length;
-                    return activeCount;
-                  })()}
+                  {activeInspectorCount}
                 </p>
               </div>
               <div className="p-3 bg-green-500 rounded-lg">
