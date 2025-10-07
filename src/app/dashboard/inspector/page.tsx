@@ -269,15 +269,23 @@ const InspectorPage = () => {
     if (!inspectorToDelete || !accessToken) return;
 
     try {
-      await dispatch(deleteInspector({ 
+      const result = await dispatch(deleteInspector({ 
         id: inspectorToDelete.id, 
         token: accessToken 
       })).unwrap();
 
-      toast({
-        title: "Inspector Deleted",
-        description: `${inspectorToDelete.name} has been deleted successfully.`,
-      });
+      // Check if the response status is 204 (No Content)
+      if (result.status === 204) {
+        toast({
+          title: "Inspector Deleted",
+          description: `${inspectorToDelete.name} has been deleted successfully.`,
+        });
+      } else {
+        toast({
+          title: "Inspector Deleted",
+          description: `${inspectorToDelete.name} has been deleted.`,
+        });
+      }
 
       setDeleteDialogOpen(false);
       setInspectorToDelete(null);

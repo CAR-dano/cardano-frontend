@@ -28,7 +28,6 @@ export interface IAdminState {
   userList: User[];
   inspectorList: Inspector[];
   branchList: Branch[];
-  inspectors: Inspector[];
   branches: Branch[];
   loading: boolean;
   isLoading: boolean;
@@ -39,7 +38,6 @@ const initialState: IAdminState = {
   userList: [],
   inspectorList: [],
   branchList: [],
-  inspectors: [],
   branches: [],
   loading: false,
   isLoading: false,
@@ -101,21 +99,6 @@ export const getAllBranches = createAsyncThunk(
   }
 );
 
-export const fetchInspectors = createAsyncThunk(
-  "admin/fetchInspectors",
-  async (_, thunkAPI) => {
-    try {
-      const state: any = thunkAPI.getState();
-      const token = state.auth.accessToken;
-      const payload = await adminService.getAllInspectors(token);
-      return payload;
-    } catch (error: any) {
-      const message = error?.response?.data?.message;
-      return thunkAPI.rejectWithValue(message);
-    }
-  }
-);
-
 export const fetchBranches = createAsyncThunk(
   "admin/fetchBranches",
   async (_, thunkAPI) => {
@@ -135,8 +118,8 @@ export const deleteInspector = createAsyncThunk(
   "admin/deleteInspector",
   async ({ id, token }: { id: string; token: string }, thunkAPI) => {
     try {
-      await adminService.deleteInspector(id, token);
-      return id; // Return the deleted inspector ID
+      const status = await adminService.deleteInspector(id, token);
+      return { id, status }; // Return ID and status
     } catch (error: any) {
       const message = error?.response?.data?.message;
       return thunkAPI.rejectWithValue(message);
@@ -216,24 +199,6 @@ export const adminSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload as string;
       })
-      .addCase(fetchInspectors.pending, (state) => {
-        state.inspectors = [];
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(
-        fetchInspectors.fulfilled,
-        (state, action: PayloadAction<Inspector[]>) => {
-          state.inspectors = action.payload;
-          state.loading = false;
-          state.error = null;
-        }
-      )
-      .addCase(fetchInspectors.rejected, (state, action) => {
-        state.inspectors = [];
-        state.loading = false;
-        state.error = action.payload as string;
-      })
       .addCase(fetchBranches.pending, (state) => {
         state.branches = [];
         state.loading = true;
@@ -257,12 +222,9 @@ export const adminSlice = createSlice({
         state.error = null;
       })
       .addCase(deleteInspector.fulfilled, (state, action) => {
-        // Remove the deleted inspector from both lists
+        // Remove the deleted inspector from the list
         state.inspectorList = state.inspectorList.filter(
-          (inspector) => inspector.id !== action.payload
-        );
-        state.inspectors = state.inspectors.filter(
-          (inspector) => inspector.id !== action.payload
+          (inspector) => inspector.id !== action.payload.id
         );
         state.isLoading = false;
         state.error = null;

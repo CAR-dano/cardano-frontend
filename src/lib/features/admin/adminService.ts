@@ -55,7 +55,9 @@ const deleteInspector = async (id: string, token: string) => {
       Authorization: `Bearer ${token}`,
     },
   });
-  return response.data;
+  
+  // Only return the status since there's no response body
+  return response.status;
 };
 
 const adminService = {
