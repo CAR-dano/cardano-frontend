@@ -33,13 +33,21 @@ export const InspectorPinDialog: React.FC<InspectorPinDialogProps> = ({
 }) => {
   const { toast } = useToast();
 
-  const handleCopyPin = () => {
+  const handleCopyPin = async () => {
     if (inspectorData?.pin) {
-      navigator.clipboard.writeText(inspectorData.pin);
-      toast({
-        title: "Copied!",
-        description: "PIN copied to clipboard.",
-      });
+      try {
+        await navigator.clipboard.writeText(inspectorData.pin);
+        toast({
+          title: "Copied!",
+          description: "PIN copied to clipboard.",
+        });
+      } catch (error) {
+        toast({
+          title: "Copy failed",
+          description: "Failed to copy PIN to clipboard. Please try again.",
+          variant: "destructive",
+        });
+      }
     }
   };
 
