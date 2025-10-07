@@ -521,7 +521,6 @@ const InspectorPage = () => {
                     onChange={(e) =>
                       setViewFormData({ ...viewFormData, name: e.target.value })
                     }
-                    autoFocus={false}
                     required
                   />
                 </div>
