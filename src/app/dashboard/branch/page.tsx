@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../lib/store";
-import { fetchBranches } from "../../../lib/features/admin/adminSlice";
+import { getAllBranches } from "../../../lib/features/admin/adminSlice";
 import {
   Table,
   TableBody,
@@ -38,7 +38,8 @@ import { useToast } from "../../../components/ui/use-toast";
 
 export default function BranchPage() {
   const dispatch = useAppDispatch();
-  const { branches, loading, error } = useAppSelector((state) => state.admin);
+  const { branchList, isLoading, error } = useAppSelector((state) => state.admin);
+  const accessToken = useAppSelector((state) => state.auth.accessToken);
   const [searchTerm, setSearchTerm] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const { toast } = useToast();
@@ -55,10 +56,12 @@ export default function BranchPage() {
   });
 
   useEffect(() => {
-    dispatch(fetchBranches());
-  }, [dispatch]);
+    if (accessToken) {
+      dispatch(getAllBranches(accessToken));
+    }
+  }, [dispatch, accessToken]);
 
-  const filteredBranches = branches.filter(
+  const filteredBranches = branchList.filter(
     (branch) =>
       (branch.code &&
         branch.code.toLowerCase().includes(searchTerm.toLowerCase())) ||
@@ -94,7 +97,10 @@ export default function BranchPage() {
               Error Loading Branches
             </div>
             <p className="text-gray-600 dark:text-gray-400 mt-2">{error}</p>
-            <Button onClick={() => dispatch(fetchBranches())} className="mt-4">
+            <Button 
+              onClick={() => accessToken && dispatch(getAllBranches(accessToken))} 
+              className="mt-4"
+            >
               Retry
             </Button>
           </CardContent>
@@ -259,7 +265,7 @@ export default function BranchPage() {
                   Total Branches
                 </p>
                 <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {branches.length}
+                  {branchList.length}
                 </p>
               </div>
               <div className="p-3 bg-blue-500 rounded-lg">
@@ -336,7 +342,7 @@ export default function BranchPage() {
                   Cities
                 </p>
                 <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {new Set(branches.map((b) => b.city).filter(Boolean)).size}
+                  {new Set(branchList.map((b) => b.city).filter(Boolean)).size}
                 </p>
               </div>
               <div className="p-3 bg-orange-500 rounded-lg">
@@ -383,7 +389,7 @@ export default function BranchPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {loading ? (
+            {isLoading ? (
               <TableRow>
                 <TableCell colSpan={8} className="p-6">
                   <LoadingSkeleton rows={5} />

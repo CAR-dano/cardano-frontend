@@ -28,7 +28,6 @@ export interface IAdminState {
   userList: User[];
   inspectorList: Inspector[];
   branchList: Branch[];
-  branches: Branch[];
   loading: boolean;
   isLoading: boolean;
   error: string | null;
@@ -38,7 +37,6 @@ const initialState: IAdminState = {
   userList: [],
   inspectorList: [],
   branchList: [],
-  branches: [],
   loading: false,
   isLoading: false,
   error: null,
@@ -90,21 +88,6 @@ export const getAllBranches = createAsyncThunk(
   "admin/branches",
   async (token: string, thunkAPI) => {
     try {
-      const payload = await adminService.getAllBranches(token);
-      return payload;
-    } catch (error: any) {
-      const message = error?.response?.data?.message;
-      return thunkAPI.rejectWithValue(message);
-    }
-  }
-);
-
-export const fetchBranches = createAsyncThunk(
-  "admin/fetchBranches",
-  async (_, thunkAPI) => {
-    try {
-      const state: any = thunkAPI.getState();
-      const token = state.auth.accessToken;
       const payload = await adminService.getAllBranches(token);
       return payload;
     } catch (error: any) {
@@ -197,24 +180,6 @@ export const adminSlice = createSlice({
       .addCase(getAllBranches.rejected, (state, action) => {
         state.branchList = [];
         state.isLoading = false;
-        state.error = action.payload as string;
-      })
-      .addCase(fetchBranches.pending, (state) => {
-        state.branches = [];
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(
-        fetchBranches.fulfilled,
-        (state, action: PayloadAction<Branch[]>) => {
-          state.branches = action.payload;
-          state.loading = false;
-          state.error = null;
-        }
-      )
-      .addCase(fetchBranches.rejected, (state, action) => {
-        state.branches = [];
-        state.loading = false;
         state.error = action.payload as string;
       })
       .addCase(deleteInspector.pending, (state) => {
