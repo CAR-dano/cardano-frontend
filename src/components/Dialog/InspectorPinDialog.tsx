@@ -53,7 +53,10 @@ export const InspectorPinDialog: React.FC<InspectorPinDialogProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md" aria-describedby="inspector-success-content">
+      <DialogContent
+        className="sm:max-w-md"
+        aria-describedby="inspector-success-content"
+      >
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-green-600">
             <svg
@@ -69,10 +72,12 @@ export const InspectorPinDialog: React.FC<InspectorPinDialogProps> = ({
                 d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-            {isRegenerate ? "PIN Generated Successfully!" : "Inspector Created Successfully!"}
+            {isRegenerate
+              ? "PIN Generated Successfully!"
+              : "Inspector Created Successfully!"}
           </DialogTitle>
         </DialogHeader>
-        
+
         <div id="inspector-success-content" className="space-y-4 pt-4">
           <div className="bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-400 p-4 rounded">
             <div className="flex">
@@ -102,74 +107,74 @@ export const InspectorPinDialog: React.FC<InspectorPinDialogProps> = ({
           </div>
 
           <div className="space-y-3">
+            <div className="space-y-1">
+              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                Inspector Name:
+              </p>
+              <p className="text-base font-semibold text-gray-900 dark:text-white">
+                {inspectorData?.name}
+              </p>
+            </div>
+
+            <div className="space-y-1">
+              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                Username:
+              </p>
+              <p className="text-base font-semibold text-gray-900 dark:text-white">
+                {inspectorData?.username}
+              </p>
+            </div>
+
+            <div className="space-y-1">
+              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                Email:
+              </p>
+              <p className="text-base font-semibold text-gray-900 dark:text-white">
+                {inspectorData?.email}
+              </p>
+            </div>
+
+            {inspectorData?.inspectionBranchCity && (
               <div className="space-y-1">
                 <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  Inspector Name:
+                  Branch:
                 </p>
                 <p className="text-base font-semibold text-gray-900 dark:text-white">
-                  {inspectorData?.name}
+                  {inspectorData.inspectionBranchCity.city} (
+                  {inspectorData.inspectionBranchCity.code})
                 </p>
               </div>
+            )}
 
-              <div className="space-y-1">
-                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  Username:
+            <div className="space-y-1 bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg border-2 border-orange-200 dark:border-orange-800">
+              <p className="text-sm font-medium text-orange-600 dark:text-orange-400">
+                Inspector PIN:
+              </p>
+              <div className="flex items-center justify-between">
+                <p className="text-3xl font-bold text-orange-600 dark:text-orange-400 tracking-wider font-mono">
+                  {inspectorData?.pin}
                 </p>
-                <p className="text-base font-semibold text-gray-900 dark:text-white">
-                  {inspectorData?.username}
-                </p>
-              </div>
-
-              <div className="space-y-1">
-                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  Email:
-                </p>
-                <p className="text-base font-semibold text-gray-900 dark:text-white">
-                  {inspectorData?.email}
-                </p>
-              </div>
-
-              {inspectorData?.inspectionBranchCity && (
-                <div className="space-y-1">
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                    Branch:
-                  </p>
-                  <p className="text-base font-semibold text-gray-900 dark:text-white">
-                    {inspectorData.inspectionBranchCity.city} (
-                    {inspectorData.inspectionBranchCity.code})
-                  </p>
-                </div>
-              )}
-
-              <div className="space-y-1 bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg border-2 border-orange-200 dark:border-orange-800">
-                <p className="text-sm font-medium text-orange-600 dark:text-orange-400">
-                  Inspector PIN:
-                </p>
-                <div className="flex items-center justify-between">
-                  <p className="text-3xl font-bold text-orange-600 dark:text-orange-400 tracking-wider font-mono">
-                    {inspectorData?.pin}
-                  </p>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={handleCopyPin}
-                    className="ml-2"
-                  >
-                    Copy
-                  </Button>
-                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleCopyPin}
+                  className="ml-2"
+                >
+                  Copy
+                </Button>
               </div>
             </div>
           </div>
-        
+        </div>
+
         <DialogFooter>
           <Button
             type="button"
             onClick={onClose}
             className="w-full bg-orange-600 hover:bg-orange-700"
           >
-            I've Saved the PIN
+            I&apos;ve Saved the PIN
           </Button>
         </DialogFooter>
       </DialogContent>
