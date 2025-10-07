@@ -699,7 +699,13 @@ const InspectorPage = () => {
                   Active
                 </p>
                 <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {inspectorList.filter((i) => i.status === "active").length}
+                  {(() => {
+                    const activeCount = inspectorList.filter((i) => {
+                      const status = i.status?.toLowerCase?.() || i.status || 'active';
+                      return status === 'active';
+                    }).length;
+                    return activeCount;
+                  })()}
                 </p>
               </div>
               <div className="p-3 bg-green-500 rounded-lg">
