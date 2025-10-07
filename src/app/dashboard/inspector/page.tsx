@@ -331,7 +331,7 @@ const InspectorPage = () => {
                   <Input
                     id="email"
                     type="email"
-                    placeholder="inspector@example.com"
+                    placeholder="inspector@inspeksimobil.id"
                     value={formData.email}
                     onChange={(e) =>
                       setFormData({ ...formData, email: e.target.value })
