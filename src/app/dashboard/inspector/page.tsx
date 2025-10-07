@@ -60,6 +60,7 @@ const InspectorPage = () => {
   const { toast } = useToast();
   const [showPinDialog, setShowPinDialog] = useState(false);
   const [newInspectorData, setNewInspectorData] = useState<any>(null);
+  const [isPinRegenerate, setIsPinRegenerate] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [inspectorToDelete, setInspectorToDelete] = useState<any>(null);
 
@@ -126,7 +127,8 @@ const InspectorPage = () => {
         inspectionBranchCityId: "",
       });
       
-      // Show PIN dialog
+      // Show PIN dialog for new inspector
+      setIsPinRegenerate(false);
       setShowPinDialog(true);
       
       // Refresh the inspector list
@@ -307,7 +309,8 @@ const InspectorPage = () => {
       // Close the view drawer
       setIsViewDrawerOpen(false);
       
-      // Show PIN dialog
+      // Show PIN dialog for regenerated PIN
+      setIsPinRegenerate(true);
       setShowPinDialog(true);
       
       toast({
@@ -332,8 +335,10 @@ const InspectorPage = () => {
         onClose={() => {
           setShowPinDialog(false);
           setNewInspectorData(null);
+          setIsPinRegenerate(false);
         }}
         inspectorData={newInspectorData}
+        isRegenerate={isPinRegenerate}
       />
 
       {/* Delete Confirmation Dialog */}

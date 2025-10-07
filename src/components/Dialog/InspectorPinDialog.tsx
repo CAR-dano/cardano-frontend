@@ -22,12 +22,14 @@ interface InspectorPinDialogProps {
       code: string;
     };
   } | null;
+  isRegenerate?: boolean;
 }
 
 export const InspectorPinDialog: React.FC<InspectorPinDialogProps> = ({
   isOpen,
   onClose,
   inspectorData,
+  isRegenerate = false,
 }) => {
   const { toast } = useToast();
 
@@ -59,7 +61,7 @@ export const InspectorPinDialog: React.FC<InspectorPinDialogProps> = ({
                 d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-            Inspector Created Successfully!
+            {isRegenerate ? "PIN Generated Successfully!" : "Inspector Created Successfully!"}
           </DialogTitle>
         </DialogHeader>
         
