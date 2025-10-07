@@ -516,6 +516,7 @@ const InspectorPage = () => {
                     onChange={(e) =>
                       setViewFormData({ ...viewFormData, name: e.target.value })
                     }
+                    autoFocus={false}
                     required
                   />
                 </div>
@@ -546,18 +547,6 @@ const InspectorPage = () => {
                       })
                     }
                     required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="view-pin">PIN</Label>
-                  <Input
-                    id="view-pin"
-                    type="text"
-                    value={viewFormData.pin}
-                    onChange={(e) =>
-                      setViewFormData({ ...viewFormData, pin: e.target.value })
-                    }
-                    placeholder="Enter PIN"
                   />
                 </div>
                 <div className="space-y-2">
