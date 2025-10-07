@@ -43,7 +43,7 @@ export const InspectorPinDialog: React.FC<InspectorPinDialogProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md" aria-describedby="inspector-success-content">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-green-600">
             <svg
@@ -63,7 +63,7 @@ export const InspectorPinDialog: React.FC<InspectorPinDialogProps> = ({
           </DialogTitle>
         </DialogHeader>
         
-        <div className="space-y-4 pt-4">
+        <div id="inspector-success-content" className="space-y-4 pt-4">
           <div className="bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-400 p-4 rounded">
             <div className="flex">
               <div className="flex-shrink-0">
