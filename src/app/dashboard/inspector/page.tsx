@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch, useAppSelector } from "../../../lib/store";
-import { getAllInspectors, getAllBranches, deleteInspector } from "../../../lib/features/admin/adminSlice";
+import { getAllInspectors, getAllBranches, deleteInspector, generateInspectorPin } from "../../../lib/features/admin/adminSlice";
 import { LoadingSkeleton } from "../../../components/Loading";
 import {
   Table,
@@ -57,7 +57,6 @@ const InspectorPage = () => {
   const [isViewDrawerOpen, setIsViewDrawerOpen] = useState(false);
   const [selectedInspector, setSelectedInspector] = useState<any>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [showPin, setShowPin] = useState(false);
   const { toast } = useToast();
   const [showPinDialog, setShowPinDialog] = useState(false);
   const [newInspectorData, setNewInspectorData] = useState<any>(null);
@@ -157,12 +156,7 @@ const InspectorPage = () => {
         : "-",
     });
     setIsEditing(false);
-    setShowPin(false); // Reset PIN visibility when opening drawer
     setIsViewDrawerOpen(true);
-  };
-
-  const togglePinVisibility = () => {
-    setShowPin(!showPin);
   };
 
   const handleEditMode = () => {
@@ -171,7 +165,6 @@ const InspectorPage = () => {
 
   const handleCancelEdit = () => {
     setIsEditing(false);
-    setShowPin(false); // Reset PIN visibility when canceling edit
     // Reset form data to original values
     if (selectedInspector) {
       setViewFormData({
@@ -294,6 +287,38 @@ const InspectorPage = () => {
       toast({
         title: "Delete Failed",
         description: "Failed to delete inspector.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleGeneratePin = async () => {
+    if (!selectedInspector || !accessToken) return;
+
+    try {
+      const result = await dispatch(generateInspectorPin({
+        id: selectedInspector.id,
+        token: accessToken
+      })).unwrap();
+
+      // Store the response data with the new PIN
+      setNewInspectorData(result);
+      
+      // Close the view drawer
+      setIsViewDrawerOpen(false);
+      
+      // Show PIN dialog
+      setShowPinDialog(true);
+      
+      toast({
+        title: "PIN Generated",
+        description: "A new PIN has been generated successfully.",
+      });
+    } catch (error) {
+      console.error("Generate PIN error:", error);
+      toast({
+        title: "Generation Failed",
+        description: "Failed to generate new PIN.",
         variant: "destructive",
       });
     }
@@ -611,26 +636,19 @@ const InspectorPage = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="view-pin">PIN</Label>
-                  <div className="relative">
-                    <Input
-                      id="view-pin"
-                      type={showPin ? "text" : "password"}
-                      value={viewFormData.pin}
-                      readOnly
-                      className="bg-gray-50 dark:bg-gray-800 pr-10"
-                    />
-                    <button
+                  <Label>Inspector PIN</Label>
+                  <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                    <p className="text-sm text-blue-800 dark:text-blue-200 mb-3">
+                      For security reasons, PINs are not stored or displayed. Click the button below to generate a new PIN for this inspector.
+                    </p>
+                    <Button
                       type="button"
-                      onClick={togglePinVisibility}
-                      className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+                      onClick={handleGeneratePin}
+                      className="w-full bg-orange-600 hover:bg-orange-700"
+                      disabled={isLoading}
                     >
-                      {showPin ? (
-                        <FaEyeSlash className="w-4 h-4" />
-                      ) : (
-                        <FaEye className="w-4 h-4" />
-                      )}
-                    </button>
+                      {isLoading ? "Generating..." : "Generate New PIN"}
+                    </Button>
                   </div>
                 </div>
                 <div className="space-y-2">

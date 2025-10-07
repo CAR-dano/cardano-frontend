@@ -110,6 +110,19 @@ export const deleteInspector = createAsyncThunk(
   }
 );
 
+export const generateInspectorPin = createAsyncThunk(
+  "admin/generateInspectorPin",
+  async ({ id, token }: { id: string; token: string }, thunkAPI) => {
+    try {
+      const payload = await adminService.generateInspectorPin(id, token);
+      return payload;
+    } catch (error: any) {
+      const message = error?.response?.data?.message;
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const adminSlice = createSlice({
   name: "admin",
   initialState,
@@ -195,6 +208,18 @@ export const adminSlice = createSlice({
         state.error = null;
       })
       .addCase(deleteInspector.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(generateInspectorPin.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(generateInspectorPin.fulfilled, (state) => {
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(generateInspectorPin.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
       });

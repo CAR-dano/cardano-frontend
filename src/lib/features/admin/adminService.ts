@@ -60,11 +60,26 @@ const deleteInspector = async (id: string, token: string) => {
   return response.status;
 };
 
+const generateInspectorPin = async (id: string, token: string) => {
+  const response = await apiClient.post(
+    `${LOCAL_API_URL}/admin/users/inspector/${id}/generate-pin`,
+    {},
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data;
+};
+
 const adminService = {
   getAllUsers,
   updateRole,
   getAllInspectors,
   getAllBranches,
   deleteInspector,
+  generateInspectorPin,
 };
 export default adminService;
