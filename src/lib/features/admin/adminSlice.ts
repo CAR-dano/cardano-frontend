@@ -28,7 +28,6 @@ export interface IAdminState {
   userList: User[];
   inspectorList: Inspector[];
   branchList: Branch[];
-  loading: boolean;
   isLoading: boolean;
   error: string | null;
 }
@@ -37,7 +36,6 @@ const initialState: IAdminState = {
   userList: [],
   inspectorList: [],
   branchList: [],
-  loading: false,
   isLoading: false,
   error: null,
 };
