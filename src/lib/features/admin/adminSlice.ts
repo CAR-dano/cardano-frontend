@@ -131,6 +131,19 @@ export const fetchBranches = createAsyncThunk(
   }
 );
 
+export const deleteInspector = createAsyncThunk(
+  "admin/deleteInspector",
+  async ({ id, token }: { id: string; token: string }, thunkAPI) => {
+    try {
+      await adminService.deleteInspector(id, token);
+      return id; // Return the deleted inspector ID
+    } catch (error: any) {
+      const message = error?.response?.data?.message;
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const adminSlice = createSlice({
   name: "admin",
   initialState,
@@ -237,6 +250,25 @@ export const adminSlice = createSlice({
       .addCase(fetchBranches.rejected, (state, action) => {
         state.branches = [];
         state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(deleteInspector.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(deleteInspector.fulfilled, (state, action) => {
+        // Remove the deleted inspector from both lists
+        state.inspectorList = state.inspectorList.filter(
+          (inspector) => inspector.id !== action.payload
+        );
+        state.inspectors = state.inspectors.filter(
+          (inspector) => inspector.id !== action.payload
+        );
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(deleteInspector.rejected, (state, action) => {
+        state.isLoading = false;
         state.error = action.payload as string;
       });
   },

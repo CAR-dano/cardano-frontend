@@ -48,10 +48,21 @@ const getAllBranches = async (token: string) => {
   return response.data;
 };
 
+const deleteInspector = async (id: string, token: string) => {
+  const response = await apiClient.delete(`${LOCAL_API_URL}/admin/users/${id}`, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
 const adminService = {
   getAllUsers,
   updateRole,
   getAllInspectors,
   getAllBranches,
+  deleteInspector,
 };
 export default adminService;

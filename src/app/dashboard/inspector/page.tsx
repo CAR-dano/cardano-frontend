@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch, useAppSelector } from "../../../lib/store";
-import { getAllInspectors, getAllBranches } from "../../../lib/features/admin/adminSlice";
+import { getAllInspectors, getAllBranches, deleteInspector } from "../../../lib/features/admin/adminSlice";
 import { LoadingSkeleton } from "../../../components/Loading";
 import {
   Table,
@@ -46,6 +46,7 @@ import { format } from "date-fns";
 import { useToast } from "../../../components/ui/use-toast";
 import apiClient from "@/lib/services/apiClient";
 import { InspectorPinDialog } from "../../../components/Dialog/InspectorPinDialog";
+import { DeleteConfirmationDialog } from "../../../components/Dialog/DeleteConfirmationDialog";
 
 const InspectorPage = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -60,6 +61,8 @@ const InspectorPage = () => {
   const { toast } = useToast();
   const [showPinDialog, setShowPinDialog] = useState(false);
   const [newInspectorData, setNewInspectorData] = useState<any>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [inspectorToDelete, setInspectorToDelete] = useState<any>(null);
 
   // Form states
   const [formData, setFormData] = useState({
@@ -257,6 +260,37 @@ const InspectorPage = () => {
     }
   };
 
+  const handleDeleteClick = (inspector: any) => {
+    setInspectorToDelete(inspector);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!inspectorToDelete || !accessToken) return;
+
+    try {
+      await dispatch(deleteInspector({ 
+        id: inspectorToDelete.id, 
+        token: accessToken 
+      })).unwrap();
+
+      toast({
+        title: "Inspector Deleted",
+        description: `${inspectorToDelete.name} has been deleted successfully.`,
+      });
+
+      setDeleteDialogOpen(false);
+      setInspectorToDelete(null);
+    } catch (error) {
+      console.error("Delete error:", error);
+      toast({
+        title: "Delete Failed",
+        description: "Failed to delete inspector.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className=" space-y-6  min-h-screen">
       {/* PIN Display Dialog */}
@@ -267,6 +301,19 @@ const InspectorPage = () => {
           setNewInspectorData(null);
         }}
         inspectorData={newInspectorData}
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <DeleteConfirmationDialog
+        isOpen={deleteDialogOpen}
+        onClose={() => {
+          setDeleteDialogOpen(false);
+          setInspectorToDelete(null);
+        }}
+        onConfirm={handleDeleteConfirm}
+        itemName={inspectorToDelete?.name}
+        itemType="inspector account"
+        isLoading={isLoading}
       />
 
       {/* Header */}
@@ -884,7 +931,10 @@ const InspectorPage = () => {
                         <FaEye className="w-3 h-3 mr-1" />
                         View
                       </button>
-                      <button className="inline-flex items-center px-3 py-1.5 border border-red-300 shadow-sm text-xs font-medium rounded-md text-red-700 bg-red-50 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200">
+                      <button
+                        onClick={() => handleDeleteClick(inspector)}
+                        className="inline-flex items-center px-3 py-1.5 border border-red-300 shadow-sm text-xs font-medium rounded-md text-red-700 bg-red-50 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200"
+                      >
                         <FaTrash className="w-3 h-3 mr-1" />
                         Delete
                       </button>
