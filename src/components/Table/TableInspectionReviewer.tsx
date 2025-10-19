@@ -171,6 +171,22 @@ const TableData = ({
     return formatted;
   };
 
+  const formatDateTime = (dateString: string) => {
+    const date = new Date(dateString);
+    const formattedDate = date.toLocaleDateString("id-ID", {
+      timeZone: "UTC",
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+    const formattedTime = date.toLocaleTimeString("id-ID", {
+      timeZone: "UTC",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    return { date: formattedDate, time: formattedTime };
+  };
+
   const formatStatus = (status: string) => {
     const newStatus = status.replace(/_/g, " ").toLowerCase();
     return newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
@@ -406,7 +422,7 @@ const TableData = ({
                 Kendaraan
               </TableHead>
               <TableHead className="text-center font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
-                Tanggal
+                Inspection Date
               </TableHead>
               <TableHead className="text-center font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
                 Status
@@ -512,8 +528,13 @@ const TableData = ({
                     </div>
                   </TableCell>
                   <TableCell className="py-4 px-6 text-center">
-                    <div className="text-sm text-gray-900 dark:text-gray-100">
-                      {formatDate(item.inspectionDate)}
+                    <div className="flex flex-col items-center">
+                      <div className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                        {formatDateTime(item.inspectionDate).date}
+                      </div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                        {formatDateTime(item.inspectionDate).time}
+                      </div>
                     </div>
                   </TableCell>
                   <TableCell className="py-4 px-6 text-center">
