@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import PenilaianHasil from "./PenilaianHasil";
 import PhotoGeneralItem from "./PhotoGeneralItem";
 import Image from "next/image";
+import AddPhotoDialog from "./AddPhotoDialog";
 
 interface Halaman6Props {
   data: any;
@@ -20,9 +21,29 @@ const Halaman6: React.FC<Halaman6Props> = ({
   inspectionId = "",
   onPhotoUpdate,
 }) => {
+  const [isAddPhotoDialogOpen, setIsAddPhotoDialogOpen] = useState(false);
+  const [selectedMissingLabel, setSelectedMissingLabel] = useState("");
+
   if (data == undefined || data == null) {
     return <div>Loading...</div>; // atau bisa return null
   }
+
+  // Define required photos for General Wajib
+  const requiredGeneralPhotos = [
+    "Tampak Depan",
+    "Tampak Belakang",
+    "Tampak Samping Kanan",
+    "Tampak Samping Kiri",
+  ];
+
+  // Get existing photo labels
+  const existingLabels =
+    data.fotoGeneral?.map((photo: any) => photo.label) || [];
+
+  // Find missing photos
+  const missingPhotos = requiredGeneralPhotos.filter(
+    (label) => !existingLabels.includes(label)
+  );
 
   const handleClick = (data: any) => {
     if (onClick) {
@@ -167,10 +188,60 @@ const Halaman6: React.FC<Halaman6Props> = ({
                 onPhotoUpdate={onPhotoUpdate}
               />
             ))}
+
+          {/* Add missing photos buttons */}
+          {editable &&
+            missingPhotos.length > 0 &&
+            missingPhotos.map((label, index) => (
+              <div
+                key={`missing-${index}`}
+                className="flex flex-col items-center"
+              >
+                <div
+                  className="w-[200px] h-[200px] border-2 border-dashed border-gray-400 flex flex-col items-center justify-center cursor-pointer hover:border-[#E95F37] hover:bg-gray-50 transition-all"
+                  onClick={() => {
+                    setSelectedMissingLabel(label);
+                    setIsAddPhotoDialogOpen(true);
+                  }}
+                >
+                  <div className="relative w-12 h-12 flex items-center justify-center">
+                    <div className="absolute w-full h-1 bg-gray-500"></div>
+                    <div className="absolute w-1 h-full bg-gray-500"></div>
+                  </div>
+                  <p className="text-gray-500 mt-2 font-semibold">
+                    Tambah Foto
+                  </p>
+                </div>
+                <p className="text-[12px] font-semibold mt-2 text-center text-gray-700">
+                  {label}
+                </p>
+              </div>
+            ))}
         </div>
       </div>
 
       <Footer />
+
+      <AddPhotoDialog
+        isOpen={isAddPhotoDialogOpen}
+        inspectionId={inspectionId}
+        category="General Wajib"
+        onClose={() => {
+          setIsAddPhotoDialogOpen(false);
+          setSelectedMissingLabel("");
+        }}
+        onSave={(file, needsAttention, _description) => {
+          onClick?.({
+            type: "add_new_photo",
+            file,
+            needAttention: needsAttention,
+            label: selectedMissingLabel, // Use the pre-selected label
+            category: "General Wajib",
+          });
+          setIsAddPhotoDialogOpen(false);
+          setSelectedMissingLabel("");
+        }}
+      />
     </div>
   );
 };
