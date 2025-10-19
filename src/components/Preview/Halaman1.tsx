@@ -4,6 +4,7 @@ import Header from "./Header";
 import Footer from "./Footer";
 import Image from "next/image";
 import PhotoTampakDepan from "./PhotoTampakDepan";
+import AddPhotoDialog from "./AddPhotoDialog";
 
 interface Halaman1Props {
   data: any;
@@ -18,6 +19,10 @@ const Halaman1: React.FC<Halaman1Props> = ({
 }) => {
   const deskripsiRef = useRef<HTMLDivElement>(null);
   const [fontSize, setFontSize] = useState(12);
+  const [isAddPhotoDialogOpen, setIsAddPhotoDialogOpen] = useState(false);
+
+  // Check if Tampak Depan photo exists
+  const hasTampakDepan = data?.photos?.path;
 
   useEffect(() => {
     // Tambahkan pengecekan yang lebih lengkap
@@ -462,25 +467,40 @@ const Halaman1: React.FC<Halaman1Props> = ({
         </div>
 
         <div className="w-full flex border-t-2 border-black">
-          {/* <div className="w-1/2 bg-[#B2BEB5] border-r-2 border-black h-48">
-            <Image
-              src={`${PHOTO_URL}/uploads/inspection-photos/${data.photos}`}
-              alt="Tampak Depan"
-              width={200}
-              height={200}
-              className="mx-auto w-[90%] h-full object-cover"
+          {hasTampakDepan ? (
+            <PhotoTampakDepan
+              item={{
+                id: data.photos.id,
+                path: data.photos.path,
+                label: "Tampak Depan",
+              }}
+              editable={editable}
+              onPhotoUpdate={handlePhotoUpdate}
+              inspectionId={data.id}
             />
-          </div> */}
-          <PhotoTampakDepan
-            item={{
-              id: data.photos.id,
-              path: data.photos.path,
-              label: "Tampak Depan",
-            }}
-            editable={editable}
-            onPhotoUpdate={handlePhotoUpdate}
-            inspectionId={data.id}
-          />
+          ) : (
+            <div className="w-1/2 bg-[#B2BEB5] border-r-2 border-black h-48 flex items-center justify-center">
+              {editable ? (
+                <div
+                  className="flex flex-col items-center cursor-pointer hover:bg-gray-300 transition-all p-4 rounded-lg"
+                  onClick={() => setIsAddPhotoDialogOpen(true)}
+                >
+                  <div className="relative w-12 h-12 flex items-center justify-center mb-2">
+                    <div className="absolute w-full h-1 bg-gray-600"></div>
+                    <div className="absolute w-1 h-full bg-gray-600"></div>
+                  </div>
+                  <p className="text-gray-700 font-semibold">Tambah Foto</p>
+                  <p className="text-gray-600 text-sm mt-1">Tampak Depan</p>
+                </div>
+              ) : (
+                <p className="text-gray-600 text-center">
+                  Foto Tampak Depan
+                  <br />
+                  Tidak Tersedia
+                </p>
+              )}
+            </div>
+          )}
           <div
             onClick={() =>
               editable &&
@@ -811,6 +831,24 @@ const Halaman1: React.FC<Halaman1Props> = ({
       </div>
 
       <Footer />
+
+      {/* Add Photo Dialog for Tampak Depan */}
+      <AddPhotoDialog
+        isOpen={isAddPhotoDialogOpen}
+        inspectionId={data.id}
+        category="General Wajib"
+        onClose={() => setIsAddPhotoDialogOpen(false)}
+        onSave={(file, needsAttention, _description) => {
+          onClick?.({
+            type: "add_new_photo",
+            file,
+            needAttention: needsAttention,
+            label: "Tampak Depan",
+            category: "General Wajib",
+          });
+          setIsAddPhotoDialogOpen(false);
+        }}
+      />
     </div>
   );
 };
