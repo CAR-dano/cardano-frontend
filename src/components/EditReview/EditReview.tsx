@@ -186,7 +186,7 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
       (photo: any) => photo.category === "General Tambahan"
     );
     const fotoGeneralNewPath = data?.photos?.filter(
-      (photo: any) => photo.category === "general"
+      (photo: any) => photo.category === "General"
     );
 
     fotoGeneralWajib?.sort((a: any, b: any) => {
@@ -207,6 +207,8 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
       ...(fotoGeneralNewPath || []),
     ];
 
+    console.log("Sorted Foto General:", sortedFotoGeneral);
+
     const fotoGeneralHalaman6 = sortedFotoGeneral.slice(0, 6);
     const fotoGeneralTambahanUntukGeneralPhoto = sortedFotoGeneral.slice(6);
 
@@ -220,6 +222,13 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
       paginatedGeneralPhotos.push(
         fotoGeneralTambahanUntukGeneralPhoto.slice(i, i + 9)
       );
+    }
+    // Tambahkan halaman kosong jika halaman terakhir penuh (9 foto) atau tidak ada halaman sama sekali
+    if (
+      paginatedGeneralPhotos.length === 0 ||
+      paginatedGeneralPhotos[paginatedGeneralPhotos.length - 1].length === 9
+    ) {
+      paginatedGeneralPhotos.push([]);
     }
     setDataHalamanGeneralPhotos(paginatedGeneralPhotos);
 
@@ -256,6 +265,13 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
     for (let i = 0; i < sortedExteriorPhotos.length; i += 9) {
       paginatedExteriorPhotos.push(sortedExteriorPhotos.slice(i, i + 9));
     }
+    // Tambahkan halaman kosong jika halaman terakhir penuh (9 foto) atau tidak ada halaman sama sekali
+    if (
+      paginatedExteriorPhotos.length === 0 ||
+      paginatedExteriorPhotos[paginatedExteriorPhotos.length - 1].length === 9
+    ) {
+      paginatedExteriorPhotos.push([]);
+    }
     setDataHalamanExteriorPhotos(paginatedExteriorPhotos);
 
     // Filter interior photos and sort them
@@ -290,6 +306,13 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
     const paginatedInteriorPhotos = [];
     for (let i = 0; i < sortedInteriorPhotos.length; i += 9) {
       paginatedInteriorPhotos.push(sortedInteriorPhotos.slice(i, i + 9));
+    }
+    // Tambahkan halaman kosong jika halaman terakhir penuh (9 foto) atau tidak ada halaman sama sekali
+    if (
+      paginatedInteriorPhotos.length === 0 ||
+      paginatedInteriorPhotos[paginatedInteriorPhotos.length - 1].length === 9
+    ) {
+      paginatedInteriorPhotos.push([]);
     }
     setDataHalamanInteriorPhotos(paginatedInteriorPhotos);
 
@@ -326,6 +349,13 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
     for (let i = 0; i < sortedMesinPhotos.length; i += 9) {
       paginatedMesinPhotos.push(sortedMesinPhotos.slice(i, i + 9));
     }
+    // Tambahkan halaman kosong jika halaman terakhir penuh (9 foto) atau tidak ada halaman sama sekali
+    if (
+      paginatedMesinPhotos.length === 0 ||
+      paginatedMesinPhotos[paginatedMesinPhotos.length - 1].length === 9
+    ) {
+      paginatedMesinPhotos.push([]);
+    }
     setDataHalamanMesinPhotos(paginatedMesinPhotos);
 
     // Filter KakiKaki photos and sort them
@@ -360,6 +390,13 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
     const paginatedKakiKakiPhotos = [];
     for (let i = 0; i < sortedKakiKakiPhotos.length; i += 9) {
       paginatedKakiKakiPhotos.push(sortedKakiKakiPhotos.slice(i, i + 9));
+    }
+    // Tambahkan halaman kosong jika halaman terakhir penuh (9 foto) atau tidak ada halaman sama sekali
+    if (
+      paginatedKakiKakiPhotos.length === 0 ||
+      paginatedKakiKakiPhotos[paginatedKakiKakiPhotos.length - 1].length === 9
+    ) {
+      paginatedKakiKakiPhotos.push([]);
     }
     setDataHalamanKakiKakiPhotos(paginatedKakiKakiPhotos);
 
@@ -396,6 +433,13 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
     for (let i = 0; i < sortedAlatAlatPhotos.length; i += 9) {
       paginatedAlatAlatPhotos.push(sortedAlatAlatPhotos.slice(i, i + 9));
     }
+    // Tambahkan halaman kosong jika halaman terakhir penuh (9 foto) atau tidak ada halaman sama sekali
+    if (
+      paginatedAlatAlatPhotos.length === 0 ||
+      paginatedAlatAlatPhotos[paginatedAlatAlatPhotos.length - 1].length === 9
+    ) {
+      paginatedAlatAlatPhotos.push([]);
+    }
     setDataHalamanAlatPhotos(paginatedAlatAlatPhotos);
 
     setDataHalaman7({
@@ -423,6 +467,14 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
       paginatedFotoDokumenPhotos.push(
         combinedFotoDokumenPhotos.slice(i, i + 2)
       );
+    }
+    // Tambahkan halaman kosong jika halaman terakhir penuh (2 foto) atau tidak ada halaman sama sekali
+    if (
+      paginatedFotoDokumenPhotos.length === 0 ||
+      paginatedFotoDokumenPhotos[paginatedFotoDokumenPhotos.length - 1]
+        .length === 2
+    ) {
+      paginatedFotoDokumenPhotos.push([]);
     }
     setDataHalamanFotoDokumenPhotos(paginatedFotoDokumenPhotos);
 
@@ -771,12 +823,12 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
 
         {/* Navigation Tabs */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 mb-6 overflow-hidden">
-          <div className="flex overflow-x-auto">
+          <div className="flex overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-gray-100 dark:scrollbar-track-gray-800">
             {pages.map((page) => (
               <button
                 key={page.id}
                 onClick={() => goToPage(page.id)}
-                className={`flex-shrink-0 px-6 py-4 text-sm font-medium transition-colors duration-200 border-b-2 ${
+                className={`flex-shrink-0 px-4 py-3 text-sm font-medium transition-colors duration-200 border-b-2 ${
                   currentPage === page.id
                     ? "border-blue-500 dark:border-blue-600 text-blue-600 dark:text-blue-300 bg-blue-50 dark:bg-blue-900"
                     : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700"
@@ -792,12 +844,9 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
                   >
                     {page.id}
                   </span>
-                  <div className="text-left">
+                  <div className="text-left whitespace-nowrap">
                     <div className="font-medium text-gray-900 dark:text-gray-100">
                       {page.title}
-                    </div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400 hidden lg:block">
-                      {page.description}
                     </div>
                   </div>
                 </div>
@@ -819,11 +868,11 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
 
           {/* Navigation Footer */}
           <div className="bg-gray-50 dark:bg-gray-700 px-6 py-4 border-t border-gray-200 dark:border-gray-700">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-4">
               <button
                 onClick={prevPage}
                 disabled={currentPage === 1}
-                className={`inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md transition-colors duration-200 ${
+                className={`flex-shrink-0 inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md transition-colors duration-200 ${
                   currentPage === 1
                     ? "text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-700 cursor-not-allowed"
                     : "text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-blue-600"
@@ -845,24 +894,30 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
                 Sebelumnya
               </button>
 
-              {/* Page Progress */}
-              <div className="flex items-center space-x-2">
-                {pages.map((_, index) => (
-                  <div
-                    key={index}
-                    className={`w-2 h-2 rounded-full transition-colors duration-200 ${
-                      index + 1 === currentPage
-                        ? "bg-blue-500 dark:bg-blue-600"
-                        : "bg-gray-300 dark:bg-gray-600"
-                    }`}
-                  />
-                ))}
+              {/* Page Progress - Hidden on small screens when many pages */}
+              <div className="flex items-center space-x-2 overflow-hidden">
+                {pages.length <= 15 ? (
+                  pages.map((_, index) => (
+                    <div
+                      key={index}
+                      className={`w-2 h-2 rounded-full transition-colors duration-200 ${
+                        index + 1 === currentPage
+                          ? "bg-blue-500 dark:bg-blue-600"
+                          : "bg-gray-300 dark:bg-gray-600"
+                      }`}
+                    />
+                  ))
+                ) : (
+                  <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">
+                    {currentPage} / {pages.length}
+                  </span>
+                )}
               </div>
 
               <button
                 onClick={nextPage}
                 disabled={currentPage === pages.length}
-                className={`inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md transition-colors duration-200 ${
+                className={`flex-shrink-0 inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md transition-colors duration-200 ${
                   currentPage === pages.length
                     ? "text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-700 cursor-not-allowed"
                     : "text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-blue-600"

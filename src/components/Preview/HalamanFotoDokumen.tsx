@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import PhotoItemGeneral from "./PhotoItemGeneral";
+import AddPhotoDialog from "./AddPhotoDialog";
 
 interface HalamanFotoDokumenProps {
   data: any;
@@ -16,6 +17,8 @@ const HalamanFotoDokumen: React.FC<HalamanFotoDokumenProps> = ({
   onClick = () => {},
   inspectionId = "",
 }) => {
+  const [isAddPhotoDialogOpen, setIsAddPhotoDialogOpen] = useState(false);
+
   if (data == undefined || data == null) {
     return <div>Loading...</div>;
   }
@@ -55,9 +58,37 @@ const HalamanFotoDokumen: React.FC<HalamanFotoDokumenProps> = ({
               onPhotoUpdate={handlePhotoUpdate}
             />
           ))}
+          {editable && data.photos.length < 2 && (
+            <div
+              className="w-[400px] h-[300px] border-2 border-dashed border-gray-400 flex flex-col items-center justify-center cursor-pointer hover:border-[#E95F37] hover:bg-gray-50 transition-all"
+              onClick={() => setIsAddPhotoDialogOpen(true)}
+            >
+              <div className="relative w-12 h-12 flex items-center justify-center">
+                <div className="absolute w-full h-1 bg-gray-500"></div>
+                <div className="absolute w-1 h-full bg-gray-500"></div>
+              </div>
+              <p className="text-gray-500 mt-2 font-semibold">Tambah Foto</p>
+            </div>
+          )}
         </div>
       </div>
       <Footer />
+      <AddPhotoDialog
+        isOpen={isAddPhotoDialogOpen}
+        inspectionId={inspectionId}
+        category="Foto Dokumen"
+        onClose={() => setIsAddPhotoDialogOpen(false)}
+        onSave={(file, needsAttention, description) => {
+          onClick?.({
+            type: "add_new_photo",
+            file,
+            needAttention: needsAttention,
+            label: description,
+            category: "Foto Dokumen",
+          });
+          setIsAddPhotoDialogOpen(false);
+        }}
+      />
     </div>
   );
 };
