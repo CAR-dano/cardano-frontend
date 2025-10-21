@@ -756,7 +756,7 @@ export default function CekValiditasPage() {
             {/* Back Button */}
             <div className="mb-6">
               <button
-                onClick={() => router.push('/')}
+                onClick={() => router.push("/")}
                 className="group flex items-center gap-2 px-4 py-2 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl border-2 border-orange-200 dark:border-orange-700 text-orange-600 dark:text-orange-400 font-semibold hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:border-orange-400 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
               >
                 <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform duration-300" />
