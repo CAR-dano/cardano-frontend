@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Layout } from "../../components/layout";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
@@ -581,6 +581,31 @@ export default function CekValiditasPage() {
   const [blockchainUrl, setBlockchainUrl] = useState<string | null>(null);
   const [verificationResult, setVerificationResult] =
     useState<VerificationResult | null>(null);
+
+  // Load PDF from sessionStorage if available
+  useEffect(() => {
+    const storedFile = sessionStorage.getItem("uploadedPdfFile");
+    if (storedFile) {
+      try {
+        const fileData = JSON.parse(storedFile);
+
+        // Convert base64 back to File
+        fetch(fileData.data)
+          .then((res) => res.blob())
+          .then((blob) => {
+            const file = new File([blob], fileData.name, {
+              type: fileData.type,
+            });
+            setPdfFile(file);
+          });
+
+        // Clear sessionStorage after loading
+        sessionStorage.removeItem("uploadedPdfFile");
+      } catch (error) {
+        console.error("Error loading file from sessionStorage:", error);
+      }
+    }
+  }, []);
 
   const calculateHash = async (file: File): Promise<string> => {
     const buffer = await file.arrayBuffer();
