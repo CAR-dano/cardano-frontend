@@ -222,7 +222,7 @@ const Navbar = ({ isNavbarVisible }: NavbarProps) => {
 
       {/* Sidebar (Dari Kanan) */}
       <div
-        className={`mobile-sidebar fixed top-0 right-0 h-screen w-64 bg-white z-[9999] shadow-2xl transform transition-transform duration-300 md:hidden border-l border-gray-200 ${
+        className={`mobile-sidebar fixed top-0 right-0 h-screen w-64 bg-white z-[9999] transform transition-transform duration-300 md:hidden border-l border-gray-200 ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
         style={{
@@ -230,7 +230,7 @@ const Navbar = ({ isNavbarVisible }: NavbarProps) => {
           height: "100vh",
           maxHeight: "100vh",
           overflow: "hidden",
-          boxShadow: "-10px 0 30px rgba(0, 0, 0, 0.3)",
+          boxShadow: isOpen ? "-10px 0 30px rgba(0, 0, 0, 0.3)" : "none",
           zIndex: 9999,
         }}
       >

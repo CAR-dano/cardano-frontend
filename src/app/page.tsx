@@ -11,7 +11,7 @@ import BackToTop from "../components/landing/BackToTop";
 
 export default function Home() {
   return (
-    <div className="w-full relative">
+    <div className="w-full relative overflow-x-hidden">
       <Layout>
         <BackToTop />
         <Hero />
