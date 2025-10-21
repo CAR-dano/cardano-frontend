@@ -47,7 +47,7 @@ function SearchBar({ value }: SearchBarProps) {
         className="relative w-full max-w-xs md:max-w-lg mt-6 mb-6"
       >
         {/* Input Pencarian untuk Desktop */}
-        <div className="hidden lg:block relative">
+        <div className="hidden lg:block relative w-full">
           <IoSearch
             size={24}
             className="absolute left-4 top-1/2 -translate-y-1/2 text-orange-500"
@@ -82,7 +82,7 @@ function SearchBar({ value }: SearchBarProps) {
       </form>
 
       {/* Separator */}
-      <div className="flex items-center justify-center space-x-3 my-1">
+      <div className="flex items-center justify-center space-x-3 my-1 -mt-1">
         <div className="h-px bg-gray-300 dark:bg-gray-600 w-16"></div>
         <span className="text-gray-500 dark:text-gray-400 text-bold font-medium">
           ATAU
@@ -91,7 +91,7 @@ function SearchBar({ value }: SearchBarProps) {
       </div>
 
       {/* Verify Document Link */}
-      <div className="text-center">
+      <div className="text-center mt-1">
         <button
           type="button"
           onClick={() => setIsModalOpen(true)}
