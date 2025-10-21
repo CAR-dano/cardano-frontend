@@ -2,8 +2,9 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { X, Upload, FileText, CheckCircle } from "lucide-react";
+import { X, Upload, FileText, CheckCircle, Loader2, Edit2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { extractPlateFromPdf, type PlateResult } from "@/lib/extractPlate";
 
 interface VerifyDocumentModalProps {
   isOpen: boolean;
@@ -17,6 +18,11 @@ export default function VerifyDocumentModal({
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [isExtracting, setIsExtracting] = useState(false);
+  const [extractionProgress, setExtractionProgress] = useState<string>("");
+  const [plateResult, setPlateResult] = useState<PlateResult | null>(null);
+  const [editedPlate, setEditedPlate] = useState<string>("");
+  const [isEditingPlate, setIsEditingPlate] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
@@ -37,47 +43,121 @@ export default function VerifyDocumentModal({
     setIsDragging(false);
   };
 
-  const handleDrop = (e: React.DragEvent) => {
+  const handleDrop = async (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
 
     const file = e.dataTransfer.files[0];
     if (file && file.type === "application/pdf") {
       setPdfFile(file);
+      setPlateResult(null);
+      setEditedPlate("");
+
+      // Auto-extract plate number
+      await extractPlateNumber(file);
     } else {
       alert("Please upload a valid PDF file");
     }
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && file.type === "application/pdf") {
       setPdfFile(file);
+      setPlateResult(null);
+      setEditedPlate("");
+
+      // Auto-extract plate number
+      await extractPlateNumber(file);
     } else {
       alert("Please select a valid PDF file");
     }
   };
 
-  const handleVerify = () => {
+  const extractPlateNumber = async (file: File) => {
+    setIsExtracting(true);
+    setExtractionProgress("Mengekstrak teks dari PDF...");
+
+    try {
+      const result = await extractPlateFromPdf(file, {
+        ocr: true,
+        ocrTimeoutMs: 30000,
+        regexStrict: false,
+        normalizeSpacing: true,
+        validateIndonesiaFormat: true,
+        onProgress: (stage, percent) => {
+          if (stage === "extracting") {
+            setExtractionProgress("Mengekstrak teks dari PDF...");
+          } else if (stage === "ocr") {
+            setExtractionProgress(`Melakukan OCR... ${percent || 0}%`);
+          } else if (stage === "matching") {
+            setExtractionProgress("Mencari pola plat nomor...");
+          }
+        },
+      });
+
+      console.log("Plate extraction result:", result);
+
+      setPlateResult(result);
+
+      if (result.found && result.normalized) {
+        setEditedPlate(result.normalized);
+      }
+
+      setExtractionProgress("");
+    } catch (error) {
+      console.error("Plate extraction error:", error);
+      setExtractionProgress("");
+    } finally {
+      setIsExtracting(false);
+    }
+  };
+
+  const handleVerify = async () => {
     if (pdfFile) {
-      // Store the file in sessionStorage to be used in cek-validitas page
-      const reader = new FileReader();
-      reader.onload = (e) => {
+      try {
+        // Calculate hash of the PDF file
+        const buffer = await pdfFile.arrayBuffer();
+        const hashBuffer = await crypto.subtle.digest("SHA-256", buffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const calculatedHash = hashArray
+          .map((b) => b.toString(16).padStart(2, "0"))
+          .join("");
+
+        // Store only the hash and metadata (not the entire file)
         const fileData = {
           name: pdfFile.name,
-          type: pdfFile.type,
           size: pdfFile.size,
-          data: e.target?.result as string,
+          hash: calculatedHash,
         };
-        sessionStorage.setItem("uploadedPdfFile", JSON.stringify(fileData));
+        sessionStorage.setItem("uploadedPdfData", JSON.stringify(fileData));
+
+        // Store extracted or edited plate number
+        if (editedPlate) {
+          sessionStorage.setItem("extractedPlateNumber", editedPlate);
+        }
+
         router.push("/cek-validitas");
-      };
-      reader.readAsDataURL(pdfFile);
+      } catch (error) {
+        console.error("Error calculating hash:", error);
+        alert("Terjadi kesalahan saat memproses file. Silakan coba lagi.");
+      }
     }
   };
 
   const handleClickUpload = () => {
     fileInputRef.current?.click();
+  };
+
+  const handleClose = () => {
+    // Reset all states when closing modal
+    setPdfFile(null);
+    setPlateResult(null);
+    setEditedPlate("");
+    setIsEditingPlate(false);
+    setIsExtracting(false);
+    setExtractionProgress("");
+    onClose();
   };
 
   const modalContent = (
@@ -99,7 +179,7 @@ export default function VerifyDocumentModal({
         {/* Header */}
         <div className="bg-gradient-to-r from-orange-500 via-purple-500 to-pink-500 p-6 relative">
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="absolute top-4 right-4 text-white hover:bg-white/20 rounded-full p-2 transition-all"
           >
             <X className="h-5 w-5" />
@@ -161,6 +241,9 @@ export default function VerifyDocumentModal({
                   onClick={(e) => {
                     e.stopPropagation();
                     setPdfFile(null);
+                    setPlateResult(null);
+                    setEditedPlate("");
+                    setIsEditingPlate(false);
                   }}
                   className="text-sm text-red-500 hover:text-red-600 font-medium"
                 >
@@ -184,24 +267,130 @@ export default function VerifyDocumentModal({
             )}
           </div>
 
+          {/* Extraction Progress */}
+          {isExtracting && (
+            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4">
+              <div className="flex items-center space-x-3">
+                <Loader2 className="h-5 w-5 text-blue-600 animate-spin" />
+                <div className="flex-1">
+                  <p className="text-sm font-semibold text-blue-800 dark:text-blue-200">
+                    Mengekstrak Plat Nomor...
+                  </p>
+                  <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
+                    {extractionProgress || "Memproses..."}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Plate Extraction Result */}
+          {plateResult && !isExtracting && (
+            <div
+              className={`border-2 rounded-xl p-4 ${
+                plateResult.found
+                  ? "border-green-300 bg-green-50 dark:bg-green-900/20"
+                  : "border-yellow-300 bg-yellow-50 dark:bg-yellow-900/20"
+              }`}
+            >
+              {plateResult.found ? (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <CheckCircle className="h-5 w-5 text-green-600" />
+                      <p className="text-sm font-semibold text-green-800 dark:text-green-200">
+                        Plat Nomor Terdeteksi
+                      </p>
+                    </div>
+                    <span className="text-xs text-green-600 dark:text-green-400 font-medium">
+                      {plateResult.source === "text" ? "Dari Text" : "Dari OCR"}{" "}
+                      • {Math.round(plateResult.confidence || 0)}%
+                    </span>
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    {isEditingPlate ? (
+                      <>
+                        <input
+                          type="text"
+                          value={editedPlate}
+                          onChange={(e) =>
+                            setEditedPlate(e.target.value.toUpperCase())
+                          }
+                          className="flex-1 px-3 py-2 border-2 border-green-300 rounded-lg text-lg font-bold text-center uppercase focus:outline-none focus:ring-2 focus:ring-green-400"
+                          placeholder="AAA 1234 AAA"
+                        />
+                        <button
+                          onClick={() => setIsEditingPlate(false)}
+                          className="px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all"
+                        >
+                          <CheckCircle className="h-5 w-5" />
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <div className="flex-1 px-4 py-3 bg-white dark:bg-slate-700 rounded-lg border-2 border-green-300">
+                          <p className="text-2xl font-bold text-center text-green-800 dark:text-green-200 tracking-wider">
+                            {editedPlate || plateResult.normalized}
+                          </p>
+                        </div>
+                        <button
+                          onClick={() => setIsEditingPlate(true)}
+                          className="px-3 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-all"
+                          title="Edit plat nomor"
+                        >
+                          <Edit2 className="h-5 w-5" />
+                        </button>
+                      </>
+                    )}
+                  </div>
+
+                  <p className="text-xs text-green-700 dark:text-green-300 text-center">
+                    Klik tombol edit jika plat nomor tidak sesuai
+                  </p>
+                </div>
+              ) : (
+                <div className="text-center space-y-2">
+                  <p className="text-sm font-semibold text-yellow-800 dark:text-yellow-200">
+                    Plat Nomor Tidak Terdeteksi
+                  </p>
+                  <p className="text-xs text-yellow-700 dark:text-yellow-300">
+                    Anda dapat memasukkan plat nomor secara manual di halaman
+                    berikutnya
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Privacy Notice */}
+          {pdfFile && (
+            <div className="bg-gray-50 dark:bg-slate-700/50 rounded-lg p-3">
+              <p className="text-xs text-gray-600 dark:text-gray-400 text-center">
+                🔒 <span className="font-semibold">Privasi Terjaga:</span> Semua
+                proses dilakukan di browser Anda. File tidak diunggah ke server.
+              </p>
+            </div>
+          )}
+
           {/* Buttons */}
           <div className="flex space-x-3">
             <button
-              onClick={onClose}
+              onClick={handleClose}
               className="flex-1 py-3 px-4 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl font-semibold hover:bg-gray-100 dark:hover:bg-gray-700 transition-all"
             >
               Batal
             </button>
             <button
               onClick={handleVerify}
-              disabled={!pdfFile}
+              disabled={!pdfFile || isExtracting}
               className={`flex-1 py-3 px-4 rounded-xl font-semibold transition-all ${
-                pdfFile
+                pdfFile && !isExtracting
                   ? "bg-gradient-to-r from-orange-500 via-purple-500 to-pink-500 text-white hover:shadow-lg hover:scale-105"
                   : "bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed"
               }`}
             >
-              Verifikasi
+              {isExtracting ? "Memproses..." : "Verifikasi"}
             </button>
           </div>
         </div>

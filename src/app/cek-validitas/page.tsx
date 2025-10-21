@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { Layout } from "../../components/layout";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
@@ -24,6 +25,8 @@ import {
   Database,
   Lock,
   Sparkles,
+  ArrowLeft,
+  Home,
 } from "lucide-react";
 import apiClient from "@/lib/services/apiClient";
 import CardanoScanViewButton from "../../components/Button/CardanoScanViewButton";
@@ -575,37 +578,67 @@ export default function CekValiditasPage() {
       100% { transform: translateX(200%) skewX(12deg); }
     }
   `;
+  const router = useRouter();
   const [numberPlate, setNumberPlate] = useState("");
   const [pdfFile, setPdfFile] = useState<File | null>(null);
+  const [uploadedHash, setUploadedHash] = useState<string | null>(null);
+  const [pdfFileName, setPdfFileName] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [blockchainUrl, setBlockchainUrl] = useState<string | null>(null);
   const [verificationResult, setVerificationResult] =
     useState<VerificationResult | null>(null);
+  const [isAutoVerifying, setIsAutoVerifying] = useState(false);
 
-  // Load PDF from sessionStorage if available
+  // Track if auto-verification has been triggered
+  const hasAutoVerified = useRef(false); // Load PDF data and plate number from sessionStorage if available
   useEffect(() => {
-    const storedFile = sessionStorage.getItem("uploadedPdfFile");
-    if (storedFile) {
-      try {
-        const fileData = JSON.parse(storedFile);
+    const storedPdfData = sessionStorage.getItem("uploadedPdfData");
+    const storedPlate = sessionStorage.getItem("extractedPlateNumber");
 
-        // Convert base64 back to File
-        fetch(fileData.data)
-          .then((res) => res.blob())
-          .then((blob) => {
-            const file = new File([blob], fileData.name, {
-              type: fileData.type,
-            });
-            setPdfFile(file);
-          });
+    if (storedPdfData) {
+      try {
+        const pdfData = JSON.parse(storedPdfData);
+        setUploadedHash(pdfData.hash);
+        setPdfFileName(pdfData.name);
 
         // Clear sessionStorage after loading
-        sessionStorage.removeItem("uploadedPdfFile");
+        sessionStorage.removeItem("uploadedPdfData");
       } catch (error) {
-        console.error("Error loading file from sessionStorage:", error);
+        console.error("Error loading PDF data from sessionStorage:", error);
       }
     }
+
+    // Load extracted plate number
+    if (storedPlate) {
+      setNumberPlate(storedPlate);
+      sessionStorage.removeItem("extractedPlateNumber");
+    }
   }, []);
+
+  // Auto-trigger verification when data from modal is loaded
+  useEffect(() => {
+    // Only trigger once when we have both plate number and hash from modal
+    if (
+      numberPlate &&
+      uploadedHash &&
+      !verificationResult &&
+      !isLoading &&
+      !pdfFile &&
+      !hasAutoVerified.current
+    ) {
+      hasAutoVerified.current = true;
+      setIsAutoVerifying(true);
+
+      // Longer delay to allow user to see the form is filled and animation to render properly
+      const timer = setTimeout(() => {
+        setIsAutoVerifying(false);
+        handleVerification();
+      }, 1500);
+
+      return () => clearTimeout(timer);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [numberPlate, uploadedHash]);
 
   const calculateHash = async (file: File): Promise<string> => {
     const buffer = await file.arrayBuffer();
@@ -640,18 +673,22 @@ export default function CekValiditasPage() {
   };
 
   const handleVerification = async () => {
-    if (!numberPlate || !pdfFile) return;
+    // Check if we have either a PDF file to calculate hash, or a pre-calculated hash
+    const hasHashSource = pdfFile || uploadedHash;
+    if (!numberPlate || !hasHashSource) return;
 
     setIsLoading(true);
     try {
-      const uploadedHash = await calculateHash(pdfFile);
+      // Use pre-calculated hash if available, otherwise calculate from file
+      const calculatedHash = uploadedHash || (await calculateHash(pdfFile!));
       const blockchainHash = await fetchBlockchainHash(numberPlate);
 
       const result: VerificationResult = {
         numberPlate,
-        uploadedHash,
+        uploadedHash: calculatedHash,
         blockchainHash: blockchainHash,
-        isVerified: blockchainHash !== null && uploadedHash === blockchainHash,
+        isVerified:
+          blockchainHash !== null && calculatedHash === blockchainHash,
         timestamp: new Date().toISOString(),
         isVehicleFound: blockchainHash !== null,
         errorMessage:
@@ -716,6 +753,18 @@ export default function CekValiditasPage() {
 
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-6xl mx-auto">
+            {/* Back Button */}
+            <div className="mb-6">
+              <button
+                onClick={() => router.push('/')}
+                className="group flex items-center gap-2 px-4 py-2 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl border-2 border-orange-200 dark:border-orange-700 text-orange-600 dark:text-orange-400 font-semibold hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:border-orange-400 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
+              >
+                <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform duration-300" />
+                <Home className="h-5 w-5" />
+                <span>Kembali ke Halaman Utama</span>
+              </button>
+            </div>
+
             {/* Header */}
             <div className="text-center mb-12">
               <div className="flex items-center justify-center mb-6">
@@ -757,6 +806,18 @@ export default function CekValiditasPage() {
                 <CardDescription className="text-lg">
                   Masukkan nomor plat kendaraan dan unggah dokumen inspeksi PDF
                 </CardDescription>
+
+                {/* Auto-verification indicator */}
+                {isAutoVerifying && (
+                  <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border-2 border-blue-200 dark:border-blue-800 animate-fade-in">
+                    <div className="flex items-center">
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600 mr-3"></div>
+                      <p className="text-sm text-blue-700 dark:text-blue-400 font-semibold">
+                        Mempersiapkan verifikasi otomatis...
+                      </p>
+                    </div>
+                  </div>
+                )}
               </CardHeader>
 
               <CardContent className="space-y-8 relative">
@@ -812,6 +873,7 @@ export default function CekValiditasPage() {
                       <Upload className="absolute -mt-2 right-4 top-1/2 -translate-y-1/2 h-6 w-6 text-purple-400 animate-bounce" />
                     </div>
 
+                    {/* Show uploaded file info */}
                     {pdfFile && (
                       <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-xl border-2 border-green-200 dark:border-green-800 animate-fade-in">
                         <p className="text-sm text-green-700 dark:text-green-400 flex items-center">
@@ -823,13 +885,28 @@ export default function CekValiditasPage() {
                         </p>
                       </div>
                     )}
+
+                    {/* Show pre-calculated hash info from modal */}
+                    {!pdfFile && pdfFileName && uploadedHash && (
+                      <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-xl border-2 border-green-200 dark:border-green-800 animate-fade-in">
+                        <p className="text-sm text-green-700 dark:text-green-400 flex items-center mb-2">
+                          <FileText className="h-5 w-5 mr-2 animate-pulse" />
+                          <span className="font-semibold">{pdfFileName}</span>
+                        </p>
+                        <p className="text-xs text-green-600 dark:text-green-500">
+                          ✓ Hash sudah dihitung
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
 
                 {/* Verification Button */}
                 <Button
                   onClick={handleVerification}
-                  disabled={!numberPlate || !pdfFile || isLoading}
+                  disabled={
+                    !numberPlate || (!pdfFile && !uploadedHash) || isLoading
+                  }
                   className="w-full h-16 text-xl font-bold bg-gradient-to-r from-orange-600 via-purple-600 to-pink-600 hover:from-orange-700 hover:via-purple-700 hover:to-pink-700 transition-all duration-300 shadow-2xl hover:shadow-3xl hover:shadow-purple-500/30 transform hover:scale-105 relative overflow-hidden rounded-xl"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent animate-pulse"></div>

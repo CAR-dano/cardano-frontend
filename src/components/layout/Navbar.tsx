@@ -136,13 +136,13 @@ const Navbar = ({ isNavbarVisible }: NavbarProps) => {
           >
             <Link href="/">Cari Data</Link>
           </li>
-          <li
+          {/* <li
             className={`text-base font-bold cursor-pointer ${
               isActiveLink("/cek-validitas") ? activeLinkStyle : ""
             }`}
           >
             <Link href="/cek-validitas/">Cek Validitas PDF</Link>
-          </li>
+          </li> */}
         </ul>
       </div>
 
@@ -281,7 +281,7 @@ const Navbar = ({ isNavbarVisible }: NavbarProps) => {
                 </p>
               </Link>
             </li>
-            <li
+            {/* <li
               className={`font-bold cursor-pointer ${
                 isActiveLink("/cek-validitas")
                   ? "text-orange-400"
@@ -300,7 +300,7 @@ const Navbar = ({ isNavbarVisible }: NavbarProps) => {
                   Cek Validitas PDF
                 </p>
               </Link>
-            </li>
+            </li> */}
           </ul>
           <div
             className="mt-6 px-6 bg-white py-4 flex-1"

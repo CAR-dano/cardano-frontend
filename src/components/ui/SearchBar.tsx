@@ -82,7 +82,7 @@ function SearchBar({ value }: SearchBarProps) {
       </form>
 
       {/* Separator */}
-      <div className="flex items-center justify-center space-x-3 my-4">
+      <div className="flex items-center justify-center space-x-3 my-1">
         <div className="h-px bg-gray-300 dark:bg-gray-600 w-16"></div>
         <span className="text-gray-500 dark:text-gray-400 text-bold font-medium">
           ATAU
@@ -98,18 +98,6 @@ function SearchBar({ value }: SearchBarProps) {
           className="text-orange-600 dark:text-orange-400 font-bold text-lg hover:text-orange-700 dark:hover:text-orange-300 underline decoration-2 underline-offset-4 hover:decoration-orange-600 transition-all duration-300 hover:scale-105 inline-flex items-center gap-2"
         >
           <span>Verifikasi Laporanmu</span>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fillRule="evenodd"
-              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0 0 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z"
-              clipRule="evenodd"
-            />
-          </svg>
         </button>
       </div>
 
