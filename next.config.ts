@@ -2,16 +2,43 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: [
-      "images.unsplash.com",
-      "plus.unsplash.com",
-      "images.autofun.co.id",
-      "s3-alpha-sig.figma.com",
-      "i.ibb.co.com",
-      "31.220.81.182",
-      "69.62.80.7",
-      "api.inspeksimobil.id",
-      "staging-api.inspeksimobil.id",
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
+      {
+        protocol: "https",
+        hostname: "plus.unsplash.com",
+      },
+      {
+        protocol: "https",
+        hostname: "images.autofun.co.id",
+      },
+      {
+        protocol: "https",
+        hostname: "s3-alpha-sig.figma.com",
+      },
+      {
+        protocol: "https",
+        hostname: "i.ibb.co.com",
+      },
+      {
+        protocol: "http",
+        hostname: "31.220.81.182",
+      },
+      {
+        protocol: "http",
+        hostname: "69.62.80.7",
+      },
+      {
+        protocol: "https",
+        hostname: "api.inspeksimobil.id",
+      },
+      {
+        protocol: "https",
+        hostname: "staging-api.inspeksimobil.id",
+      },
     ],
   },
   output: "standalone",
