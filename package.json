@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "npm run copy:pdfjs && next build",
+    "build": "npm run copy:pdfjs && next build --webpack",
     "start": "next start",
     "lint": "next lint",
     "copy:pdfjs": "node -e \"const fs = require('fs'); const path = require('path'); const src = path.join(__dirname, 'node_modules', 'pdfjs-dist', 'build', 'pdf.worker.min.mjs'); const dest = path.join(__dirname, 'public', 'pdfjs', 'pdf.worker.min.mjs'); fs.mkdirSync(path.dirname(dest), { recursive: true }); fs.copyFileSync(src, dest); console.log('PDF.js worker copied successfully');\""
