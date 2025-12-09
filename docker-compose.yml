@@ -12,7 +12,7 @@ services:
     container_name: cardano-frontend
     # Maps port 3000 on the host to port 3000 in the container
     ports:
-      - "3000:3000"
+      - "21001:3000"
     # The restart policy for the container
     restart: unless-stopped
     # Connects the service to a custom network
