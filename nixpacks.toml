@@ -1,0 +1,51 @@
+# Nixpacks configuration for Next.js 16+ with security hardening
+# Optimized for Coolify deployment
+
+# Provider settings
+providers = ["node"]
+
+[phases.setup]
+# Use specific Node.js LTS version for stability and security
+nixPkgs = ["nodejs_22", "npm-9_x"]
+# Add security-related packages
+aptPkgs = ["ca-certificates"]
+
+[phases.install]
+# Clean install with frozen lockfile for reproducibility
+cmds = [
+    "npm ci --prefer-offline --no-audit"
+]
+# Cache node_modules for faster builds
+cacheDirectories = ["node_modules", ".npm"]
+
+[phases.build]
+# Disable telemetry and build with production optimizations
+cmds = [
+    "npm run build"
+]
+# Environment variables for build phase
+[phases.build.env]
+NEXT_TELEMETRY_DISABLED = "1"
+NODE_ENV = "production"
+# Disable source maps in production to prevent information leakage
+GENERATE_SOURCEMAP = "false"
+
+[start]
+# Run as non-root user (Nixpacks handles this automatically)
+cmd = "node .next/standalone/server.js"
+
+# Runtime environment variables
+[variables]
+NODE_ENV = "production"
+NEXT_TELEMETRY_DISABLED = "1"
+# Bind to all interfaces for container networking
+HOSTNAME = "0.0.0.0"
+PORT = "3000"
+# Security: Disable Node.js deprecation warnings that could leak info
+NODE_NO_WARNINGS = "1"
+
+# Static files configuration
+# Next.js standalone mode handles static files internally
+[staticAssets]
+# Serve static assets from the public directory
+path = "public"
