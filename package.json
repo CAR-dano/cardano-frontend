@@ -28,7 +28,7 @@
     "framer-motion": "^12.4.10",
     "lucide-react": "^0.477.0",
     "motion": "^12.4.10",
-    "next": "^16.0.7",
+    "next": "^16.0.10",
     "pdfjs-dist": "^5.4.296",
     "react": "^19.0.0",
     "react-day-picker": "^9.7.0",
