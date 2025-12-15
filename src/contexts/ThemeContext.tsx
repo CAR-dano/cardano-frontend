@@ -37,9 +37,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const pathname = useSafePathname();
 
   // Check if dark mode should be enabled based on the current route
-  const isDarkModeEnabled =
+  const isDarkModeEnabled: boolean =
     typeof window !== "undefined" &&
-    pathname?.startsWith("/dashboard") &&
+    !!pathname?.startsWith("/dashboard") &&
     !pathname.includes("/dashboard/preview");
 
   useEffect(() => {
