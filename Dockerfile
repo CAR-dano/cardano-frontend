@@ -33,6 +33,10 @@ COPY . .
 # Disable Next.js telemetry during the build.
 ENV NEXT_TELEMETRY_DISABLED=1
 
+# Important: Don't set NODE_ENV=production during build
+# Let Next.js handle the build environment automatically
+# ENV NODE_ENV=production <-- REMOVED
+
 # Build the application using the detected package manager.
 RUN \
   if [ -f yarn.lock ]; then yarn run build; \
