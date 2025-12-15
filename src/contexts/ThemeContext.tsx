@@ -19,38 +19,43 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   // Check if dark mode should be enabled based on the current route
-  const isDarkModeEnabled = pathname?.startsWith("/dashboard") && 
-                           !pathname.includes("/dashboard/preview");
+  const isDarkModeEnabled =
+    typeof window !== "undefined" &&
+    pathname?.startsWith("/dashboard") &&
+    !pathname.includes("/dashboard/preview");
 
   useEffect(() => {
     setMounted(true);
     // Check for saved theme preference or default to light
-    const savedTheme = localStorage.getItem("theme") as Theme | null;
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    
-    const initialTheme = savedTheme || (prefersDark ? "dark" : "light");
-    setTheme(initialTheme);
+    if (typeof window !== "undefined") {
+      const savedTheme = localStorage.getItem("theme") as Theme | null;
+      const prefersDark = window.matchMedia(
+        "(prefers-color-scheme: dark)"
+      ).matches;
+
+      const initialTheme = savedTheme || (prefersDark ? "dark" : "light");
+      setTheme(initialTheme);
+    }
   }, []);
 
   useEffect(() => {
     // Apply or remove dark class based on theme and route
-    if (isDarkModeEnabled && theme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
+    if (typeof window !== "undefined") {
+      if (isDarkModeEnabled && theme === "dark") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
     }
   }, [theme, isDarkModeEnabled]);
 
   const toggleTheme = () => {
     const newTheme = theme === "light" ? "dark" : "light";
     setTheme(newTheme);
-    localStorage.setItem("theme", newTheme);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("theme", newTheme);
+    }
   };
-
-  // Prevent hydration mismatch
-  if (!mounted) {
-    return null;
-  }
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme, isDarkModeEnabled }}>
