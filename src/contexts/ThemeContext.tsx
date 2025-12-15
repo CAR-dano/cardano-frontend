@@ -1,7 +1,6 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
 
 type Theme = "light" | "dark";
 
@@ -19,10 +18,23 @@ const defaultThemeContext: ThemeContextType = {
 
 const ThemeContext = createContext<ThemeContextType>(defaultThemeContext);
 
+// Safe hook to get pathname without breaking SSR
+function useSafePathname(): string | null {
+  const [pathname, setPathname] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setPathname(window.location.pathname);
+    }
+  }, []);
+
+  return pathname;
+}
+
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>("light");
   const [mounted, setMounted] = useState(false);
-  const pathname = usePathname();
+  const pathname = useSafePathname();
 
   // Check if dark mode should be enabled based on the current route
   const isDarkModeEnabled =
