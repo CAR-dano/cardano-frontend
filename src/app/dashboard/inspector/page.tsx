@@ -2,7 +2,12 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch, useAppSelector } from "../../../lib/store";
-import { getAllInspectors, getAllBranches, deleteInspector, generateInspectorPin } from "../../../lib/features/admin/adminSlice";
+import {
+  getAllInspectors,
+  getAllBranches,
+  deleteInspector,
+  generateInspectorPin,
+} from "../../../lib/features/admin/adminSlice";
 import { LoadingSkeleton } from "../../../components/Loading";
 import {
   Table,
@@ -40,17 +45,18 @@ import {
   FaEdit,
   FaTrash,
   FaEye,
-  FaEyeSlash,
 } from "react-icons/fa";
 import { format } from "date-fns";
 import { useToast } from "../../../components/ui/use-toast";
-import apiClient from "@/lib/services/apiClient";
+import apiClient from "../../../lib/services/apiClient";
 import { InspectorPinDialog } from "../../../components/Dialog/InspectorPinDialog";
 import { DeleteConfirmationDialog } from "../../../components/Dialog/DeleteConfirmationDialog";
 
 const InspectorPage = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { inspectorList, isLoading, branchList } = useAppSelector((state) => state.admin);
+  const { inspectorList, isLoading, branchList } = useAppSelector(
+    (state) => state.admin
+  );
   const accessToken = useAppSelector((state) => state.auth.accessToken);
   const [searchTerm, setSearchTerm] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -106,26 +112,31 @@ const InspectorPage = () => {
 
   const activeInspectorCount = useMemo(() => {
     return inspectorList.filter((inspector) => {
-      const status = inspector.status?.toLowerCase?.() || inspector.status || 'active';
-      return status === 'active';
+      const status =
+        inspector.status?.toLowerCase?.() || inspector.status || "active";
+      return status === "active";
     }).length;
   }, [inspectorList]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await apiClient.post("/admin/users/inspector", formData, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      
+      const response = await apiClient.post(
+        "/admin/users/inspector",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
       // Store the response data
       setNewInspectorData(response.data);
-      
+
       // Close the form drawer
       setIsDrawerOpen(false);
-      
+
       // Reset form
       setFormData({
         name: "",
@@ -133,11 +144,11 @@ const InspectorPage = () => {
         email: "",
         inspectionBranchCityId: "",
       });
-      
+
       // Show PIN dialog for new inspector
       setIsPinRegenerate(false);
       setShowPinDialog(true);
-      
+
       // Refresh the inspector list
       if (accessToken) {
         dispatch(getAllInspectors(accessToken));
@@ -271,10 +282,12 @@ const InspectorPage = () => {
     if (!inspectorToDelete || !accessToken) return;
 
     try {
-      const result = await dispatch(deleteInspector({ 
-        id: inspectorToDelete.id, 
-        token: accessToken 
-      })).unwrap();
+      const result = await dispatch(
+        deleteInspector({
+          id: inspectorToDelete.id,
+          token: accessToken,
+        })
+      ).unwrap();
 
       // Check if the response status is 204 (No Content)
       if (result.status === 204) {
@@ -305,21 +318,23 @@ const InspectorPage = () => {
     if (!selectedInspector || !accessToken) return;
 
     try {
-      const result = await dispatch(generateInspectorPin({
-        id: selectedInspector.id,
-        token: accessToken
-      })).unwrap();
+      const result = await dispatch(
+        generateInspectorPin({
+          id: selectedInspector.id,
+          token: accessToken,
+        })
+      ).unwrap();
 
       // Store the response data with the new PIN
       setNewInspectorData(result);
-      
+
       // Close the view drawer
       setIsViewDrawerOpen(false);
-      
+
       // Show PIN dialog for regenerated PIN
       setIsPinRegenerate(true);
       setShowPinDialog(true);
-      
+
       toast({
         title: "PIN Generated",
         description: "A new PIN has been generated successfully.",
@@ -437,7 +452,10 @@ const InspectorPage = () => {
                   <Select
                     value={formData.inspectionBranchCityId}
                     onValueChange={(value) =>
-                      setFormData({ ...formData, inspectionBranchCityId: value })
+                      setFormData({
+                        ...formData,
+                        inspectionBranchCityId: value,
+                      })
                     }
                   >
                     <SelectTrigger>
@@ -450,10 +468,14 @@ const InspectorPage = () => {
                         </SelectItem>
                       ) : branchList.length > 0 ? (
                         branchList
-                          .filter((branch) => branch.status === "active" || !branch.status)
+                          .filter(
+                            (branch) =>
+                              branch.status === "active" || !branch.status
+                          )
                           .map((branch) => (
                             <SelectItem key={branch.id} value={branch.id}>
-                              {branch.city || branch.name} {branch.code && `(${branch.code})`}
+                              {branch.city || branch.name}{" "}
+                              {branch.code && `(${branch.code})`}
                             </SelectItem>
                           ))
                       ) : (
@@ -639,7 +661,9 @@ const InspectorPage = () => {
                   <Label>Inspector PIN</Label>
                   <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
                     <p className="text-sm text-blue-800 dark:text-blue-200 mb-3">
-                      For security reasons, PINs are not stored or displayed. Click the button below to generate a new PIN for this inspector.
+                      For security reasons, PINs are not stored or displayed.
+                      Click the button below to generate a new PIN for this
+                      inspector.
                     </p>
                     <Button
                       type="button"

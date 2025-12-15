@@ -9,7 +9,7 @@ import {
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import Image from "next/image";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "../../hooks/use-toast";
 
 interface FormEditPhotoProps {
   label: string;

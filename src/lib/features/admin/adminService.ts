@@ -1,4 +1,4 @@
-import apiClient from "@/lib/services/apiClient";
+import apiClient from "../../../lib/services/apiClient";
 const LOCAL_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const getAllUsers = async (token: string) => {
@@ -49,13 +49,16 @@ const getAllBranches = async (token: string) => {
 };
 
 const deleteInspector = async (id: string, token: string) => {
-  const response = await apiClient.delete(`${LOCAL_API_URL}/admin/users/${id}`, {
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  
+  const response = await apiClient.delete(
+    `${LOCAL_API_URL}/admin/users/${id}`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
   // Only return the status since there's no response body
   return response.status;
 };

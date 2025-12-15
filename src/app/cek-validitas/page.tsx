@@ -28,7 +28,7 @@ import {
   ArrowLeft,
   Home,
 } from "lucide-react";
-import apiClient from "@/lib/services/apiClient";
+import apiClient from "../../lib/services/apiClient";
 import CardanoScanViewButton from "../../components/Button/CardanoScanViewButton";
 
 interface VerificationResult {

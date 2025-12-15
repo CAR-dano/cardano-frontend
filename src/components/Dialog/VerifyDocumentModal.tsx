@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { X, Upload, FileText, CheckCircle, Loader2, Edit2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { extractPlateFromPdf, type PlateResult } from "@/lib/extractPlate";
+import { extractPlateFromPdf, type PlateResult } from "../../lib/extractPlate";
 
 interface VerifyDocumentModalProps {
   isOpen: boolean;

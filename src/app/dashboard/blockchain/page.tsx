@@ -6,7 +6,7 @@ import { getDataForReviewer } from "../../../lib/features/inspection/inspectionS
 import { AppDispatch, RootState } from "../../../lib/store";
 import { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import TableInBlockchain from "@/components/Table/TableInBlockchain";
+import TableInBlockchain from "../../../components/Table/TableInBlockchain";
 
 const Header = ({
   dataCount,
