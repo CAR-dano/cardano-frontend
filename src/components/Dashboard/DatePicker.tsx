@@ -13,13 +13,13 @@ import { CalendarIcon } from "lucide-react";
 import { DateRange } from "react-day-picker";
 
 import { cn } from "../../lib/utils";
-import { Button } from "../../components/ui/button";
-import { Calendar } from "../../components/ui/calendar";
+import { Button } from "../ui/button";
+import { Calendar } from "../ui/calendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "../../components/ui/popover";
+} from "../ui/popover";
 
 interface DatePickerWithRangeProps
   extends React.HTMLAttributes<HTMLDivElement> {
@@ -34,14 +34,14 @@ export function DatePickerWithRange({
 }: DatePickerWithRangeProps) {
   const [date, setDate] = React.useState<DateRange | undefined>(
     initialDateRange ||
-      (() => {
-        const today = new Date();
-        const sevenDaysAgo = subDays(today, 7);
-        return {
-          from: sevenDaysAgo,
-          to: today,
-        };
-      })
+    (() => {
+      const today = new Date();
+      const sevenDaysAgo = subDays(today, 7);
+      return {
+        from: sevenDaysAgo,
+        to: today,
+      };
+    })
   );
   const [tempDate, setTempDate] = React.useState<DateRange | undefined>(date);
   const [open, setOpen] = React.useState(false);

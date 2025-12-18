@@ -14,7 +14,7 @@ interface HalamanFotoDokumenProps {
 const HalamanFotoDokumen: React.FC<HalamanFotoDokumenProps> = ({
   data,
   editable,
-  onClick = () => {},
+  onClick = () => { },
   inspectionId = "",
 }) => {
   const [isAddPhotoDialogOpen, setIsAddPhotoDialogOpen] = useState(false);
@@ -27,6 +27,7 @@ const HalamanFotoDokumen: React.FC<HalamanFotoDokumenProps> = ({
 
   const formatPath = (path: string) => {
     if (!path) return "/assets/placeholder-photo.png";
+    if (path.startsWith("http")) return path;
     return PHOTO_URL + "/uploads/inspection-photos/" + path;
   };
 

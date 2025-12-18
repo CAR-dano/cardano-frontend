@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { PieChartComponent } from "./PieChart";
-import { ChartConfig } from "../../components/ui/chart";
+import { ChartConfig } from "../ui/chart";
 
 // data = {
 //   total:              100,

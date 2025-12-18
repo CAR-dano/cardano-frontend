@@ -7,7 +7,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../../components/ui/table";
+} from "../ui/table";
 import Link from "next/link";
 import SecondaryButton from "../Button/SecondaryButton"; // Assuming this exists
 import { useDispatch } from "react-redux";
@@ -19,7 +19,7 @@ import {
 } from "../../lib/features/inspection/inspectionSlice";
 import { bulkApproveInspections } from "../../lib/features/bulk/bulkSlice";
 import DialogResult from "../Dialog/DialogResult"; // Your existing dialog
-import { Input } from "../../components/ui/input"; // Assuming Input component exists
+import { Input } from "../ui/input"; // Assuming Input component exists
 import { FaSearch } from "react-icons/fa"; // Assuming FaSearch icon exists
 import { toast } from "../../hooks/use-toast";
 import { LoadingSkeleton } from "../Loading";
@@ -250,11 +250,10 @@ const TableData = ({
             <div className="flex items-center space-x-4">
               <button
                 onClick={handleBulkModeToggle}
-                className={`inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium ${
-                  isBulkMode
+                className={`inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium ${isBulkMode
                     ? "bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-600"
                     : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-                } transition-colors duration-200`}
+                  } transition-colors duration-200`}
               >
                 <svg
                   className="w-4 h-4 mr-2"
@@ -283,11 +282,10 @@ const TableData = ({
                         className="sr-only"
                       />
                       <div
-                        className={`w-5 h-5 rounded-md border-2 transition-all duration-200 ease-in-out flex items-center justify-center ${
-                          isAllSelected
+                        className={`w-5 h-5 rounded-md border-2 transition-all duration-200 ease-in-out flex items-center justify-center ${isAllSelected
                             ? "bg-gradient-to-br from-blue-500 to-blue-600 border-blue-500 shadow-lg shadow-blue-500/25"
                             : "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 group-hover:border-blue-400 dark:group-hover:border-blue-500"
-                        }`}
+                          }`}
                       >
                         {isAllSelected && (
                           <svg
@@ -385,11 +383,10 @@ const TableData = ({
                       className="sr-only"
                     />
                     <div
-                      className={`w-5 h-5 rounded-md border-2 transition-all duration-200 ease-in-out cursor-pointer flex items-center justify-center ${
-                        isAllSelected
+                      className={`w-5 h-5 rounded-md border-2 transition-all duration-200 ease-in-out cursor-pointer flex items-center justify-center ${isAllSelected
                           ? "bg-gradient-to-br from-blue-500 to-blue-600 border-blue-500 shadow-lg shadow-blue-500/25"
                           : "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500"
-                      }`}
+                        }`}
                       onClick={(e) => {
                         const checkbox = e.currentTarget
                           .previousElementSibling as HTMLInputElement;
@@ -440,11 +437,10 @@ const TableData = ({
               data.map((item: any, index: number) => (
                 <TableRow
                   key={item.id}
-                  className={`hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150 ${
-                    index !== data.length - 1
+                  className={`hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150 ${index !== data.length - 1
                       ? "border-b border-gray-100 dark:border-gray-700"
                       : ""
-                  }`}
+                    }`}
                 >
                   {isBulkMode && !isDatabase && (
                     <TableCell className="py-4 px-6">
@@ -459,11 +455,10 @@ const TableData = ({
                             className="sr-only"
                           />
                           <div
-                            className={`w-5 h-5 rounded-md border-2 transition-all duration-200 ease-in-out cursor-pointer ${
-                              selectedItems.has(item.id)
+                            className={`w-5 h-5 rounded-md border-2 transition-all duration-200 ease-in-out cursor-pointer ${selectedItems.has(item.id)
                                 ? "bg-gradient-to-br from-green-500 to-green-600 border-green-500 shadow-lg shadow-green-500/25 scale-105"
                                 : "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 hover:border-green-400 dark:hover:border-green-500 hover:scale-105"
-                            }`}
+                              }`}
                             onClick={(e) => {
                               const checkbox = e.currentTarget
                                 .previousElementSibling as HTMLInputElement;
@@ -497,11 +492,11 @@ const TableData = ({
                       <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-medium text-sm">
                         {item.identityDetails?.namaCustomer
                           ? item.identityDetails.namaCustomer
-                              .split(" ")
-                              .map((n: string) => n[0])
-                              .join("")
-                              .toUpperCase()
-                              .slice(0, 2)
+                            .split(" ")
+                            .map((n: string) => n[0])
+                            .join("")
+                            .toUpperCase()
+                            .slice(0, 2)
                           : "XX"}
                       </div>
                       <div>
@@ -604,9 +599,8 @@ const TableData = ({
                   <TableCell className="py-4 px-6 text-center">
                     <div className="flex justify-center items-center space-x-2">
                       <Link
-                        href={`/dashboard/${isDatabase ? "data" : "review"}/${
-                          item.id
-                        }`}
+                        href={`/dashboard/${isDatabase ? "data" : "review"}/${item.id
+                          }`}
                       >
                         <button className="inline-flex items-center px-3 py-1.5 border border-gray-300 dark:border-gray-600 shadow-sm text-xs font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
                           <svg
@@ -963,11 +957,10 @@ const TableInfo: React.FC<TableInfoProps> = ({
           <div className="flex items-center space-x-2">
             {/* First Page Button */}
             <SecondaryButton
-              className={`px-2 py-1.5 text-xs rounded-md border border-gray-300 dark:border-gray-600 ${
-                page <= 1
+              className={`px-2 py-1.5 text-xs rounded-md border border-gray-300 dark:border-gray-600 ${page <= 1
                   ? " opacity-50 pointer-events-none"
                   : "hover:bg-gray-100 dark:hover:bg-gray-700"
-              }`}
+                }`}
               onClick={() => handlePageChange(1)}
               disabled={page <= 1}
             >
@@ -988,11 +981,10 @@ const TableInfo: React.FC<TableInfoProps> = ({
 
             {/* Previous Page Button */}
             <SecondaryButton
-              className={`px-3 py-1.5 text-xs rounded-md border border-gray-300 dark:border-gray-600 ${
-                page <= 1
+              className={`px-3 py-1.5 text-xs rounded-md border border-gray-300 dark:border-gray-600 ${page <= 1
                   ? " opacity-50 pointer-events-none"
                   : "hover:bg-gray-100 dark:hover:bg-gray-700"
-              }`}
+                }`}
               onClick={() => handlePageChange(page - 1)}
               disabled={page <= 1}
             >
@@ -1028,11 +1020,10 @@ const TableInfo: React.FC<TableInfoProps> = ({
             <SecondaryButton
               onClick={() => handlePageChange(page + 1)}
               disabled={page >= totalPage}
-              className={`px-3 py-1.5 text-xs rounded-md border border-gray-300 dark:border-gray-600 ${
-                page >= totalPage
+              className={`px-3 py-1.5 text-xs rounded-md border border-gray-300 dark:border-gray-600 ${page >= totalPage
                   ? " opacity-50 pointer-events-none"
                   : "hover:bg-gray-100 dark:hover:bg-gray-700"
-              }`}
+                }`}
             >
               Next
             </SecondaryButton>
@@ -1041,11 +1032,10 @@ const TableInfo: React.FC<TableInfoProps> = ({
             <SecondaryButton
               onClick={() => handlePageChange(totalPage)}
               disabled={page >= totalPage}
-              className={`px-2 py-1.5 text-xs rounded-md border border-gray-300 dark:border-gray-600 ${
-                page >= totalPage
+              className={`px-2 py-1.5 text-xs rounded-md border border-gray-300 dark:border-gray-600 ${page >= totalPage
                   ? " opacity-50 pointer-events-none"
                   : "hover:bg-gray-100 dark:hover:bg-gray-700"
-              }`}
+                }`}
             >
               <svg
                 className="w-3 h-3"
