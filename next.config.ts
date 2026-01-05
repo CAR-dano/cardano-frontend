@@ -31,6 +31,17 @@ const nextConfig: NextConfig = {
         source: "/:path*",
         headers: [
           {
+            key: "Content-Security-Policy",
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval'", // Allow Next.js scripts
+              "style-src 'self' 'unsafe-inline'", // Allow inline styles
+              "img-src 'self' data: https: http:",
+              "font-src 'self' data:",
+              "connect-src 'self' https://prod-api.inspeksimobil.id https://staging-api.inspeksimobil.id",
+            ].join("; "),
+          },
+          {
             key: "X-DNS-Prefetch-Control",
             value: "on",
           },
