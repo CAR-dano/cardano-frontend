@@ -4,6 +4,14 @@
 # Using a specific version of alpine for reproducibility.
 FROM node:24-alpine AS base
 
+# Accept build arguments
+ARG NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_PDF_URL
+
+# Set as environment variables to be available during build
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_PDF_URL=$NEXT_PUBLIC_PDF_URL
+
 # Stage 2: Install dependencies
 # This stage is dedicated to installing dependencies to leverage Docker layer caching.
 # It only runs when package.json or the lock file changes.
@@ -29,6 +37,15 @@ RUN --mount=type=cache,target=/root/.npm \
 # This stage builds the Next.js application. It's a separate stage so that
 # the build is re-run only when source files change, not on every dependency change.
 FROM base AS builder
+
+# Re-declare build args in this stage (required for multi-stage builds)
+ARG NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_PDF_URL
+
+# Set as environment variables for Next.js build
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_PDF_URL=$NEXT_PUBLIC_PDF_URL
+
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 
