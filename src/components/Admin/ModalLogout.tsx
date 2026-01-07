@@ -7,7 +7,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "../../components/ui/alert-dialog";
+} from "../ui/alert-dialog";
 import { Toaster } from "../ui/toaster";
 
 const ModalLogout: React.FC = () => {

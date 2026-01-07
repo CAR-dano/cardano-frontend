@@ -2,7 +2,7 @@
 
 import { useAppSelector, AppDispatch } from "../lib/store";
 import { refreshToken, logout } from "../lib/features/auth/authSlice";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { usePathname, useRouter } from "next/navigation";
 import { toast } from "../components/ui/use-toast";
@@ -12,6 +12,37 @@ const publicPaths = ["/auth", "/", "/result"];
 
 // Token refresh interval in milliseconds (15 minutes)
 const TOKEN_REFRESH_INTERVAL = 30 * 60 * 1000;
+
+let refreshIntervalId: ReturnType<typeof setInterval> | null = null;
+let refreshSubscriberCount = 0;
+let latestAccessToken: string | null = null;
+let latestIsAuthenticated = false;
+let latestDispatch: AppDispatch | null = null;
+let latestIsRefreshing = false;
+
+const ensureRefreshTimer = () => {
+  if (refreshIntervalId || !latestDispatch) {
+    return;
+  }
+
+  refreshIntervalId = setInterval(() => {
+    if (
+      latestDispatch &&
+      latestIsAuthenticated &&
+      latestAccessToken &&
+      !latestIsRefreshing
+    ) {
+      latestDispatch(refreshToken());
+    }
+  }, TOKEN_REFRESH_INTERVAL);
+};
+
+const clearRefreshTimer = () => {
+  if (refreshIntervalId) {
+    clearInterval(refreshIntervalId);
+    refreshIntervalId = null;
+  }
+};
 
 export default function useAuth() {
   const dispatch = useDispatch<AppDispatch>();
@@ -23,6 +54,7 @@ export default function useAuth() {
     user,
     accessToken,
     isLoading,
+    isRefreshing,
     lastTokenCheck,
     isAuthInitialized,
   } = useAppSelector((state) => state.auth);
@@ -34,6 +66,7 @@ export default function useAuth() {
   const [timeoutWarningTimestamp, setTimeoutWarningTimestamp] = useState<
     number | null
   >(null);
+  const hasSubscribedForRefresh = useRef(false);
 
   // Check if the current path is public
   const isPublicPath = publicPaths.some(
@@ -135,29 +168,52 @@ export default function useAuth() {
     timeoutWarningTimestamp,
   ]);
 
+  useEffect(() => {
+    latestAccessToken = accessToken || null;
+    latestIsAuthenticated = isAuthenticated;
+    latestDispatch = dispatch;
+    latestIsRefreshing = isRefreshing;
+  }, [accessToken, isAuthenticated, isRefreshing, dispatch]);
+
   // Token refresh logic
   useEffect(() => {
-    // Skip for public paths or when no token is available
-    if (isPublicPath || !accessToken) return;
+    const shouldRefresh = !isPublicPath && !!accessToken && isAuthenticated;
+
+    if (!shouldRefresh) {
+      if (hasSubscribedForRefresh.current) {
+        refreshSubscriberCount = Math.max(refreshSubscriberCount - 1, 0);
+        if (refreshSubscriberCount === 0) {
+          clearRefreshTimer();
+        }
+        hasSubscribedForRefresh.current = false;
+      }
+      return;
+    }
 
     const now = Date.now();
 
-    // If last token check was more than the refresh interval ago, refresh the token
     if (!lastTokenCheck || now - lastTokenCheck > TOKEN_REFRESH_INTERVAL) {
       dispatch(refreshToken());
     }
 
-    // Set up periodic token refresh
-    const refresherId = setInterval(() => {
-      if (isAuthenticated && accessToken) {
-        dispatch(refreshToken());
-      }
-    }, TOKEN_REFRESH_INTERVAL);
+    if (!hasSubscribedForRefresh.current) {
+      refreshSubscriberCount += 1;
+      ensureRefreshTimer();
+      hasSubscribedForRefresh.current = true;
+    }
 
     return () => {
-      clearInterval(refresherId);
+      if (hasSubscribedForRefresh.current) {
+        refreshSubscriberCount = Math.max(refreshSubscriberCount - 1, 0);
+        if (refreshSubscriberCount === 0) {
+          clearRefreshTimer();
+        }
+        hasSubscribedForRefresh.current = false;
+      }
     };
   }, [accessToken, isAuthenticated, lastTokenCheck, isPublicPath, dispatch]);
+
+  const effectiveLoading = isLoading && !isRefreshing;
 
   // Route protection
   useEffect(() => {
@@ -165,12 +221,12 @@ export default function useAuth() {
     if (isPublicPath || !isAuthInitialized) return;
 
     // Redirect to login if not authenticated and trying to access protected route
-    if (!isLoading && !isAuthenticated && !isPublicPath) {
+    if (!effectiveLoading && !isAuthenticated && !isPublicPath) {
       router.push("/auth");
     }
   }, [
     isAuthenticated,
-    isLoading,
+    effectiveLoading,
     pathname,
     router,
     isPublicPath,
@@ -179,7 +235,8 @@ export default function useAuth() {
 
   return {
     isAuthenticated,
-    isLoading,
+    isLoading: effectiveLoading,
+    isRefreshing,
     user,
     isAuthInitialized,
     logout: handleLogout,

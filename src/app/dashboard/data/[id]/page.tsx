@@ -1,12 +1,12 @@
 "use client";
-import DialogResult from "../../../..//components/Dialog/DialogResult";
-import EditReviewComponents from "../../../..//components/EditReview/EditReview";
-import Loading from "../../../..//components/Loading";
+import DialogResult from "../../../../components/Dialog/DialogResult";
+import EditReviewComponents from "../../../../components/EditReview/EditReview";
+import Loading from "../../../../components/Loading";
 import {
   getDataForPreview,
   mintingToBlockchain,
-} from "../../../..//lib/features/inspection/inspectionSlice";
-import { AppDispatch, useAppSelector } from "../../../..//lib/store";
+} from "../../../../lib/features/inspection/inspectionSlice";
+import { AppDispatch, useAppSelector } from "../../../../lib/store";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -28,7 +28,7 @@ const Edit = () => {
 
   const [data, setData] = useState<any>(null);
 
-  const handleEditReviewClick = () => {};
+  const handleEditReviewClick = () => { };
 
   const getData = async (id: string) => {
     const response = await dispatch(getDataForPreview(id)).unwrap();

@@ -7,8 +7,8 @@ import {
   DialogTitle,
   DialogFooter,
   DialogDescription,
-} from "../../components/ui/dialog";
-import { Button } from "../../components/ui/button";
+} from "../ui/dialog";
+import { Button } from "../ui/button";
 import { Role } from "../../utils/Admin";
 import {
   Select,
@@ -18,7 +18,7 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "../../components/ui/select";
+} from "../ui/select";
 
 interface DialogEditRoleProps {
   isOpen: boolean;

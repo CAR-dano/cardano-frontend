@@ -5,13 +5,13 @@ import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 
 import { cn } from "../../lib/utils";
-import { Button } from "../../components/ui/button";
-import { Calendar } from "../../components/ui/calendar";
+import { Button } from "../ui/button";
+import { Calendar } from "../ui/calendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "../../components/ui/popover";
+} from "../ui/popover";
 import { useTheme } from "../../contexts/ThemeContext";
 
 export function DatePickerDemo() {
@@ -27,7 +27,7 @@ export function DatePickerDemo() {
             "w-[280px] justify-start text-left font-normal",
             !date && "text-muted-foreground",
             isDarkModeEnabled &&
-              "dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700"
+            "dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700"
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />

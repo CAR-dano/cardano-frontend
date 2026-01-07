@@ -6,9 +6,9 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "../../components/ui/dialog";
+} from "../ui/dialog";
 
-import { Button } from "../../components/ui/button";
+import { Button } from "../ui/button";
 import FormNormalInput from "./FormNormalInput";
 import FormDateInput from "./FormDateInput";
 import FormSelect2Option from "./FormSelect2Option";

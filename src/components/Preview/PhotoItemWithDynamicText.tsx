@@ -61,11 +61,10 @@ const PhotoItemWithDynamicText: React.FC<PhotoItemWithDynamicTextProps> = ({
   return (
     <>
       <div
-        className={`text-black flex items-center justify-center flex-col h-[206px] ${
-          editable
+        className={`text-black flex items-center justify-center flex-col h-[206px] ${editable
             ? "cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors duration-200 relative group"
             : ""
-        }`}
+          }`}
         onClick={handleClick}
       >
         {/* Edit Indicator */}
@@ -100,7 +99,9 @@ const PhotoItemWithDynamicText: React.FC<PhotoItemWithDynamicTextProps> = ({
         <Image
           src={
             currentPhotoPath
-              ? formatPath(currentPhotoPath)
+              ? (currentPhotoPath.startsWith("http")
+                ? currentPhotoPath
+                : formatPath(currentPhotoPath))
               : "/assets/placeholder-photo.png"
           }
           alt={capitalizedLabel}
