@@ -6,10 +6,10 @@ import {
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbSeparator,
-} from "../ui/breadcrumb";
+} from "../../components/ui/breadcrumb";
 import { usePathname } from "next/navigation";
 import { useAppSelector } from "../../lib/store";
-import { ThemeToggle } from "../ui/ThemeToggle";
+import { ThemeToggle } from "../../components/ui/ThemeToggle";
 
 const Header = () => {
   const currentTime = new Date().toLocaleTimeString("id-ID", {
@@ -128,10 +128,11 @@ const BreadcrumbComponent = () => {
                 <BreadcrumbItem>
                   <BreadcrumbLink
                     href={href}
-                    className={`font-medium transition-colors ${isLast
+                    className={`font-medium transition-colors ${
+                      isLast
                         ? "text-orange-600 dark:text-orange-400 cursor-default"
                         : "text-gray-600 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400"
-                      }`}
+                    }`}
                   >
                     {getBreadcrumbLabel(item)}
                   </BreadcrumbLink>

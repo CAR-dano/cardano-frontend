@@ -9,7 +9,7 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
+} from "../../components/ui/select";
 
 interface FormDropdownInputProps {
   label: string;

@@ -1,4 +1,4 @@
-import apiClient from "../../services/apiClient";
+import apiClient from "../../../lib/services/apiClient";
 import { format } from "date-fns";
 import { DateRange } from "react-day-picker";
 

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import useAuth from "../../hooks/useAuth";
-import LoadingScreen from "../LoadingFullScreen";
+import LoadingScreen from "../../components/LoadingFullScreen";
 import { toast } from "../../hooks/use-toast";
 
 interface AuthGuardProps {

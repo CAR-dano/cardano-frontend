@@ -7,7 +7,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "../ui/alert-dialog";
+} from "../../components/ui/alert-dialog";
 import SecondaryButton from "../Button/SecondaryButton";
 
 interface ModalDeleteProps {

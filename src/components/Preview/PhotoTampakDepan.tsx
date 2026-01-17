@@ -58,17 +58,17 @@ const PhotoTampakDepan: React.FC<PhotoTampakDepanProps> = ({
 
   const formatPath = (path: string) => {
     if (!path) return "/assets/placeholder-photo.png";
-    if (path.startsWith("http")) return path;
     return `${PHOTO_URL}/uploads/inspection-photos/${path}`;
   };
 
   return (
     <>
       <div
-        className={`w-1/2 bg-[#B2BEB5] border-r-2 border-black h-48 ${editable
-          ? "cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800  transition-colors duration-200 relative group"
-          : ""
-          }`}
+        className={`w-1/2 bg-[#B2BEB5] border-r-2 border-black h-48 ${
+          editable
+            ? "cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800  transition-colors duration-200 relative group"
+            : ""
+        }`}
         onClick={handleClick}
       >
         <Image

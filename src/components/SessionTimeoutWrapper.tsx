@@ -2,7 +2,7 @@
 
 import React from "react";
 import useAuth from "../hooks/useAuth";
-import SessionTimeoutDialog from "./Dialog/SessionTimeoutDialog";
+import SessionTimeoutDialog from "../components/Dialog/SessionTimeoutDialog";
 
 interface SessionTimeoutWrapperProps {
   children: React.ReactNode;

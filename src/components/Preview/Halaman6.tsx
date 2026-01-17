@@ -17,7 +17,7 @@ interface Halaman6Props {
 const Halaman6: React.FC<Halaman6Props> = ({
   data,
   editable,
-  onClick = () => { },
+  onClick = () => {},
   inspectionId = "",
   onPhotoUpdate,
 }) => {
@@ -55,7 +55,7 @@ const Halaman6: React.FC<Halaman6Props> = ({
 
   const formatPath = (path: string) => {
     if (!path) return "/assets/placeholder-photo.png";
-    if (path.startsWith("http")) return path;
+
     return PHOTO_URL + "/uploads/inspection-photos/" + path;
   };
 
@@ -114,23 +114,26 @@ const Halaman6: React.FC<Halaman6Props> = ({
                 subFieldName: "toolsTest",
                 subsubfieldname: "catatan",
                 type: "penilaian-array",
-                onClose: () => { },
+                onClose: () => {},
               })
             }
-            className={`text-[12px] px-1 mt-1 font-semibold flex min-h-[55px] ${editable ? "cursor-pointer group hover:bg-[#F4622F]" : ""
-              }`}
+            className={`text-[12px] px-1 mt-1 font-semibold flex min-h-[55px] ${
+              editable ? "cursor-pointer group hover:bg-[#F4622F]" : ""
+            }`}
           >
             *Catatan:
             {data.toolsTest.catatan && data.toolsTest.catatan.length > 0 ? (
               <div
-                className={`text-[12px] font-semibold flex ${data.toolsTest.catatan.length >= 3
+                className={`text-[12px] font-semibold flex ${
+                  data.toolsTest.catatan.length >= 3
                     ? "flex-row flex-wrap"
                     : "flex-col justify-center items-center"
-                  } ${editable ? "group-hover:text-white" : ""}`}
+                } ${editable ? "group-hover:text-white" : ""}`}
               >
                 <ol
-                  className={`list-disc pl-5 ${data.toolsTest.catatan.length >= 3 ? "w-1/2" : "w-full"
-                    }`}
+                  className={`list-disc pl-5 ${
+                    data.toolsTest.catatan.length >= 3 ? "w-1/2" : "w-full"
+                  }`}
                 >
                   {data.toolsTest.catatan
                     .slice(

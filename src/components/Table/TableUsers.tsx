@@ -7,12 +7,12 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../ui/table";
+} from "../../components/ui/table";
 import SecondaryButton from "../Button/SecondaryButton";
 import { useDispatch } from "react-redux";
 import { AppDispatch, useAppSelector } from "../../lib/store";
 import DialogEditRole from "../Form/DialogEditRole";
-import LoadingScreen from "../LoadingFullScreen";
+import LoadingScreen from "../../components/LoadingFullScreen";
 import { updateRole } from "../../lib/features/admin/adminSlice";
 
 const TableData = ({ data, handleRefresh }: any) => {
@@ -92,10 +92,11 @@ const TableData = ({ data, handleRefresh }: any) => {
             data.map((item: any, index: number) => (
               <TableRow
                 key={item.id}
-                className={`hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150 ${index !== data.length - 1
+                className={`hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150 ${
+                  index !== data.length - 1
                     ? "border-b border-gray-100 dark:border-gray-700"
                     : ""
-                  }`}
+                }`}
               >
                 <TableCell className="py-4 px-6">
                   <div className="flex items-center space-x-3">

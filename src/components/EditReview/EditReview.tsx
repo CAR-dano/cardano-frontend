@@ -1,12 +1,12 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import "./style.css";
-import Halaman1 from "../Preview/Halaman1";
-import Halaman2 from "../Preview/Halaman2";
-import Halaman3 from "../Preview/Halaman3";
-import Halaman4 from "../Preview/Halaman4";
-import Halaman5 from "../Preview/Halaman5";
-import Halaman6 from "../Preview/Halaman6";
+import Halaman1 from "../../components/Preview/Halaman1";
+import Halaman2 from "../../components/Preview/Halaman2";
+import Halaman3 from "../../components/Preview/Halaman3";
+import Halaman4 from "../../components/Preview/Halaman4";
+import Halaman5 from "../../components/Preview/Halaman5";
+import Halaman6 from "../../components/Preview/Halaman6";
 import Halaman8 from "../Preview/Halaman8";
 import Halaman7 from "../Preview/Halaman7";
 import HalamanExteriorPhoto from "../Preview/HalamanExteriorPhoto";
@@ -827,17 +827,19 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
               <button
                 key={page.id}
                 onClick={() => goToPage(page.id)}
-                className={`flex-shrink-0 px-4 py-3 text-sm font-medium transition-colors duration-200 border-b-2 ${currentPage === page.id
+                className={`flex-shrink-0 px-4 py-3 text-sm font-medium transition-colors duration-200 border-b-2 ${
+                  currentPage === page.id
                     ? "border-blue-500 dark:border-blue-600 text-blue-600 dark:text-blue-300 bg-blue-50 dark:bg-blue-900"
                     : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700"
-                  }`}
+                }`}
               >
                 <div className="flex items-center space-x-2">
                   <span
-                    className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${currentPage === page.id
+                    className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                      currentPage === page.id
                         ? "bg-blue-500 dark:bg-blue-600 text-white"
                         : "bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
-                      }`}
+                    }`}
                   >
                     {page.id}
                   </span>
@@ -869,10 +871,11 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
               <button
                 onClick={prevPage}
                 disabled={currentPage === 1}
-                className={`flex-shrink-0 inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md transition-colors duration-200 ${currentPage === 1
+                className={`flex-shrink-0 inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md transition-colors duration-200 ${
+                  currentPage === 1
                     ? "text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-700 cursor-not-allowed"
                     : "text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-blue-600"
-                  }`}
+                }`}
               >
                 <svg
                   className="w-4 h-4 mr-2"
@@ -896,10 +899,11 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
                   pages.map((_, index) => (
                     <div
                       key={index}
-                      className={`w-2 h-2 rounded-full transition-colors duration-200 ${index + 1 === currentPage
+                      className={`w-2 h-2 rounded-full transition-colors duration-200 ${
+                        index + 1 === currentPage
                           ? "bg-blue-500 dark:bg-blue-600"
                           : "bg-gray-300 dark:bg-gray-600"
-                        }`}
+                      }`}
                     />
                   ))
                 ) : (
@@ -912,10 +916,11 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
               <button
                 onClick={nextPage}
                 disabled={currentPage === pages.length}
-                className={`flex-shrink-0 inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md transition-colors duration-200 ${currentPage === pages.length
+                className={`flex-shrink-0 inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md transition-colors duration-200 ${
+                  currentPage === pages.length
                     ? "text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-700 cursor-not-allowed"
                     : "text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-blue-600"
-                  }`}
+                }`}
               >
                 Selanjutnya
                 <svg

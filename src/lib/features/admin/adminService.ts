@@ -1,4 +1,4 @@
-import apiClient from "../../services/apiClient";
+import apiClient from "../../../lib/services/apiClient";
 const LOCAL_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const getAllUsers = async (token: string) => {

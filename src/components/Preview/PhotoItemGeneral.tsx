@@ -67,10 +67,11 @@ const PhotoItemGeneral: React.FC<PhotoItemGeneralProps> = ({
   return (
     <>
       <div
-        className={`text-black flex items-center justify-center flex-col ${editable
+        className={`text-black flex items-center justify-center flex-col ${
+          editable
             ? "cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors duration-200 relative group"
             : ""
-          }`}
+        }`}
         onClick={handleClick}
       >
         {/* Edit Indicator */}
@@ -103,13 +104,8 @@ const PhotoItemGeneral: React.FC<PhotoItemGeneralProps> = ({
         )}
 
         <Image
-          unoptimized
           src={
-            item.path
-              ? (item.path.startsWith("http")
-                ? item.path
-                : formatPath(item.path))
-              : "/assets/placeholder-photo.png"
+            item.path ? formatPath(item.path) : "/assets/placeholder-photo.png"
           }
           alt={capitalizedLabel}
           width={isLandscape ? 500 : 220}

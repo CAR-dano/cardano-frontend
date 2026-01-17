@@ -14,13 +14,13 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../ui/card";
+} from "../../components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "../ui/chart";
+} from "../../components/ui/chart";
 
 import { AiOutlineLineChart } from "react-icons/ai";
 import { IoBarChart } from "react-icons/io5";
@@ -62,20 +62,22 @@ export function CustomBarChart({
           <div className="flex rounded-md mb-4">
             <button
               onClick={() => setActiveChartType && setActiveChartType("bar")}
-              className={`p-2 rounded-l-md border border-gray-300 dark:border-gray-700 ${activeChartType === "bar"
+              className={`p-2 rounded-l-md border border-gray-300 dark:border-gray-700 ${
+                activeChartType === "bar"
                   ? "bg-blue-500 text-white"
                   : "bg-white text-gray-800 dark:bg-gray-800 dark:text-gray-200"
-                }`}
+              }`}
               aria-label="Bar Chart"
             >
               <IoBarChart className="w-5 h-5" />
             </button>
             <button
               onClick={() => setActiveChartType && setActiveChartType("line")}
-              className={`p-2 rounded-r-md border border-l-0 border-gray-300 dark:border-gray-700 ${activeChartType === "line"
+              className={`p-2 rounded-r-md border border-l-0 border-gray-300 dark:border-gray-700 ${
+                activeChartType === "line"
                   ? "bg-blue-500 text-white"
                   : "bg-white text-gray-800 dark:bg-gray-800 dark:text-gray-200"
-                }`}
+              }`}
               aria-label="Line Chart"
             >
               <AiOutlineLineChart className="w-5 h-5" />

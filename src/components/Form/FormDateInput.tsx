@@ -5,13 +5,13 @@ import { format, parseISO } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 
 import { cn } from "../../lib/utils";
-import { Button } from "../ui/button";
-import { Calendar } from "../ui/calendar";
+import { Button } from "../../components/ui/button";
+import { Calendar } from "../../components/ui/calendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "../ui/popover";
+} from "../../components/ui/popover";
 import { Label } from "../ui/label";
 import { useTheme } from "../../contexts/ThemeContext";
 
@@ -54,16 +54,16 @@ function DatePickerDemo({
   const [date, setDate] = React.useState<Date | undefined>(
     value
       ? (() => {
-        const parsed = parseISO(value);
-        // Create a Date object representing UTC midnight of the parsed date's UTC day
-        return new Date(
-          Date.UTC(
-            parsed.getUTCFullYear(),
-            parsed.getUTCMonth(),
-            parsed.getUTCDate()
-          )
-        );
-      })()
+          const parsed = parseISO(value);
+          // Create a Date object representing UTC midnight of the parsed date's UTC day
+          return new Date(
+            Date.UTC(
+              parsed.getUTCFullYear(),
+              parsed.getUTCMonth(),
+              parsed.getUTCDate()
+            )
+          );
+        })()
       : undefined
   );
   const [isPopoverOpen, setIsPopoverOpen] = React.useState(false); // State to control popover open/close
@@ -75,16 +75,16 @@ function DatePickerDemo({
     setDate(
       value
         ? (() => {
-          const parsed = parseISO(value);
-          // Create a Date object representing UTC midnight of the parsed date's UTC day
-          return new Date(
-            Date.UTC(
-              parsed.getUTCFullYear(),
-              parsed.getUTCMonth(),
-              parsed.getUTCDate()
-            )
-          );
-        })()
+            const parsed = parseISO(value);
+            // Create a Date object representing UTC midnight of the parsed date's UTC day
+            return new Date(
+              Date.UTC(
+                parsed.getUTCFullYear(),
+                parsed.getUTCMonth(),
+                parsed.getUTCDate()
+              )
+            );
+          })()
         : undefined
     );
   }, [value]);
@@ -111,7 +111,7 @@ function DatePickerDemo({
             "w-full justify-start text-left font-normal py-2 mt-2 h-12",
             !date && "text-muted-foreground",
             isDarkModeEnabled &&
-            "dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600"
+              "dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600"
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />

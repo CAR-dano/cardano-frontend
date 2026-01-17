@@ -7,7 +7,7 @@ import {
   checkToken,
   setAuthInitialized,
 } from "../../lib/features/auth/authSlice";
-import LoadingScreen from "../LoadingFullScreen";
+import LoadingScreen from "../../components/LoadingFullScreen";
 
 interface AuthInitializerProps {
   children: React.ReactNode;

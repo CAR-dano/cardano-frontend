@@ -2,13 +2,13 @@ import * as React from "react";
 import { TrendingUp, TrendingDown } from "lucide-react";
 import { Label, Pie, PieChart } from "recharts";
 
-import { Card, CardContent } from "../ui/card";
+import { Card, CardContent } from "../../components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "../ui/chart";
+} from "../../components/ui/chart";
 
 interface PieChartProps {
   data: { name: string; value: number; fill: string }[];
@@ -93,8 +93,9 @@ export function PieChartComponent({
 
                         {/* Icon */}
                         <g
-                          transform={`translate(${iconX}, ${thirdLineY - iconSize / 2
-                            })`}
+                          transform={`translate(${iconX}, ${
+                            thirdLineY - iconSize / 2
+                          })`}
                         >
                           {totalChanges.startsWith("+") ? (
                             <TrendingUp className="h-4 w-4 text-green-500" />

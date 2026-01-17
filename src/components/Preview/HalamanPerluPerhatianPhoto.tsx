@@ -13,7 +13,7 @@ interface HalamanPerluPerhatianPhotoProps {
 const HalamanPerluPerhatianPhoto: React.FC<HalamanPerluPerhatianPhotoProps> = ({
   data,
   editable,
-  onClick = () => { },
+  onClick = () => {},
   inspectionId = "",
 }) => {
   if (data == undefined || data == null) {
@@ -24,7 +24,7 @@ const HalamanPerluPerhatianPhoto: React.FC<HalamanPerluPerhatianPhotoProps> = ({
 
   const formatPath = (path: string) => {
     if (!path) return "/assets/placeholder-photo.png";
-    if (path.startsWith("http")) return path;
+
     return PHOTO_URL + "/uploads/inspection-photos/" + path;
   };
 
