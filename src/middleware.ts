@@ -9,64 +9,57 @@ export function middleware(_request: NextRequest) {
   // Clone the response
   const response = NextResponse.next();
 
-  // Get the nonce for CSP (you can generate this dynamically per request if needed)
-  const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
-
-  // Content Security Policy - Strict policy to prevent XSS attacks
-  // Note: You may need to adjust these based on your specific needs
+  // Content Security Policy - Relaxed for Next.js compatibility
+  // Next.js requires 'unsafe-eval' and 'unsafe-inline' for proper functioning
   const cspDirectives = [
     "default-src 'self'",
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'`,
-    "style-src 'self' 'unsafe-inline'", // unsafe-inline needed for styled-components/emotion
-    "img-src 'self' data: blob: https://images.unsplash.com https://plus.unsplash.com https://images.autofun.co.id https://s3-alpha-sig.figma.com https://i.ibb.co.com https://api.inspeksimobil.id https://staging-api.inspeksimobil.id http://31.220.81.182 http://69.62.80.7",
+    "script-src 'self' 'unsafe-eval' 'unsafe-inline'", // Required for Next.js
+    "style-src 'self' 'unsafe-inline'", // Required for CSS-in-JS
+    "img-src 'self' data: blob: https: http:", // Allow images from CDNs
     "font-src 'self' data:",
-    "connect-src 'self' https://api.inspeksimobil.id https://staging-api.inspeksimobil.id http://31.220.81.182 http://69.62.80.7",
+    "connect-src 'self' https://prod-api.inspeksimobil.id https://staging-api.inspeksimobil.id https://api.inspeksimobil.id http://31.220.81.182 http://69.62.80.7 http://147.93.81.117 http://localhost:3010 http://localhost:3012 https://sl-car-dano.s3.us-east-005.backblazeb2.com",
     "frame-ancestors 'none'",
     "base-uri 'self'",
     "form-action 'self'",
     "object-src 'none'",
     "worker-src 'self' blob:",
     "manifest-src 'self'",
-    "upgrade-insecure-requests",
   ].join("; ");
 
   // Security Headers
   const securityHeaders = {
     // Prevent clickjacking attacks
     "X-Frame-Options": "DENY",
-    
+
     // Prevent MIME type sniffing
     "X-Content-Type-Options": "nosniff",
-    
+
     // Enable XSS protection in older browsers
     "X-XSS-Protection": "1; mode=block",
-    
+
     // Control referrer information
     "Referrer-Policy": "strict-origin-when-cross-origin",
-    
+
     // Permissions Policy (formerly Feature Policy)
     "Permissions-Policy": "camera=(), microphone=(), geolocation=(), interest-cohort=()",
-    
+
     // Strict Transport Security (HSTS) - Force HTTPS
     // max-age is set to 1 year, includeSubDomains ensures all subdomains use HTTPS
     "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
-    
+
     // Content Security Policy
     "Content-Security-Policy": cspDirectives,
-    
+
     // Cross-Origin policies for additional isolation
     "Cross-Origin-Opener-Policy": "same-origin",
-    "Cross-Origin-Embedder-Policy": "require-corp",
-    "Cross-Origin-Resource-Policy": "same-origin",
+    "Cross-Origin-Embedder-Policy": "unsafe-none",
+    "Cross-Origin-Resource-Policy": "cross-origin",
   };
 
   // Apply security headers to the response
   Object.entries(securityHeaders).forEach(([key, value]) => {
     response.headers.set(key, value);
   });
-
-  // Add nonce to request headers for use in pages
-  response.headers.set("x-nonce", nonce);
 
   return response;
 }
