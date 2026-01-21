@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import FormEditPhoto from "../Form/FormEditPhoto";
-import Image from "next/image";
 
 interface PhotoItemWithDynamicTextProps {
   item: {
@@ -58,6 +57,15 @@ const PhotoItemWithDynamicText: React.FC<PhotoItemWithDynamicTextProps> = ({
     onPhotoUpdate?.(item.id, data);
   };
 
+  const handleImageError = (event: React.SyntheticEvent<HTMLImageElement>) => {
+    const target = event.currentTarget;
+    if (target.dataset.fallbackApplied === "true") {
+      return;
+    }
+    target.dataset.fallbackApplied = "true";
+    target.src = "/assets/placeholder-photo.png";
+  };
+
   return (
     <>
       <div
@@ -97,17 +105,18 @@ const PhotoItemWithDynamicText: React.FC<PhotoItemWithDynamicTextProps> = ({
           </div>
         )}
 
-        <Image
+        <img
           src={
             currentPhotoPath
               ? formatPath(currentPhotoPath)
               : "/assets/placeholder-photo.png"
           }
           alt={capitalizedLabel}
-          width={220}
-          height={165}
-          className="w-[220px] h-[165px] object-cover "
+          className="w-[220px] h-[165px] object-cover"
           key={currentPhotoPath} // Force re-render when path changes
+          loading="lazy"
+          decoding="async"
+          onError={handleImageError}
         />
 
         {/* Status Indicators */}
