@@ -56,8 +56,7 @@ export function middleware(_request: NextRequest) {
     
     // Cross-Origin policies for additional isolation
     "Cross-Origin-Opener-Policy": "same-origin",
-    "Cross-Origin-Embedder-Policy": "require-corp",
-    "Cross-Origin-Resource-Policy": "same-origin",
+    "Cross-Origin-Resource-Policy": "cross-origin",
   };
 
   // Apply security headers to the response
