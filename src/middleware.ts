@@ -16,7 +16,7 @@ export function middleware(_request: NextRequest) {
   // Note: You may need to adjust these based on your specific needs
   const cspDirectives = [
     "default-src 'self'",
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'`,
+    `script-src 'self' 'nonce-${nonce}' 'unsafe-inline'`,
     "style-src 'self' 'unsafe-inline'", // unsafe-inline needed for styled-components/emotion
     "img-src 'self' data: blob: https://images.unsplash.com https://plus.unsplash.com https://images.autofun.co.id https://s3-alpha-sig.figma.com https://i.ibb.co.com https://api.inspeksimobil.id https://staging-api.inspeksimobil.id http://31.220.81.182 http://69.62.80.7",
     "font-src 'self' data:",
