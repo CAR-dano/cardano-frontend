@@ -54,9 +54,6 @@ export function middleware(_request: NextRequest) {
     // Content Security Policy
     "Content-Security-Policy": cspDirectives,
     
-    // Cross-Origin policies for additional isolation
-    "Cross-Origin-Opener-Policy": "same-origin",
-    "Cross-Origin-Resource-Policy": "cross-origin",
   };
 
   // Apply security headers to the response
