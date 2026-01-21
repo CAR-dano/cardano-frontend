@@ -3,6 +3,7 @@ import Header from "./Header";
 import Footer from "./Footer";
 import PenilaianHasil from "./PenilaianHasil";
 import PhotoGeneralItem from "./PhotoGeneralItem";
+import Image from "next/image";
 import AddPhotoDialog from "./AddPhotoDialog";
 
 interface Halaman6Props {

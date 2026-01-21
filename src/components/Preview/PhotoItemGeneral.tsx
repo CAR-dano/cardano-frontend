@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import FormEditPhoto from "../Form/FormEditPhoto";
+import Image from "next/image";
 
 interface PhotoItemGeneralProps {
   item: {
@@ -63,15 +64,6 @@ const PhotoItemGeneral: React.FC<PhotoItemGeneralProps> = ({
     onPhotoUpdate?.(item.id, data);
   };
 
-  const handleImageError = (event: React.SyntheticEvent<HTMLImageElement>) => {
-    const target = event.currentTarget;
-    if (target.dataset.fallbackApplied === "true") {
-      return;
-    }
-    target.dataset.fallbackApplied = "true";
-    target.src = "/assets/placeholder-photo.png";
-  };
-
   return (
     <>
       <div
@@ -111,19 +103,18 @@ const PhotoItemGeneral: React.FC<PhotoItemGeneralProps> = ({
           </div>
         )}
 
-        <img
+        <Image
           src={
             item.path ? formatPath(item.path) : "/assets/placeholder-photo.png"
           }
           alt={capitalizedLabel}
+          width={isLandscape ? 500 : 220}
+          height={isLandscape ? 375 : 150}
           className={
             isLandscape
               ? "w-[500px] h-[375px] object-cover"
               : "w-[220px] h-[150px] object-cover"
           }
-          loading="lazy"
-          decoding="async"
-          onError={handleImageError}
         />
 
         {/* Status Indicators */}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import FormEditPhoto from "../Form/FormEditPhoto";
+import Image from "next/image";
 
 interface PhotoTampakDepanProps {
   item: {
@@ -60,15 +61,6 @@ const PhotoTampakDepan: React.FC<PhotoTampakDepanProps> = ({
     return `${PHOTO_URL}/uploads/inspection-photos/${path}`;
   };
 
-  const handleImageError = (event: React.SyntheticEvent<HTMLImageElement>) => {
-    const target = event.currentTarget;
-    if (target.dataset.fallbackApplied === "true") {
-      return;
-    }
-    target.dataset.fallbackApplied = "true";
-    target.src = "/assets/placeholder-photo.png";
-  };
-
   return (
     <>
       <div
@@ -79,14 +71,13 @@ const PhotoTampakDepan: React.FC<PhotoTampakDepanProps> = ({
         }`}
         onClick={handleClick}
       >
-        <img
+        <Image
           src={formatPath(currentPhotoPath)}
           alt={capitalizedLabel}
-          className="mx-auto w-[90%] h-full object-cover"
+          width={200}
+          height={200}
+          className="mx-auto w-[90%] h-full object-cover "
           key={currentPhotoPath}
-          loading="lazy"
-          decoding="async"
-          onError={handleImageError}
         />
       </div>
 

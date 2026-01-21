@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import FormEditPhoto from "../Form/FormEditPhoto";
+import Image from "next/image";
 
 interface PhotoItemPerluPerhatianProps {
   item: {
@@ -57,15 +58,6 @@ const PhotoItemPerluPerhatian: React.FC<PhotoItemPerluPerhatianProps> = ({
     onPhotoUpdate?.(item.id, data);
   };
 
-  const handleImageError = (event: React.SyntheticEvent<HTMLImageElement>) => {
-    const target = event.currentTarget;
-    if (target.dataset.fallbackApplied === "true") {
-      return;
-    }
-    target.dataset.fallbackApplied = "true";
-    target.src = "/assets/placeholder-photo.png";
-  };
-
   return (
     <>
       <div
@@ -105,18 +97,17 @@ const PhotoItemPerluPerhatian: React.FC<PhotoItemPerluPerhatianProps> = ({
           </div>
         )}
 
-        <img
+        <Image
           src={
             currentPhotoPath
               ? formatPath(currentPhotoPath)
               : "/assets/placeholder-photo.png"
           }
           alt={capitalizedLabel}
-          className="w-[220px] h-[150px] object-cover"
+          width={220}
+          height={150}
+          className="w-[220px] h-[150px] object-cover "
           key={currentPhotoPath} // Force re-render when path changes
-          loading="lazy"
-          decoding="async"
-          onError={handleImageError}
         />
         <p className="w-[220px] h-[48px] overflow-hidden text-center font-semibold mt-2 text-base break-words">
           {capitalizedLabel}
