@@ -182,7 +182,7 @@ const generateInspectorPin = async (id: string, token: string) => {
 
 const createBranch = async (city: string, token: string) => {
   const response = await apiClient.post(
-    `${LOCAL_API_URL}/inspection-branches`,
+    `/inspection-branches`,
     { city },
     {
       headers: {

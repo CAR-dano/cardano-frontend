@@ -105,7 +105,7 @@ const logout = async () => {
 };
 
 // // const updateProfile = async (userData: User) => {
-// //   const response = await axios.put(`${LOCAL_API_URL}/auth/profile`, userData, {
+// //   const response = await axios.put(`/auth/login/inspector`, userData, {
 // //     headers: {
 // //       "content-type": "application/json",
 // //     },
