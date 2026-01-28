@@ -39,7 +39,7 @@ export function middleware(_request: NextRequest) {
     "default-src 'self'",
     "script-src 'self' 'unsafe-inline'",
     "style-src 'self' 'unsafe-inline'", // unsafe-inline needed for styled-components/emotion
-    "img-src 'self' data: blob: https://images.unsplash.com https://plus.unsplash.com https://images.autofun.co.id https://s3-alpha-sig.figma.com https://i.ibb.co.com https://api.inspeksimobil.id https://staging-api.inspeksimobil.id http://31.220.81.182 http://76.13.21.243",
+    "img-src 'self' data: blob: https://images.unsplash.com https://plus.unsplash.com https://images.autofun.co.id https://s3-alpha-sig.figma.com https://i.ibb.co.com https://api.inspeksimobil.id https://staging-api.inspeksimobil.id https://f005.backblazeb2.com https://s3.us-east-005.backblazeb2.com http://31.220.81.182 http://76.13.21.243",
     "font-src 'self' data:",
     `connect-src ${connectSrc}`,
     "frame-ancestors 'none'",

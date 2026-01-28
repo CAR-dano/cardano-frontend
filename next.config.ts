@@ -109,6 +109,14 @@ const nextConfig: NextConfig = {
         hostname: "staging-api.inspeksimobil.id",
       },
       {
+        protocol: "https",
+        hostname: "f005.backblazeb2.com",
+      },
+      {
+        protocol: "https",
+        hostname: "s3.us-east-005.backblazeb2.com",
+      },
+      {
         protocol: "http",
         hostname: "localhost",
         port: "3010",
