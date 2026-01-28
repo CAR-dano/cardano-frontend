@@ -8,6 +8,7 @@ import {
   createAdminUser,
   createInspectorUser,
   deleteUser,
+  generateInspectorPin,
   getAllBranches,
   getAllUsers,
   updateInspector,
@@ -52,10 +53,21 @@ import {
   FaTrash,
   FaUserShield,
   FaCheckCircle,
+  FaInfoCircle,
 } from "react-icons/fa";
 import { useToast } from "../../../components/ui/use-toast";
 import { DeleteConfirmationDialog } from "../../../components/Dialog/DeleteConfirmationDialog";
 import { InspectorPinDialog } from "../../../components/Dialog/InspectorPinDialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "../../../components/ui/alert-dialog";
 
 interface AdminUser {
   id: string;
@@ -67,6 +79,7 @@ interface AdminUser {
   role: string;
   isActive?: boolean;
   createdAt?: string;
+  updatedAt?: string;
   inspectionBranchCity?: {
     id: string;
     city?: string | null;
@@ -84,6 +97,15 @@ const UserManagementPage = () => {
   const { toast } = useToast();
 
   const [searchTerm, setSearchTerm] = useState("");
+  const [roleFilter, setRoleFilter] = useState<string>("all");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [branchFilter, setBranchFilter] = useState<string>("all");
+  const [dateFrom, setDateFrom] = useState<string>("");
+  const [dateTo, setDateTo] = useState<string>("");
+  const [sortKey, setSortKey] = useState<string>("createdAt");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const [isCreateDrawerOpen, setIsCreateDrawerOpen] = useState(false);
   const [isViewDrawerOpen, setIsViewDrawerOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -92,6 +114,7 @@ const UserManagementPage = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState<AdminUser | null>(null);
   const [showPinDialog, setShowPinDialog] = useState(false);
+  const [isPinConfirmOpen, setIsPinConfirmOpen] = useState(false);
   const [newInspectorData, setNewInspectorData] = useState<any>(null);
 
   const [createFormData, setCreateFormData] = useState({
@@ -113,6 +136,7 @@ const UserManagementPage = () => {
     whatsappNumber: "",
     inspectionBranchCityId: "",
     isActive: true,
+    pin: "",
   });
 
   const canCreateAdmin = authUser?.role === "SUPERADMIN";
@@ -125,6 +149,24 @@ const UserManagementPage = () => {
     }
     return [] as string[];
   }, [authUser?.role, canCreateAdmin]);
+
+  const roleOptions = useMemo(() => {
+    const roles = new Set<string>();
+    (userList as AdminUser[]).forEach((user) => {
+      if (user.role) roles.add(user.role);
+    });
+    return Array.from(roles).sort();
+  }, [userList]);
+
+  const branchOptions = useMemo(() => {
+    return branchList
+      .filter((branch) => branch.status === "active" || !branch.status)
+      .map((branch) => ({
+        id: branch.id,
+        label: branch.city || branch.name || branch.id,
+        code: branch.code,
+      }));
+  }, [branchList]);
 
   useEffect(() => {
     if (accessToken) {
@@ -151,15 +193,110 @@ const UserManagementPage = () => {
     }
   }, [availableCreateRoles, createFormData.role]);
 
-  const filteredUsers = (userList as AdminUser[]).filter((user) => {
+  const filteredUsers = useMemo(() => {
     const term = searchTerm.toLowerCase();
-    return (
-      (user.name || "").toLowerCase().includes(term) ||
-      (user.email || "").toLowerCase().includes(term) ||
-      (user.username || "").toLowerCase().includes(term) ||
-      (user.role || "").toLowerCase().includes(term)
-    );
-  });
+    const fromDate = dateFrom ? new Date(dateFrom).getTime() : null;
+    const toDate = dateTo ? new Date(dateTo).getTime() : null;
+    return (userList as AdminUser[]).filter((user) => {
+      const matchesTerm =
+        (user.name || "").toLowerCase().includes(term) ||
+        (user.email || "").toLowerCase().includes(term) ||
+        (user.username || "").toLowerCase().includes(term) ||
+        (user.role || "").toLowerCase().includes(term);
+
+      const matchesRole =
+        roleFilter === "all" || (user.role || "").toLowerCase() === roleFilter;
+
+      const matchesStatus =
+        statusFilter === "all" ||
+        (statusFilter === "active" ? user.isActive : !user.isActive);
+
+      const matchesBranch =
+        branchFilter === "all" ||
+        user.inspectionBranchCity?.id === branchFilter;
+
+      const createdAtTime = user.createdAt
+        ? new Date(user.createdAt).getTime()
+        : null;
+
+      const matchesDateRange =
+        (!fromDate || (createdAtTime !== null && createdAtTime >= fromDate)) &&
+        (!toDate || (createdAtTime !== null && createdAtTime <= toDate + 86400000));
+
+      return (
+        matchesTerm &&
+        matchesRole &&
+        matchesStatus &&
+        matchesBranch &&
+        matchesDateRange
+      );
+    });
+  }, [userList, searchTerm, roleFilter, statusFilter, branchFilter, dateFrom, dateTo]);
+
+  const sortedUsers = useMemo(() => {
+    const sorted = [...filteredUsers];
+    const getValue = (user: AdminUser) => {
+      switch (sortKey) {
+        case "name":
+          return user.name || "";
+        case "email":
+          return user.email || "";
+        case "role":
+          return user.role || "";
+        case "status":
+          return user.isActive ? 1 : 0;
+        case "createdAt":
+          return user.createdAt ? new Date(user.createdAt).getTime() : 0;
+        case "updatedAt":
+          return user.updatedAt ? new Date(user.updatedAt).getTime() : 0;
+        default:
+          return user.createdAt ? new Date(user.createdAt).getTime() : 0;
+      }
+    };
+
+    sorted.sort((a, b) => {
+      const aVal = getValue(a);
+      const bVal = getValue(b);
+
+      if (typeof aVal === "string" && typeof bVal === "string") {
+        return sortOrder === "asc"
+          ? aVal.localeCompare(bVal)
+          : bVal.localeCompare(aVal);
+      }
+
+      if (typeof aVal === "number" && typeof bVal === "number") {
+        return sortOrder === "asc" ? aVal - bVal : bVal - aVal;
+      }
+
+      return 0;
+    });
+
+    return sorted;
+  }, [filteredUsers, sortKey, sortOrder]);
+
+  const totalPages = useMemo(() => {
+    return Math.max(1, Math.ceil(sortedUsers.length / pageSize));
+  }, [sortedUsers.length, pageSize]);
+
+  const paginatedUsers = useMemo(() => {
+    const start = (page - 1) * pageSize;
+    return sortedUsers.slice(start, start + pageSize);
+  }, [sortedUsers, page, pageSize]);
+
+  useEffect(() => {
+    if (page > totalPages) {
+      setPage(1);
+    }
+  }, [page, totalPages]);
+
+  const toggleSort = (key: string) => {
+    if (sortKey === key) {
+      setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
+    } else {
+      setSortKey(key);
+      setSortOrder("asc");
+    }
+  };
 
   const activeUserCount = useMemo(() => {
     return (userList as AdminUser[]).filter((user) => user.isActive).length;
@@ -282,6 +419,7 @@ const UserManagementPage = () => {
       whatsappNumber: user.whatsappNumber || "",
       inspectionBranchCityId: user.inspectionBranchCity?.id || "",
       isActive: user.isActive ?? true,
+      pin: "",
     });
     setIsEditing(false);
     setIsViewDrawerOpen(true);
@@ -297,6 +435,7 @@ const UserManagementPage = () => {
       whatsappNumber: selectedUser.whatsappNumber || "",
       inspectionBranchCityId: selectedUser.inspectionBranchCity?.id || "",
       isActive: selectedUser.isActive ?? true,
+      pin: "",
     });
     setSelectedRole(selectedUser.role || "");
     setIsEditing(false);
@@ -306,37 +445,62 @@ const UserManagementPage = () => {
     e.preventDefault();
     if (!selectedUser || !accessToken) return;
 
-    const updates: any = {};
-    const isInspector = selectedUser.role === "INSPECTOR";
     const willBeInspector = selectedRole === "INSPECTOR";
+    const userUpdates: Record<string, any> = {};
+    const inspectorUpdates: Record<string, any> = {};
 
-    if (viewFormData.name !== (selectedUser.name || "")) {
-      updates.name = viewFormData.name;
+    if (willBeInspector && !viewFormData.inspectionBranchCityId) {
+      toast({
+        title: "Branch Required",
+        description: "Please select a branch for the inspector.",
+        variant: "destructive",
+      });
+      return;
     }
-    if (viewFormData.username !== (selectedUser.username || "")) {
-      updates.username = viewFormData.username;
+
+    const nameChanged = viewFormData.name !== (selectedUser.name || "");
+    const usernameChanged = viewFormData.username !== (selectedUser.username || "");
+    const emailChanged = viewFormData.email !== (selectedUser.email || "");
+    const walletChanged = viewFormData.walletAddress !== (selectedUser.walletAddress || "");
+
+    if (willBeInspector) {
+      if (nameChanged) inspectorUpdates.name = viewFormData.name;
+      if (usernameChanged) inspectorUpdates.username = viewFormData.username;
+      if (emailChanged) inspectorUpdates.email = viewFormData.email;
+      if (walletChanged) inspectorUpdates.walletAddress = viewFormData.walletAddress;
+    } else {
+      if (nameChanged) userUpdates.name = viewFormData.name;
+      if (usernameChanged) userUpdates.username = viewFormData.username;
+      if (emailChanged) userUpdates.email = viewFormData.email;
+      if (walletChanged) userUpdates.walletAddress = viewFormData.walletAddress;
     }
-    if (viewFormData.email !== (selectedUser.email || "")) {
-      updates.email = viewFormData.email;
-    }
-    if (viewFormData.walletAddress !== (selectedUser.walletAddress || "")) {
-      updates.walletAddress = viewFormData.walletAddress;
+
+    if (viewFormData.pin) {
+      if (viewFormData.pin.length < 6) {
+        toast({
+          title: "Invalid PIN",
+          description: "PIN must be at least 6 characters.",
+          variant: "destructive",
+        });
+        return;
+      }
+      userUpdates.pin = viewFormData.pin;
     }
 
     if (willBeInspector) {
       if (
         viewFormData.whatsappNumber !== (selectedUser.whatsappNumber || "")
       ) {
-        updates.whatsappNumber = viewFormData.whatsappNumber || undefined;
+        inspectorUpdates.whatsappNumber = viewFormData.whatsappNumber || undefined;
       }
       if (
         viewFormData.inspectionBranchCityId !==
         (selectedUser.inspectionBranchCity?.id || "")
       ) {
-        updates.inspectionBranchCityId = viewFormData.inspectionBranchCityId;
+        inspectorUpdates.inspectionBranchCityId = viewFormData.inspectionBranchCityId;
       }
       if ((selectedUser.isActive ?? true) !== viewFormData.isActive) {
-        updates.isActive = viewFormData.isActive;
+        inspectorUpdates.isActive = viewFormData.isActive;
       }
     }
 
@@ -347,22 +511,29 @@ const UserManagementPage = () => {
         ).unwrap();
       }
 
-      if (Object.keys(updates).length > 0) {
-        if (willBeInspector) {
-          await dispatch(
-            updateInspector({ id: selectedUser.id, data: updates, token: accessToken })
-          ).unwrap();
-        } else {
-          await dispatch(
-            updateUser({ id: selectedUser.id, data: updates, token: accessToken })
-          ).unwrap();
-        }
+      if (Object.keys(inspectorUpdates).length > 0 && willBeInspector) {
+        await dispatch(
+          updateInspector({ id: selectedUser.id, data: inspectorUpdates, token: accessToken })
+        ).unwrap();
+      }
+
+      if (Object.keys(userUpdates).length > 0 && !willBeInspector) {
+        await dispatch(
+          updateUser({ id: selectedUser.id, data: userUpdates, token: accessToken })
+        ).unwrap();
+      }
+
+      if (Object.keys(userUpdates).length > 0 && willBeInspector) {
+        await dispatch(
+          updateUser({ id: selectedUser.id, data: userUpdates, token: accessToken })
+        ).unwrap();
       }
 
       toast({
         title: "User Updated",
         description: "User profile has been updated successfully.",
       });
+      setViewFormData((prev) => ({ ...prev, pin: "" }));
       setIsEditing(false);
       setIsViewDrawerOpen(false);
       dispatch(getAllUsers(accessToken));
@@ -374,6 +545,45 @@ const UserManagementPage = () => {
       });
     }
   };
+
+  const handleGenerateInspectorPin = async () => {
+    if (!selectedUser || !accessToken) return;
+    try {
+      const payload = await dispatch(
+        generateInspectorPin({ id: selectedUser.id, token: accessToken })
+      ).unwrap();
+      setNewInspectorData(payload);
+      setShowPinDialog(true);
+      toast({
+        title: "PIN Generated",
+        description: "A new PIN has been generated for this inspector.",
+      });
+    } catch (err: any) {
+      toast({
+        title: "PIN Generation Failed",
+        description: err || "Failed to generate PIN.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const InfoTooltip = ({ text }: { text: string }) => (
+    <span className="relative inline-flex items-center ml-2 group">
+      <button
+        type="button"
+        aria-label={text}
+        className="inline-flex items-center justify-center w-5 h-5 rounded-full text-gray-400 hover:text-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
+      >
+        <FaInfoCircle className="w-4 h-4" />
+      </button>
+      <span
+        role="tooltip"
+        className="pointer-events-none absolute top-6 left-1/2 -translate-x-1/2 z-50 w-56 rounded-md bg-gray-900 text-white text-xs px-2 py-1 opacity-0 group-hover:opacity-100 transition"
+      >
+        {text}
+      </span>
+    </span>
+  );
 
   const handleDeleteClick = (user: AdminUser) => {
     setUserToDelete(user);
@@ -682,167 +892,272 @@ const UserManagementPage = () => {
           {selectedUser && (
             <form onSubmit={handleUpdateUser}>
               <DrawerHeader>
-                <DrawerTitle>
-                  {isEditing ? "Edit User" : "User Details"}
-                </DrawerTitle>
+                <DrawerTitle>{isEditing ? "Edit User" : "User Details"}</DrawerTitle>
                 <DrawerDescription>
                   {selectedUser.email || selectedUser.username}
                 </DrawerDescription>
               </DrawerHeader>
-              <div className="px-4 space-y-4 max-h-[calc(100vh-220px)] overflow-y-auto">
-                <div className="space-y-2">
-                  <Label htmlFor="edit-name">Full Name</Label>
-                  <Input
-                    id="edit-name"
-                    value={viewFormData.name}
-                    onChange={(e) =>
-                      setViewFormData({ ...viewFormData, name: e.target.value })
-                    }
-                    disabled={!isEditing}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="edit-username">Username</Label>
-                  <Input
-                    id="edit-username"
-                    value={viewFormData.username}
-                    onChange={(e) =>
-                      setViewFormData({
-                        ...viewFormData,
-                        username: e.target.value,
-                      })
-                    }
-                    disabled={!isEditing}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="edit-email">Email</Label>
-                  <Input
-                    id="edit-email"
-                    type="email"
-                    value={viewFormData.email}
-                    onChange={(e) =>
-                      setViewFormData({
-                        ...viewFormData,
-                        email: e.target.value,
-                      })
-                    }
-                    disabled={!isEditing}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="edit-wallet">Wallet Address</Label>
-                  <Input
-                    id="edit-wallet"
-                    value={viewFormData.walletAddress}
-                    onChange={(e) =>
-                      setViewFormData({
-                        ...viewFormData,
-                        walletAddress: e.target.value,
-                      })
-                    }
-                    disabled={!isEditing}
-                  />
-                </div>
-                {(selectedUser.role === "INSPECTOR" || selectedRole === "INSPECTOR") && (
-                  <>
-                    <div className="space-y-2">
-                      <Label htmlFor="edit-whatsapp">WhatsApp Number</Label>
-                      <Input
-                        id="edit-whatsapp"
-                        value={viewFormData.whatsappNumber}
-                        onChange={(e) =>
-                          setViewFormData({
-                            ...viewFormData,
-                            whatsappNumber: e.target.value,
-                          })
-                        }
-                        disabled={!isEditing}
-                      />
+              <div className="px-4 space-y-5 max-h-[calc(100vh-220px)] overflow-y-auto">
+                <div className="rounded-2xl border border-gray-100 dark:border-gray-700 bg-gradient-to-br from-purple-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 p-4">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-blue-600 text-white flex items-center justify-center font-semibold">
+                      {(selectedUser.name || selectedUser.username || "U")
+                        .split(" ")
+                        .map((word) => word && word[0])
+                        .filter(Boolean)
+                        .join("")
+                        .toUpperCase()
+                        .slice(0, 2) || "U"}
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="edit-branch">Branch City</Label>
-                      <Select
-                        value={viewFormData.inspectionBranchCityId}
-                        onValueChange={(value) =>
-                          setViewFormData({
-                            ...viewFormData,
-                            inspectionBranchCityId: value,
-                          })
-                        }
-                        disabled={!isEditing}
+                    <div>
+                      <div className="text-base font-semibold text-gray-900 dark:text-gray-100">
+                        {selectedUser.name || "Name not set"}
+                      </div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                        {selectedUser.email || selectedUser.username}
+                      </div>
+                    </div>
+                    <div className="ml-auto">
+                      <span
+                        className={`px-2.5 py-1 rounded-full text-xs border ${getRoleBadgeStyle(
+                          selectedUser.role || "USER"
+                        )}`}
                       >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a branch" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {isLoading ? (
-                            <SelectItem value="loading" disabled>
-                              Loading branches...
-                            </SelectItem>
-                          ) : branchList.length > 0 ? (
-                            branchList
-                              .filter(
-                                (branch) =>
-                                  branch.status === "active" || !branch.status
-                              )
-                              .map((branch) => (
-                                <SelectItem key={branch.id} value={branch.id}>
-                                  {branch.city || branch.name} {branch.code && `(${branch.code})`}
-                                </SelectItem>
-                              ))
-                          ) : (
-                            <SelectItem value="no-branches" disabled>
-                              No branches available
-                            </SelectItem>
-                          )}
-                        </SelectContent>
-                      </Select>
+                        {selectedUser.role || "USER"}
+                      </span>
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="edit-status">Status</Label>
-                      <Select
-                        value={viewFormData.isActive ? "active" : "inactive"}
-                        onValueChange={(value) =>
-                          setViewFormData({
-                            ...viewFormData,
-                            isActive: value === "active",
-                          })
-                        }
-                        disabled={!isEditing}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="active">Active</SelectItem>
-                          <SelectItem value="inactive">Inactive</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </>
-                )}
+                  </div>
+                </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="edit-role">Role</Label>
-                  <Select
-                    value={selectedRole}
-                    onValueChange={setSelectedRole}
-                    disabled={!isEditing}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select role" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {["SUPERADMIN", "ADMIN", "REVIEWER", "INSPECTOR", "CUSTOMER", "DEVELOPER"].map(
-                        (role) => (
-                          <SelectItem key={role} value={role}>
-                            {role}
-                          </SelectItem>
-                        )
-                      )}
-                    </SelectContent>
-                  </Select>
+                <div className="rounded-2xl border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 space-y-4">
+                  <div className="text-xs uppercase text-gray-400 tracking-wider">Profile</div>
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-name" className="flex items-center">
+                      Full Name
+                      <InfoTooltip text="The user's full display name. Used for reports and dashboard." />
+                    </Label>
+                    <Input
+                      id="edit-name"
+                      value={viewFormData.name}
+                      onChange={(e) =>
+                        setViewFormData({ ...viewFormData, name: e.target.value })
+                      }
+                      disabled={!isEditing}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-username" className="flex items-center">
+                      Username
+                      <InfoTooltip text="Unique username used for login (min 3 characters)." />
+                    </Label>
+                    <Input
+                      id="edit-username"
+                      value={viewFormData.username}
+                      onChange={(e) =>
+                        setViewFormData({
+                          ...viewFormData,
+                          username: e.target.value,
+                        })
+                      }
+                      disabled={!isEditing}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-email" className="flex items-center">
+                      Email
+                      <InfoTooltip text="Primary email address for notifications and access." />
+                    </Label>
+                    <Input
+                      id="edit-email"
+                      type="email"
+                      value={viewFormData.email}
+                      onChange={(e) =>
+                        setViewFormData({
+                          ...viewFormData,
+                          email: e.target.value,
+                        })
+                      }
+                      disabled={!isEditing}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-id" className="flex items-center">
+                      User ID
+                      <InfoTooltip text="System-generated unique identifier (read-only)." />
+                    </Label>
+                    <Input id="edit-id" value={selectedUser?.id || ""} disabled />
+                  </div>
+                </div>
+
+                <div className="rounded-2xl border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 space-y-4">
+                  <div className="text-xs uppercase text-gray-400 tracking-wider">Access & Contact</div>
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-wallet" className="flex items-center">
+                      Wallet Address
+                      <InfoTooltip text="Cardano wallet address linked to this user (optional)." />
+                    </Label>
+                    <Input
+                      id="edit-wallet"
+                      value={viewFormData.walletAddress}
+                      onChange={(e) =>
+                        setViewFormData({
+                          ...viewFormData,
+                          walletAddress: e.target.value,
+                        })
+                      }
+                      disabled={!isEditing}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-updated" className="flex items-center">
+                      Last Updated
+                      <InfoTooltip text="Timestamp for the latest update (read-only)." />
+                    </Label>
+                    <Input
+                      id="edit-updated"
+                      value={
+                        selectedUser?.updatedAt
+                          ? format(new Date(selectedUser.updatedAt), "dd MMM yyyy, HH:mm")
+                          : "-"
+                      }
+                      disabled
+                    />
+                  </div>
+
+                  {(selectedUser.role === "INSPECTOR" || selectedRole === "INSPECTOR") && (
+                    <>
+                      <div className="space-y-2">
+                        <Label htmlFor="edit-whatsapp" className="flex items-center">
+                          WhatsApp Number
+                          <InfoTooltip text="Must start with +62 and be 12–16 digits." />
+                        </Label>
+                        <Input
+                          id="edit-whatsapp"
+                          value={viewFormData.whatsappNumber}
+                          onChange={(e) =>
+                            setViewFormData({
+                              ...viewFormData,
+                              whatsappNumber: e.target.value,
+                            })
+                          }
+                          disabled={!isEditing}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="edit-pin" className="flex items-center">
+                          Inspector PIN (new)
+                          <InfoTooltip text="Set a new 6-digit PIN for inspector login. Leave blank to keep current PIN." />
+                        </Label>
+                        <Input
+                          id="edit-pin"
+                          type="password"
+                          placeholder="Enter new PIN (6 digits)"
+                          value={viewFormData.pin}
+                          onChange={(e) =>
+                            setViewFormData({
+                              ...viewFormData,
+                              pin: e.target.value,
+                            })
+                          }
+                          disabled={!isEditing}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="edit-branch" className="flex items-center">
+                          Branch City
+                          <InfoTooltip text="Select the inspection branch assigned to this inspector." />
+                        </Label>
+                        <Select
+                          value={viewFormData.inspectionBranchCityId}
+                          onValueChange={(value) =>
+                            setViewFormData({
+                              ...viewFormData,
+                              inspectionBranchCityId: value,
+                            })
+                          }
+                          disabled={!isEditing}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a branch" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {isLoading ? (
+                              <SelectItem value="loading" disabled>
+                                Loading branches...
+                              </SelectItem>
+                            ) : branchList.length > 0 ? (
+                              branchList
+                                .filter(
+                                  (branch) =>
+                                    branch.status === "active" || !branch.status
+                                )
+                                .map((branch) => (
+                                  <SelectItem key={branch.id} value={branch.id}>
+                                    {branch.city || branch.name} {branch.code && `(${branch.code})`}
+                                  </SelectItem>
+                                ))
+                            ) : (
+                              <SelectItem value="no-branches" disabled>
+                                No branches available
+                              </SelectItem>
+                            )}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="edit-status" className="flex items-center">
+                          Status
+                          <InfoTooltip text="Active users can access the system. Inactive users are blocked." />
+                        </Label>
+                        <Select
+                          value={viewFormData.isActive ? "active" : "inactive"}
+                          onValueChange={(value) =>
+                            setViewFormData({
+                              ...viewFormData,
+                              isActive: value === "active",
+                            })
+                          }
+                          disabled={!isEditing}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="active">Active</SelectItem>
+                            <SelectItem value="inactive">Inactive</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                <div className="rounded-2xl border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 space-y-4">
+                  <div className="text-xs uppercase text-gray-400 tracking-wider">Role</div>
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-role" className="flex items-center">
+                      Role
+                      <InfoTooltip text="Controls permissions within the dashboard." />
+                    </Label>
+                    <Select
+                      value={selectedRole}
+                      onValueChange={setSelectedRole}
+                      disabled={!isEditing}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select role" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {["SUPERADMIN", "ADMIN", "REVIEWER", "INSPECTOR", "CUSTOMER", "DEVELOPER"].map(
+                          (role) => (
+                            <SelectItem key={role} value={role}>
+                              {role}
+                            </SelectItem>
+                          )
+                        )}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
               </div>
               <DrawerFooter>
@@ -862,6 +1177,16 @@ const UserManagementPage = () => {
                   </>
                 ) : (
                   <>
+                    {(selectedUser.role === "INSPECTOR" || selectedRole === "INSPECTOR") && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="w-full"
+                        onClick={() => setIsPinConfirmOpen(true)}
+                      >
+                        Generate New PIN
+                      </Button>
+                    )}
                     <Button
                       type="button"
                       className="w-full bg-purple-600 hover:bg-purple-700"
@@ -881,6 +1206,30 @@ const UserManagementPage = () => {
           )}
         </DrawerContent>
       </Drawer>
+
+      <AlertDialog open={isPinConfirmOpen} onOpenChange={setIsPinConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Generate new PIN?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will invalidate the current PIN and immediately replace it.
+              The new PIN must be shared securely with the inspector. Continue
+              only if you understand the risk.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                setIsPinConfirmOpen(false);
+                handleGenerateInspectorPin();
+              }}
+            >
+              Generate PIN
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -940,36 +1289,314 @@ const UserManagementPage = () => {
       </div>
 
       {/* Search */}
-      <div className="relative">
-        <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-        <input
-          type="text"
-          placeholder="Search by name, email, role, or username..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full pl-10 pr-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-transparent transition-all"
-        />
+      <Card className="border-0 shadow-lg bg-white/90 dark:bg-gray-800/80 backdrop-blur">
+        <CardContent className="p-4 md:p-6 space-y-4">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div className="relative w-full lg:max-w-lg">
+              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search by name, email, role, or username..."
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setPage(1);
+                }}
+                className="w-full pl-10 pr-4 py-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-transparent transition-all"
+              />
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  setSearchTerm("");
+                  setRoleFilter("all");
+                  setStatusFilter("all");
+                  setBranchFilter("all");
+                  setDateFrom("");
+                  setDateTo("");
+                  setPage(1);
+                }}
+              >
+                Reset Filters
+              </Button>
+              <div className="min-w-[130px]">
+                <Select
+                  value={String(pageSize)}
+                  onValueChange={(value) => {
+                    setPageSize(Number(value));
+                    setPage(1);
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Rows" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {[5, 10, 20, 50].map((size) => (
+                      <SelectItem key={size} value={String(size)}>
+                        {size} / page
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4">
+            <div>
+              <Label className="text-xs text-gray-500">Role</Label>
+              <Select
+                value={roleFilter}
+                onValueChange={(value) => {
+                  setRoleFilter(value);
+                  setPage(1);
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Filter by role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Roles</SelectItem>
+                  {roleOptions.length > 0
+                    ? roleOptions.map((role) => (
+                        <SelectItem key={role} value={role.toLowerCase()}>
+                          {role}
+                        </SelectItem>
+                      ))
+                    : [
+                        "SUPERADMIN",
+                        "ADMIN",
+                        "REVIEWER",
+                        "INSPECTOR",
+                        "CUSTOMER",
+                        "DEVELOPER",
+                      ].map((role) => (
+                        <SelectItem key={role} value={role.toLowerCase()}>
+                          {role}
+                        </SelectItem>
+                      ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label className="text-xs text-gray-500">Status</Label>
+              <Select
+                value={statusFilter}
+                onValueChange={(value) => {
+                  setStatusFilter(value);
+                  setPage(1);
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Filter by status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Status</SelectItem>
+                  <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="inactive">Inactive</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label className="text-xs text-gray-500">Branch</Label>
+              <Select
+                value={branchFilter}
+                onValueChange={(value) => {
+                  setBranchFilter(value);
+                  setPage(1);
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Filter by branch" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Branches</SelectItem>
+                  {branchOptions.length > 0 ? (
+                    branchOptions.map((branch) => (
+                      <SelectItem key={branch.id} value={branch.id}>
+                        {branch.label} {branch.code ? `(${branch.code})` : ""}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <SelectItem value="none" disabled>
+                      No branches available
+                    </SelectItem>
+                  )}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <Label className="text-xs text-gray-500">From</Label>
+                <Input
+                  type="date"
+                  value={dateFrom}
+                  onChange={(e) => {
+                    setDateFrom(e.target.value);
+                    setPage(1);
+                  }}
+                />
+              </div>
+              <div>
+                <Label className="text-xs text-gray-500">To</Label>
+                <Input
+                  type="date"
+                  value={dateTo}
+                  onChange={(e) => {
+                    setDateTo(e.target.value);
+                    setPage(1);
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Mobile Cards */}
+      <div className="grid gap-4 md:hidden">
+        {paginatedUsers.length === 0 ? (
+          <div className="text-center py-10 text-gray-500">
+            No users found
+          </div>
+        ) : (
+          paginatedUsers.map((user, index) => (
+            <Card key={user.id} className="border-0 shadow-md">
+              <CardContent className="p-4 space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-600 rounded-full flex items-center justify-center text-white font-medium text-sm">
+                    {(user.name || user.username || "U")
+                      .split(" ")
+                      .map((word) => word && word[0])
+                      .filter(Boolean)
+                      .join("")
+                      .toUpperCase()
+                      .slice(0, 2) || "U"}
+                  </div>
+                  <div>
+                    <div className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                      {user.name || "Name not set"}
+                    </div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">
+                      {user.email || "No email"}
+                    </div>
+                  </div>
+                </div>
+                <div className="flex flex-wrap items-center gap-2 text-xs text-gray-600 dark:text-gray-300">
+                  <span className={`px-2 py-1 rounded-full border ${getRoleBadgeStyle(user.role || "USER")}`}>
+                    {user.role || "USER"}
+                  </span>
+                  <span
+                    className={`px-2 py-1 rounded-full ${
+                      user.isActive
+                        ? "bg-green-100 text-green-700"
+                        : "bg-gray-100 text-gray-600"
+                    }`}
+                  >
+                    {user.isActive ? "Active" : "Inactive"}
+                  </span>
+                  <span>
+                    #{(page - 1) * pageSize + index + 1}
+                  </span>
+                </div>
+                <div className="text-xs text-gray-500">
+                  Created: {user.createdAt ? format(new Date(user.createdAt), "dd MMM yyyy") : "-"}
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => handleViewUser(user)}
+                  >
+                    View
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    className="w-full"
+                    onClick={() => handleDeleteClick(user)}
+                  >
+                    Delete
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))
+        )}
       </div>
 
       {/* Table */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-        <Table>
+      <div className="hidden md:block bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div className="overflow-x-auto">
+          <Table>
           <TableHeader>
             <TableRow className="bg-gray-50 dark:bg-gray-900">
-              <TableHead className="text-left font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
-                User
+              <TableHead className="text-left font-semibold text-gray-900 dark:text-gray-100 py-4 px-6 w-[70px]">
+                #
               </TableHead>
               <TableHead className="text-left font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
-                Email
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-2"
+                  onClick={() => toggleSort("name")}
+                >
+                  User
+                  <span className="text-xs text-gray-400">
+                    {sortKey === "name" ? (sortOrder === "asc" ? "▲" : "▼") : ""}
+                  </span>
+                </button>
               </TableHead>
               <TableHead className="text-left font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
-                Role
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-2"
+                  onClick={() => toggleSort("email")}
+                >
+                  Email
+                  <span className="text-xs text-gray-400">
+                    {sortKey === "email" ? (sortOrder === "asc" ? "▲" : "▼") : ""}
+                  </span>
+                </button>
               </TableHead>
               <TableHead className="text-left font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
-                Status
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-2"
+                  onClick={() => toggleSort("role")}
+                >
+                  Role
+                  <span className="text-xs text-gray-400">
+                    {sortKey === "role" ? (sortOrder === "asc" ? "▲" : "▼") : ""}
+                  </span>
+                </button>
               </TableHead>
               <TableHead className="text-left font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
-                Created At
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-2"
+                  onClick={() => toggleSort("status")}
+                >
+                  Status
+                  <span className="text-xs text-gray-400">
+                    {sortKey === "status" ? (sortOrder === "asc" ? "▲" : "▼") : ""}
+                  </span>
+                </button>
+              </TableHead>
+              <TableHead className="text-left font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-2"
+                  onClick={() => toggleSort("createdAt")}
+                >
+                  Created At
+                  <span className="text-xs text-gray-400">
+                    {sortKey === "createdAt" ? (sortOrder === "asc" ? "▲" : "▼") : ""}
+                  </span>
+                </button>
               </TableHead>
               <TableHead className="text-center font-semibold text-gray-900 dark:text-gray-100 py-4 px-6">
                 Actions
@@ -979,13 +1606,13 @@ const UserManagementPage = () => {
           <TableBody>
             {isLoading ? (
               <TableRow>
-                <TableCell colSpan={6} className="p-6">
+                <TableCell colSpan={7} className="p-6">
                   <LoadingSkeleton rows={5} />
                 </TableCell>
               </TableRow>
-            ) : filteredUsers.length === 0 ? (
+            ) : paginatedUsers.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="text-center py-16">
+                <TableCell colSpan={7} className="text-center py-16">
                   <div className="flex flex-col items-center justify-center text-gray-500">
                     <div className="mb-6">
                       <FaUsers className="h-12 w-12 text-gray-300" />
@@ -998,15 +1625,18 @@ const UserManagementPage = () => {
                 </TableCell>
               </TableRow>
             ) : (
-              filteredUsers.map((user, index) => (
+              paginatedUsers.map((user, index) => (
                 <TableRow
                   key={user.id}
                   className={`hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150 ${
-                    index !== filteredUsers.length - 1
+                    index !== paginatedUsers.length - 1
                       ? "border-b border-gray-100 dark:border-gray-700"
                       : ""
                   }`}
                 >
+                  <TableCell className="py-4 px-6 text-gray-600 dark:text-gray-300">
+                    {(page - 1) * pageSize + index + 1}
+                  </TableCell>
                   <TableCell className="py-4 px-6">
                     <div className="flex items-center space-x-3">
                       <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-600 rounded-full flex items-center justify-center text-white font-medium text-sm">
@@ -1078,7 +1708,38 @@ const UserManagementPage = () => {
               ))
             )}
           </TableBody>
-        </Table>
+          </Table>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <div className="text-sm text-gray-600 dark:text-gray-300">
+          {sortedUsers.length === 0
+            ? "Showing 0–0 of 0"
+            : `Showing ${(page - 1) * pageSize + 1}–${Math.min(
+                page * pageSize,
+                sortedUsers.length
+              )} of ${sortedUsers.length}`}
+        </div>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            onClick={() => setPage((prev) => Math.max(1, prev - 1))}
+            disabled={page === 1}
+          >
+            Previous
+          </Button>
+          <div className="px-3 py-2 text-sm text-gray-700 dark:text-gray-200">
+            Page {page} of {totalPages}
+          </div>
+          <Button
+            variant="outline"
+            onClick={() => setPage((prev) => Math.min(totalPages, prev + 1))}
+            disabled={page === totalPages}
+          >
+            Next
+          </Button>
+        </div>
       </div>
     </div>
   );
