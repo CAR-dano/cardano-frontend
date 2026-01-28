@@ -382,8 +382,8 @@ const Dashboard: React.FC = () => {
               />
             )}
           </div>
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-            <div className="lg:col-span-3 border-none h-full">
+          <div className="grid grid-cols-1 lg:grid-cols-6 gap-6">
+            <div className="lg:col-span-4 border-none h-full">
               <BranchDistribution
                 data={combinedDashboardData.branchDistribution}
               />

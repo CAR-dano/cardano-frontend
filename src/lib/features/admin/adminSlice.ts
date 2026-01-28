@@ -15,13 +15,15 @@ export interface Inspector {
 
 export interface Branch {
   id: string;
-  name: string;
+  name?: string;
   code?: string;
   address?: string;
   city?: string;
   phone?: string;
   status?: string;
+  isActive?: boolean;
   createdAt?: string;
+  updateAt?: string;
 }
 
 export interface IAdminState {
@@ -247,6 +249,19 @@ export const generateInspectorPin = createAsyncThunk(
   }
 );
 
+export const createBranch = createAsyncThunk(
+  "admin/createBranch",
+  async ({ city, token }: { city: string; token: string }, thunkAPI) => {
+    try {
+      const payload = await adminService.createBranch(city, token);
+      return payload;
+    } catch (error: any) {
+      const message = error?.response?.data?.message;
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const adminSlice = createSlice({
   name: "admin",
   initialState,
@@ -415,6 +430,22 @@ export const adminSlice = createSlice({
         state.error = null;
       })
       .addCase(generateInspectorPin.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(createBranch.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(
+        createBranch.fulfilled,
+        (state, action: PayloadAction<Branch>) => {
+          state.branchList.push(action.payload);
+          state.isLoading = false;
+          state.error = null;
+        }
+      )
+      .addCase(createBranch.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
       });

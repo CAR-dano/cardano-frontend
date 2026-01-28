@@ -7,14 +7,13 @@ function InspectorPerfomance({
 }) {
   const sortedAndSlicedData = [...data]
     .sort((a, b) => b.totalInspections - a.totalInspections)
-    .slice(0, 10); // Take only the top 10 after sorting
 
   return (
-    <div className="font-inter bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 ">
+    <div className="font-inter bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 h-[600px] flex flex-col">
       <h1 className="text-xl font-medium text-gray-900 dark:text-white mb-2">
         Inspeksi oleh Inspektor
       </h1>
-      <div className="overflow-x-auto">
+      <div className="overflow-y-auto flex-1">
         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
           <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
             {sortedAndSlicedData.map((item, index) => (
