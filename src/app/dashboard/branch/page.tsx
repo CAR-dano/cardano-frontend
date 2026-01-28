@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../lib/store";
-import { getAllBranches } from "../../../lib/features/admin/adminSlice";
+import { getAllBranches, createBranch } from "../../../lib/features/admin/adminSlice";
 import {
   Table,
   TableBody,
@@ -25,16 +25,10 @@ import {
 } from "../../../components/ui/drawer";
 import { Input } from "../../../components/ui/input";
 import { Label } from "../../../components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../../components/ui/select";
 import { LoadingSkeleton } from "../../../components/Loading";
 import { FaBuilding, FaSearch, FaPlus, FaMapMarkerAlt } from "react-icons/fa";
 import { useToast } from "../../../components/ui/use-toast";
+import DialogResult from "../../../components/Dialog/DialogResult";
 
 export default function BranchPage() {
   const dispatch = useAppDispatch();
@@ -42,17 +36,13 @@ export default function BranchPage() {
   const accessToken = useAppSelector((state) => state.auth.accessToken);
   const [searchTerm, setSearchTerm] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false);
+  const [createdBranchData, setCreatedBranchData] = useState<any>(null);
   const { toast } = useToast();
 
   // Form states
   const [formData, setFormData] = useState({
-    name: "",
-    code: "",
-    address: "",
     city: "",
-    phone: "",
-    email: "",
-    managerName: "",
   });
 
   useEffect(() => {
@@ -71,21 +61,52 @@ export default function BranchPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement add branch API call
-    toast({
-      title: "Branch Added",
-      description: "New branch has been added successfully.",
-    });
-    setIsDrawerOpen(false);
-    setFormData({
-      name: "",
-      code: "",
-      address: "",
-      city: "",
-      phone: "",
-      email: "",
-      managerName: "",
-    });
+    if (!formData.city) {
+      toast({
+        title: "Validation Error",
+        description: "Please select a city.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!accessToken) {
+      toast({
+        title: "Authentication Error",
+        description: "You must be logged in to create a branch.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const result = await dispatch(
+        createBranch({
+          city: formData.city,
+          token: accessToken,
+        })
+      ).unwrap();
+
+      setCreatedBranchData(result);
+      setIsDrawerOpen(false);
+      setIsSuccessDialogOpen(true);
+
+      setFormData({
+        city: "",
+      });
+
+      toast({
+        title: "Branch Created",
+        description: "Branch has been created successfully.",
+      });
+    } catch (error) {
+      console.error("Error creating branch:", error);
+      toast({
+        title: "Creation Failed",
+        description: "Failed to create branch.",
+        variant: "destructive",
+      });
+    }
   };
 
   if (error) {
@@ -111,6 +132,19 @@ export default function BranchPage() {
 
   return (
     <div className="space-y-6  min-h-screen">
+      {/* Success Dialog */}
+      <DialogResult
+        title="Branch Created Successfully!"
+        message={`Branch has been created.\n\nCity: ${createdBranchData?.city}\nCode: ${createdBranchData?.code}\nStatus: ${createdBranchData?.isActive ? "Active" : "Inactive"}`}
+        isOpen={isSuccessDialogOpen}
+        isSuccess={true}
+        buttonLabel1="Close"
+        buttonLabel2="View All Branches"
+        action1={() => setIsSuccessDialogOpen(false)}
+        action2={() => setIsSuccessDialogOpen(false)}
+        onClose={() => setIsSuccessDialogOpen(false)}
+      />
+
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -144,96 +178,16 @@ export default function BranchPage() {
                 </DrawerDescription>
               </DrawerHeader>
               <div className="px-4 space-y-4 max-h-[calc(100vh-200px)] overflow-y-auto">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Branch Name</Label>
-                  <Input
-                    id="name"
-                    placeholder="Enter branch name"
-                    value={formData.name}
-                    onChange={(e) =>
-                      setFormData({ ...formData, name: e.target.value })
-                    }
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="code">Branch Code</Label>
-                  <Input
-                    id="code"
-                    placeholder="e.g., JKT-001"
-                    value={formData.code}
-                    onChange={(e) =>
-                      setFormData({ ...formData, code: e.target.value })
-                    }
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="address">Address</Label>
-                  <Input
-                    id="address"
-                    placeholder="Enter branch address"
-                    value={formData.address}
-                    onChange={(e) =>
-                      setFormData({ ...formData, address: e.target.value })
-                    }
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
+                <div className="space-y-2 mb-6">
                   <Label htmlFor="city">City</Label>
-                  <Select
-                    value={formData.city}
-                    onValueChange={(value) =>
-                      setFormData({ ...formData, city: value })
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a city" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Jakarta">Jakarta</SelectItem>
-                      <SelectItem value="Surabaya">Surabaya</SelectItem>
-                      <SelectItem value="Bandung">Bandung</SelectItem>
-                      <SelectItem value="Medan">Medan</SelectItem>
-                      <SelectItem value="Semarang">Semarang</SelectItem>
-                      <SelectItem value="Makassar">Makassar</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Phone Number</Label>
                   <Input
-                    id="phone"
-                    placeholder="+62 xxx xxxx xxxx"
-                    value={formData.phone}
+                    id="city"
+                    placeholder="Enter city name"
+                    value={formData.city}
                     onChange={(e) =>
-                      setFormData({ ...formData, phone: e.target.value })
+                      setFormData({ ...formData, city: e.target.value })
                     }
                     required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="branch@example.com"
-                    value={formData.email}
-                    onChange={(e) =>
-                      setFormData({ ...formData, email: e.target.value })
-                    }
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="managerName">Branch Manager</Label>
-                  <Input
-                    id="managerName"
-                    placeholder="Enter manager name"
-                    value={formData.managerName}
-                    onChange={(e) =>
-                      setFormData({ ...formData, managerName: e.target.value })
-                    }
                   />
                 </div>
               </div>
