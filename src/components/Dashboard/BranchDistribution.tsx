@@ -19,21 +19,68 @@ function BranchDistribution({ data }: any) {
   >([]);
   const [chartConfig, setChartConfig] = useState<ChartConfig>({});
 
-  // User's specified colors and their mapping to branch names
-  const branchColorMap: { [key: string]: string } = {
-    Yogyakarta: "#F24091", // pink-600
-    Semarang: "#8AD357", // green-500
-    Solo: "#30B6ED", // blue-500
-    // Add more branch-color mappings as needed, or a default for others
+  // Predefined color palette for branches (distinct pastel colors)
+  const branchColorPalette = [
+    "#F9A8D4", // pink-300
+    "#86EFAC", // green-300
+    "#93C5FD", // blue-300
+    "#FDE047", // yellow-300
+    "#FCA5A5", // red-300
+    "#D8B4FE", // purple-300
+    "#FED7AA", // orange-300
+    "#67E8F9", // cyan-300
+    "#A5B4FC", // indigo-300
+    "#7DD3FC", // sky-300
+    "#D9F99D", // lime-300
+    "#FDBA74", // amber-300
+  ];
+
+  // Memoized color assignment to ensure each branch gets a unique color
+  const [branchColorAssignments, setBranchColorAssignments] = useState<{
+    [key: string]: string;
+  }>({});
+
+  // Get or assign color for a branch (ensures uniqueness)
+  const getBranchColor = (branchName: string): string => {
+    if (branchColorAssignments[branchName]) {
+      return branchColorAssignments[branchName];
+    }
+
+    // Find the first unused color
+    const usedColors = new Set(Object.values(branchColorAssignments));
+    const availableColor =
+      branchColorPalette.find((color) => !usedColors.has(color)) ||
+      branchColorPalette[0]; // Fallback to first color if all used
+
+    return availableColor;
   };
 
   useEffect(() => {
     if (data && data.branchDistribution) {
+      // First, build color assignments for all branches
+      const newColorAssignments: { [key: string]: string } = {};
+      const usedColors = new Set<string>();
+
+      data.branchDistribution.forEach(
+        (item: { branch: string; count: number }) => {
+          if (!newColorAssignments[item.branch]) {
+            // Find first available color
+            const availableColor =
+              branchColorPalette.find((color) => !usedColors.has(color)) ||
+              branchColorPalette[0];
+            newColorAssignments[item.branch] = availableColor;
+            usedColors.add(availableColor);
+          }
+        }
+      );
+
+      setBranchColorAssignments(newColorAssignments);
+
       const newChartData = data.branchDistribution.map(
         (item: { branch: string; count: number }) => ({
           name: item.branch,
           value: item.count,
-          fill: branchColorMap[item.branch] || "#cccccc", // Fallback to grey
+          fill: newColorAssignments[item.branch],
         })
       );
 
@@ -45,7 +92,7 @@ function BranchDistribution({ data }: any) {
       data.branchDistribution.forEach((item: { branch: string }) => {
         newChartConfig[item.branch.toLowerCase().replace(/\s/g, "")] = {
           label: item.branch,
-          color: branchColorMap[item.branch] || "#cccccc", // Fallback to grey
+          color: newColorAssignments[item.branch],
         };
       });
 
@@ -55,7 +102,7 @@ function BranchDistribution({ data }: any) {
   }, [data]);
 
   return (
-    <div className="font-inter bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
+    <div className="font-inter bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 h-[600px] overflow-y-auto mb-6">
       {/* pie chart */}
       <div className="flex  items-center border-none">
         {chartData.length > 0 && (
@@ -90,7 +137,8 @@ function BranchDistribution({ data }: any) {
                     className="w-4 h-4 rounded-full mr-2"
                     style={{
                       backgroundColor:
-                        branchColorMap[branch.branch] || "#cccccc", // Fallback to grey
+                        branchColorAssignments[branch.branch] ||
+                        branchColorPalette[0],
                     }}
                   ></div>
                   <p>{branch.branch}</p>
