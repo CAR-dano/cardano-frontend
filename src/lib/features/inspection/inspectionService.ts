@@ -69,7 +69,7 @@ const mintingToBlockchain = async (id: string) => {
 
 const searchByVehiclePlat = async (platNumber: string, token: any) => {
   const response = await apiClient.get(
-    `${LOCAL_API_URL}/inspections/search?vehicleNumber=${platNumber}`,
+    `/inspections/search?vehicleNumber=${platNumber}`,
     {
       headers: {
         "Content-Type": "application/json",
@@ -82,7 +82,7 @@ const searchByVehiclePlat = async (platNumber: string, token: any) => {
 
 const searchByKeyword = async (keyword: string, page = 1, pageSize = 10) => {
   const response = await apiClient.get(
-    `${LOCAL_API_URL}/inspections/search/keyword?q=${encodeURIComponent(
+    `/inspections/search/keyword?q=${encodeURIComponent(
       keyword
     )}`,
     {
@@ -122,7 +122,7 @@ const updatePhoto = async (
   }
 
   const response = await apiClient.put(
-    `${LOCAL_API_URL}/inspections/${id}/photos/${photosId}`,
+    `/inspections/${id}/photos/${photosId}`,
     formData,
     {
       headers: {
@@ -160,7 +160,7 @@ const updatePhotoWithFile = async (
   }
 
   const response = await apiClient.put(
-    `${LOCAL_API_URL}/inspections/${id}/photos/${photosId}`,
+    `/inspections/${id}/photos/${photosId}`,
     formData,
     {
       headers: {
@@ -173,14 +173,14 @@ const updatePhotoWithFile = async (
 
 const returnToReview = async (id: string) => {
   const response = await apiClient.patch(
-    `${LOCAL_API_URL}/inspections/${id}/return-to-review`
+    `/inspections/${id}/return-to-review`
   );
   return response.data;
 };
 
 const markAsApproved = async (id: string) => {
   const response = await apiClient.patch(
-    `${LOCAL_API_URL}/inspections/${id}/approve`
+    `/inspections/${id}/approve`
   );
   return response.data;
 };

@@ -29,11 +29,12 @@ export function middleware(_request: NextRequest) {
     "https://localhost:3012",
     ...(isDev
       ? [
-          "http://localhost:3000",
-          "http://localhost:3010",
-          "ws://localhost:3000",
-          "ws://localhost:3010",
-        ]
+        "http://localhost:3000",
+        "http://localhost:3010",
+        "ws://localhost:3000",
+        "ws://localhost:3010",
+        "ws://localhost:3012",
+      ]
       : []),
   ].join(" ");
 
@@ -79,19 +80,19 @@ export function middleware(_request: NextRequest) {
     "Cross-Origin-Opener-Policy": "same-origin",
     "Cross-Origin-Embedder-Policy": "unsafe-none",
     "Cross-Origin-Resource-Policy": "cross-origin",
-    
+
     // Strict Transport Security (HSTS) - Force HTTPS (production only)
     ...(isDev
       ? {}
       : {
-          // max-age is set to 1 year, includeSubDomains ensures all subdomains use HTTPS
-          "Strict-Transport-Security":
-            "max-age=31536000; includeSubDomains; preload",
-        }),
-    
+        // max-age is set to 1 year, includeSubDomains ensures all subdomains use HTTPS
+        "Strict-Transport-Security":
+          "max-age=31536000; includeSubDomains; preload",
+      }),
+
     // Content Security Policy
     "Content-Security-Policy": cspDirectives,
-    
+
   };
 
   // Apply security headers to the response

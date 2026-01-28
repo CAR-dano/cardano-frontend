@@ -137,8 +137,6 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "sl-car-dano.s3.us-east-005.backblazeb2.com",
-      }
-        hostname: "f005.backblazeb2.com",
       },
       {
         protocol: "https",
