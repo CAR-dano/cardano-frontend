@@ -99,17 +99,17 @@ function BranchDistribution({ data }: any) {
                 <div className="flex flex-col w-full">
                   <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
                     <p className="w-[30%] text-left">Pesanan</p>
-                    <p className="w-[40%] text-left">% dari Total</p>
-                    <p className="w-[30%] text-left">% Perubahan</p>
+                    <p className="w-[35%] text-left">% dari Total</p>
+                    <p className="w-[35%] text-left">% Perubahan</p>
                   </div>
                   <div className="flex justify-between">
-                    <p className="w-[30%] text-left text-[36px] font-bold text-gray-900 dark:text-white leading-none">
+                    <p className="w-[30%] text-left text-2xl font-bold text-gray-900 dark:text-white leading-none">
                       {branch.count}
                     </p>
-                    <p className="w-[40%] text-left text-[36px] font-semibold text-purple-400 dark:text-white leading-none">
+                    <p className="w-[35%] text-left text-2xl font-semibold text-purple-400 dark:text-white leading-none">
                       {branch.percentage}
                     </p>
-                    <p className="w-[30%] text-left text-[36px] font-light text-green-600 dark:text-white leading-none">
+                    <p className="w-[35%] text-left text-2xl font-light text-green-600 dark:text-white leading-none">
                       {branch.change}
                     </p>
                   </div>
