@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import PhotoItemWithDynamicText from "./PhotoItemWithDynamicText";
+import { getInspectionPhotoUrl } from "../../lib/utils/photoUrl";
 import AddPhotoDialog from "./AddPhotoDialog";
 
 interface HalamanGeneralPhotoProps {
@@ -27,12 +28,7 @@ const HalamanGeneralPhoto: React.FC<HalamanGeneralPhotoProps> = ({
 
   const formatPath = (path: string) => {
     if (!path) return "/assets/placeholder-photo.png";
-    // Check if path is already a full URL (starts with http:// or https://)
-    if (path.startsWith('http://')||path.startsWith('https://')) {
-      return path; // Return as-is if it's already a full URL
-    }
-    // Otherwise, construct the URL with the backend prefix
-    return PHOTO_URL + "/uploads/inspection-photos/" + path;
+    return getInspectionPhotoUrl(path, PHOTO_URL);
   };
 
   const handlePhotoUpdate = (photoId: string, updatedData: any) => {

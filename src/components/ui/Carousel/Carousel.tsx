@@ -11,6 +11,7 @@ import {
 import useEmblaCarousel from "embla-carousel-react";
 import { Card, CardContent } from "../card";
 import Image from "next/image";
+import { getInspectionPhotoUrl } from "../../../lib/utils/photoUrl";
 
 import "./embla.css";
 import { useRouter } from "next/navigation";
@@ -63,7 +64,7 @@ const EmblaCarousel: React.FC<PropType> = ({ slides, options }) => {
             >
               <CardContent className="relative flex items-center justify-center p-0 w-full h-full overflow-hidden">
                 <Image
-                  src={`${IMAGE_URL}/uploads/inspection-photos/${data.photo.path}`}
+                  src={getInspectionPhotoUrl(data.photo.path, IMAGE_URL)}
                   alt="Carousel Image"
                   width={450}
                   height={300}
