@@ -77,6 +77,20 @@ const generateInspectorPin = async (id: string, token: string) => {
   return response.data;
 };
 
+const createBranch = async (city: string, token: string) => {
+  const response = await apiClient.post(
+    `${LOCAL_API_URL}/inspection-branches`,
+    { city },
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data;
+};
+
 const adminService = {
   getAllUsers,
   updateRole,
@@ -84,5 +98,6 @@ const adminService = {
   getAllBranches,
   deleteInspector,
   generateInspectorPin,
+  createBranch,
 };
 export default adminService;
