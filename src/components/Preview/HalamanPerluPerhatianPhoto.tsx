@@ -2,6 +2,7 @@ import React from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import PhotoItemPerluPerhatian from "./PhotoItemPerluPerhatian";
+import { getInspectionPhotoUrl } from "../../lib/utils/photoUrl";
 
 interface HalamanPerluPerhatianPhotoProps {
   data: any;
@@ -25,7 +26,7 @@ const HalamanPerluPerhatianPhoto: React.FC<HalamanPerluPerhatianPhotoProps> = ({
   const formatPath = (path: string) => {
     if (!path) return "/assets/placeholder-photo.png";
 
-    return PHOTO_URL + "/uploads/inspection-photos/" + path;
+    return getInspectionPhotoUrl(path, PHOTO_URL);
   };
 
   const handlePhotoUpdate = (photoId: string, updatedData: any) => {

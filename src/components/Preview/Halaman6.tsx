@@ -4,6 +4,7 @@ import Footer from "./Footer";
 import PenilaianHasil from "./PenilaianHasil";
 import PhotoGeneralItem from "./PhotoGeneralItem";
 import AddPhotoDialog from "./AddPhotoDialog";
+import { getInspectionPhotoUrl } from "../../lib/utils/photoUrl";
 
 interface Halaman6Props {
   data: any;
@@ -55,7 +56,7 @@ const Halaman6: React.FC<Halaman6Props> = ({
   const formatPath = (path: string) => {
     if (!path) return "/assets/placeholder-photo.png";
 
-    return PHOTO_URL + "/uploads/inspection-photos/" + path;
+    return getInspectionPhotoUrl(path, PHOTO_URL);
   };
 
   const capitalizeFirstLetterOfSentences = (text: string) => {

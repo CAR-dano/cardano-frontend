@@ -3,6 +3,7 @@ import Image from "next/image";
 import React, { useState } from "react";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 import { motion, AnimatePresence } from "framer-motion";
+import { getInspectionPhotoUrl } from "../../../lib/utils/photoUrl";
 
 interface VehicleInspectionProps {
   data: any;
@@ -63,7 +64,7 @@ function CardData({ platNomor, data }: VehicleInspectionProps) {
               >
                 {images.length > 0 ? (
                   <Image
-                    src={`${PHOTO_URL}/uploads/inspection-photos/${images[currentIndex].path}`}
+                    src={getInspectionPhotoUrl(images[currentIndex].path, PHOTO_URL)}
                     alt={`Image ${currentIndex + 1}`}
                     fill
                     className="object-cover rounded-[24px] md:rounded-[20px]"

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import FormEditPhoto from "../Form/FormEditPhoto";
+import { getInspectionPhotoUrl } from "../../lib/utils/photoUrl";
 
 interface PhotoTampakDepanProps {
   item: {
@@ -57,7 +58,7 @@ const PhotoTampakDepan: React.FC<PhotoTampakDepanProps> = ({
 
   const formatPath = (path: string) => {
     if (!path) return "/assets/placeholder-photo.png";
-    return `${PHOTO_URL}/uploads/inspection-photos/${path}`;
+    return getInspectionPhotoUrl(path, PHOTO_URL);
   };
 
   const handleImageError = (event: React.SyntheticEvent<HTMLImageElement>) => {

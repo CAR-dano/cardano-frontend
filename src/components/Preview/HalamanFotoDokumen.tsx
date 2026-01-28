@@ -4,6 +4,7 @@ import Footer from "./Footer";
 import PhotoItemGeneral from "./PhotoItemGeneral";
 import AddPhotoDialog from "./AddPhotoDialog";
 
+import { getInspectionPhotoUrl } from "../../lib/utils/photoUrl";
 interface HalamanFotoDokumenProps {
   data: any;
   editable: boolean;
@@ -27,7 +28,7 @@ const HalamanFotoDokumen: React.FC<HalamanFotoDokumenProps> = ({
 
   const formatPath = (path: string) => {
     if (!path) return "/assets/placeholder-photo.png";
-    return PHOTO_URL + "/uploads/inspection-photos/" + path;
+    return getInspectionPhotoUrl(path, PHOTO_URL);
   };
 
   const handlePhotoUpdate = (photoId: string, updatedData: any) => {

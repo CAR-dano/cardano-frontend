@@ -10,6 +10,7 @@ import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import Image from "next/image";
 import { toast } from "../../hooks/use-toast";
+import { getInspectionPhotoUrl } from "../../lib/utils/photoUrl";
 
 interface FormEditPhotoProps {
   label: string;
@@ -56,7 +57,7 @@ function FormEditPhoto({
 
   const formatPath = (path: string) => {
     if (!path) return "/assets/placeholder-photo.png";
-    return `${PHOTO_URL}/uploads/inspection-photos/${path}`;
+    return getInspectionPhotoUrl(path, PHOTO_URL);
   };
 
   useEffect(() => {

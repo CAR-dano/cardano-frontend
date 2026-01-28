@@ -3,6 +3,7 @@ import Header from "./Header";
 import Footer from "./Footer";
 import PhotoItemWithDynamicText from "./PhotoItemWithDynamicText";
 import AddPhotoDialog from "./AddPhotoDialog";
+import { getInspectionPhotoUrl } from "../../lib/utils/photoUrl";
 
 interface HalamanAlatAlatPhotoProps {
   data: any;
@@ -27,7 +28,7 @@ const HalamanAlatAlatPhoto: React.FC<HalamanAlatAlatPhotoProps> = ({
 
   const formatPath = (path: string) => {
     if (!path) return "/assets/placeholder-photo.png";
-    return PHOTO_URL + "/uploads/inspection-photos/" + path;
+    return getInspectionPhotoUrl(path, PHOTO_URL);
   };
 
   const handlePhotoUpdate = (photoId: string, updatedData: any) => {
