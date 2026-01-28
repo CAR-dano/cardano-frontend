@@ -2,8 +2,6 @@ import apiClient from "../../../lib/services/apiClient";
 import { format } from "date-fns";
 import { DateRange } from "react-day-picker";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
 // Dashboard Main Stats
 interface DateParams {
   start_date?: string;
@@ -26,7 +24,7 @@ export const getMainStats = async (token: string, dateRange?: DateRange) => {
   }
 
   const response = await apiClient.get(
-    `${API_URL}/dashboard/main-stats`,
+    "/dashboard/main-stats",
     config
   );
   return response.data;
@@ -68,9 +66,9 @@ export const getCombinedDashboardData = async (
 
   const [trendData, branchDistribution, inspectorPerformance] =
     await Promise.all([
-      apiClient.get(`${API_URL}/dashboard/order-trend`, configOrder),
-      apiClient.get(`${API_URL}/dashboard/branch-distribution`, config),
-      apiClient.get(`${API_URL}/dashboard/inspector-performance`, config),
+      apiClient.get("/dashboard/order-trend", configOrder),
+      apiClient.get("/dashboard/branch-distribution", config),
+      apiClient.get("/dashboard/inspector-performance", config),
     ]);
 
   return {

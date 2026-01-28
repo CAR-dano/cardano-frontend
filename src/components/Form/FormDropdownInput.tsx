@@ -11,6 +11,7 @@ import {
 } from "../../components/ui/select";
 import { Label } from "../ui/label";
 import axios from "axios";
+import { API_BASE_URL } from "../../lib/config/api";
 
 interface FormDropdownInputProps {
   label: string;
@@ -32,7 +33,8 @@ function FormDropdownInput({
   const [option, setOption] = React.useState<any>("");
 
   const getData = async (type: string) => {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL;
+    const API_URL = API_BASE_URL;
+    if (!API_URL) return [];
     let URL = "";
     if (type == "inspektor") {
       URL = `${API_URL}/public/users/inspectors`;

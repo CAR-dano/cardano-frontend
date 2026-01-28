@@ -9,29 +9,51 @@ export function middleware(_request: NextRequest) {
   // Clone the response
   const response = NextResponse.next();
 
+  const isDev = process.env.NODE_ENV !== "production";
+
   // Get the nonce for CSP (you can generate this dynamically per request if needed)
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
 
   // Content Security Policy - Strict policy to prevent XSS attacks
   // Note: You may need to adjust these based on your specific needs
+  const connectSrc = [
+    "'self'",
+    "https://api.inspeksimobil.id",
+    "https://staging-api.inspeksimobil.id",
+    "http://31.220.81.182",
+    "http://76.13.21.243",
+    // Local dev
+    "https://localhost:3000",
+    "https://localhost:3010",
+    ...(isDev
+      ? [
+          "http://localhost:3000",
+          "http://localhost:3010",
+          "ws://localhost:3000",
+          "ws://localhost:3010",
+        ]
+      : []),
+  ].join(" ");
+
   const cspDirectives = [
     "default-src 'self'",
     "script-src 'self' 'unsafe-inline'",
     "style-src 'self' 'unsafe-inline'", // unsafe-inline needed for styled-components/emotion
-    "img-src 'self' data: blob: https://images.unsplash.com https://plus.unsplash.com https://images.autofun.co.id https://s3-alpha-sig.figma.com https://i.ibb.co.com https://api.inspeksimobil.id https://staging-api.inspeksimobil.id http://31.220.81.182 http://69.62.80.7",
+    "img-src 'self' data: blob: https://images.unsplash.com https://plus.unsplash.com https://images.autofun.co.id https://s3-alpha-sig.figma.com https://i.ibb.co.com https://api.inspeksimobil.id https://staging-api.inspeksimobil.id http://31.220.81.182 http://76.13.21.243",
     "font-src 'self' data:",
-    "connect-src 'self' https://api.inspeksimobil.id https://staging-api.inspeksimobil.id http://31.220.81.182 http://69.62.80.7",
+    `connect-src ${connectSrc}`,
     "frame-ancestors 'none'",
     "base-uri 'self'",
     "form-action 'self'",
     "object-src 'none'",
     "worker-src 'self' blob:",
     "manifest-src 'self'",
-    "upgrade-insecure-requests",
+    // In dev we often call local HTTP services; don't auto-upgrade to HTTPS.
+    ...(isDev ? [] : ["upgrade-insecure-requests"]),
   ].join("; ");
 
   // Security Headers
-  const securityHeaders = {
+  const securityHeaders: Record<string, string> = {
     // Prevent clickjacking attacks
     "X-Frame-Options": "DENY",
     
@@ -47,9 +69,14 @@ export function middleware(_request: NextRequest) {
     // Permissions Policy (formerly Feature Policy)
     "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
     
-    // Strict Transport Security (HSTS) - Force HTTPS
-    // max-age is set to 1 year, includeSubDomains ensures all subdomains use HTTPS
-    "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+    // Strict Transport Security (HSTS) - Force HTTPS (production only)
+    ...(isDev
+      ? {}
+      : {
+          // max-age is set to 1 year, includeSubDomains ensures all subdomains use HTTPS
+          "Strict-Transport-Security":
+            "max-age=31536000; includeSubDomains; preload",
+        }),
     
     // Content Security Policy
     "Content-Security-Policy": cspDirectives,

@@ -69,6 +69,119 @@ export const updateRole = createAsyncThunk(
   }
 );
 
+export const createAdminUser = createAsyncThunk(
+  "admin/createAdminUser",
+  async (
+    {
+      data,
+      token,
+    }: {
+      data: { username: string; email: string; password: string; role: string };
+      token: string;
+    },
+    thunkAPI
+  ) => {
+    try {
+      const payload = await adminService.createAdminUser(data, token);
+      return payload;
+    } catch (error: any) {
+      const message = error?.response?.data?.message;
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const createInspectorUser = createAsyncThunk(
+  "admin/createInspectorUser",
+  async (
+    {
+      data,
+      token,
+    }: {
+      data: {
+        name: string;
+        username: string;
+        email: string;
+        inspectionBranchCityId: string;
+        walletAddress?: string;
+        whatsappNumber?: string;
+      };
+      token: string;
+    },
+    thunkAPI
+  ) => {
+    try {
+      const payload = await adminService.createInspectorUser(data, token);
+      return payload;
+    } catch (error: any) {
+      const message = error?.response?.data?.message;
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const updateUser = createAsyncThunk(
+  "admin/updateUser",
+  async (
+    {
+      id,
+      data,
+      token,
+    }: {
+      id: string;
+      data: {
+        name?: string;
+        username?: string;
+        email?: string;
+        walletAddress?: string;
+        pin?: string;
+      };
+      token: string;
+    },
+    thunkAPI
+  ) => {
+    try {
+      const payload = await adminService.updateUser(id, data, token);
+      return payload;
+    } catch (error: any) {
+      const message = error?.response?.data?.message;
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const updateInspector = createAsyncThunk(
+  "admin/updateInspector",
+  async (
+    {
+      id,
+      data,
+      token,
+    }: {
+      id: string;
+      data: {
+        name?: string;
+        username?: string;
+        email?: string;
+        walletAddress?: string;
+        whatsappNumber?: string;
+        inspectionBranchCityId?: string;
+        isActive?: boolean;
+      };
+      token: string;
+    },
+    thunkAPI
+  ) => {
+    try {
+      const payload = await adminService.updateInspector(id, data, token);
+      return payload;
+    } catch (error: any) {
+      const message = error?.response?.data?.message;
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const getAllInspectors = createAsyncThunk(
   "admin/inspectors",
   async (token: string, thunkAPI) => {
@@ -101,6 +214,19 @@ export const deleteInspector = createAsyncThunk(
     try {
       const status = await adminService.deleteInspector(id, token);
       return { id, status }; // Return ID and status
+    } catch (error: any) {
+      const message = error?.response?.data?.message;
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const deleteUser = createAsyncThunk(
+  "admin/deleteUser",
+  async ({ id, token }: { id: string; token: string }, thunkAPI) => {
+    try {
+      const status = await adminService.deleteUser(id, token);
+      return { id, status };
     } catch (error: any) {
       const message = error?.response?.data?.message;
       return thunkAPI.rejectWithValue(message);
@@ -157,6 +283,62 @@ export const adminSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload as string;
       })
+      .addCase(createAdminUser.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(createAdminUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        state.userList = [action.payload, ...state.userList];
+      })
+      .addCase(createAdminUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(createInspectorUser.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(createInspectorUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        state.userList = [action.payload, ...state.userList];
+      })
+      .addCase(createInspectorUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(updateUser.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        state.userList = state.userList.map((user) =>
+          user.id === action.payload.id ? action.payload : user
+        );
+      })
+      .addCase(updateUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(updateInspector.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(updateInspector.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        state.userList = state.userList.map((user) =>
+          user.id === action.payload.id ? action.payload : user
+        );
+      })
+      .addCase(updateInspector.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      })
       .addCase(getAllInspectors.pending, (state) => {
         state.inspectorList = [];
         state.isLoading = true;
@@ -206,6 +388,21 @@ export const adminSlice = createSlice({
         state.error = null;
       })
       .addCase(deleteInspector.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(deleteUser.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(deleteUser.fulfilled, (state, action) => {
+        state.userList = state.userList.filter(
+          (user) => user.id !== action.payload.id
+        );
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(deleteUser.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
       })

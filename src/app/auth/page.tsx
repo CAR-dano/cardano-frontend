@@ -16,6 +16,7 @@ import LoadingScreen from "../../components/LoadingFullScreen";
 import { FiEye, FiEyeOff, FiArrowLeft } from "react-icons/fi";
 import { toast } from "../../hooks/use-toast";
 import { getAndClearRedirectUrl } from "../../utils/redirectUtils";
+import { API_BASE_URL } from "../../lib/config/api";
 
 function LoginPage() {
   const [showSignup, setShowSignup] = useState(false);
@@ -252,7 +253,10 @@ function LoginPage() {
 
   const handleGoogleLogin = async () => {
     try {
-      window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
+      if (!API_BASE_URL) {
+        throw new Error("API base URL is not configured");
+      }
+      window.location.href = `${API_BASE_URL}/auth/google`;
     } catch (error) {
       console.error("Google login error:", error);
       toast({
@@ -447,7 +451,7 @@ function LoginPage() {
 
                   <motion.button
                     onClick={handleGoogleLogin}
-                    className="mt-6 py-3 flex items-center justify-center w-full py-2.5 rounded-lg border border-gray-300 text-black font-rubik text-[16px] font-medium bg-white hover:bg-gray-50 transition-colors duration-300 transform hover:scale-[1.02] active:scale-[0.98]"
+                    className="mt-6 py-3 flex items-center justify-center w-full rounded-lg border border-gray-300 text-black font-rubik text-[16px] font-medium bg-white hover:bg-gray-50 transition-colors duration-300 transform hover:scale-[1.02] active:scale-[0.98]"
                     variants={childVariants}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
