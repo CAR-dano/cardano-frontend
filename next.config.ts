@@ -108,6 +108,16 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "staging-api.inspeksimobil.id",
       },
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "3010",
+      },
+      {
+        protocol: "https",
+        hostname: "localhost",
+        port: "3010",
+      },
     ],
   },
 
