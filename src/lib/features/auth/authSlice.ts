@@ -6,6 +6,7 @@ import { User, UserLogin, UserSignUp } from "../../../utils/Auth";
 export interface IAuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
+  isRefreshing: boolean;
   error: string | null;
   user: User | null;
   accessToken?: string;
@@ -21,6 +22,7 @@ const initialState: IAuthState = {
   accessToken: "",
   lastTokenCheck: undefined,
   isAuthInitialized: false,
+  isRefreshing: false,
 };
 
 export const login = createAsyncThunk(
@@ -123,11 +125,13 @@ export const authSlice = createSlice({
     builder
       .addCase(logout.pending, (state) => {
         state.isLoading = true;
+        state.isRefreshing = false;
         state.error = null;
       })
       .addCase(logout.fulfilled, (state) => {
         state.isAuthenticated = false;
         state.isLoading = false;
+        state.isRefreshing = false;
         state.user = null;
         state.accessToken = "";
         state.error = null;
@@ -137,12 +141,14 @@ export const authSlice = createSlice({
       })
       .addCase(logout.rejected, (state, action) => {
         state.isLoading = false;
+        state.isRefreshing = false;
         state.error = action.error.message || "Logout failed";
       })
 
       .addCase(login.pending, (state) => {
         state.isAuthenticated = false;
         state.isLoading = true;
+        state.isRefreshing = false;
         state.error = null;
       })
       .addCase(login.fulfilled, (state, action) => {
@@ -157,6 +163,7 @@ export const authSlice = createSlice({
       .addCase(login.rejected, (state, action) => {
         state.isAuthenticated = false;
         state.isLoading = false;
+        state.isRefreshing = false;
         state.user = null;
         state.accessToken = "";
         state.error = action.error.message || "Login failed";
@@ -164,23 +171,28 @@ export const authSlice = createSlice({
 
       .addCase(signup.pending, (state) => {
         state.isLoading = true;
+        state.isRefreshing = false;
         state.error = null;
       })
       .addCase(signup.fulfilled, (state) => {
         state.isLoading = false;
+        state.isRefreshing = false;
         state.error = null;
       })
       .addCase(signup.rejected, (state, action) => {
         state.isLoading = false;
+        state.isRefreshing = false;
         state.error = action.error.message || "Signup failed";
       })
 
       .addCase(checkToken.pending, (state) => {
         state.isLoading = true;
+        state.isRefreshing = false;
         state.error = null;
       })
       .addCase(checkToken.fulfilled, (state, _action) => {
         state.isLoading = false;
+        state.isRefreshing = false;
         state.isAuthenticated = true;
         state.error = null;
         state.lastTokenCheck = Date.now();
@@ -188,6 +200,7 @@ export const authSlice = createSlice({
       })
       .addCase(checkToken.rejected, (state, action) => {
         state.isLoading = false;
+        state.isRefreshing = false;
         state.isAuthenticated = false;
         state.user = null;
         state.accessToken = "";
@@ -210,11 +223,11 @@ export const authSlice = createSlice({
       })
 
       .addCase(refreshToken.pending, (state) => {
-        state.isLoading = true;
+        state.isRefreshing = true;
         state.error = null;
       })
       .addCase(refreshToken.fulfilled, (state, action) => {
-        state.isLoading = false;
+        state.isRefreshing = false;
         state.isAuthenticated = true;
         state.accessToken = action.payload.accessToken;
         state.lastTokenCheck = Date.now();
@@ -225,8 +238,17 @@ export const authSlice = createSlice({
         }
       })
       .addCase(refreshToken.rejected, (state, action) => {
-        state.isLoading = false;
+        state.isRefreshing = false;
+        state.isAuthenticated = false;
+        state.user = null;
+        state.accessToken = "";
+        state.lastTokenCheck = undefined;
         state.error = action.error.message || "Token refresh failed";
+        state.isAuthInitialized = true;
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+        }
       });
   },
 });

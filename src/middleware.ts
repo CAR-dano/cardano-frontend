@@ -22,9 +22,11 @@ export function middleware(_request: NextRequest) {
     "https://staging-api.inspeksimobil.id",
     "http://31.220.81.182",
     "http://76.13.21.243",
+    "https://sl-car-dano.s3.us-east-005.backblazeb2.com",
     // Local dev
     "https://localhost:3000",
     "https://localhost:3010",
+    "https://localhost:3012",
     ...(isDev
       ? [
           "http://localhost:3000",
@@ -39,7 +41,7 @@ export function middleware(_request: NextRequest) {
     "default-src 'self'",
     "script-src 'self' 'unsafe-inline'",
     "style-src 'self' 'unsafe-inline'", // unsafe-inline needed for styled-components/emotion
-    "img-src 'self' data: blob: https://images.unsplash.com https://plus.unsplash.com https://images.autofun.co.id https://s3-alpha-sig.figma.com https://i.ibb.co.com https://api.inspeksimobil.id https://staging-api.inspeksimobil.id https://f005.backblazeb2.com https://s3.us-east-005.backblazeb2.com http://31.220.81.182 http://76.13.21.243",
+    "img-src 'self' data: blob: https://images.unsplash.com https://plus.unsplash.com https://images.autofun.co.id https://s3-alpha-sig.figma.com https://i.ibb.co.com https://api.inspeksimobil.id https://staging-api.inspeksimobil.id https://f005.backblazeb2.com https://s3.us-east-005.backblazeb2.com http://31.220.81.182 http://76.13.21.243 https://sl-car-dano.s3.us-east-005.backblazeb2.com",
     "font-src 'self' data:",
     `connect-src ${connectSrc}`,
     "frame-ancestors 'none'",
@@ -56,18 +58,27 @@ export function middleware(_request: NextRequest) {
   const securityHeaders: Record<string, string> = {
     // Prevent clickjacking attacks
     "X-Frame-Options": "DENY",
-    
+
     // Prevent MIME type sniffing
     "X-Content-Type-Options": "nosniff",
-    
+
     // Enable XSS protection in older browsers
     "X-XSS-Protection": "1; mode=block",
-    
+
     // Control referrer information
     "Referrer-Policy": "strict-origin-when-cross-origin",
-    
+
     // Permissions Policy (formerly Feature Policy)
-    "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+    "Permissions-Policy": "camera=(), microphone=(), geolocation=(), interest-cohort=()",
+
+    // Strict Transport Security (HSTS) - Force HTTPS
+    // max-age is set to 1 year, includeSubDomains ensures all subdomains use HTTPS
+    "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+
+    // Cross-Origin policies for additional isolation
+    "Cross-Origin-Opener-Policy": "same-origin",
+    "Cross-Origin-Embedder-Policy": "unsafe-none",
+    "Cross-Origin-Resource-Policy": "cross-origin",
     
     // Strict Transport Security (HSTS) - Force HTTPS (production only)
     ...(isDev
@@ -87,9 +98,6 @@ export function middleware(_request: NextRequest) {
   Object.entries(securityHeaders).forEach(([key, value]) => {
     response.headers.set(key, value);
   });
-
-  // Add nonce to request headers for use in pages
-  response.headers.set("x-nonce", nonce);
 
   return response;
 }

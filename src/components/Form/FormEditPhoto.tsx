@@ -259,9 +259,8 @@ function FormEditPhoto({
 
         {/* Photo Comparison */}
         <div
-          className={`grid ${
-            newPhotoPreview ? "grid-cols-2" : "grid-cols-1"
-          } gap-4`}
+          className={`grid ${newPhotoPreview ? "grid-cols-2" : "grid-cols-1"
+            } gap-4`}
         >
           {/* Foto Lama */}
           <div className="flex flex-col items-center space-y-2">
@@ -403,11 +402,10 @@ function FormEditPhoto({
         <Button
           onClick={handleSave}
           disabled={isLoading}
-          className={`px-6 py-2 text-white rounded-md disabled:opacity-50 ${
-            newPhotoFile
+          className={`px-6 py-2 text-white rounded-md disabled:opacity-50 ${newPhotoFile
               ? "bg-green-600 hover:bg-green-700"
               : "bg-purple-600 hover:bg-purple-700"
-          }`}
+            }`}
         >
           {isLoading ? (
             <span className="flex items-center space-x-2">

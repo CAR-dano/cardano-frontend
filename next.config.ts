@@ -1,19 +1,28 @@
 import type { NextConfig } from "next";
+import * as dns from "dns";
+
+// Force IPv4 ordering to fix ETIMEDOUT errors on IPv6 networks
+// This fixes Next.js Image Optimization fetching from S3/Backblaze
+try {
+  dns.setDefaultResultOrder("ipv4first");
+} catch (e) {
+  // Ignore if not available in older Node versions, but we assume Node 18+
+}
 
 const nextConfig: NextConfig = {
   // ==========================================
   // SECURITY CONFIGURATION
   // ==========================================
-  
+
   // Disable x-powered-by header to avoid exposing Next.js version
   poweredByHeader: false,
-  
+
   // Enable React strict mode for better security and performance
   reactStrictMode: true,
-  
+
   // Compress responses for better performance
   compress: true,
-  
+
   // Security headers configuration
   async headers() {
     return [
@@ -64,6 +73,7 @@ const nextConfig: NextConfig = {
   // IMAGE OPTIMIZATION
   // ==========================================
   images: {
+    unoptimized: true,
     // Limit image sizes to prevent abuse
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
@@ -93,14 +103,6 @@ const nextConfig: NextConfig = {
         hostname: "i.ibb.co.com",
       },
       {
-        protocol: "http",
-        hostname: "31.220.81.182",
-      },
-      {
-        protocol: "http",
-        hostname: "76.13.21.243",
-      },
-      {
         protocol: "https",
         hostname: "api.inspeksimobil.id",
       },
@@ -109,7 +111,33 @@ const nextConfig: NextConfig = {
         hostname: "staging-api.inspeksimobil.id",
       },
       {
+        protocol: "http",
+        hostname: "31.220.81.182",
+      },
+      {
+        protocol: "http",
+        hostname: "76.13.21.243",
+      },
+      {
+        protocol: "http",
+        hostname: "147.93.81.117",
+      },
+      {
+        protocol: "http",
+        hostname: "localhost",
+      },
+      {
         protocol: "https",
+        hostname: "*.backblazeb2.com",
+      },
+      {
+        protocol: "https",
+        hostname: "f005.backblazeb2.com",
+      },
+      {
+        protocol: "https",
+        hostname: "sl-car-dano.s3.us-east-005.backblazeb2.com",
+      }
         hostname: "f005.backblazeb2.com",
       },
       {
@@ -132,18 +160,18 @@ const nextConfig: NextConfig = {
   // ==========================================
   // BUILD CONFIGURATION
   // ==========================================
-  
+
   // Enable standalone output for optimized Docker deployments
   output: "standalone",
-  
+
   // Disable source maps in production to prevent information leakage
   productionBrowserSourceMaps: false,
-  
+
   // Webpack configuration
   webpack: (config, { isServer }) => {
     config.resolve.alias.canvas = false;
     config.resolve.alias.encoding = false;
-    
+
     // Ignore specific modules that aren't needed
     if (!isServer) {
       config.resolve.fallback = {
@@ -154,7 +182,7 @@ const nextConfig: NextConfig = {
         child_process: false,
       };
     }
-    
+
     return config;
   },
 

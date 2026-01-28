@@ -73,11 +73,10 @@ const PhotoTampakDepan: React.FC<PhotoTampakDepanProps> = ({
   return (
     <>
       <div
-        className={`w-1/2 bg-[#B2BEB5] border-r-2 border-black h-48 ${
-          editable
+        className={`w-1/2 bg-[#B2BEB5] border-r-2 border-black h-48 ${editable
             ? "cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800  transition-colors duration-200 relative group"
             : ""
-        }`}
+          }`}
         onClick={handleClick}
       >
         <img
