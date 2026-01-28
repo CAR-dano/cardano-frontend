@@ -1,7 +1,5 @@
 import apiClient from "../../../lib/services/apiClient";
 
-const LOCAL_API_URL = process.env.NEXT_PUBLIC_API_URL;
-
 const getDataForReview = async ({
   page = 1,
   pageSize = 10,
@@ -15,7 +13,7 @@ const getDataForReview = async ({
 } = {}) => {
   const params: any = { page, pageSize };
   if (status) params.status = status;
-  const response = await apiClient.get(`${LOCAL_API_URL}/inspections`, {
+  const response = await apiClient.get("/inspections", {
     params,
     headers: {
       "Content-Type": "application/json",
@@ -26,31 +24,23 @@ const getDataForReview = async ({
 };
 
 const getDataForPreview = async (id: string) => {
-  const response = await apiClient.get(
-    `${LOCAL_API_URL}/inspections/${id}`,
-    {}
-  );
+  const response = await apiClient.get(`/inspections/${id}`, {});
   return response.data;
 };
 
 const getDataForReviewById = async (id: string) => {
-  const response = await apiClient.get(
-    `${LOCAL_API_URL}/inspections/${id}`,
-    {}
-  );
+  const response = await apiClient.get(`/inspections/${id}`, {});
   return response.data;
 };
 
 const approveInspectionData = async (id: string) => {
-  const response = await apiClient.patch(
-    `${LOCAL_API_URL}/inspections/${id}/approve`
-  );
+  const response = await apiClient.patch(`/inspections/${id}/approve`);
   return response.data;
 };
 
 const getDataEdited = async (id: string, token: string) => {
   const response = await apiClient.get(
-    `${LOCAL_API_URL}/inspections/${id}/changelog`,
+    `/inspections/${id}/changelog`,
     {
       headers: {
         "Content-Type": "application/json",
@@ -63,7 +53,7 @@ const getDataEdited = async (id: string, token: string) => {
 
 const saveChanges = async (id: any, data: any) => {
   const response = await apiClient.put(
-    `${LOCAL_API_URL}/inspections/${id}`,
+    `/inspections/${id}`,
     data
   );
   return response.data;
@@ -71,7 +61,7 @@ const saveChanges = async (id: any, data: any) => {
 
 const mintingToBlockchain = async (id: string) => {
   const response = await apiClient.put(
-    `${LOCAL_API_URL}/inspections/${id}/archive`,
+    `/inspections/${id}/archive`,
     {}
   );
   return response.data;

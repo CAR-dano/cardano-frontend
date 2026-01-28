@@ -61,7 +61,7 @@ const EditReviewComponents: React.FC<EditReviewComponentsProps> = ({
 
       try {
         const response = await apiClient.post(
-          `${process.env.NEXT_PUBLIC_API_URL}/inspections/${inspectionId}/photos/multiple`,
+          `/inspections/${inspectionId}/photos/multiple`,
           formData,
           {
             headers: {

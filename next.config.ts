@@ -116,7 +116,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "http",
-        hostname: "69.62.80.7",
+        hostname: "76.13.21.243",
       },
       {
         protocol: "http",
@@ -138,6 +138,22 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "sl-car-dano.s3.us-east-005.backblazeb2.com",
       }
+        hostname: "f005.backblazeb2.com",
+      },
+      {
+        protocol: "https",
+        hostname: "s3.us-east-005.backblazeb2.com",
+      },
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "3010",
+      },
+      {
+        protocol: "https",
+        hostname: "localhost",
+        port: "3010",
+      },
     ],
   },
 

@@ -2,7 +2,7 @@
 import CardData from "../../components/ui/Card/CardData";
 import SearchBar from "../../components/ui/SearchBar";
 import { useSearchParams } from "next/navigation";
-import React, { Suspense, useState, useEffect } from "react";
+import React, { Suspense, useState, useEffect, useMemo } from "react";
 import CardHasil from "../../components/ui/Card/CardHasil";
 import Image from "next/image";
 import CustomButton from "../../components/ui/CustomButton";
@@ -110,6 +110,16 @@ function ResultPageContent() {
   // Use the login redirect hook
   const handleLoginRedirect = useLoginRedirect();
 
+  const errorMessage = useMemo(() => {
+    if (!error) return "";
+    if (typeof error === "string") return error;
+    if (typeof error === "object") {
+      const maybeMessage = (error as { message?: string }).message;
+      return maybeMessage || "An unexpected error occurred.";
+    }
+    return "An unexpected error occurred.";
+  }, [error]);
+
   return (
     <div className="font-rubik w-full relative flex flex-col items-center px-4 lg:px-10 mb-20">
       {isLoading && <LoadingFullScreen />}
@@ -130,7 +140,7 @@ function ResultPageContent() {
         <SearchBar value={platNomorInput} />
       </div>
       {error && !isUnauthorized && (
-        <div className="text-red-500 mb-4">{error}</div>
+        <div className="text-red-500 mb-4">{errorMessage}</div>
       )}{" "}
       {review ? (
         <div className={`w-full ${isUnauthorized ? "relative" : ""}`}>

@@ -4,12 +4,11 @@ import dynamic from "next/dynamic";
 import { EmblaOptionsType } from "embla-carousel";
 import { motion } from "framer-motion";
 import axios from "axios";
+import { API_BASE_URL } from "../../lib/config/api";
 
 const EmblaCarousel = dynamic(() => import("../ui/Carousel/Carousel"), {
   ssr: false, // Hindari SSR untuk komponen Carousel
 });
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 function HasilInspeksi() {
   const OPTIONS: EmblaOptionsType = { loop: true };
@@ -18,7 +17,8 @@ function HasilInspeksi() {
   const [bgImage, setBgImage] = useState("");
 
   const getData = async () => {
-    const response = await axios.get(`${API_URL}/public/latest-archived`);
+    if (!API_BASE_URL) return;
+    const response = await axios.get(`${API_BASE_URL}/public/latest-archived`);
     setData(response.data);
   };
 

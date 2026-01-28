@@ -1,8 +1,7 @@
 import apiClient from "../../../lib/services/apiClient";
-const LOCAL_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const getAllUsers = async (token: string) => {
-  const response = await apiClient.get(`${LOCAL_API_URL}/admin/users`, {
+  const response = await apiClient.get("/admin/users", {
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
@@ -13,8 +12,99 @@ const getAllUsers = async (token: string) => {
 
 const updateRole = async (id: string, role: string, token: string) => {
   const response = await apiClient.put(
-    `${LOCAL_API_URL}/admin/users/${id}/role`,
+    `/admin/users/${id}/role`,
     { role },
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data;
+};
+
+const createAdminUser = async (
+  data: { username: string; email: string; password: string; role: string },
+  token: string
+) => {
+  const response = await apiClient.post(
+    "/admin/users/admin-user",
+    data,
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data;
+};
+
+const createInspectorUser = async (
+  data: {
+    name: string;
+    username: string;
+    email: string;
+    inspectionBranchCityId: string;
+    walletAddress?: string;
+    whatsappNumber?: string;
+  },
+  token: string
+) => {
+  const response = await apiClient.post(
+    "/admin/users/inspector",
+    data,
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data;
+};
+
+const updateUser = async (
+  id: string,
+  data: {
+    name?: string;
+    username?: string;
+    email?: string;
+    walletAddress?: string;
+    pin?: string;
+  },
+  token: string
+) => {
+  const response = await apiClient.put(
+    `/admin/users/${id}`,
+    data,
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data;
+};
+
+const updateInspector = async (
+  id: string,
+  data: {
+    name?: string;
+    username?: string;
+    email?: string;
+    walletAddress?: string;
+    whatsappNumber?: string;
+    inspectionBranchCityId?: string;
+    isActive?: boolean;
+  },
+  token: string
+) => {
+  const response = await apiClient.put(
+    `/admin/users/inspector/${id}`,
+    data,
     {
       headers: {
         "Content-Type": "application/json",
@@ -27,7 +117,7 @@ const updateRole = async (id: string, role: string, token: string) => {
 
 const getAllInspectors = async (token: string) => {
   const response = await apiClient.get(
-    `${LOCAL_API_URL}/admin/users/inspectors`,
+    "/admin/users/inspectors",
     {
       headers: {
         "Content-Type": "application/json",
@@ -39,7 +129,7 @@ const getAllInspectors = async (token: string) => {
 };
 
 const getAllBranches = async (token: string) => {
-  const response = await apiClient.get(`${LOCAL_API_URL}/inspection-branches`, {
+  const response = await apiClient.get("/inspection-branches", {
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
@@ -50,7 +140,7 @@ const getAllBranches = async (token: string) => {
 
 const deleteInspector = async (id: string, token: string) => {
   const response = await apiClient.delete(
-    `${LOCAL_API_URL}/admin/users/${id}`,
+    `/admin/users/${id}`,
     {
       headers: {
         "Content-Type": "application/json",
@@ -63,9 +153,22 @@ const deleteInspector = async (id: string, token: string) => {
   return response.status;
 };
 
+const deleteUser = async (id: string, token: string) => {
+  const response = await apiClient.delete(
+    `/admin/users/${id}`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.status;
+};
+
 const generateInspectorPin = async (id: string, token: string) => {
   const response = await apiClient.post(
-    `${LOCAL_API_URL}/admin/users/inspector/${id}/generate-pin`,
+    `/admin/users/inspector/${id}/generate-pin`,
     {},
     {
       headers: {
@@ -80,9 +183,14 @@ const generateInspectorPin = async (id: string, token: string) => {
 const adminService = {
   getAllUsers,
   updateRole,
+  createAdminUser,
+  createInspectorUser,
+  updateUser,
+  updateInspector,
   getAllInspectors,
   getAllBranches,
   deleteInspector,
+  deleteUser,
   generateInspectorPin,
 };
 export default adminService;

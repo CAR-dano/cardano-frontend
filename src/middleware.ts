@@ -9,25 +9,53 @@ export function middleware(_request: NextRequest) {
   // Clone the response
   const response = NextResponse.next();
 
-  // Content Security Policy - Relaxed for Next.js compatibility
-  // Next.js requires 'unsafe-eval' and 'unsafe-inline' for proper functioning
+  const isDev = process.env.NODE_ENV !== "production";
+
+  // Get the nonce for CSP (you can generate this dynamically per request if needed)
+  const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
+
+  // Content Security Policy - Strict policy to prevent XSS attacks
+  // Note: You may need to adjust these based on your specific needs
+  const connectSrc = [
+    "'self'",
+    "https://api.inspeksimobil.id",
+    "https://staging-api.inspeksimobil.id",
+    "http://31.220.81.182",
+    "http://76.13.21.243",
+    "https://sl-car-dano.s3.us-east-005.backblazeb2.com",
+    // Local dev
+    "https://localhost:3000",
+    "https://localhost:3010",
+    "https://localhost:3012",
+    ...(isDev
+      ? [
+          "http://localhost:3000",
+          "http://localhost:3010",
+          "ws://localhost:3000",
+          "ws://localhost:3010",
+        ]
+      : []),
+  ].join(" ");
+
   const cspDirectives = [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-eval' 'unsafe-inline'", // Required for Next.js
-    "style-src 'self' 'unsafe-inline'", // Required for CSS-in-JS
-    "img-src 'self' data: blob: https: http:", // Allow images from CDNs
+    "script-src 'self' 'unsafe-inline'",
+    "style-src 'self' 'unsafe-inline'", // unsafe-inline needed for styled-components/emotion
+    "img-src 'self' data: blob: https://images.unsplash.com https://plus.unsplash.com https://images.autofun.co.id https://s3-alpha-sig.figma.com https://i.ibb.co.com https://api.inspeksimobil.id https://staging-api.inspeksimobil.id https://f005.backblazeb2.com https://s3.us-east-005.backblazeb2.com http://31.220.81.182 http://76.13.21.243 https://sl-car-dano.s3.us-east-005.backblazeb2.com",
     "font-src 'self' data:",
-    "connect-src 'self' https://prod-api.inspeksimobil.id https://staging-api.inspeksimobil.id https://api.inspeksimobil.id http://31.220.81.182 http://69.62.80.7 http://147.93.81.117 http://localhost:3010 http://localhost:3012 https://sl-car-dano.s3.us-east-005.backblazeb2.com",
+    `connect-src ${connectSrc}`,
     "frame-ancestors 'none'",
     "base-uri 'self'",
     "form-action 'self'",
     "object-src 'none'",
     "worker-src 'self' blob:",
     "manifest-src 'self'",
+    // In dev we often call local HTTP services; don't auto-upgrade to HTTPS.
+    ...(isDev ? [] : ["upgrade-insecure-requests"]),
   ].join("; ");
 
   // Security Headers
-  const securityHeaders = {
+  const securityHeaders: Record<string, string> = {
     // Prevent clickjacking attacks
     "X-Frame-Options": "DENY",
 
@@ -47,13 +75,23 @@ export function middleware(_request: NextRequest) {
     // max-age is set to 1 year, includeSubDomains ensures all subdomains use HTTPS
     "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
 
-    // Content Security Policy
-    "Content-Security-Policy": cspDirectives,
-
     // Cross-Origin policies for additional isolation
     "Cross-Origin-Opener-Policy": "same-origin",
     "Cross-Origin-Embedder-Policy": "unsafe-none",
     "Cross-Origin-Resource-Policy": "cross-origin",
+    
+    // Strict Transport Security (HSTS) - Force HTTPS (production only)
+    ...(isDev
+      ? {}
+      : {
+          // max-age is set to 1 year, includeSubDomains ensures all subdomains use HTTPS
+          "Strict-Transport-Security":
+            "max-age=31536000; includeSubDomains; preload",
+        }),
+    
+    // Content Security Policy
+    "Content-Security-Policy": cspDirectives,
+    
   };
 
   // Apply security headers to the response

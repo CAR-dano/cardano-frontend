@@ -1,10 +1,12 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 
-const LOCAL_API_URL = process.env.NEXT_PUBLIC_API_URL;
+import { API_BASE_URL } from "../config/api";
 
 // Validate API URL is configured
-if (!LOCAL_API_URL) {
-  console.error("NEXT_PUBLIC_API_URL is not configured");
+if (!API_BASE_URL) {
+  console.error(
+    "NEXT_PUBLIC_API_URL is not configured (using dev default may have failed)"
+  );
 }
 
 // Request timeout (30 seconds)
@@ -12,7 +14,7 @@ const REQUEST_TIMEOUT = 30000;
 
 // Create a custom axios instance for better control
 const apiClient = axios.create({
-  baseURL: LOCAL_API_URL,
+  baseURL: API_BASE_URL,
   timeout: REQUEST_TIMEOUT,
   // Security: Only allow specific content types
   headers: {
